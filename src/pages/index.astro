@@ -1,12 +1,12 @@
 ---
 export const prerender = true
 
-import { getCollection, getEntryBySlug } from 'astro:content'
+import { getCollection, getEntryBySlug } from 'astro:content';
 import { Image } from 'astro:assets';
 import aleProImage from '../content/images/alepro.png';
-import DefaultPageLayout from '$/layouts/default.astro'
-import PostPreviewList from '$/components/PostPreviewList.astro'
-import Prose from '$/components/Prose.astro'
+import DefaultPageLayout from '../layouts/default.astro'
+import PostPreviewList from '../components/PostPreviewList.astro'
+import Prose from '../components/Prose.astro'
 import { Content as AboutAstroInk } from './_astro-ink.md'
 
 
