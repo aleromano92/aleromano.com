@@ -1,8 +1,8 @@
 ---
-import "@fontsource/fira-sans";
+import '@fontsource/fira-sans';
 import { ViewTransitions } from 'astro:transitions';
-import { SITE } from "$/config";
-import "../styles/global.css";
+import { SITE } from '$/config';
+import '../styles/global.css';
 
 export type Props = {
   title: string;
@@ -25,17 +25,12 @@ const { title = SITE.title, description, permalink, image } = Astro.props;
 {description && <meta name="description" content={description} />}
 <ViewTransitions />
 
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-<link
-  rel="shortcut icon"
-  type="image/png"
-  sizes="16x16"
-  href="/favicon-16x16.png"
-/>
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+<link rel="shortcut icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="manifest" href="/site.webmanifest" />
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+<link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5" />
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="msapplication-TileColor" content="#da532c" />
@@ -58,18 +53,18 @@ const { title = SITE.title, description, permalink, image } = Astro.props;
 
 <script is:inline>
   const theme = (() => {
-    if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
-      return localStorage.getItem("theme");
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+      return localStorage.getItem('theme');
     }
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      return "dark";
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
     }
-    return "light";
+    return 'light';
   })();
 
-  if (theme === "light") {
-    document.documentElement.classList.remove("dark");
+  if (theme === 'light') {
+    document.documentElement.classList.remove('dark');
   } else {
-    document.documentElement.classList.add("dark");
+    document.documentElement.classList.add('dark');
   }
 </script>
