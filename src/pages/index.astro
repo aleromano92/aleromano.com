@@ -1,22 +1,22 @@
 ---
-export const prerender = true
+export const prerender = true;
 
-import { getCollection, getEntryBySlug } from 'astro:content';
 import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import PostPreviewList from '../components/PostPreviewList.astro';
+import Prose from '../components/Prose.astro';
 import aleProImage from '../content/images/alepro.png';
-import DefaultPageLayout from '../layouts/default.astro'
-import PostPreviewList from '../components/PostPreviewList.astro'
-import Prose from '../components/Prose.astro'
-import { Content as AboutAstroInk } from './_astro-ink.md'
+import DefaultPageLayout from '../layouts/default.astro';
+import { Content as AboutAstroInk } from './_astro-ink.md';
 
+const title = 'Home';
+const description = 'Alessandro Romano, the Empathic Tech Leader';
 
-const title = 'Home'
-const description = 'Astro-Ink is a crisp, minimal, personal blog theme for Astro'
-
-const posts = await getCollection('blog')
+const posts = await getCollection('blog');
 ---
+
 <DefaultPageLayout content={{ title, description }} showPageHeader={false}>
-    <div class="hero ">
+    <div class="hero">
         <div class="hero__face">
             <div class="author-card">
                 <Image src={aleProImage} alt="Alessandro Romano head and shoulders" />
@@ -24,12 +24,12 @@ const posts = await getCollection('blog')
         </div>
         <div class="hero__says">
             <Prose>
-                <AboutAstroInk/>
+                <AboutAstroInk />
             </Prose>
         </div>
     </div>
-    <hr/>
-    <PostPreviewList posts={posts.slice(0, 3)} heading="recent posts"/>
+    <hr />
+    <PostPreviewList posts={posts.slice(0, 3)} heading="recent posts" />
     <div class="page__actions">
         <a class="action__go-to-blog ink-h" href="/blog" title="All Posts">All Posts &rarr;</a>
     </div>
@@ -37,24 +37,24 @@ const posts = await getCollection('blog')
 
 <style>
     .hero {
-        @apply flex flex-col md:flex-row gap-8 w-full transition-all pb-4
+        @apply flex flex-col md:flex-row gap-8 w-full transition-all pb-4;
     }
     .hero__face {
-        @apply flex md:flex-none justify-center
+        @apply flex md:flex-none justify-center;
     }
     .hero__says {
-        @apply flex-1 text-center md:text-left
+        @apply flex-1 text-center md:text-left;
     }
     .author-card {
-        @apply  h-48 w-48 md:h-56 bg-theme-primary dark:bg-theme-dark-primary rounded-full md:rounded-md shadow-lg
+        @apply h-48 w-48 md:h-56 bg-theme-primary dark:bg-theme-dark-primary rounded-full md:rounded-md shadow-lg;
     }
     .author-card img {
-        @apply h-48 w-48 md:h-56
+        @apply h-48 w-48 md:h-56;
     }
     .page__actions {
-        @apply flex justify-center md:justify-end py-6
+        @apply flex justify-center md:justify-end py-6;
     }
     .action__go-to-blog {
-        @apply py-4 hover:underline
+        @apply py-4 hover:underline;
     }
 </style>
