@@ -49,6 +49,37 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-## 👀 Want to learn more?
+## 🐳 Docker Magic
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+I've added Docker containerization to this project.
+
+It means I've added the `node` adapter for Astro in order to run the Server Side Rendering.
+
+To build the container, run `docker build -t astro-basics .`
+
+To run the container, run `docker run -p 4321:4321 astro-basics`
+
+> Note: keep CONTAINER and HOST port identical otherwise /_image
+
+### Deploy to VPS
+
+With Docker is quite easy to deploy on a remote machine instead of your own.
+
+```sh
+# Create new context for remote VPS
+docker context create vps
+--docker "host=ssh://user@<public-IP-address-of-your-server>"
+
+# List available contexts
+docker context ls
+
+docker context use vps
+# Run command on remote host
+docker build -t astro-basics .
+docker run -p 4321:4321 astro-basics
+
+# Switch back to local when needed
+docker context use default
+```
+
+See https://x.com/kkyrio/status/1861371736492572710
