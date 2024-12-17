@@ -95,4 +95,11 @@ docker run -p 4321:4321 astro-basics
 docker context use default
 ```
 
-See https://x.com/kkyrio/status/1861371736492572710
+**NOTE**: I've added 2 aliases to my `.zshrc` to switch between local and remote contexts:
+
+```sh
+alias dlocal="docker context use default"
+alias dremote="docker context use vps"
+```
+
+> See https://x.com/kkyrio/status/1861371736492572710
