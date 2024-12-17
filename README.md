@@ -53,7 +53,20 @@ All commands are run from the root of the project, from a terminal:
 
 I've added Docker containerization to this project.
 
-It means I've added the `node` adapter for Astro in order to run the Server Side Rendering.
+It means I've added the `node` adapter for Astro in order to run the Server Side Rendering. 
+
+```diff
+import { defineConfig } from 'astro/config';
+
++ import node from '@astrojs/node';
+// https://astro.build/config
+export default defineConfig({
++  output: 'server',
++  adapter: node({
++    mode: 'standalone'
++  })
+});
+```
 
 To build the container, run `docker build -t astro-basics .`
 
@@ -65,7 +78,7 @@ To run the container, run `docker run -p 4321:4321 astro-basics`
 
 With Docker is quite easy to deploy on a remote machine instead of your own.
 
-```sh
+```bash
 # Create new context for remote VPS
 docker context create vps
 --docker "host=ssh://user@<public-IP-address-of-your-server>"
