@@ -4,6 +4,7 @@ interface Props {
 }
 
 const { title } = Astro.props;
+const skillColor = 'red';
 ---
 
 <!doctype html>
@@ -20,17 +21,12 @@ const { title } = Astro.props;
 		<slot />
 	</body>
 </html>
-<style is:global>
+<style is:global define:vars={{ skillColor }}>
 	:root {
 		--accent: 136, 58, 234;
 		--accent-light: 224, 204, 250;
 		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
+		--accent-gradient: linear-gradient(45deg, rgb(var(--accent)), rgb(var(--accent-light)) 30%, white 60%);
 	}
 	html {
 		font-family: system-ui, sans-serif;
@@ -46,5 +42,13 @@ const { title } = Astro.props;
 			Bitstream Vera Sans Mono,
 			Courier New,
 			monospace;
+	}
+	h1 {
+		color: purple;
+		font-size: 4rem;
+	}
+	.skill {
+		color: var(--skillColor);
+		font-weight: bold;
 	}
 </style>
