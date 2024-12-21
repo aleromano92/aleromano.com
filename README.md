@@ -56,9 +56,9 @@ export default defineConfig({
 });
 ```
 
-To build the container, run `docker build -t astro-basics .`
+To build the container, run `docker build -t aleromano.com .`
 
-To run the container, run `docker run -p 4321:4321 astro-basics`
+To run the container, run `docker run -p 4321:4321 aleromano.com`
 
 > Note: keep CONTAINER and HOST port identical otherwise /_image
 
