@@ -28,4 +28,5 @@ ENV PORT=4321
 # Just convention, not required
 EXPOSE 4321
 
-CMD node ./dist/server/entry.mjs # Start the app
+# Start the app
+CMD node ./dist/server/entry.mjs
