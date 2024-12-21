@@ -1,9 +1,10 @@
 ---
-import Navigation from '../components/Navigation.astro';
+import Header from '../components/Header.astro';
 import armadioImage from '../../public/armadio.png';
+import Footer from '../components/Footer.astro';
 ---
 
-<Navigation />
+<Header />
 <p>ABout again</p>
 <a href="/">Back home</a>
 <img src={armadioImage.src} alt="armadio" />
@@ -24,7 +25,7 @@ import armadioImage from '../../public/armadio.png';
         community.
     </p>
 </section>
-
+<Footer />
 <style>
     .about-me {
         max-width: 800px;

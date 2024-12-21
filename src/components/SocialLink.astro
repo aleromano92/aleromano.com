@@ -1,0 +1,26 @@
+---
+type Platform = keyof typeof MAP_PLATFORM_TO_LINK;
+const { platform } = Astro.props;
+
+const MAP_PLATFORM_TO_LINK = {
+    github: 'https://github.com/aleromano92',
+    twitter: 'https://twitter.com/_aleromano',
+    linkedin: 'https://www.linkedin.com/in/alessandroromano92',
+    instagram: 'https://www.instagram.com/axel_impero',
+} as const;
+
+interface Props {
+    platform: Platform;
+}
+---
+
+<a href={MAP_PLATFORM_TO_LINK[platform]}>{platform}</a>
+
+<style>
+    a {
+        padding: 0.5rem 1rem;
+        color: white;
+        background-color: #4c1d95;
+        text-decoration: none;
+    }
+</style>
