@@ -1,4 +1,6 @@
 ---
+layout: ../layouts/BaseLayout.astro
+pageTitle: 'Contact Me'
 ---
 ## Contact
 
