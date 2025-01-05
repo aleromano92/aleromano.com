@@ -76,8 +76,8 @@ docker context ls
 
 docker context use vps
 # Run command on remote host
-docker build -t astro-basics .
-docker run -p 4321:4321 astro-basics
+docker build -t aleromano.com .
+docker run -p 4321:4321 aleromano.com
 
 # Switch back to local when needed
 docker context use default
