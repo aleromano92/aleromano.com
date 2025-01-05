@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const allPosts = Object.values(import.meta.glob('./posts/*.md', { eager: true }));
 
 const pageTitle = 'Blog';
+export const prerender = true;
 ---
 
 <BaseLayout pageTitle={pageTitle}>
