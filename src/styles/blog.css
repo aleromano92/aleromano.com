@@ -1,0 +1,19 @@
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    margin: 1rem 0;
+}
+
+.tag {
+    border: dotted 1px #a1a1a1;
+    border-radius: .5em;
+    padding: .5em 1em;
+    font-size: 0.9em;
+    background-color: #F8FCFD;
+    text-decoration: none;
+}
+
+.tag:hover {
+    background-color: #e2e8f0;
+}
