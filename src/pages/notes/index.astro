@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/blog.css';
+
+const allNotes = Object.values(import.meta.glob('./*.md', { eager: true }));
+const pageTitle = 'Notes';
+export const prerender = true;
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <p>This is where I will collect my notes about everything.</p>
+  <ul>
+    {
+      allNotes.map((note: any) => (
+        <li>
+          <a href={note.url}>{note.frontmatter.title}</a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
