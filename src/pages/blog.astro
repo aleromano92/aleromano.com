@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-const allPosts = Object.values(import.meta.glob('./posts/*.md', { eager: true }));
+import { getCollection } from 'astro:content';
 
-const pageTitle = 'Blog';
+const pageTitle = 'My Astro Learning Blog';
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 export const prerender = true;
 ---
 
@@ -15,9 +17,11 @@ export const prerender = true;
     </p>
     <ul>
         {
-            allPosts.map((post: any) => (
+            sortedPosts.map((post) => (
                 <li>
-                    <a href={post.url}>{post.frontmatter.title}</a>
+                    <a href={`/posts/${post.slug}/`}>
+                        {post.data.title} - {post.data.pubDate.toLocaleDateString()}
+                    </a>
                 </li>
             ))
         }
