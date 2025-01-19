@@ -56,13 +56,8 @@ export default defineConfig({
 });
 ```
 
-To build the container, run `docker build -t aleromano.com .`
 
-To run the container, run `docker run -p 4321:4321 aleromano.com`
-
-> Note: keep CONTAINER and HOST port identical otherwise /_image
-
-### Deploy to VPS
+### Docker Context Setup
 
 With Docker is quite easy to deploy on a remote machine instead of your own.
 
@@ -73,14 +68,6 @@ docker context create vps
 
 # List available contexts
 docker context ls
-
-docker context use vps
-# Run command on remote host
-docker build -t aleromano.com .
-docker run -p 4321:4321 aleromano.com
-
-# Switch back to local when needed
-docker context use default
 ```
 
 **NOTE**: I've added 2 aliases to my `.zshrc` to switch between local and remote contexts:
@@ -91,3 +78,26 @@ alias dremote="docker context use vps"
 ```
 
 > See https://x.com/kkyrio/status/1861371736492572710
+
+To build the container: `docker build -t aleromano.com .`
+
+To run the container: `docker run -p 4321:4321 aleromano.com`
+
+> Note: keep CONTAINER and HOST port identical otherwise /_image won't render anything
+
+
+
+## 🚀 Release Process
+
+I've streamlined the release process using npm scripts. Here's how to deploy the website:
+
+| Command | Action |
+| :-- | :-- |
+| `npm run docker:build` | Builds the Docker container locally |
+| `npm run deploy` | Full deployment process on remote VPS |
+
+The deployment process consists of these automated steps:
+1. Switches to Hetzner context (`predeploy`)
+2. Builds the Docker image on the remote server (`predeploy`)
+3. Runs the container in detached mode on port 4321
+4. Switches back to local Docker context

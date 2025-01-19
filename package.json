@@ -7,7 +7,10 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "docker:build": "docker build -t aleromano.com .",
+    "predeploy": "docker context use hetzner && docker build -t aleromano.com .",
+    "deploy": "docker run -d -p 4321:4321 aleromano.com && docker context use default"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
