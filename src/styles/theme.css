@@ -11,8 +11,9 @@
     --color-checkbox-bg: #886fc3;
 
     /* Layout */
-    --container-max-width: 860px;
-    --container-padding: 2rem;
+    --container-max-width: 1080px;
+    --posts-container-max-width: 65ch;
+    --container-padding: clamp(1rem, 5vw, 2rem);
 
     /* Breakpoints */
     --breakpoint-mobile: 480px;

@@ -8,26 +8,28 @@ const pageTitle = frontmatter.title;
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-    <p>
-        Published on {
-            new Date(frontmatter.pubDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-            })
-        }
-    </p>
-    <p><em>{frontmatter.description}</em></p>
-    <div class="tags">
-        {
-            frontmatter.tags.map((tag: string) => (
-                <p class="tag">
-                    <a href={`${BLOG_POSTS_PATH}/tags/${tag}`}>{tag}</a>
-                </p>
-            ))
-        }
-    </div>
+    <article class="post">
+        <p>
+            Published on {
+                new Date(frontmatter.pubDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                })
+            }
+        </p>
+        <p><em>{frontmatter.description}</em></p>
+        <div class="tags">
+            {
+                frontmatter.tags.map((tag: string) => (
+                    <p class="tag">
+                        <a href={`${BLOG_POSTS_PATH}/tags/${tag}`}>{tag}</a>
+                    </p>
+                ))
+            }
+        </div>
 
-    <p>Written by {frontmatter.author}</p>
-    <slot />
+        <p>Written by {frontmatter.author}</p>
+        <slot />
+    </article>
 </BaseLayout>

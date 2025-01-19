@@ -1,3 +1,7 @@
+article.post {
+    max-width: var(--posts-container-max-width);
+}
+
 .tags {
     display: flex;
     flex-wrap: wrap;
