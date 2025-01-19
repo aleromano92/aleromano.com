@@ -1,13 +1,14 @@
 ---
-
+const pathname = new URL(Astro.request.url).pathname;
+const currentPath = pathname.slice(1); // remove the first "/"
 ---
 
 <nav>
-  <a href="/">HOME</a>
-  <a href="/about">ABOUT</a>
-  <a href="/blog">BLOG</a>
-  <a href="/notes">NOTES</a>
-  <a href="/contact">CONTACT</a>
+  <a href="/" class={currentPath === '' ? 'active' : ''}>HOME</a>
+  <a href="/about" class={currentPath === 'about' ? 'active' : ''}>ABOUT</a>
+  <a href="/blog" class={currentPath === 'blog' ? 'active' : ''}>BLOG</a>
+  <a href="/notes" class={currentPath === 'notes' ? 'active' : ''}>NOTES</a>
+  <a href="/contact" class={currentPath === 'contact' ? 'active' : ''}>CONTACT</a>
 </nav>
 
 <style>
@@ -21,11 +22,34 @@
     color: var(--color-text);
     text-decoration: none;
     font-weight: bold;
-    transition: transform 0.2s ease;
+    position: relative;
+    padding: 0.1rem 0;
+    display: inline-block;
   }
 
   a:hover {
-    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  /* Refined pseudo-element */
+  a::after {
+    content: '';
+    position: absolute;
+    display: block;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-accent);
+    transition: width 0.2s ease-out;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  /* Hover and active states */
+  a:hover::after,
+  a.active::after {
+    width: 100%;
   }
 
   @media (max-width: 636px) {
@@ -50,14 +74,18 @@
     }
 
     a {
-      width: 100%;
-      padding: 0.5rem 1rem;
+      width: fit-content;
+      padding: 0.5rem 0;
       font-size: 1.2rem;
     }
 
     a:hover {
-      transform: none;
-      background: var(--color-secondary);
+      background: none;
+    }
+
+    /* Keep active state in mobile */
+    a.active::after {
+      width: 100%;
     }
   }
 </style>
