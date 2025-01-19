@@ -11,14 +11,33 @@
 </div>
 
 <style>
-  a {
-    color: #ffffff;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
+  .nav-links {
+    display: flex;
+    gap: 1rem;
   }
 
-  a:hover {
-    background-color: #6d28d9;
-    border-radius: 4px;
+  .nav-links a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .nav-links a:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border-radius: 0.25rem;
+  }
+
+  /* Responsive styles */
+  @media screen and (max-width: 636px) {
+    .nav-links {
+      display: none;
+    }
+    .expanded {
+      display: unset;
+    }
   }
 </style>

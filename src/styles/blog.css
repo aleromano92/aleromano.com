@@ -13,8 +13,12 @@
     background-color: var(--color-tag-bg);
     text-decoration: none;
     color: var(--color-text);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
 .tag:hover {
     background-color: var(--color-tag-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }

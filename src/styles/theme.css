@@ -1,13 +1,14 @@
 :root {
     /* Light theme (default) */
-    --color-bg: #ffffff;
-    --color-text: #1e293b;
-    --color-primary: #4c1d95;
-    --color-secondary: #e2e8f0;
-    --color-accent: #00539f;
-    --color-border: #a1a1a1;
-    --color-tag-bg: #F8FCFD;
-    --color-tag-hover: #e2e8f0;
+    --color-bg: #ffeb89;
+    --color-text: #49337b;
+    --color-primary: #3c2a65;
+    --color-secondary: #fff1ad;
+    --color-accent: #3c2a65;
+    --color-border: #49337b;
+    --color-tag-bg: var(--color-bg);
+    --color-tag-hover: #fff1ad;
+    --color-checkbox-bg: #886fc3;
 }
 
 [data-theme="dark"] {
@@ -19,6 +20,7 @@
     --color-border: #64748b;
     --color-tag-bg: #334155;
     --color-tag-hover: #475569;
+    --color-checkbox-bg: #4c1d95;
 }
 
 /* Base styles */
