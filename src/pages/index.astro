@@ -1,16 +1,52 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import profilePic from '../../public/alepro.png';
 
 const pageTitle = 'Alessandro Romano';
 export const prerender = true;
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-    Insightful. Precise. Human.
+    <h2>Insightful. Precise. Human.</h2>
 
-    <p>
-        I'm addicted to details and obsessed with how things work: from Cloud services to human relationships. Since my
-        first Hello World in RPG Maker, I have come to believe that being an <strong>Engineer</strong> is much more than
-        coding.
-    </p></BaseLayout
->
+    <div class="intro">
+        <div class="content">
+            <p>
+                I'm addicted to details and obsessed with how things work: from Cloud services to human relationships.
+                Since my first Hello World in RPG Maker, I have come to believe that being an <strong>Engineer</strong> is
+                much more than coding.
+            </p>
+        </div>
+        <Image
+            src={profilePic}
+            alt="Alessandro Romano profile picture"
+            width={400}
+            quality="high"
+            class="profile-pic"
+        />
+    </div>
+</BaseLayout>
+
+<style>
+    .intro {
+        display: flex;
+        align-items: center;
+        gap: var(--space-xl);
+        margin: var(--space-lg) 0;
+    }
+
+    .content {
+        flex: 1;
+    }
+
+    .profile-pic {
+        margin-bottom: -2rem;
+    }
+
+    @media (max-width: 636px) {
+        .intro {
+            flex-direction: column;
+        }
+    }
+</style>
