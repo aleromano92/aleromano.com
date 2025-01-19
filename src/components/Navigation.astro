@@ -2,42 +2,62 @@
 
 ---
 
-<div class="nav-links">
-  <a href="/">Home</a>
-  <a href="/about/">About</a>
-  <a href="/blog/">Blog</a>
-  <a href="/notes/">Notes</a>
-  <a href="/contact/">Contact</a>
-</div>
+<nav>
+  <a href="/">HOME</a>
+  <a href="/about">ABOUT</a>
+  <a href="/blog">BLOG</a>
+  <a href="/notes">NOTES</a>
+  <a href="/contact">CONTACT</a>
+</nav>
 
 <style>
-  .nav-links {
+  nav {
     display: flex;
-    gap: 1rem;
+    align-items: center;
+    gap: 2rem;
   }
 
-  .nav-links a {
+  a {
     color: var(--color-text);
     text-decoration: none;
     font-weight: bold;
-    text-transform: uppercase;
-    padding: 0.5rem 1rem;
-    transition: all 0.3s ease;
+    transition: transform 0.2s ease;
   }
 
-  .nav-links a:hover {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
-    border-radius: 0.25rem;
+  a:hover {
+    transform: translateY(-2px);
   }
 
-  /* Responsive styles */
-  @media screen and (max-width: var(--breakpoint-tablet)) {
-    .nav-links {
+  @media (max-width: 636px) {
+    /* Hardcoded from --breakpoint-tablet */
+    nav {
       display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100vh;
+      background: var(--color-bg);
+      padding: 5rem 2rem 2rem;
+      z-index: 100;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
     }
-    .expanded {
-      display: unset;
+
+    nav.expanded {
+      display: flex;
+    }
+
+    a {
+      width: 100%;
+      padding: 0.5rem 1rem;
+      font-size: 1.2rem;
+    }
+
+    a:hover {
+      transform: none;
+      background: var(--color-secondary);
     }
   }
 </style>

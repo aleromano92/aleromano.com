@@ -2,62 +2,21 @@
 import Hamburger from './Hamburger.astro';
 import Navigation from './Navigation.astro';
 import ThemeToggle from './ThemeToggle.astro';
-import '../styles/theme.css';
 ---
 
 <header>
-    <nav>
-        <div class="nav-container">
-            <div class="mobile-nav">
-                <Hamburger />
-            </div>
-            <Navigation />
-        </div>
-        <ThemeToggle />
-    </nav>
+    <Hamburger />
+    <Navigation />
+    <ThemeToggle />
 </header>
 
 <style>
     header {
-        padding: 1rem;
         background-color: var(--color-bg);
-    }
-    nav {
         display: flex;
-        align-items: center;
         justify-content: space-between;
+        align-items: center;
         max-width: var(--container-max-width);
         margin: 0 auto;
     }
-    .nav-container {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-    .mobile-nav {
-        display: none;
-    }
-    @media (max-width: var(--breakpoint-tablet)) {
-        .mobile-nav {
-            display: block;
-        }
-        .nav-container :global(nav) {
-            display: none;
-        }
-        .nav-container.expanded :global(nav) {
-            display: block;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: var(--color-bg);
-            padding: 1rem;
-        }
-    }
 </style>
-
-<script>
-    document.querySelector('.hamburger')?.addEventListener('click', () => {
-        document.querySelector('.nav-container')?.classList.toggle('expanded');
-    });
-</script>

@@ -1,4 +1,4 @@
-/* Responsive layout */
+/* Layout */
 .container {
     width: 100%;
     max-width: var(--container-max-width);
@@ -6,54 +6,20 @@
     padding: var(--container-padding);
 }
 
-/* Navigation styles */
-.hamburger {
-    display: none;
-    cursor: var(--cursor-pointer);
-    transition: transform 0.2s ease;
-}
-
-.hamburger:hover {
-    transform: scale(1.1);
-}
-
-.nav-links {
-    width: 100%;
-    top: 5rem;
-    left: 48px;
-    display: none;
-    margin: 0;
-}
-
-.nav-links a {
-    display: block;
-    text-align: center;
-    padding: 10px 0;
-    text-decoration: none;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: transform 0.2s ease;
-}
-
-.nav-links a:hover {
-    transform: translateY(-2px);
-}
-
-/* Responsive navigation */
-@media screen and (max-width: var(--breakpoint-tablet)) {
-    .nav-links {
-        display: none;
-    }
-
-    .nav-links.expanded {
-        display: unset;
-    }
-
-    .hamburger {
-        display: block;
+/* Responsive */
+@media (max-width: var(--breakpoint-tablet)) {
+    :root {
+        --container-padding: 1rem;
     }
 }
+
+@media (max-width: var(--breakpoint-mobile)) {
+    :root {
+        --container-padding: 0.75rem;
+        --font-size-base: 0.9rem;
+    }
+}
+
 
 /* Content layouts */
 main {

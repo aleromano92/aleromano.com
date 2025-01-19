@@ -95,28 +95,6 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Layout */
-.container {
-    width: 100%;
-    max-width: var(--container-max-width);
-    margin: 0 auto;
-    padding: var(--container-padding);
-}
-
-/* Responsive */
-@media (max-width: var(--breakpoint-tablet)) {
-    :root {
-        --container-padding: 1rem;
-    }
-}
-
-@media (max-width: var(--breakpoint-mobile)) {
-    :root {
-        --container-padding: 0.75rem;
-        --font-size-base: 0.9rem;
-    }
-}
-
 /* Interactive elements */
 button,
 .button,
