@@ -6,14 +6,15 @@
 }
 
 .tag {
-    border: dotted 1px #a1a1a1;
+    border: dotted 1px var(--color-border);
     border-radius: .5em;
     padding: .5em 1em;
     font-size: 0.9em;
-    background-color: #F8FCFD;
+    background-color: var(--color-tag-bg);
     text-decoration: none;
+    color: var(--color-text);
 }
 
 .tag:hover {
-    background-color: #e2e8f0;
+    background-color: var(--color-tag-hover);
 }

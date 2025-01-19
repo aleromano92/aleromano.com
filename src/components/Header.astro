@@ -1,12 +1,15 @@
 ---
 import Hamburger from './Hamburger.astro';
 import Navigation from './Navigation.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import '../styles/theme.css';
 ---
 
 <header>
     <nav>
         <Hamburger />
         <Navigation />
+        <ThemeToggle />
     </nav>
 </header>
 
@@ -17,6 +20,7 @@ import Navigation from './Navigation.astro';
     }
     nav {
         display: flex;
-        gap: 1rem;
+        align-items: center;
+        justify-content: space-between;
     }
 </style>
