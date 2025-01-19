@@ -8,5 +8,7 @@ export default defineConfig({
 
   adapter: node({
     mode: 'standalone'
-  })
+  }),
+
+  site: 'https://aleromano.com',  // Replace with your actual domain
 });

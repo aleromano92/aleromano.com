@@ -8,7 +8,11 @@ export const prerender = true;
 
 <BaseLayout pageTitle={pageTitle}>
     <p>This is where I will post about my journey learning Astro.</p>
-    <p>Want to <a href="/posts/tags">find about the topics I talk about</a>?</p>
+    <p>
+        Want to <a href="/posts/tags">find about the topics I talk about</a>? Subscribe to my <a href="/rss.xml"
+            >RSS feed</a
+        >
+    </p>
     <ul>
         {
             allPosts.map((post: any) => (
