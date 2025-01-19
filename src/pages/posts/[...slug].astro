@@ -1,5 +1,4 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
 
@@ -17,17 +16,3 @@ const { Content } = await post.render();
 <BlogPostLayout frontmatter={post.data}>
     <Content />
 </BlogPostLayout>
-
-<style>
-    article {
-        max-width: 100%;
-        padding: 1rem;
-    }
-
-    img {
-        max-width: 100%;
-        height: auto;
-        display: block;
-        margin: 1rem 0;
-    }
-</style>

@@ -1,13 +1,27 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import '../styles/blog.css';
 import { BLOG_POSTS_PATH } from '../utils/constants';
+import { Image } from 'astro:assets';
 
 const { frontmatter } = Astro.props;
 const pageTitle = frontmatter.title;
 ---
 
 <BaseLayout pageTitle={pageTitle}>
+    {
+        frontmatter.image && (
+            <div class="featured-image-container">
+                <Image
+                    src={frontmatter.image.url}
+                    alt={frontmatter.image.alt}
+                    width={1200}
+                    height={630}
+                    class="featured-image"
+                    quality="max"
+                />
+            </div>
+        )
+    }
     <article class="post">
         <p>
             Published on {
@@ -33,3 +47,55 @@ const pageTitle = frontmatter.title;
         <slot />
     </article>
 </BaseLayout>
+
+<style>
+    .featured-image-container {
+        width: 100vw;
+        transform: translateX(-50%);
+        max-width: var(--container-max-width);
+        margin: var(--space-xl) 0 var(--space-xl) 50%;
+    }
+
+    .featured-image {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .post {
+        max-width: var(--posts-container-max-width);
+    }
+
+    .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+        margin: 1rem 0;
+    }
+
+    .tag {
+        border: dotted 1px var(--color-border);
+        border-radius: 0.5em;
+        padding: 0.5em 1em;
+        font-size: 0.9em;
+        background-color: var(--color-tag-bg);
+        text-decoration: none;
+        color: var(--color-text);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .tag:hover {
+        background-color: var(--color-tag-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 1rem 0;
+    }
+</style>
