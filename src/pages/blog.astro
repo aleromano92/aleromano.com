@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { BLOG_POSTS_PATH } from '../utils/constants';
 
 const pageTitle = 'My Astro Learning Blog';
 const allPosts = await getCollection('blog');
@@ -11,15 +12,15 @@ export const prerender = true;
 <BaseLayout pageTitle={pageTitle}>
     <p>This is where I will post about my journey learning Astro.</p>
     <p>
-        Want to <a href="/posts/tags">find about the topics I talk about</a>? Subscribe to my <a href="/rss.xml"
-            >RSS feed</a
+        Want to <a href={`${BLOG_POSTS_PATH}/tags`}>find about the topics I talk about</a>? Subscribe to my <a
+            href="/rss.xml">RSS feed</a
         >
     </p>
     <ul>
         {
             sortedPosts.map((post) => (
                 <li>
-                    <a href={`/posts/${post.slug}/`}>
+                    <a href={`${BLOG_POSTS_PATH}/${post.slug}/`}>
                         {post.data.title} - {post.data.pubDate.toLocaleDateString()}
                     </a>
                 </li>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { BLOG_POSTS_PATH } from '../../../utils/constants';
 
 export async function getStaticPaths() {
     const allPosts = await getCollection('blog');
@@ -26,7 +27,7 @@ export const prerender = true;
         {
             posts.map((post) => (
                 <li>
-                    <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+                    <a href={`${BLOG_POSTS_PATH}/${post.slug}/`}>{post.data.title}</a>
                 </li>
             ))
         }

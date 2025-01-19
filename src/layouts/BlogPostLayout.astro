@@ -1,6 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import '../styles/blog.css';
+import { BLOG_POSTS_PATH } from '../utils/constants';
 
 const { frontmatter } = Astro.props;
 const pageTitle = frontmatter.title;
@@ -21,7 +22,7 @@ const pageTitle = frontmatter.title;
         {
             frontmatter.tags.map((tag: string) => (
                 <p class="tag">
-                    <a href={`/posts/tags/${tag}`}>{tag}</a>
+                    <a href={`${BLOG_POSTS_PATH}/tags/${tag}`}>{tag}</a>
                 </p>
             ))
         }
