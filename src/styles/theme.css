@@ -1,5 +1,5 @@
 :root {
-    /* Light theme (default) */
+    /* Colors - Light theme (default) */
     --color-bg: #ffeb89;
     --color-text: #49337b;
     --color-primary: #3c2a65;
@@ -9,6 +9,27 @@
     --color-tag-bg: var(--color-bg);
     --color-tag-hover: #fff1ad;
     --color-checkbox-bg: #886fc3;
+
+    /* Layout */
+    --container-max-width: 860px;
+    --container-padding: 2rem;
+
+    /* Breakpoints */
+    --breakpoint-mobile: 480px;
+    --breakpoint-tablet: 636px;
+    --breakpoint-desktop: 860px;
+
+    /* Typography */
+    --font-family: system-ui, sans-serif;
+    --font-size-base: 1rem;
+    --line-height-base: 1.5;
+
+    /* Spacing */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
 }
 
 [data-theme="dark"] {
@@ -23,12 +44,69 @@
     --color-checkbox-bg: #fff0a3;
 }
 
-/* Base styles */
-body {
+/* Reset & Base Styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
     background-color: var(--color-bg);
     color: var(--color-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: var(--space-lg) 0 var(--space-sm);
+    line-height: 1.2;
+}
+
+p {
+    margin-bottom: var(--space-md);
 }
 
 a {
     color: var(--color-accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Layout */
+.container {
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: var(--container-padding);
+}
+
+/* Responsive */
+@media (max-width: var(--breakpoint-tablet)) {
+    :root {
+        --container-padding: 1rem;
+    }
+}
+
+@media (max-width: var(--breakpoint-mobile)) {
+    :root {
+        --container-padding: 0.75rem;
+        --font-size-base: 0.9rem;
+    }
 }
