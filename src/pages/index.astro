@@ -21,8 +21,9 @@ export const prerender = true;
         <Image
             src={profilePic}
             alt="Alessandro Romano profile picture"
-            width={400}
-            quality="high"
+            width={450}
+            densities={[1, 2]}
+            quality="max"
             class="profile-pic"
         />
     </div>
@@ -42,6 +43,8 @@ export const prerender = true;
 
     .profile-pic {
         margin-bottom: -2rem;
+        max-width: 100%;
+        height: auto;
     }
 
     @media (max-width: 636px) {
