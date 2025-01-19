@@ -9,6 +9,12 @@
 /* Navigation styles */
 .hamburger {
     display: none;
+    cursor: var(--cursor-pointer);
+    transition: transform 0.2s ease;
+}
+
+.hamburger:hover {
+    transform: scale(1.1);
 }
 
 .nav-links {
@@ -27,6 +33,11 @@
     font-size: 1.2rem;
     font-weight: bold;
     text-transform: uppercase;
+    transition: transform 0.2s ease;
+}
+
+.nav-links a:hover {
+    transform: translateY(-2px);
 }
 
 /* Responsive navigation */

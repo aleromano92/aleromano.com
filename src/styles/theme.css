@@ -30,6 +30,12 @@
     --space-md: 1.5rem;
     --space-lg: 2rem;
     --space-xl: 3rem;
+
+    /* Cursor interactions */
+    --cursor-default: default;
+    --cursor-pointer: pointer;
+    --cursor-text: text;
+    --cursor-not-allowed: not-allowed;
 }
 
 [data-theme="dark"] {
@@ -109,4 +115,31 @@ a:hover {
         --container-padding: 0.75rem;
         --font-size-base: 0.9rem;
     }
+}
+
+/* Interactive elements */
+button,
+.button,
+[role="button"],
+a {
+    cursor: var(--cursor-pointer);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+    cursor: var(--cursor-text);
+}
+
+.disabled,
+[disabled],
+[aria-disabled="true"] {
+    cursor: var(--cursor-not-allowed);
+}
+
+/* Selection cursor */
+::selection {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
 }
