@@ -10,7 +10,9 @@
     "astro": "astro",
     "docker:build": "docker build -t aleromano.com .",
     "predeploy": "docker context use hetzner && docker build -t aleromano.com .",
-    "deploy": "docker stop $(docker ps -q --filter publish=4321) && docker run -d -p 4321:4321 aleromano.com && docker context use default"
+    "deploy": "docker stop $(docker ps -q --filter publish=4321) && docker run -d -p 4321:4321 aleromano.com && docker context use default",
+    "translate": "node scripts/translate.js",
+    "translate:missing": "node scripts/translate-missing.js"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -18,6 +20,14 @@
     "@astrojs/node": "^9.0.1",
     "@astrojs/rss": "^4.0.11",
     "astro": "^5.1.7",
+    "shiki": "^1.1.7",
+    "turndown": "^7.2.0",
     "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "@typescript-eslint/parser": "^7.3.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-astro": "^0.31.4"
   }
 }

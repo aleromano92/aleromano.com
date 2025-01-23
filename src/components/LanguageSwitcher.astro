@@ -1,0 +1,90 @@
+---
+import { LANGUAGES, DEFAULT_LANGUAGE } from '../types/i18n';
+import { getLanguageFromURL } from '../utils/i18n';
+
+const pathname = new URL(Astro.request.url).pathname;
+const currentLang = getLanguageFromURL(pathname);
+---
+
+<div class="language-switcher">
+    {
+        Object.values(LANGUAGES).map(({ code, flag }) => (
+            <button
+                class:list={['lang-button', { active: currentLang === code }]}
+                data-lang={code}
+                data-current-lang={currentLang}
+                data-current-path={pathname}
+                aria-label={`Switch to ${LANGUAGES[code].name}`}
+                title={LANGUAGES[code].name}
+            >
+                {flag}
+            </button>
+        ))
+    }
+</div>
+
+<style>
+    .language-switcher {
+        display: flex;
+        gap: var(--space-xs);
+        align-items: center;
+    }
+
+    .lang-button {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 4px;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+    .lang-button:hover {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    .lang-button.active {
+        opacity: 1;
+        box-shadow: 0 0 0 2px var(--color-accent);
+    }
+</style>
+
+<script>
+    import { setLanguagePreference, getLocalizedPathname } from '../utils/i18n';
+    import type { SupportedLanguage } from '../types/i18n';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('.lang-button');
+        console.log('Language buttons found:', buttons.length);
+
+        buttons.forEach((button) => {
+            button.addEventListener('click', async () => {
+                const lang = button.getAttribute('data-lang') as SupportedLanguage;
+                const currentLang = button.getAttribute('data-current-lang') as SupportedLanguage;
+                const currentPath = button.getAttribute('data-current-path') || '';
+                console.log('Language button clicked:', lang, 'current:', currentLang, 'path:', currentPath);
+
+                setLanguagePreference(lang);
+                const newPath = getLocalizedPathname(currentPath, lang);
+                console.log('Redirecting to:', newPath);
+
+                // Check if the page exists in the target language
+                try {
+                    const response = await fetch(newPath, { method: 'HEAD' });
+                    if (response.ok) {
+                        window.location.href = newPath;
+                    } else {
+                        // If page doesn't exist in target language, redirect to 404
+                        window.location.href = `/${lang}/404`;
+                    }
+                } catch (error) {
+                    console.error('Error checking page existence:', error);
+                    window.location.href = `/${lang}/404`;
+                }
+            });
+        });
+    });
+</script>

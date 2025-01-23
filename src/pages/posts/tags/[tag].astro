@@ -1,35 +1,81 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { BLOG_POSTS_PATH } from '../../../utils/constants';
+import { getLanguageFromURL } from '../../../utils/i18n';
+import { getPostUrl } from '../../../utils/posts';
 
 export async function getStaticPaths() {
     const allPosts = await getCollection('blog');
-    const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
 
-    return uniqueTags.map((tag) => {
-        const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
-        return {
-            params: { tag },
-            props: { posts: filteredPosts },
-        };
-    });
+    // Get tags for each language
+    const tagsByLang = {
+        en: new Set(
+            allPosts
+                .filter((post) => post.slug.startsWith('en/'))
+                .map((post) => post.data.tags)
+                .flat(),
+        ),
+        it: new Set(
+            allPosts
+                .filter((post) => post.slug.startsWith('it/'))
+                .map((post) => post.data.tags)
+                .flat(),
+        ),
+    };
+
+    // Generate paths for each tag in each language
+    return Object.entries(tagsByLang).flatMap(([lang, tags]) =>
+        Array.from(tags).map((tag) => {
+            const filteredPosts = allPosts
+                .filter((post) => post.slug.startsWith(lang + '/') && post.data.tags.includes(tag))
+                .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+            return {
+                params: { tag },
+                props: { posts: filteredPosts, lang },
+            };
+        }),
+    );
 }
 
 const { tag } = Astro.params;
-const { posts } = Astro.props;
-const pageTitle = `Posts about "${tag}"`;
+const { posts, lang } = Astro.props;
+const pageTitle = lang === 'en' ? `Posts tagged "${tag}"` : `Post con tag "${tag}"`;
 export const prerender = true;
 ---
 
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout title={pageTitle}>
     <ul>
         {
             posts.map((post) => (
                 <li>
-                    <a href={`${BLOG_POSTS_PATH}/${post.slug}/`}>{post.data.title}</a>
+                    <a href={getPostUrl(post)}>
+                        <h2>{post.data.title}</h2>
+                        <p>{post.data.description}</p>
+                    </a>
                 </li>
             ))
         }
     </ul>
 </BaseLayout>
+
+<style>
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 2rem;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    p {
+        margin: 0.5rem 0 0;
+        color: var(--color-text-light);
+    }
+</style>

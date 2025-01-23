@@ -1,24 +1,29 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { BLOG_POSTS_PATH } from '../../../utils/constants';
+import { getLanguageFromURL } from '../../../utils/i18n';
 
+const currentLang = getLanguageFromURL(Astro.url.pathname);
 const allPosts = await getCollection('blog');
-const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
-const pageTitle = 'Things I talk about';
+const localizedPosts = allPosts.filter((post) => post.slug.startsWith(currentLang + '/'));
+const tags = [...new Set(localizedPosts.map((post) => post.data.tags).flat())].sort();
+const pageTitle = 'Tags';
 export const prerender = true;
 ---
 
-<BaseLayout pageTitle={pageTitle}>
-    <div class="tags">
-        {
-            tags.map((tag) => (
-                <a class="tag" href={`${BLOG_POSTS_PATH}/tags/${tag}`}>
-                    {tag}
-                </a>
-            ))
-        }
-    </div>
+<BaseLayout title={pageTitle}>
+    <main>
+        <h1>{pageTitle}</h1>
+        <div class="tags">
+            {
+                tags.map((tag) => (
+                    <a class="tag" href={`/posts/tags/${tag}`}>
+                        {tag}
+                    </a>
+                ))
+            }
+        </div>
+    </main>
 </BaseLayout>
 
 <style>
@@ -27,5 +32,20 @@ export const prerender = true;
         flex-wrap: wrap;
         gap: 0.5em;
         margin: 1rem 0;
+    }
+
+    .tag {
+        padding: 0.5em 1em;
+        background-color: var(--color-accent);
+        color: var(--color-bg);
+        border-radius: 0.5em;
+        text-decoration: none;
+        font-size: 0.9em;
+        transition: all 0.2s ease;
+    }
+
+    .tag:hover {
+        background-color: var(--color-accent-dark);
+        transform: translateY(-2px);
     }
 </style>

@@ -13,9 +13,32 @@ export default defineConfig({
 
   markdown: {
     shikiConfig: {
-      theme: 'dracula'
+      theme: 'night-owl',
+      langs: [
+        'typescript',
+        'javascript',
+        'jsx',
+        'json',
+        'bash',
+        'sh',
+        'diff',
+        'plaintext'
+      ],
+      wrap: true
     }
   },
 
   site: 'https://aleromano.com',  // Replace with your actual domain
+
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'it'],
+    routing: {
+      prefixDefaultLocale: false,
+      strategy: 'prefix-other-locales'
+    },
+    fallback: {
+      it: 'en'
+    }
+  }
 });

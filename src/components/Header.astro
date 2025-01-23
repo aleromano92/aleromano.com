@@ -2,21 +2,37 @@
 import Hamburger from './Hamburger.astro';
 import Navigation from './Navigation.astro';
 import ThemeToggle from './ThemeToggle.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 ---
 
 <header>
-    <Hamburger />
-    <Navigation />
-    <ThemeToggle />
+    <nav>
+        <Hamburger />
+        <Navigation />
+        <div class="switchers">
+            <LanguageSwitcher />
+            <ThemeToggle />
+        </div>
+    </nav>
 </header>
 
 <style>
     header {
-        background-color: var(--color-bg);
+        margin: 0;
+        padding: 0 1em;
+        background: var(--background);
+        box-shadow: 0 2px 8px rgba(var(--black), 5%);
+    }
+
+    nav {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        max-width: var(--container-max-width);
-        margin: 0 auto;
+        justify-content: space-between;
+    }
+
+    .switchers {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
     }
 </style>
