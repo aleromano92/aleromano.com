@@ -34,7 +34,7 @@ async function processFile(filePath, fromLang, toLang) {
 
 async function findMissingTranslations() {
     const languages = ['en', 'it'];
-    const contentTypes = ['blog', 'pages'];
+    const contentTypes = ['blog'];
 
     for (const contentType of contentTypes) {
         for (const sourceLang of languages) {

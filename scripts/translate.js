@@ -33,16 +33,6 @@ async function translateFiles(fromLang = 'it', toLang = 'en') {
             await processFile(join(blogDir, post), fromLang, toLang);
         }
     }
-
-    // Process pages
-    const pagesDir = join(contentDir, 'pages', fromLang);
-    const pages = await readdir(pagesDir);
-
-    for (const page of pages) {
-        if (page.endsWith('.md')) {
-            await processFile(join(pagesDir, page), fromLang, toLang);
-        }
-    }
 }
 
 // Get command line arguments
