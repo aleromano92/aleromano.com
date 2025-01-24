@@ -1,13 +1,15 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
-import { BLOG_POSTS_PATH } from '../utils/constants';
+import { getLocalizedPostUrl } from '../utils/posts';
+
 export async function GET(context) {
     const blog = await getCollection('blog');
     const items = blog.map((post) => ({
         title: post.data.title,
         pubDate: post.data.pubDate,
         description: post.data.description,
-        link: `${BLOG_POSTS_PATH}/${post.slug}/`,
+        link: context.site + getLocalizedPostUrl(post).slice(1), // Remove leading slash and append to site URL
+        customData: `<language>${post.data.language}</language>`,
     }));
 
     return rss({

@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
 import { getLanguageFromURL } from '../../utils/i18n';
-import { findPostBySlug, parsePostSlug, getPostUrl } from '../../utils/posts';
+import { findPostBySlug, parsePostSlug, getLocalizedPostUrl } from '../../utils/posts';
 
 const { slug } = Astro.params;
 const currentLang = getLanguageFromURL(Astro.url.pathname);
@@ -12,20 +12,20 @@ const posts = await getCollection('blog');
 const post = findPostBySlug(posts, slug, currentLang);
 
 if (!post) {
-    // Try to find post in default language (en)
-    const defaultPost = findPostBySlug(posts, slug, 'en');
+  // Try to find post in default language (en)
+  const defaultPost = findPostBySlug(posts, slug, 'en');
 
-    if (defaultPost) {
-        // If found in default language, redirect to that URL
-        return Astro.redirect(getPostUrl(defaultPost));
-    }
+  if (defaultPost) {
+    // If found in default language, redirect to that URL
+    return Astro.redirect(getLocalizedPostUrl(defaultPost));
+  }
 
-    return Astro.redirect('/404');
+  return Astro.redirect('/404');
 }
 
 const { Content } = await post.render();
 ---
 
 <BlogPostLayout frontmatter={post.data}>
-    <Content />
+  <Content />
 </BlogPostLayout>

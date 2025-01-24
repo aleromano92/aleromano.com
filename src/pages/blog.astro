@@ -2,55 +2,55 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getLanguageFromURL } from '../utils/i18n';
-import { getPostUrl } from '../utils/posts';
+import { getLocalizedPostUrl } from '../utils/posts';
 
 const currentLang = getLanguageFromURL(Astro.url.pathname);
 const posts = await getCollection('blog');
 const localizedPosts = posts
-    .filter((post) => post.slug.startsWith(currentLang + '/'))
-    .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+  .filter((post) => post.slug.startsWith(currentLang + '/'))
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 export const prerender = true;
 ---
 
 <BaseLayout title="Blog">
-    <section>
-        <ul>
-            {
-                localizedPosts.map((post) => (
-                    <li>
-                        <a href={getPostUrl(post)}>
-                            <h2>{post.data.title}</h2>
-                            <p>{post.data.description}</p>
-                        </a>
-                    </li>
-                ))
-            }
-        </ul>
-    </section>
+  <section>
+    <ul>
+      {
+        localizedPosts.map((post) => (
+          <li>
+            <a href={getLocalizedPostUrl(post)}>
+              <h2>{post.data.title}</h2>
+              <p>{post.data.description}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </BaseLayout>
 
 <style>
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
 
-    li {
-        margin-bottom: 2rem;
-    }
+  li {
+    margin-bottom: 2rem;
+  }
 
-    a {
-        text-decoration: none;
-        color: inherit;
-    }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 
-    h2 {
-        margin: 0;
-        color: var(--color-text);
-    }
+  h2 {
+    margin: 0;
+    color: var(--color-text);
+  }
 
-    p {
-        margin: 0.5rem 0 0;
-        color: var(--color-text-light);
-    }
+  p {
+    margin: 0.5rem 0 0;
+    color: var(--color-text-light);
+  }
 </style>
