@@ -1,4 +1,4 @@
-<button id="theme-toggle" aria-label="Toggle theme">
+<button id="theme-switcher" aria-label="Toggle theme">
     <div class="toggle-container">
         <svg
             class="sun-icon"
@@ -35,7 +35,7 @@
 </button>
 
 <style>
-    #theme-toggle {
+    #theme-switcher {
         background: var(--color-secondary);
         border: none;
         border-radius: 50%;
@@ -50,7 +50,7 @@
         justify-content: center;
     }
 
-    #theme-toggle:hover {
+    #theme-switcher:hover {
         transform: scale(1.1);
     }
 
@@ -83,7 +83,7 @@
     }
 
     @media (max-width: var(--breakpoint-tablet)) {
-        #theme-toggle {
+        #theme-switcher {
             width: 35px;
             height: 35px;
             padding: 0.4rem;
@@ -118,5 +118,5 @@
         window.localStorage.setItem('theme', newTheme);
     };
 
-    document.getElementById('theme-toggle')?.addEventListener('click', handleToggleClick);
+    document.getElementById('theme-switcher')?.addEventListener('click', handleToggleClick);
 </script>

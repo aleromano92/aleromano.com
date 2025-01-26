@@ -1,30 +1,24 @@
 ---
 import Hamburger from './Hamburger.astro';
 import Navigation from './Navigation.astro';
-import ThemeToggle from './ThemeToggle.astro';
+import ThemeSwitcher from './ThemeSwitcher.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 ---
 
 <header>
-    <nav>
-        <Hamburger />
-        <Navigation />
-        <div class="switchers">
-            <LanguageSwitcher />
-            <ThemeToggle />
-        </div>
-    </nav>
+    <Hamburger />
+    <Navigation />
+    <section class="switchers">
+        <LanguageSwitcher />
+        <ThemeSwitcher />
+    </section>
 </header>
 
 <style>
     header {
         margin: 0;
-        padding: 0 1em;
         background: var(--background);
         box-shadow: 0 2px 8px rgba(var(--black), 5%);
-    }
-
-    nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -32,7 +26,8 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
 
     .switchers {
         display: flex;
-        gap: 1rem;
         align-items: center;
+        gap: 1rem;
+        margin-left: auto;
     }
 </style>
