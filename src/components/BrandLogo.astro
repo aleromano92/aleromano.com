@@ -1,0 +1,39 @@
+<div class="logo-container">
+    <img src="/brand-logo.jpg" alt="Brand Logo" class="logo light-logo" />
+    <img src="/brand-logo-dark.jpg" alt="Brand Logo" class="logo dark-logo" />
+</div>
+
+<style>
+    .logo-container {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        min-width: 86px;
+    }
+
+    .logo {
+        height: 100%;
+        width: auto;
+        border-radius: 50%;
+    }
+
+    /* Show/hide based on theme */
+    .dark-logo {
+        display: none;
+    }
+
+    :global([data-theme='dark']) .dark-logo {
+        display: block;
+    }
+
+    :global([data-theme='dark']) .light-logo {
+        display: none;
+    }
+
+    /* Mobile centering */
+    @media (max-width: 636px) {
+        .logo-container {
+            margin-left: auto;
+        }
+    }
+</style>

@@ -3,10 +3,12 @@ import Hamburger from './Hamburger.astro';
 import Navigation from './Navigation.astro';
 import ThemeSwitcher from './ThemeSwitcher.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import BrandLogo from './BrandLogo.astro';
 ---
 
 <header>
     <Hamburger />
+    <BrandLogo />
     <Navigation />
     <section class="switchers">
         <LanguageSwitcher />
@@ -22,6 +24,7 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
         display: flex;
         align-items: center;
         justify-content: space-between;
+        height: 4rem;
     }
 
     .switchers {
