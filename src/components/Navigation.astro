@@ -1,13 +1,13 @@
 ---
-const pathname = new URL(Astro.request.url).pathname;
-const currentPath = pathname.slice(1); // remove the first "/"
+import NavLink from './NavLink.astro';
+
+const currentUrl = Astro.request.url;
+console.log(currentUrl);
+export const ROUTES = ['/', '/about', '/blog', '/contact'] as const;
 ---
 
 <nav>
-  <a href="/" class={currentPath === '' ? 'active' : ''}>HOME</a>
-  <a href="/about" class={currentPath === 'about' ? 'active' : ''}>ABOUT</a>
-  <a href="/blog" class={currentPath === 'blog' ? 'active' : ''}>BLOG</a>
-  <a href="/contact" class={currentPath === 'contact' ? 'active' : ''}>CONTACT</a>
+  {ROUTES.map((route) => <NavLink href={route} currentUrl={currentUrl} />)}
 </nav>
 
 <style>
@@ -15,40 +15,6 @@ const currentPath = pathname.slice(1); // remove the first "/"
     display: flex;
     align-items: center;
     gap: 2rem;
-  }
-
-  a {
-    color: var(--color-text);
-    text-decoration: none;
-    font-weight: bold;
-    position: relative;
-    padding: 0.1rem 0;
-    display: inline-block;
-  }
-
-  a:hover {
-    text-decoration: none;
-  }
-
-  /* Refined pseudo-element */
-  a::after {
-    content: '';
-    position: absolute;
-    display: block;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background-color: var(--color-accent);
-    transition: width 0.2s ease-out;
-    transform: translateX(-50%);
-    pointer-events: none;
-  }
-
-  /* Hover and active states */
-  a:hover::after,
-  a.active::after {
-    width: 100%;
   }
 
   @media (max-width: 636px) {
@@ -70,21 +36,6 @@ const currentPath = pathname.slice(1); // remove the first "/"
 
     nav.expanded {
       display: flex;
-    }
-
-    a {
-      width: fit-content;
-      padding: 0.5rem 0;
-      font-size: 1.2rem;
-    }
-
-    a:hover {
-      background: none;
-    }
-
-    /* Keep active state in mobile */
-    a.active::after {
-      width: 100%;
     }
   }
 </style>

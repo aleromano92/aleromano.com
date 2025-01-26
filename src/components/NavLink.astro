@@ -1,0 +1,66 @@
+---
+import { isNavigationItemActive } from '../utils/navigation';
+
+interface Props {
+    href: string;
+    currentUrl: string;
+}
+
+const { href, currentUrl } = Astro.props;
+const label = href === '/' ? 'HOME' : href.slice(1).toUpperCase();
+---
+
+<a href={href} class:list={[{ active: isNavigationItemActive(currentUrl, href) }]}>
+    {label}
+</a>
+
+<style>
+    a {
+        color: var(--color-text);
+        text-decoration: none;
+        font-weight: bold;
+        position: relative;
+        display: inline-block;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+
+    /* Refined pseudo-element */
+    a::after {
+        content: '';
+        position: absolute;
+        display: block;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background-color: var(--color-accent);
+        transition: width 0.2s ease-out;
+        transform: translateX(-50%);
+        pointer-events: none;
+    }
+
+    /* Hover and active states */
+    a:hover::after,
+    a.active::after {
+        width: 100%;
+    }
+
+    @media (max-width: 636px) {
+        a {
+            width: fit-content;
+            font-size: 1.2rem;
+        }
+
+        a:hover {
+            background: none;
+        }
+
+        /* Keep active state in mobile */
+        a.active::after {
+            width: 100%;
+        }
+    }
+</style>
