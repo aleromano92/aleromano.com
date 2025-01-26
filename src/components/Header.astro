@@ -19,12 +19,29 @@ import BrandLogo from './BrandLogo.astro';
 <style>
     header {
         margin: 0;
+        padding: 0.5rem 1rem;
         background: var(--background);
         box-shadow: 0 2px 8px rgba(var(--black), 5%);
         display: flex;
         align-items: center;
         justify-content: space-between;
         height: 4rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: box-shadow 0.3s ease;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* Add some opacity to the background for a glass effect */
+    header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--background);
+        opacity: 0.8;
+        z-index: -1;
     }
 
     .switchers {
@@ -34,3 +51,19 @@ import BrandLogo from './BrandLogo.astro';
         margin-left: auto;
     }
 </style>
+
+<script>
+    // Add shadow based on scroll position
+    document.addEventListener('DOMContentLoaded', () => {
+        const header = document.querySelector('header');
+        const addShadowClass = () => {
+            if (window.scrollY > 0) {
+                header?.style.setProperty('box-shadow', '0 4px 16px rgba(var(--black), 10%)');
+            } else {
+                header?.style.setProperty('box-shadow', '0 2px 8px rgba(var(--black), 5%)');
+            }
+        };
+
+        window.addEventListener('scroll', addShadowClass);
+    });
+</script>
