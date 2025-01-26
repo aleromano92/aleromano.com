@@ -1,8 +1,9 @@
 ---
 import { isNavigationItemActive } from '../utils/navigation';
+import type { ROUTES } from './Navigation.astro';
 
 interface Props {
-    href: string;
+    href: (typeof ROUTES)[number];
     currentUrl: string;
 }
 

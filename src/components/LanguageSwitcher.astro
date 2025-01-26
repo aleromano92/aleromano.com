@@ -58,32 +58,17 @@ const currentLang = getLanguageFromURL(pathname);
 
     document.addEventListener('DOMContentLoaded', () => {
         const buttons = document.querySelectorAll('.lang-button');
-        console.log('Language buttons found:', buttons.length);
 
         buttons.forEach((button) => {
-            button.addEventListener('click', async () => {
+            button.addEventListener('click', () => {
                 const lang = button.getAttribute('data-lang') as SupportedLanguage;
                 const currentLang = button.getAttribute('data-current-lang') as SupportedLanguage;
                 const currentPath = button.getAttribute('data-current-path') || '';
-                console.log('Language button clicked:', lang, 'current:', currentLang, 'path:', currentPath);
 
                 setLanguagePreference(lang);
-                const newPath = getLocalizedPathname(currentPath, lang);
-                console.log('Redirecting to:', newPath);
 
-                // Check if the page exists in the target language
-                try {
-                    const response = await fetch(newPath, { method: 'HEAD' });
-                    if (response.ok) {
-                        window.location.href = newPath;
-                    } else {
-                        // If page doesn't exist in target language, redirect to 404
-                        window.location.href = `/${lang}/404`;
-                    }
-                } catch (error) {
-                    console.error('Error checking page existence:', error);
-                    window.location.href = `/${lang}/404`;
-                }
+                const newPath = getLocalizedPathname(currentPath, lang);
+                window.location.href = newPath;
             });
         });
     });
