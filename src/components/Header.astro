@@ -6,7 +6,7 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
 import BrandLogo from './BrandLogo.astro';
 ---
 
-<header>
+<header class="container">
     <Hamburger />
     <BrandLogo />
     <Navigation />
@@ -19,9 +19,8 @@ import BrandLogo from './BrandLogo.astro';
 <style>
     header {
         margin: 0;
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 0;
         background: var(--background);
-        box-shadow: 0 2px 8px rgba(var(--black), 5%);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -29,7 +28,7 @@ import BrandLogo from './BrandLogo.astro';
         position: sticky;
         top: 0;
         z-index: 1000;
-        transition: box-shadow 0.3s ease;
+        transition: all 0.3s ease;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
     }
@@ -42,6 +41,19 @@ import BrandLogo from './BrandLogo.astro';
         background: var(--background);
         opacity: 0.8;
         z-index: -1;
+    }
+
+    /* Soft gradient border effect */
+    header::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(to bottom, rgba(var(--black), 5%), rgba(var(--black), 0%));
+        z-index: -1;
+        transition: opacity 0.3s ease;
     }
 
     .switchers {
@@ -58,11 +70,17 @@ import BrandLogo from './BrandLogo.astro';
         const header = document.querySelector('header');
         const addShadowClass = () => {
             if (window.scrollY > 0) {
-                header?.style.setProperty('box-shadow', '0 4px 16px rgba(var(--black), 10%)');
+                header?.style.setProperty('--shadow-opacity', '0.1');
+                header?.style.setProperty('--gradient-start', '10%');
             } else {
-                header?.style.setProperty('box-shadow', '0 2px 8px rgba(var(--black), 5%)');
+                header?.style.setProperty('--shadow-opacity', '0.05');
+                header?.style.setProperty('--gradient-start', '5%');
             }
         };
+
+        // Set initial values
+        header?.style.setProperty('--shadow-opacity', '0.05');
+        header?.style.setProperty('--gradient-start', '5%');
 
         window.addEventListener('scroll', addShadowClass);
     });
