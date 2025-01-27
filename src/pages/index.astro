@@ -45,6 +45,20 @@ export const prerender = true;
         margin-bottom: calc(-1 * var(--space-lg));
         max-width: 100%;
         height: auto;
+        opacity: 0;
+        transform: translateY(25%);
+        animation: slideUp 1s ease-out 0.2s forwards;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(25%);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     @media (max-width: 636px) {
