@@ -34,7 +34,7 @@ export const prerender = true;
         display: flex;
         align-items: center;
         gap: var(--space-md);
-        margin: var(--space-lg) 0;
+        margin: var(--space-lg) 0 0;
     }
 
     .content {
@@ -42,7 +42,7 @@ export const prerender = true;
     }
 
     .profile-pic {
-        margin-bottom: -2rem;
+        margin-bottom: calc(-1 * var(--space-lg));
         max-width: 100%;
         height: auto;
     }
@@ -50,6 +50,10 @@ export const prerender = true;
     @media (max-width: 636px) {
         .intro {
             flex-direction: column;
+        }
+
+        .profile-pic {
+            margin-bottom: -1.2rem;
         }
     }
 </style>

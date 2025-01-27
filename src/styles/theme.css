@@ -79,7 +79,7 @@ h3,
 h4,
 h5,
 h6 {
-    margin: var(--space-lg) 0 var(--space-sm);
+    margin: var(--space-md) 0 var(--space-sm);
     line-height: 1.2;
 }
 
