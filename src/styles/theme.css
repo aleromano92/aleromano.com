@@ -5,7 +5,7 @@
     --color-primary: #3c2a65;
     --color-secondary: #fff1ad;
     --color-accent: #3c2a65;
-    --color-border: #49337b;
+    --color-border: var(--color-text);
     --color-tag-bg: var(--color-bg);
     --color-tag-hover: #fff1ad;
     --color-checkbox-bg: #886fc3;

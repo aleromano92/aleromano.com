@@ -17,6 +17,33 @@ export const prerender = true;
                 Since my first Hello World in RPG Maker, I have come to believe that being an <strong>Engineer</strong> is
                 much more than coding.
             </p>
+
+            <p>
+                I'm currently an Engineering Manager at
+                <span class="mollie-logo-wrapper">
+                    <img src="/Mollie-Logo-Black-2023.svg" class="mollie-logo light-logo" alt="Mollie" />
+                    <img src="/Mollie-Logo-White-2023.svg" class="mollie-logo dark-logo" alt="Mollie" />
+                </span>, where I focus on helping teams collaborate effectively and deliver impactful solutions.
+            </p>
+            <p>
+                When I'm not fostering great engineering culture, you can find me in Busto Arsizio (near Milan's
+                Malpensa airport) where I'm a proud father of two amazing kids and a funny lovely husband.
+            </p>
+            <p>
+                Wanna know more about me? <a href="/about">Read my story.</a>
+            </p>
+            <p>
+                Wanna stay updated? <a
+                    href="https://x.com/intent/user?screen_name=_aleromano"
+                    target="_blank"
+                    rel="noopener noreferrer">Follow @_aleromano</a
+                > or <a href="/rss.xml">subscribe to my RSS feed.</a>
+            </p>
+            <p>
+                Wanna get help launching your startup or scaling your engineering team? <a href="/contact"
+                    >Let's talk.</a
+                >
+            </p>
         </div>
         <Image
             src={profilePic}
@@ -39,6 +66,27 @@ export const prerender = true;
 
     .content {
         flex: 1;
+    }
+
+    .mollie-logo-wrapper {
+        display: inline-block;
+    }
+
+    .mollie-logo {
+        height: 1rem;
+    }
+
+    /* Show/hide based on theme */
+    .dark-logo {
+        display: none;
+    }
+
+    :global([data-theme='dark']) .dark-logo {
+        display: inline;
+    }
+
+    :global([data-theme='dark']) .light-logo {
+        display: none;
     }
 
     .profile-pic {
