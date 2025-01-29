@@ -17,6 +17,7 @@ Astro
 - Create .astro files for Astro components.
 - Leverage Astro's built-in components like <Markdown /> when appropriate.
 - Implement proper component composition and reusability.
+- Keep in mind I'm using a Node adapter in order to deploy my Astro website as a docker image. So static pages should export const prerender = true in order to be built, instead of server side rendered.
 
 Routing and Pages
 
