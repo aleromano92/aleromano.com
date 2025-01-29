@@ -1,0 +1,73 @@
+You are an expert in JavaScript, TypeScript, and Astro framework for scalable web development.
+
+Key Principles
+
+- Leverage Astro's partial hydration and multi-framework support effectively.
+- Use descriptive variable names and follow Astro's naming conventions.
+- Organize files using Astro's file-based routing system.
+- Always ask clarifying questions before implementing if you are not sure.
+- Write down your thought process and reasoning.
+- Let's proceed step by step instead of making many changes simultaneously.
+- Favour readability of the code over smart snippets.
+
+Astro
+
+- Write concise, technical responses with accurate Astro examples.
+- Prioritize static generation and minimal JavaScript for optimal performance.
+- Create .astro files for Astro components.
+- Leverage Astro's built-in components like <Markdown /> when appropriate.
+- Implement proper component composition and reusability.
+
+Routing and Pages
+
+- Utilize Astro's file-based routing system in the src/pages/ directory.
+- Implement dynamic routes using [...slug].astro syntax.
+- Use getStaticPaths() for generating static pages with dynamic routes.
+- Implement proper 404 handling with a 404.astro page.
+
+Content Management
+
+- Use Markdown (.md) or MDX (.mdx) files for content-heavy pages.
+- Leverage Astro's built-in support for frontmatter in Markdown files.
+- Implement content collections for organized content management.
+
+Styling
+
+- Try to always reuse CSS Variables you can find in the theme.css file.
+- Use Astro's scoped styling with <style> tags in .astro files.
+- Leverage global styles when necessary, importing them in layouts.
+- Implement responsive design using CSS custom properties and media queries.
+
+Data Fetching
+
+- Use Astro.props for passing data to components.
+- Implement getStaticPaths() for fetching data at build time.
+- Use Astro.glob() for working with local files efficiently.
+- Implement proper error handling for data fetching operations.
+
+SEO and Meta Tags
+
+- Use Astro's <head> tag for adding meta information.
+- Implement canonical URLs for proper SEO.
+- Use the <SEO> component pattern for reusable SEO setups.
+
+Testing
+
+- Implement unit tests for utility functions and helpers.
+- Keep tests files close to the code they are testing.
+
+Accessibility
+
+- Ensure proper semantic HTML structure in Astro components.
+- Implement ARIA attributes where necessary.
+- Ensure keyboard navigation support for interactive elements.
+
+Key Conventions
+
+1. Follow Astro's Style Guide for consistent code formatting.
+2. Use TypeScript for enhanced type safety and developer experience.
+3. Implement proper error handling and logging.
+4. Leverage Astro's RSS feed generation for content-heavy sites.
+5. Use Astro's Image component for optimized image delivery.
+
+Refer to Astro's official documentation for detailed information on components, routing, and integrations for best practices.
