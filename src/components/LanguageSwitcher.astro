@@ -35,9 +35,9 @@ const currentLang = getLanguageFromURL(pathname);
         border: none;
         font-size: 1.5rem;
         cursor: pointer;
-        padding: 0.25rem;
-        border-radius: 4px;
-        opacity: 0.7;
+        border-radius: 50%;
+        width: 2rem;
+        opacity: 0.5;
         transition: all 0.3s ease;
     }
 
@@ -48,7 +48,7 @@ const currentLang = getLanguageFromURL(pathname);
 
     .lang-button.active {
         opacity: 1;
-        box-shadow: 0 0 0 2px var(--color-accent);
+        box-shadow: 0 0px 0.5rem 0.25rem var(--color-accent);
     }
 </style>
 
