@@ -1,7 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import { BLOG_POSTS_PATH } from '../utils/constants';
 import { Image } from 'astro:assets';
+import Tags from '../components/posts/Tags.astro';
 
 const { frontmatter } = Astro.props;
 const pageTitle = frontmatter.title;
@@ -33,16 +33,7 @@ const pageTitle = frontmatter.title;
       }
     </p>
     <p><em>{frontmatter.description}</em></p>
-    <div class="tags">
-      {
-        frontmatter.tags.map((tag: string) => (
-          <p class="tag">
-            <a href={`${BLOG_POSTS_PATH}/tags/${tag}`}>#{tag}</a>
-          </p>
-        ))
-      }
-    </div>
-
+    <Tags tags={frontmatter.tags} />
     <p>Written by {frontmatter.author}</p>
     <slot />
   </article>
@@ -65,54 +56,6 @@ const pageTitle = frontmatter.title;
 
   .post {
     max-width: var(--posts-container-max-width);
-  }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 1rem 0;
-  }
-
-  .tag {
-    margin: 0;
-    font-size: 0.9em;
-    font-weight: var(--font-weight-bold);
-  }
-
-  .tag a {
-    color: var(--color-accent);
-    text-decoration: none;
-    padding: 0.5rem;
-    background-color: transparent;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    display: inline-block;
-  }
-
-  .tag a::after {
-    position: absolute;
-    z-index: -1;
-    bottom: 2px;
-    left: 50%;
-    transform: translateX(-50%);
-    content: ' ';
-    width: 100%;
-    height: 0px;
-    background-color: var(--color-primary);
-    transition: 250ms;
-  }
-
-  .tag a:hover {
-    text-decoration: none;
-    color: var(--color-secondary);
-  }
-
-  .tag a:hover::after {
-    height: calc(100% - 0.5rem);
-    width: calc(100% + 0.5rem);
-    bottom: 0.25rem;
-    background-color: var(--color-primary);
   }
 
   img {

@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { getLanguageFromURL } from '../../../utils/i18n';
-import { getLocalizedPostUrl } from '../../../utils/posts';
+import PostsGrid from '../../../components/posts/PostsGrid.astro';
 
 export async function getStaticPaths() {
   const allPosts = await getCollection('blog');
@@ -13,13 +13,13 @@ export async function getStaticPaths() {
       allPosts
         .filter((post) => post.slug.startsWith('en/'))
         .map((post) => post.data.tags)
-        .flat()
+        .flat(),
     ),
     it: new Set(
       allPosts
         .filter((post) => post.slug.startsWith('it/'))
         .map((post) => post.data.tags)
-        .flat()
+        .flat(),
     ),
   };
 
@@ -34,48 +34,33 @@ export async function getStaticPaths() {
         params: { tag },
         props: { posts: filteredPosts, lang },
       };
-    })
+    }),
   );
 }
 
 const { tag } = Astro.params;
 const { posts, lang } = Astro.props;
-const pageTitle = lang === 'en' ? `Posts tagged "${tag}"` : `Post con tag "${tag}"`;
+const pageTitle = lang === 'en' ? `Posts about "${tag}"` : `Post che parlano di "${tag}"`;
 export const prerender = true;
 ---
 
-<BaseLayout title={pageTitle}>
-  <ul>
-    {
-      posts.map((post) => (
-        <li>
-          <a href={getLocalizedPostUrl(post)}>
-            <h2>{post.data.title}</h2>
-            <p>{post.data.description}</p>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+<BaseLayout pageTitle={pageTitle}>
+  <PostsGrid posts={posts} />
 </BaseLayout>
 
 <style>
-  ul {
-    list-style-type: none;
-    padding: 0;
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 500px), 1fr));
+    gap: var(--space-lg);
+    margin: var(--space-lg) 0;
   }
 
-  li {
-    margin-bottom: 2rem;
-  }
-
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  p {
-    margin: 0.5rem 0 0;
-    color: var(--color-text-light);
+  @media (max-width: 636px) {
+    .posts-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+      margin: var(--space-md) 0;
+    }
   }
 </style>

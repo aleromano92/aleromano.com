@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
 import { getLanguageFromURL } from '../../utils/i18n';
-import { findPostBySlug, parsePostSlug, getLocalizedPostUrl } from '../../utils/posts';
+import { findPostBySlug, getLocalizedPostUrl } from '../../utils/posts';
 
 const { slug } = Astro.params;
 const currentLang = getLanguageFromURL(Astro.url.pathname);

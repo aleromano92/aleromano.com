@@ -2,27 +2,19 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { getLanguageFromURL } from '../../../utils/i18n';
+import Tags from '../../../components/Tags.astro';
 
 const currentLang = getLanguageFromURL(Astro.url.pathname);
 const allPosts = await getCollection('blog');
 const localizedPosts = allPosts.filter((post) => post.slug.startsWith(currentLang + '/'));
 const tags = [...new Set(localizedPosts.map((post) => post.data.tags).flat())].sort();
-const pageTitle = 'Tags';
+const pageTitle = currentLang === 'en' ? 'Topics' : 'Argomenti';
 export const prerender = true;
 ---
 
-<BaseLayout title={pageTitle}>
+<BaseLayout pageTitle={pageTitle}>
     <main>
-        <h1>{pageTitle}</h1>
-        <div class="tags">
-            {
-                tags.map((tag) => (
-                    <a class="tag" href={`/posts/tags/${tag}`}>
-                        {tag}
-                    </a>
-                ))
-            }
-        </div>
+        <Tags tags={tags} />
     </main>
 </BaseLayout>
 

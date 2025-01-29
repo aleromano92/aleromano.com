@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PostCard from './PostCard.astro';
+
+type Props = {
+    posts: CollectionEntry<'blog'>[];
+};
+
+const { posts } = Astro.props;
+---
+
+<div class="posts-grid">
+    {posts.map((post) => <PostCard post={post} />)}
+</div>
+
+<style>
+    .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 500px), 1fr));
+        gap: var(--space-lg);
+        margin: var(--space-lg) 0;
+    }
+
+    @media (max-width: 636px) {
+        .posts-grid {
+            grid-template-columns: 1fr;
+            gap: var(--space-md);
+            margin: var(--space-md) 0;
+        }
+    }
+</style>
