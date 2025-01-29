@@ -37,6 +37,7 @@ Styling
 - Use Astro's scoped styling with <style> tags in .astro files.
 - Leverage global styles when necessary, importing them in layouts.
 - Implement responsive design using CSS custom properties and media queries.
+- Use rem units for font sizes and spacing.
 
 Data Fetching
 

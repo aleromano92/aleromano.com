@@ -8,94 +8,117 @@ const pageTitle = frontmatter.title;
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-    {
-        frontmatter.image && (
-            <div class="featured-image-container">
-                <Image
-                    src={frontmatter.image.url}
-                    alt={frontmatter.image.alt}
-                    width={1200}
-                    height={630}
-                    class="featured-image"
-                    quality="max"
-                />
-            </div>
-        )
-    }
-    <article class="post">
-        <p>
-            Published on {
-                new Date(frontmatter.pubDate).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                })
-            }
-        </p>
-        <p><em>{frontmatter.description}</em></p>
-        <div class="tags">
-            {
-                frontmatter.tags.map((tag: string) => (
-                    <p class="tag">
-                        <a href={`${BLOG_POSTS_PATH}/tags/${tag}`}>{tag}</a>
-                    </p>
-                ))
-            }
-        </div>
+  {
+    frontmatter.image && (
+      <div class="featured-image-container">
+        <Image
+          src={frontmatter.image.url}
+          alt={frontmatter.image.alt}
+          width={1200}
+          height={630}
+          class="featured-image"
+          quality="max"
+        />
+      </div>
+    )
+  }
+  <article class="post">
+    <p>
+      Published on {
+        new Date(frontmatter.pubDate).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })
+      }
+    </p>
+    <p><em>{frontmatter.description}</em></p>
+    <div class="tags">
+      {
+        frontmatter.tags.map((tag: string) => (
+          <p class="tag">
+            <a href={`${BLOG_POSTS_PATH}/tags/${tag}`}>#{tag}</a>
+          </p>
+        ))
+      }
+    </div>
 
-        <p>Written by {frontmatter.author}</p>
-        <slot />
-    </article>
+    <p>Written by {frontmatter.author}</p>
+    <slot />
+  </article>
 </BaseLayout>
 
 <style>
-    .featured-image-container {
-        width: 100vw;
-        transform: translateX(-50%);
-        max-width: var(--container-max-width);
-        margin: var(--space-xl) 0 var(--space-xl) 50%;
-    }
+  .featured-image-container {
+    width: 100vw;
+    transform: translateX(-50%);
+    max-width: var(--container-max-width);
+    margin: var(--space-xl) 0 var(--space-xl) 50%;
+  }
 
-    .featured-image {
-        width: 100%;
-        height: auto;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+  .featured-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
 
-    .post {
-        max-width: var(--posts-container-max-width);
-    }
+  .post {
+    max-width: var(--posts-container-max-width);
+  }
 
-    .tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5em;
-        margin: 1rem 0;
-    }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
 
-    .tag {
-        border: dotted 1px var(--color-border);
-        border-radius: 0.5em;
-        padding: 0.5em 1em;
-        font-size: 0.9em;
-        background-color: var(--color-tag-bg);
-        text-decoration: none;
-        color: var(--color-text);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-    }
+  .tag {
+    margin: 0;
+    font-size: 0.9em;
+    font-weight: var(--font-weight-bold);
+  }
 
-    .tag:hover {
-        background-color: var(--color-tag-hover);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
+  .tag a {
+    color: var(--color-accent);
+    text-decoration: none;
+    padding: 0.5rem;
+    background-color: transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: inline-block;
+  }
 
-    img {
-        max-width: 100%;
-        height: auto;
-        display: block;
-        margin: 1rem 0;
-    }
+  .tag a::after {
+    position: absolute;
+    z-index: -1;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    content: ' ';
+    width: 100%;
+    height: 0px;
+    background-color: var(--color-primary);
+    transition: 250ms;
+  }
+
+  .tag a:hover {
+    text-decoration: none;
+    color: var(--color-secondary);
+  }
+
+  .tag a:hover::after {
+    height: calc(100% - 0.5rem);
+    width: calc(100% + 0.5rem);
+    bottom: 0.25rem;
+    background-color: var(--color-primary);
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1rem 0;
+  }
 </style>

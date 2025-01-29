@@ -2,12 +2,10 @@
     /* Colors - Light theme (default) */
     --color-bg: #ffeb89;
     --color-text: #49337b;
-    --color-primary: #3c2a65;
+    --color-primary: #49337b;
     --color-secondary: #fff1ad;
-    --color-accent: #3c2a65;
+    --color-accent: #5f38c2;
     --color-border: var(--color-text);
-    --color-tag-bg: var(--color-bg);
-    --color-tag-hover: #fff1ad;
     --color-checkbox-bg: #886fc3;
 
     /* Layout */
@@ -24,6 +22,7 @@
     --font-family: system-ui, sans-serif;
     --font-size-base: 1rem;
     --line-height-base: 1.5;
+    --font-weight-bold: 600;
 
     /* Spacing */
     --space-xs: 0.5rem;
@@ -45,9 +44,7 @@
     --color-primary: #ffeb89;
     --color-secondary: #6446a9;
     --color-accent: #ffdb29;
-    --color-border: #ffeb89;
-    --color-tag-bg: var(--color-bg);
-    --color-tag-hover: #6446a9;
+    --color-border: var(--color-text);
     --color-checkbox-bg: #fff0a3;
 }
 
