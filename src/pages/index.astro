@@ -48,7 +48,7 @@ export const prerender = true;
         <Image
             src={profilePic}
             alt="Alessandro Romano profile picture"
-            width={450}
+            width={300}
             densities={[1, 2]}
             quality="max"
             class="profile-pic"
@@ -93,18 +93,15 @@ export const prerender = true;
         margin-bottom: calc(-1 * var(--space-lg));
         max-width: 100%;
         height: auto;
-        opacity: 0;
-        transform: translateY(25%);
-        animation: slideUp 1s ease-out 0.2s forwards;
+        transform: translateY(0);
+        animation: slideDown 1s ease-out 0.2s backwards;
     }
 
-    @keyframes slideUp {
+    @keyframes slideDown {
         from {
-            opacity: 0;
-            transform: translateY(25%);
+            transform: translateY(-25%);
         }
         to {
-            opacity: 1;
             transform: translateY(0);
         }
     }
