@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { getLanguageFromURL } from '../../../utils/i18n';
-import Tags from '../../../components/Tags.astro';
+import Tags from '../../../components/posts/Tags.astro';
 
 const currentLang = getLanguageFromURL(Astro.url.pathname);
 const allPosts = await getCollection('blog');
@@ -13,9 +13,7 @@ export const prerender = true;
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-    <main>
-        <Tags tags={tags} />
-    </main>
+    <Tags tags={tags} />
 </BaseLayout>
 
 <style>
