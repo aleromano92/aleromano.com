@@ -1,6 +1,28 @@
+---
+import { Image } from 'astro:assets';
+import brandLogo from '../assets/brand-logo.jpg';
+import brandLogoDark from '../assets/brand-logo-dark.jpg';
+---
+
 <div class="logo-container">
-    <img src="/brand-logo.jpg" alt="Brand Logo" class="logo light-logo" />
-    <img src="/brand-logo-dark.jpg" alt="Brand Logo" class="logo dark-logo" />
+    <Image
+        src={brandLogo}
+        alt="Brand Logo"
+        class="logo light-logo"
+        width={86}
+        height={86}
+        densities={[1, 2]}
+        quality="high"
+    />
+    <Image
+        src={brandLogoDark}
+        alt="Brand Logo"
+        class="logo dark-logo"
+        width={86}
+        height={86}
+        densities={[1, 2]}
+        quality="high"
+    />
 </div>
 
 <style>
