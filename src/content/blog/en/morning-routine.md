@@ -6,8 +6,8 @@ author: "Alessandro Romano"
 tags: ["Inspiration","Wellness"]
 language: "en"
 image:
-    url: "/images/blog/morning.jpg"
-    alt: "Morning routine activities"
+    url: /src/assets/blog/morning-routine/featured.jpg
+    alt: Man hugging the Sun
 ---
 
 ## **⏰ Waking up (6.07 AM)**

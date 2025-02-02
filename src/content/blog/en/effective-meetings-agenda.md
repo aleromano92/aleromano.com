@@ -6,8 +6,8 @@ author: "Alessandro Romano"
 tags: ["Productivity","Async Work"]
 language: "en"
 image:
-    url: "/images/blog/meetings.jpg"
-    alt: "Effective meeting agenda"
+    url: /src/assets/blog/effective-meetings-agenda/featured.jpg
+    alt: Meeting agenda
 ---
 
 Have you ever found yourself stuck in a meeting where you didn't know:

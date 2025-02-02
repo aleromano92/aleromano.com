@@ -6,8 +6,8 @@ author: "Alessandro Romano"
 tags: ["Tech","DX"]
 language: "en"
 image:
-    url: "/images/blog/windows.jpg"
-    alt: "Windows development environment"
+    url: /src/assets/blog/mac-to-windows/featured.jpg
+    alt: Apple logo morphing into Windows logo
 ---
 
 ## **Ok, but... why?**

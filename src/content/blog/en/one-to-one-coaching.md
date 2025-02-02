@@ -6,8 +6,8 @@ author: "Alessandro Romano"
 tags: ["Inspiration","Coaching","1to1"]
 language: "en"
 image:
-    url: "/images/blog/coaching.jpg"
-    alt: "One-to-one coaching session"
+    url: /src/assets/blog/one-to-one-coaching/featured.jpg
+    alt: One-to-one wooden
 ---
 
 ## **Coaching Helps You Develop a Safe Continuous Feedback Culture ♾️**

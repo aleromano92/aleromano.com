@@ -6,8 +6,8 @@ author: "Alessandro Romano"
 tags: ["Productivity","Office Setup","Remote Work"]
 language: "en"
 image:
-    url: "/images/blog/office.jpg"
-    alt: "Home office setup"
+    url: /src/assets/blog/home-office-renovation/featured.jpg
+    alt: my home office desk
 ---
 
 > Disclaimer: you will find Amazon affiliate link in this post. If you buy from it, you will offer me a beer, more or less, with no additional cost to you 👍

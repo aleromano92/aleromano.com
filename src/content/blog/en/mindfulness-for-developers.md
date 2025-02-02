@@ -6,8 +6,8 @@ author: "Alessandro Romano"
 tags: ["Wellness","DX","Tech","Inspiration"]
 language: "en"
 image:
-    url: "/images/blog/mindfulness.jpg"
-    alt: "Mindfulness meditation"
+    url: /src/assets/blog/mindfulness-for-developers/featured.jpg
+    alt: Mindfulness meditation
 ---
 
 ## **How to practice meditation 🧘‍♀️**
