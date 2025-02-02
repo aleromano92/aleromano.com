@@ -87,7 +87,3 @@ This is not part of the morning, but it is fundamental to keep my routine.
 I'm able to get 7 hours of sleep this way, which is not as good as 8 hours but is enough for me in this moment of my life. I may have 30 minutes naps during the weekend.
 
 I try to stop using any electronic devices after 10.30 PM, the only exception being my Kindle Paperwhite. Reading is the thing I do to relax before falling to sleep.
-
-🚀
-
-DAJE!

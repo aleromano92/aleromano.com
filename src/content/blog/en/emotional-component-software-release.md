@@ -33,7 +33,3 @@ Finally, it's important to take time to celebrate the successes and accomplishme
 ## **Conclusion 🧑‍🤝‍🧑**
 
 The emotional component of a software release is an often-overlooked but critical aspect of any project. By creating a positive and supportive environment, communicating effectively, managing expectations, and celebrating success, technical leaders can help to ensure a successful and emotionally rewarding software release experience for all team members and stakeholders involved.
-
-🚀
-
-DAJE!

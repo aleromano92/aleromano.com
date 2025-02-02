@@ -63,7 +63,3 @@ Starting with a 10-minute breathing exercise after 1 hour spent debugging someth
 Writing the test list only after a guided meditation can be another useful association: your brain will love it!
 
 Connect your mind before plugging in your keyboard and enjoy a focused developer experience.
-
-🚀
-
-DAJE!

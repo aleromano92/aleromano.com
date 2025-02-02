@@ -23,6 +23,7 @@ const { tags } = Astro.props;
         display: flex;
         flex-wrap: wrap;
         margin: 1rem 0;
+        gap: var(--space-sm);
     }
 
     .tag {
@@ -34,7 +35,7 @@ const { tags } = Astro.props;
     .tag a {
         color: var(--color-accent);
         text-decoration: none;
-        padding: 0.5rem;
+        padding: 0.5rem 0;
         background-color: transparent;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;

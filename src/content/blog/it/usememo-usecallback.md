@@ -8,10 +8,6 @@ language: "it"
 originalLink: "https://kentcdodds.com/blog/usememo-and-usecallback"
 ---
 
-import ExternalLanguageRedirect from '../../../components/ExternalLanguageRedirect.astro';
-
-<ExternalLanguageRedirect targetLanguage="en" externalUrl="https://kentcdodds.com/blog/usememo-and-usecallback">
-
 Le ottimizzazioni di performance portano SEMPRE un costo, ma non necessariamente dei benefici. Parliamo di costi e benefici di useMemo e useCallback.
 
 ## Introduzione

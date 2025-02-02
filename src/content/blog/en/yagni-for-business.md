@@ -12,7 +12,6 @@ image:
 
 ## Is YAGNI related to Waterfall and Agile? 🌊🏃🏻
 
-
 > ⚠️ I won't advocate for which approach is better, I strongly believe every company should apply a process that suits its nature.
 
 When developing a new product, it's essential to prioritize the features that customers need. This means that companies should develop only the features that are necessary to meet their customers' needs. By doing so, companies can save time and resources in the development process.
@@ -52,6 +51,4 @@ While you are not **************solving************** these problems right now, 
 
 ## Conclusion
 
-> Prepare for the future, build the present.🚀
-
-DAJE!
+> Prepare for the future, build the present.

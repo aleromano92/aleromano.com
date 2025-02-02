@@ -10,7 +10,7 @@ image:
     alt: Azure cloud services
 ---
 
-## **CONTEXT 🗒️**
+## CONTEXT 🗒️
 
 We use **Azure Schema Registry** so apps that need to produce and consume relevant events agree on an AVRO Schema. Doing so guarantees you won't fail on an unexpected property name or a nullable field you thought was mandatory.
 
@@ -22,7 +22,7 @@ But the problem here is we didn't decide to spare some money: we didn't read car
 
 We created a Producer and 2 Consumers before hitting the limit
 
-## **TRY & FALLBACK 🦾**
+## TRY & FALLBACK 🦾
 
 We started from the consumers so we could upgrade the producer on its own and at different times.
 
@@ -68,13 +68,9 @@ The test consisted in just deploying it in Test and observing it always enters t
 
 We were able to update the Producer after 2 weeks: as soon as no other message was serialized with the `Standard` Registry, we removed the try&fallback code from the consumers ✂️
 
-## **SUCCEED 🤘🏻**
+## SUCCEED 🤘🏻
 
 -   try to limit updates' scope and not have too many systems depending on each other ⛓️
 -   always try the upgrade in a Test environment 🦺
 -   when you plan on using a new Cloud Service, make sure you know the limit of the chosen plan and how hard is to upgrade 🤓
 -   discuss your migration strategy with a colleague or someone you respect so you may catch some flaw in your logic 🧑‍🤝‍🧑
-
-🚀
-
-DAJE!

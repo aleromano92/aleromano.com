@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import { Image } from 'astro:assets';
 import Tags from '../components/posts/Tags.astro';
 import { getReadingTime } from '../utils/reading-time';
+import ImageModal from '../components/ImageModal.astro';
 
 const { frontmatter, Content } = Astro.props;
 const pageTitle = frontmatter.title;
@@ -57,6 +58,8 @@ const readingTime = getReadingTime(content);
   </article>
 </BaseLayout>
 
+<ImageModal />
+
 <style>
   .post-header {
     margin-bottom: var(--space-xl);
@@ -110,16 +113,25 @@ const readingTime = getReadingTime(content);
     margin-top: var(--space-xl);
   }
 
+  .post-content :global(img) {
+    max-width: 100%;
+    max-height: 450px;
+    object-fit: contain;
+    height: auto;
+    display: block;
+    margin: var(--space-md) auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .post-content :global(img:hover) {
+    transform: scale(1.01);
+  }
+
   .post-footer {
     margin-top: var(--space-xl);
     padding-top: var(--space-lg);
     font-style: italic;
-  }
-
-  img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 1rem 0;
   }
 </style>

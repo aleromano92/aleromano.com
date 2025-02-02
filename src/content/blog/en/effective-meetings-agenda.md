@@ -56,7 +56,7 @@ When you are not able to set clear objectives it may be a sign **it's still not
 
 This is an optional section where you may signal attention points, from logistics to temporal ones.
 
-### **Other things to consider**
+## **Other things to consider**
 
 -   if you need to invite creative people like developers, it is better not to set them in the middle of the day or afternoon interrupting a block of work
 -   if you spend most of the meeting time sharing a screen it's a good signal the meeting was well prepared and you are going straight to the objectives
@@ -67,7 +67,3 @@ This is an optional section where you may signal attention points, from logistic
 You need to practice.
 
 So, what are you waiting for? Take a second look at the meetings you have already planned or go back to this post next time you need to set up one!
-
-🚀
-
-DAJE!
