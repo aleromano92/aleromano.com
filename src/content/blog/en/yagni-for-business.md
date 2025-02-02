@@ -10,25 +10,18 @@ image:
   alt: YAGNI principle illustration
 ---
 
-# YAGNI for Business
-
-### YAGNI stands for "You Ain't Gonna Need It". It's a principle of Extreme Programming (XP) that suggests not implementing a feature until it is necessary. It is an essential tool to avoid waste of time and resources that can be applied even in domains different than Software Development.
-
-@May 24, 2023 • 3 min read
-
 ## Is YAGNI related to Waterfall and Agile? 🌊🏃🏻
 
-⚠️
 
-I won't advocate for which approach is better, I strongly believe every company should apply a process that suits its nature.
+> ⚠️ I won't advocate for which approach is better, I strongly believe every company should apply a process that suits its nature.
 
 When developing a new product, it's essential to prioritize the features that customers need. This means that companies should develop only the features that are necessary to meet their customers' needs. By doing so, companies can save time and resources in the development process.
 
 The **YAGNI** principle can also be applied to business processes. Companies should avoid implementing processes that are not necessary. This means that companies should only implement processes that are essential to their business operations. By doing so, companies can save time and resources and focus on the processes that are essential to their business operations.
 
-A ******************waterfall****************** approach usually works on the opposite: first, you need to gather ALL the requirements, use cases and corner cases and design (or define) a process before anything is implemented.
+A **waterfall** approach usually works on the opposite: first, you need to gather ALL the requirements, use cases and corner cases and design (or define) a process before anything is implemented.
 
-### Example
+## Example
 
 Consider you want to build a form to collect phone numbers for an alerting system and there is a Pay-per-use billing behind every notification.
 
@@ -59,8 +52,6 @@ While you are not **************solving************** these problems right now, 
 
 ## Conclusion
 
-> Prepare for the future, build the present.
-
-🚀
+> Prepare for the future, build the present.🚀
 
 DAJE!

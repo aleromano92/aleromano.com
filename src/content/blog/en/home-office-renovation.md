@@ -10,12 +10,6 @@ image:
     alt: "Home office setup"
 ---
 
-# I renovated my Home Office
-
-### There are things you should consider when creating a home office setup for remote working. Here's what I did.
-
-@March 7, 2022 • 4 min read
-
 > Disclaimer: you will find Amazon affiliate link in this post. If you buy from it, you will offer me a beer, more or less, with no additional cost to you 👍
 
 I decided to renovate my Home Office.

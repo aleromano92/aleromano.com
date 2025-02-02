@@ -10,12 +10,6 @@ image:
     alt: "Azure cloud services"
 ---
 
-# Upgrade Azure Schema Registry Without Downtime
-
-### **Be careful updating apps due to breaking changes. Get inspired by what I did.**
-
-@August 31, 2022 • 3 min read
-
 ## **CONTEXT 🗒️**
 
 We use **Azure Schema Registry** so apps that need to produce and consume relevant events agree on an AVRO Schema. Doing so guarantees you won't fail on an unexpected property name or a nullable field you thought was mandatory.

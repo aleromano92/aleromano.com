@@ -10,12 +10,6 @@ image:
     alt: "Morning routine activities"
 ---
 
-# My Morning Routine
-
-### **What I do to stay healthy and productive.**
-
-@July 18, 2022 • 4 min read
-
 ## **⏰ Waking up (6.07 AM)**
 
 A fixed, consistent time helps your circadian rhythm and thanks to [**Fitbit Smart Wake**](https://www.fitbit.com/global/uk/technology/sleep) I can wake up between 5:37 and 6:07, according to my REM/Light/Deep sleep phases.

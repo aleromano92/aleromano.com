@@ -10,12 +10,6 @@ image:
     alt: "Mindfulness meditation"
 ---
 
-# Mindfulness for Developers: Clean Code with a Clean Mind
-
-### **Mindfulness is a way of living in the present moment, focusing on what's happening right now. It can help you become more calm, relaxed and focused. This is an incredible skill for a developer.**
-
-@August 27, 2022 • 4 min read
-
 ## **How to practice meditation 🧘‍♀️**
 
 It's easy to start doing mindfulness meditation. All you have to do is sit down, close your eyes, and focus on the breath as it passes through your nostrils. You don't need any special tools or props—you can use a chair if you want, but it isn't necessary. You can even practice it while walking or eating.

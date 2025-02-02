@@ -2,45 +2,95 @@
 import BaseLayout from './BaseLayout.astro';
 import { Image } from 'astro:assets';
 import Tags from '../components/posts/Tags.astro';
+import { getReadingTime } from '../utils/reading-time';
 
-const { frontmatter } = Astro.props;
+const { frontmatter, Content } = Astro.props;
 const pageTitle = frontmatter.title;
+
+// Get the content as a string for reading time calculation
+const content = await Astro.slots.render('default');
+const readingTime = getReadingTime(content);
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  {
-    frontmatter.image && (
-      <div class="featured-image-container">
-        <Image
-          src={frontmatter.image.url}
-          alt={frontmatter.image.alt}
-          width={1200}
-          height={630}
-          densities={[1, 2]}
-          class="featured-image"
-          quality="max"
-        />
-      </div>
-    )
-  }
   <article class="post">
-    <p>
-      Published on {
-        new Date(frontmatter.pubDate).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
-      }
-    </p>
-    <p><em>{frontmatter.description}</em></p>
-    <Tags tags={frontmatter.tags} />
-    <p>Written by {frontmatter.author}</p>
-    <slot />
+    <header class="post-header">
+      <div class="post-meta">
+        <time datetime={frontmatter.pubDate.toISOString()}>
+          {
+            new Date(frontmatter.pubDate).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })
+          }
+        </time>
+        <span class="reading-time">{readingTime} min read ☕️</span>
+      </div>
+      <p class="description"><em>{frontmatter.description}</em></p>
+      <Tags tags={frontmatter.tags} />
+    </header>
+
+    {
+      frontmatter.image && (
+        <div class="featured-image-container">
+          <Image
+            src={frontmatter.image.url}
+            alt={frontmatter.image.alt}
+            width={1200}
+            height={630}
+            class="featured-image"
+            quality="max"
+            densities={[1, 2]}
+          />
+        </div>
+      )
+    }
+
+    <div class="post-content">
+      <slot />
+    </div>
+
+    <footer class="post-footer">
+      <p>Written by {frontmatter.author}</p>
+    </footer>
   </article>
 </BaseLayout>
 
 <style>
+  .post-header {
+    margin-bottom: var(--space-xl);
+  }
+
+  h1 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .post-meta {
+    display: flex;
+    gap: var(--space-md);
+    color: var(--color-text);
+    font-size: 0.9rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .reading-time {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .reading-time::before {
+    content: '•';
+    margin-right: var(--space-xs);
+  }
+
+  .description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: var(--space-md) 0;
+  }
+
   .featured-image-container {
     width: 100vw;
     transform: translateX(-50%);
@@ -55,8 +105,14 @@ const pageTitle = frontmatter.title;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .post {
-    max-width: var(--posts-container-max-width);
+  .post-content {
+    margin-top: var(--space-xl);
+  }
+
+  .post-footer {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    font-style: italic;
   }
 
   img {

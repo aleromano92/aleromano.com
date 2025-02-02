@@ -10,13 +10,7 @@ image:
     alt: "Windows development environment"
 ---
 
-# From Mac OS X to Windows 10 as a Developer
-
-### You may think you'll get a poorer Developer eXperience and miss a lot of features you take for granted. I can show you how I migrated to good ol' Windows without losing my head.
-
-@November 1, 2020 • 3 min read
-
-### **Ok, but... why?**
+## **Ok, but... why?**
 
 I'm working for [**AideXa**](https://www.aidexa.it/) as Head of IT Development (& Delivery) since October after 4 beautiful years at [**lastminute.com**](https://lastminute.com/). As Software Engineer I was so used to my Macbook Pro that I thought I would never be able to go back. AideXa, as a company acting in a High Regulated Environment, has strong requirements in terms of devices and control over them, that's why we preferred to stick to a Microsoft-driven ecosystem with Azure, Active Directory and the Office suite. This doesn't mean we are not evaluating introducing any Apple notebook in our company policy should they prove superior in particular areas (yeah, M1 CPU I'm talking about you).
 

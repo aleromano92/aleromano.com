@@ -10,12 +10,6 @@ image:
     alt: "Software release celebration"
 ---
 
-# The Emotional Component of a Software Release
-
-### **The emotional component of a software release is crucial to success. Technical leaders must create a positive environment, communicate effectively, manage expectations, and celebrate success to ensure a rewarding experience for all stakeholders.**
-
-@March 5, 2023 • 2 min read
-
 ## **Creating a Positive and Supportive Environment 🧘**
 
 The process of releasing software can be stressful and chaotic, especially when deadlines are tight and there's a lot riding on the success of the project. As the leader of the team, it's important to create a positive and supportive environment where everyone feels heard and valued. This means actively listening to the concerns and ideas of team members and working together to find solutions.

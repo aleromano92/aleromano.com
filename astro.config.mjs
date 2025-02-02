@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
+import rehypeExternalLinks from 'rehype-external-links';
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,10 +26,13 @@ export default defineConfig({
         'plaintext'
       ],
       wrap: true
-    }
+    },
+    rehypePlugins: [
+      [rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]
+    ]
   },
 
-  site: 'https://aleromano.com',  // Replace with your actual domain
+  site: 'https://aleromano.com',
 
   i18n: {
     defaultLocale: 'en',

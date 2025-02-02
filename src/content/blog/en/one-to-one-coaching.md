@@ -10,12 +10,6 @@ image:
     alt: "One-to-one coaching session"
 ---
 
-# One-to-One Coaching: 3 Reasons Why You Need It!
-
-### **In today’s fast-paced, high-pressure business world, with so many companies struggling to meet demanding quarterly targets, it’s easy to see why some leaders think there is no time for anything as superfluous as one-to-one coaching. If you are in a leadership position or have aspirations of being one then do not give up on coaching just yet. Here are 3 reasons why you need to run one-to-one sessions.**
-
-@September 12, 2022 • 3 min read
-
 ## **Coaching Helps You Develop a Safe Continuous Feedback Culture ♾️**
 
 If the culture of your company is not conducive to open communication, then you could be missing out on one of the biggest benefits of a coaching relationship—namely, more frequent and consistent opportunities to give and receive feedback.

@@ -10,12 +10,6 @@ image:
     alt: "Effective meeting agenda"
 ---
 
-# Effective meetings start from the agenda
-
-### You can find here my recipe on how to properly set up an agenda for an effective meeting. The questions you'll need to answer beforehand will challenge you to the point you may recognize you don't need the meeting at all.
-
-@January 16, 2021 • 3 min read
-
 Have you ever found yourself stuck in a meeting where you didn't know:
 
 -   What your contribution should be

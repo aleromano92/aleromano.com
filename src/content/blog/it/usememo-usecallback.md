@@ -3,7 +3,7 @@ title: "Quando usare useMemo e useCallback"
 description: "Le ottimizzazioni di performance portano SEMPRE un costo, ma non necessariamente dei benefici. Parliamo di costi e benefici di useMemo e useCallback."
 pubDate: 2019-06-04
 author: "Alessandro Romano"
-tags: ["React", "Kent C. Dodds"]
+tags: ["React"]
 language: "it"
 originalLink: "https://kentcdodds.com/blog/usememo-and-usecallback"
 ---
