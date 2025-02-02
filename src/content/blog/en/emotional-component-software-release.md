@@ -6,8 +6,8 @@ author: "Alessandro Romano"
 tags: ["Inspiration","Tech","Empathy"]
 language: "en"
 image:
-    url: "/images/blog/release.jpg"
-    alt: "Software release celebration"
+    url: /src/assets/blog/emotional-component-software-release/featured.jpg
+    alt: Hearts soldered on a motherboard
 ---
 
 ## **Creating a Positive and Supportive Environment 🧘**

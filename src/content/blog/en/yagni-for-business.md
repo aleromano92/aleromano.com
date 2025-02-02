@@ -7,7 +7,7 @@ tags: ["Productivity","Inspiration"]
 language: en
 image:
   url: /src/assets/blog/yagni-for-business/featured.jpg
-  alt: YAGNI principle illustration
+  alt: Deep space image
 ---
 
 ## Is YAGNI related to Waterfall and Agile? 🌊🏃🏻
