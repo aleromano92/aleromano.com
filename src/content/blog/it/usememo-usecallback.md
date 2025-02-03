@@ -1,11 +1,14 @@
 ---
-title: "Quando usare useMemo e useCallback"
-description: "Le ottimizzazioni di performance portano SEMPRE un costo, ma non necessariamente dei benefici. Parliamo di costi e benefici di useMemo e useCallback."
+title: 'Quando usare useMemo e useCallback'
+description: 'Le ottimizzazioni di performance portano SEMPRE un costo, ma non necessariamente dei benefici. Parliamo di costi e benefici di useMemo e useCallback.'
 pubDate: 2019-06-04
-author: "Alessandro Romano"
-tags: ["React"]
-language: "it"
-originalLink: "https://kentcdodds.com/blog/usememo-and-usecallback"
+author: 'Alessandro Romano'
+tags: ['React']
+language: 'it'
+originalLink: 'https://kentcdodds.com/blog/usememo-and-usecallback'
+image:
+  url: /src/assets/blog/usememo-usecallback/featured.webp
+  alt: Dollars burning
 ---
 
 Le ottimizzazioni di performance portano SEMPRE un costo, ma non necessariamente dei benefici. Parliamo di costi e benefici di useMemo e useCallback.
@@ -26,17 +29,17 @@ Ogni ottimizzazione ha un costo. Nel caso di `useMemo` e `useCallback`, il costo
 // Senza useCallback
 function MyComponent() {
   const handleClick = () => {
-    console.log('clicked')
-  }
-  return <button onClick={handleClick}>Click me</button>
+    console.log('clicked');
+  };
+  return <button onClick={handleClick}>Click me</button>;
 }
 
 // Con useCallback
 function MyComponent() {
   const handleClick = useCallback(() => {
-    console.log('clicked')
-  }, [])
-  return <button onClick={handleClick}>Click me</button>
+    console.log('clicked');
+  }, []);
+  return <button onClick={handleClick}>Click me</button>;
 }
 ```
 
@@ -51,13 +54,13 @@ function MyComponent() {
 ```jsx
 // Calcolo costoso
 const memoizedValue = useMemo(() => {
-  return someExpensiveComputation(prop)
-}, [prop])
+  return someExpensiveComputation(prop);
+}, [prop]);
 
 // Callback per componente ottimizzato
 const MemoizedComponent = React.memo(({ onClick }) => {
-  return <button onClick={onClick}>Click me</button>
-})
+  return <button onClick={onClick}>Click me</button>;
+});
 ```
 
 ## Conclusione
@@ -72,4 +75,4 @@ Se la risposta è no, probabilmente non ne hai bisogno. DAJE!
 
 Per approfondire l'argomento in inglese, leggi l'articolo originale di Kent C. Dodds.
 
-</ExternalLanguageRedirect> 
+</ExternalLanguageRedirect>

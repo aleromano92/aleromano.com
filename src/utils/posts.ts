@@ -19,16 +19,20 @@ export function parsePostSlug(slug: string | undefined): { lang: SupportedLangua
     return { lang: DEFAULT_LANGUAGE, cleanSlug: '' };
   }
 
-  // Remove language prefix if present
-  const match = slug.match(/^(?:(en|it)\/)?(.+)$/);
-  if (!match) {
-    return { lang: DEFAULT_LANGUAGE, cleanSlug: slug };
+  // Handle both /it/my-post and my-post formats
+  const parts = slug.split('/');
+  const possibleLang = parts[0] as SupportedLanguage;
+
+  if (possibleLang === 'en' || possibleLang === 'it') {
+    return {
+      lang: possibleLang,
+      cleanSlug: parts.slice(1).join('/'),
+    };
   }
 
-  const [, lang, cleanSlug] = match;
   return {
-    lang: (lang || DEFAULT_LANGUAGE) as SupportedLanguage,
-    cleanSlug,
+    lang: DEFAULT_LANGUAGE,
+    cleanSlug: slug,
   };
 }
 
@@ -37,7 +41,10 @@ export function findPostBySlug(
   slug: string | undefined,
   targetLang: SupportedLanguage
 ): CollectionEntry<'blog'> | undefined {
-  const { cleanSlug } = parsePostSlug(slug);
+  if (!slug) return undefined;
+
+  // Remove any leading language prefix from the URL slug
+  const cleanSlug = slug.replace(/^(en|it)\//, '');
 
   return posts.find((post) => {
     const [lang, ...slugParts] = post.slug.split('/');

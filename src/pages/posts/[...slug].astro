@@ -4,26 +4,25 @@ import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
 import { getLanguageFromURL } from '../../utils/i18n';
 import { findPostBySlug, getLocalizedPostUrl } from '../../utils/posts';
 
-const { slug } = Astro.params;
-const currentLang = getLanguageFromURL(Astro.url.pathname);
-const posts = await getCollection('blog');
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
 
-// Find post in the current language
-const post = findPostBySlug(posts, slug, currentLang);
+  return posts.map((post) => {
+    const [lang, ...slugParts] = post.slug.split('/');
+    const slug = slugParts.join('/');
 
-if (!post) {
-  // Try to find post in default language (en)
-  const defaultPost = findPostBySlug(posts, slug, 'en');
-
-  if (defaultPost) {
-    // If found in default language, redirect to that URL
-    return Astro.redirect(getLocalizedPostUrl(defaultPost));
-  }
-
-  return Astro.redirect('/404');
+    return {
+      params: {
+        slug: lang === 'en' ? slug : `${lang}/${slug}`,
+      },
+      props: { post },
+    };
+  });
 }
 
+const { post } = Astro.props;
 const { Content } = await post.render();
+export const prerender = true;
 ---
 
 <BlogPostLayout frontmatter={post.data}>
