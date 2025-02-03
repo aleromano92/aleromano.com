@@ -5,13 +5,13 @@ const supportedLanguages = Object.keys(LANGUAGES);
 
 const blogCollection = defineCollection({
   type: 'content',
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
     pubDate: z.date(),
     author: z.string(),
     image: z.object({
-      url: z.string(),
+      url: image(),
       alt: z.string()
     }).optional(),
     tags: z.array(z.string()),
