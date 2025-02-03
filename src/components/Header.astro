@@ -4,82 +4,84 @@ import Navigation from './Navigation.astro';
 import ThemeSwitcher from './ThemeSwitcher.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import BrandLogo from './BrandLogo.astro';
+
+const { i18nData } = Astro.props;
 ---
 
 <header class="container">
-    <Hamburger />
-    <BrandLogo />
-    <Navigation />
-    <section class="switchers">
-        <LanguageSwitcher />
-        <ThemeSwitcher />
-    </section>
+  <Hamburger />
+  <BrandLogo />
+  <Navigation />
+  <section class="switchers">
+    <LanguageSwitcher i18nData={i18nData} />
+    <ThemeSwitcher />
+  </section>
 </header>
 
 <style>
-    header {
-        background: var(--background);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 4rem;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-    }
+  header {
+    background: var(--background);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
 
-    /* Add some opacity to the background for a glass effect */
-    header::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: var(--background);
-        opacity: 0.8;
-        z-index: -1;
-    }
+  /* Add some opacity to the background for a glass effect */
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--background);
+    opacity: 0.8;
+    z-index: -1;
+  }
 
-    /* Soft gradient border effect */
-    header::after {
-        content: '';
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(to bottom, rgba(var(--black), 5%), rgba(var(--black), 0%));
-        z-index: -1;
-        transition: opacity 0.3s ease;
-    }
+  /* Soft gradient border effect */
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to bottom, rgba(var(--black), 5%), rgba(var(--black), 0%));
+    z-index: -1;
+    transition: opacity 0.3s ease;
+  }
 
-    .switchers {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-left: auto;
-    }
+  .switchers {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto;
+  }
 </style>
 
 <script>
-    // Add shadow based on scroll position
-    document.addEventListener('DOMContentLoaded', () => {
-        const header = document.querySelector('header');
-        const addShadowClass = () => {
-            if (window.scrollY > 0) {
-                header?.style.setProperty('--shadow-opacity', '0.1');
-                header?.style.setProperty('--gradient-start', '10%');
-            } else {
-                header?.style.setProperty('--shadow-opacity', '0.05');
-                header?.style.setProperty('--gradient-start', '5%');
-            }
-        };
-
-        // Set initial values
+  // Add shadow based on scroll position
+  document.addEventListener('DOMContentLoaded', () => {
+    const header = document.querySelector('header');
+    const addShadowClass = () => {
+      if (window.scrollY > 0) {
+        header?.style.setProperty('--shadow-opacity', '0.1');
+        header?.style.setProperty('--gradient-start', '10%');
+      } else {
         header?.style.setProperty('--shadow-opacity', '0.05');
         header?.style.setProperty('--gradient-start', '5%');
+      }
+    };
 
-        window.addEventListener('scroll', addShadowClass);
-    });
+    // Set initial values
+    header?.style.setProperty('--shadow-opacity', '0.05');
+    header?.style.setProperty('--gradient-start', '5%');
+
+    window.addEventListener('scroll', addShadowClass);
+  });
 </script>

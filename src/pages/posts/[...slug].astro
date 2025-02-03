@@ -11,20 +11,34 @@ export async function getStaticPaths() {
     const [lang, ...slugParts] = post.slug.split('/');
     const slug = slugParts.join('/');
 
+    // Find the original post if this is a translation
+    let originalPost;
+    if (post.data.originalLink) {
+      originalPost = posts.find((p) => {
+        const [pLang, ...pSlugParts] = p.slug.split('/');
+        return pLang === 'en' && pSlugParts.join('/') === slug;
+      });
+    }
+
     return {
       params: {
         slug: lang === 'en' ? slug : `${lang}/${slug}`,
       },
-      props: { post },
+      props: {
+        post,
+        originalPost,
+      },
     };
   });
 }
 
-const { post } = Astro.props;
+const { post, originalPost } = Astro.props;
 const { Content } = await post.render();
 export const prerender = true;
+// Get the current language from URL for the language switcher
+const currentLang = post.slug.split('/')[0];
 ---
 
-<BlogPostLayout frontmatter={post.data}>
+<BlogPostLayout frontmatter={post.data} currentLang={currentLang} originalPost={originalPost}>
   <Content />
 </BlogPostLayout>

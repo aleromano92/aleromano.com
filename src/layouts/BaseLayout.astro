@@ -4,23 +4,23 @@ import Footer from '../components/Footer.astro';
 import '../styles/theme.css';
 import '../styles/global.css';
 
-const { pageTitle } = Astro.props;
+const { pageTitle, i18nData } = Astro.props;
 ---
 
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <meta name="generator" content={Astro.generator} />
-        <title>{pageTitle + ' | Alessandro Romano'}</title>
-    </head>
-    <body>
-        <Header />
-        <main class="container">
-            <h1>{pageTitle}</h1>
-            <slot />
-        </main>
-        <Footer />
-    </body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle + ' | Alessandro Romano'}</title>
+  </head>
+  <body>
+    <Header i18nData={i18nData} />
+    <main class="container">
+      <h1>{pageTitle}</h1>
+      <slot />
+    </main>
+    <Footer />
+  </body>
 </html>

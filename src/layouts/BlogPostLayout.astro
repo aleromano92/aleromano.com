@@ -5,15 +5,21 @@ import Tags from '../components/posts/Tags.astro';
 import { getReadingTime } from '../utils/reading-time';
 import ImageModal from '../components/ImageModal.astro';
 
-const { frontmatter, Content } = Astro.props;
+const { frontmatter, currentLang, originalPost } = Astro.props;
 const pageTitle = frontmatter.title;
 
 // Get the content as a string for reading time calculation
 const content = await Astro.slots.render('default');
 const readingTime = getReadingTime(content);
+
+// Pass language info to BaseLayout
+const i18nData = {
+  currentLang,
+  originalPost: originalPost ? `/posts/${originalPost.slug.split('/').slice(1).join('/')}` : frontmatter.originalLink,
+};
 ---
 
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout pageTitle={pageTitle} i18nData={i18nData}>
   <article class="post">
     <header class="post-header">
       <div class="post-meta">

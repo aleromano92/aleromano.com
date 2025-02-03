@@ -2,74 +2,84 @@
 import { LANGUAGES, DEFAULT_LANGUAGE } from '../types/i18n';
 import { getLanguageFromURL } from '../utils/i18n';
 
+const { i18nData } = Astro.props;
 const pathname = new URL(Astro.request.url).pathname;
-const currentLang = getLanguageFromURL(pathname);
+const currentLang = i18nData?.currentLang || getLanguageFromURL(pathname);
 ---
 
 <div class="language-switcher">
-    {
-        Object.values(LANGUAGES).map(({ code, flag }) => (
-            <button
-                class:list={['lang-button', { active: currentLang === code }]}
-                data-lang={code}
-                data-current-lang={currentLang}
-                data-current-path={pathname}
-                aria-label={`Switch to ${LANGUAGES[code].name}`}
-                title={LANGUAGES[code].name}
-            >
-                {flag}
-            </button>
-        ))
-    }
+  {
+    Object.values(LANGUAGES).map(({ code, flag }) => (
+      <button
+        class:list={['lang-button', { active: currentLang === code }]}
+        data-lang={code}
+        data-current-lang={currentLang}
+        data-current-path={pathname}
+        data-original-link={i18nData?.originalPost}
+        aria-label={`Switch to ${LANGUAGES[code].name}`}
+        title={LANGUAGES[code].name}
+      >
+        {flag}
+      </button>
+    ))
+  }
 </div>
 
 <style>
-    .language-switcher {
-        display: flex;
-        gap: var(--space-xs);
-        align-items: center;
-    }
+  .language-switcher {
+    display: flex;
+    gap: var(--space-xs);
+    align-items: center;
+  }
 
-    .lang-button {
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        border-radius: 50%;
-        width: 2rem;
-        opacity: 0.5;
-        transition: all 0.3s ease;
-    }
+  .lang-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 2rem;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+  }
 
-    .lang-button:hover {
-        opacity: 1;
-        transform: scale(1.1);
-    }
+  .lang-button:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
 
-    .lang-button.active {
-        opacity: 1;
-        box-shadow: 0 0px 0.5rem 0.25rem var(--color-accent);
-    }
+  .lang-button.active {
+    opacity: 1;
+    box-shadow: 0 0px 0.5rem 0.25rem var(--color-accent);
+  }
 </style>
 
 <script>
-    import { setLanguagePreference, getLocalizedPathname } from '../utils/i18n';
-    import type { SupportedLanguage } from '../types/i18n';
+  import { setLanguagePreference, getLocalizedPathname } from '../utils/i18n';
+  import type { SupportedLanguage } from '../types/i18n';
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const buttons = document.querySelectorAll('.lang-button');
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.lang-button');
 
-        buttons.forEach((button) => {
-            button.addEventListener('click', () => {
-                const lang = button.getAttribute('data-lang') as SupportedLanguage;
-                const currentLang = button.getAttribute('data-current-lang') as SupportedLanguage;
-                const currentPath = button.getAttribute('data-current-path') || '';
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const lang = button.getAttribute('data-lang') as SupportedLanguage;
+        const currentLang = button.getAttribute('data-current-lang') as SupportedLanguage;
+        const currentPath = button.getAttribute('data-current-path') || '';
+        const originalLink = button.getAttribute('data-original-link');
 
-                setLanguagePreference(lang);
+        setLanguagePreference(lang);
 
-                const newPath = getLocalizedPathname(currentPath, lang);
-                window.location.href = newPath;
-            });
-        });
+        // If switching to English and we have an originalLink, use that
+        if (lang === 'en' && originalLink) {
+          window.location.href = originalLink;
+          return;
+        }
+
+        // Otherwise use the normal language switching logic
+        const newPath = getLocalizedPathname(currentPath, lang);
+        window.location.href = newPath;
+      });
     });
+  });
 </script>
