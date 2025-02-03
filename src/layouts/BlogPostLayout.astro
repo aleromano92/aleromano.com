@@ -136,4 +136,49 @@ const i18nData = {
     padding-top: var(--space-lg);
     font-style: italic;
   }
+
+  .post-content :global(blockquote) {
+    margin: var(--space-md) 0;
+    padding: var(--space-sm);
+    border-radius: 8px;
+    background-color: var(--color-secondary);
+    border-left: 4px solid var(--color-primary);
+    position: relative;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  .post-content :global(blockquote p) {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+  }
+
+  .post-content :global(blockquote p:not(:last-child)) {
+    margin-bottom: var(--space-md);
+  }
+
+  .post-content :global(blockquote cite) {
+    display: block;
+    margin-top: var(--space-sm);
+    font-size: 0.9rem;
+    font-weight: var(--font-weight-bold);
+    font-style: normal;
+    color: var(--color-text);
+  }
+
+  :global([data-theme='dark']) .post-content :global(blockquote) {
+    background-color: var(--color-secondary);
+    border-left-color: var(--color-primary);
+  }
+
+  :global([data-theme='dark']) .post-content :global(blockquote p) {
+    color: var(--color-primary);
+  }
+
+  .post-content :global(pre) {
+    margin: var(--space-md) 0;
+    padding: var(--space-md);
+    border-radius: 1rem;
+  }
 </style>
