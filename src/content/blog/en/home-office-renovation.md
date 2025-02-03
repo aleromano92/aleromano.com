@@ -6,7 +6,7 @@ author: "Alessandro Romano"
 tags: ["Productivity","Office Setup","Remote Work"]
 language: "en"
 image:
-    url: /src/assets/blog/home-office-renovation/featured.jpg
+    url: ../../../assets/blog/home-office-renovation/featured.jpg
     alt: My home office desk
 ---
 
@@ -23,7 +23,7 @@ The 4 traits I focused on:
 
 ## This was the starting point.
 
-![image](/src/assets/blog/home-office-renovation/starting.jpeg)
+![image](../../../assets/blog/home-office-renovation/starting.jpeg)
 
 A horizontal desk 160x60cm, an external monitor, keyboard and mouse. In this picture, you can see my old Surface 3 (I sold it) and my books and notebooks while studying for my degree.
 
@@ -40,7 +40,7 @@ A horizontal desk 160x60cm, an external monitor, keyboard and mouse. In this pic
 
 We have a very spacious house (lucky us) so I was able to use part of our basement to create a private Home Office. The room is 3.80 x 2.80 mt and I started sketching a possible furniture disposition.
 
-![image](/src/assets/blog/home-office-renovation/disposition.jpeg)
+![image](../../../assets/blog/home-office-renovation/disposition.jpeg)
 
 The most important part I focused on was the desk. I wanted a big corner desk with plenty of room to lay down my arms (45cm from desk border to keyboard) and the right distance to my monitors (60-70cm ready to migrate to a big curved one).
 
@@ -50,11 +50,11 @@ I wanted to create an atmosphere where the white, wooden and green colors can mi
 
 So I bought some SPC floor to easily install on top of the existing one: their click mechanism allowed me and my wife to do it on our own.
 
-![image](/src/assets/blog/home-office-renovation/floor.jpeg)
+![image](../../../assets/blog/home-office-renovation/floor.jpeg)
 
 I looked on different second-hand sites and found my desk, wardrobe and library! There was a lot of fun renting a van with my wife and going to get all of them 🚚
 
-![image](/src/assets/blog/home-office-renovation/desk.jpeg)
+![image](../../../assets/blog/home-office-renovation/desk.jpeg)
 
 ## New purchases
 
@@ -70,7 +70,7 @@ I already have a desk lamp I use to enlighten my face during video calls, here i
 
 I bought 3 small plants: aloe vera, Ficus Benjamin and Lucky bamboo. They should help keep the air quality good.
 
-![image](/src/assets/blog/home-office-renovation/plants.jpeg)
+![image](../../../assets/blog/home-office-renovation/plants.jpeg)
 
 Regarding lightning: for offices, it is advised to have 300-400 Lux per square meter. Simple math 400x11 = 4400 Lumen needed. I bought a lamp holder
 
@@ -82,13 +82,13 @@ Regarding lightning: for offices, it is advised to have 300-400 Lux per square m
 
 I chose a warm light as I find it more relaxing.
 
-![image](/src/assets/blog/home-office-renovation/light.jpeg)
+![image](../../../assets/blog/home-office-renovation/light.jpeg)
 
 This is a bit of what the office looks like right now 😁
 
-![image](/src/assets/blog/home-office-renovation/featured.jpg)
+![image](../../../assets/blog/home-office-renovation/featured.jpg)
 
-![image](/src/assets/blog/home-office-renovation/library.jpeg)
+![image](../../../assets/blog/home-office-renovation/library.jpeg)
 
 ## Still missing
 

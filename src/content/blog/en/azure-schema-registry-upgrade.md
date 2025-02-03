@@ -6,7 +6,7 @@ author: "Alessandro Romano"
 tags: ["Tech","Cloud"]
 language: "en"
 image:
-    url: /src/assets/blog/azure-schema-registry-upgrade/featured.jpg
+    url: ../../../assets/blog/azure-schema-registry-upgrade/featured.jpg
     alt: Azure cloud services
 ---
 

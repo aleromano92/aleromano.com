@@ -6,7 +6,7 @@ author: "Alessandro Romano"
 tags: ["Inspiration","Coaching","1to1"]
 language: "en"
 image:
-    url: /src/assets/blog/one-to-one-coaching/featured.jpg
+    url: ../../../assets/blog/one-to-one-coaching/featured.jpg
     alt: One-to-one wooden
 ---
 

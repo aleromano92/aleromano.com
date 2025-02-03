@@ -6,7 +6,7 @@ author: "Alessandro Romano"
 tags: ["Productivity","Async Work"]
 language: "en"
 image:
-    url: /src/assets/blog/effective-meetings-agenda/featured.jpg
+    url: ../../../assets/blog/effective-meetings-agenda/featured.jpg
     alt: Meeting agenda
 ---
 

@@ -6,7 +6,7 @@ author: "Alessandro Romano"
 tags: ["Inspiration","Wellness"]
 language: "en"
 image:
-    url: /src/assets/blog/morning-routine/featured.jpg
+    url: ../../../assets/blog/morning-routine/featured.jpg
     alt: Man hugging the Sun
 ---
 

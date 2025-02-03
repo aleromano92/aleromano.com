@@ -6,7 +6,7 @@ author: "Alessandro Romano"
 tags: ["Tech","DX"]
 language: "en"
 image:
-    url: /src/assets/blog/mac-to-windows/featured.jpg
+    url: ../../../assets/blog/mac-to-windows/featured.jpg
     alt: Apple logo morphing into Windows logo
 ---
 
@@ -34,21 +34,21 @@ Another great example of Microsoft embracing open source, releasing its applicat
 
 I think the feature I abuse the most. You don't need any external application, it is built-in in any Windows 10 setup. Just hold Win Key + V to get the Clipboard Manager that (once activated) can store almost infinite Entries, including text, images and whatever you were able to . It is a breeze to remove all or just some of them and you can even pin your favorite!
 
-![image](/src/assets/blog/mac-to-windows/clipboard-manager.png)
+![image](../../../assets/blog/mac-to-windows/clipboard-manager.png)
 
 ## Screenshot -> Win Key + Shift + S
 
 On Mac OS you can press Command + Shift + 4 to get the Snipping Tool and select the area you want to capture. You can add Control to your selection to save it in the clipboard.
 On Windows, you can access the same feature by hitting Win Key + Shift + S. This is even more powerful as allows you to quickly edit the screenshot before saving it, like for example adding some red circles around important info.
 
-![image](/src/assets/blog/mac-to-windows/snipping-tool.png)
+![image](../../../assets/blog/mac-to-windows/snipping-tool.png)
 
 ## **Emoji Picker -> Win Key + . (dot)**
 
 While on Mac OS you can press Command + Control + Spacebar to open the emoji picker
 
-![image](/src/assets/blog/mac-to-windows/emojiPickerMac.png)
+![image](../../../assets/blog/mac-to-windows/emojiPickerMac.png)
 
 On Windows, you can access an even better version (it includes GIF search too) by hitting Win Key + . (dot)
 
-![image](/src/assets/blog/mac-to-windows/emojiPicker.jpg)
+![image](../../../assets/blog/mac-to-windows/emojiPicker.jpg)

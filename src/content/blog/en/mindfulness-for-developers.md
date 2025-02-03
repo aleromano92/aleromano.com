@@ -6,7 +6,7 @@ author: "Alessandro Romano"
 tags: ["Wellness","DX","Tech","Inspiration"]
 language: "en"
 image:
-    url: /src/assets/blog/mindfulness-for-developers/featured.jpg
+    url: ../../../assets/blog/mindfulness-for-developers/featured.jpg
     alt: Mindfulness meditation
 ---
 

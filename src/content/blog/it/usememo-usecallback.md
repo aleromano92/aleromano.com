@@ -7,7 +7,7 @@ tags: ['React']
 language: 'it'
 originalLink: 'https://kentcdodds.com/blog/usememo-and-usecallback'
 image:
-  url: /src/assets/blog/usememo-usecallback/featured.webp
+  url: ../../../assets/blog/usememo-usecallback/featured.webp
   alt: Dollars burning
 ---
 

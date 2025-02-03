@@ -6,7 +6,7 @@ author: Alessandro Romano
 tags: ["Productivity","Inspiration"]
 language: en
 image:
-  url: /src/assets/blog/yagni-for-business/featured.jpg
+  url: ../../../assets/blog/yagni-for-business/featured.jpg
   alt: Deep space image
 ---
 

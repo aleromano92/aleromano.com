@@ -6,7 +6,7 @@ author: "Alessandro Romano"
 tags: ["Inspiration","Tech","Empathy"]
 language: "en"
 image:
-    url: /src/assets/blog/emotional-component-software-release/featured.jpg
+    url: ../../../assets/blog/emotional-component-software-release/featured.jpg
     alt: Hearts soldered on a motherboard
 ---
 
