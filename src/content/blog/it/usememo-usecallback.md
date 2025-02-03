@@ -123,14 +123,7 @@ _altra_ allocazione per le definizioni delle funzioni (non è questo il caso, ma
 Altra menzione è il fatto che nel secondo render del componente, la funzione `dispense` originale viene garbage collected (liberando spazio in memoria) ed un'altra viene creata.
 Invece, con utilizzo di `useCallback` la funzione `dispense` originale **non** viene garbage collected ed un'altra viene creata, quindi anche dal punto di vista dello spazio di memoria utilizzato le performance sono peggiori.
 
-TODO
-As a related note, if you have dependencies then it's quite possible React is
-hanging on to a reference to previous functions because memoization typically
-means that we keep copies of old values to return in the event we get the same
-dependencies as given previously. The especially astute of you will notice that
-this means React also has to hang on to a reference to the dependencies for this
-equality check (which incidentally is probably happening anyway thanks to your
-closure, but it's something worth mentioning anyway).
+Come nota correlata, se avete delle dipendenze allora è molto probabile che React stia mantenendo un riferimento alle funzioni precedenti perché la memoizzazione tipicamente significa che manteniamo copie dei vecchi valori da ritornare nel caso in cui otteniamo le stesse dipendenze fornite precedentemente. I più attenti di voi noteranno che questo significa che React deve anche mantenere un riferimento alle dipendenze per questo controllo di uguaglianza (che tra l'altro sta probabilmente già accadendo grazie alla vostra closure, ma è comunque qualcosa che vale la pena menzionare).
 
 ## In che modo `useMemo` è differente, ma allo stesso tempo simile?
 
