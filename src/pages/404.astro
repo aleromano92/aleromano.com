@@ -9,82 +9,83 @@ const otherLang = currentLang === 'en' ? 'it' : 'en';
 const otherLangPath = getLocalizedPathname(pathname, otherLang);
 
 const messages = {
-    en: {
-        title: 'Page Not Found',
-        description: 'The page you are looking for does not exist.',
-        suggestion: `Try viewing this page in ${LANGUAGES[otherLang].name}`,
-        back: 'Go back to homepage',
-    },
-    it: {
-        title: 'Pagina Non Trovata',
-        description: 'La pagina che stai cercando non esiste.',
-        suggestion: `Prova a visualizzare questa pagina in ${LANGUAGES[otherLang].name}`,
-        back: 'Torna alla homepage',
-    },
+  en: {
+    title: 'Page Not Found',
+    description: 'The page you are looking for does not exist.',
+    suggestion: `Try viewing this page in ${LANGUAGES[otherLang].name}`,
+    back: 'Go back to homepage',
+  },
+  it: {
+    title: 'Pagina Non Trovata',
+    description: 'La pagina che stai cercando non esiste.',
+    suggestion: `Prova a visualizzare questa pagina in ${LANGUAGES[otherLang].name}`,
+    back: 'Torna alla homepage',
+  },
 };
 
 const msg = messages[currentLang];
+export const prerender = true;
 ---
 
 <BaseLayout pageTitle={msg.title}>
-    <div class="error-container">
-        <h1>404</h1>
-        <p>{msg.description}</p>
-        <div class="actions">
-            <a href={otherLangPath} class="button">{msg.suggestion}</a>
-            <a href="/" class="button secondary">{msg.back}</a>
-        </div>
+  <div class="error-container">
+    <h1>404</h1>
+    <p>{msg.description}</p>
+    <div class="actions">
+      <a href={otherLangPath} class="button">{msg.suggestion}</a>
+      <a href="/" class="button secondary">{msg.back}</a>
     </div>
+  </div>
 </BaseLayout>
 
 <style>
-    .error-container {
-        text-align: center;
-        padding: var(--space-xl) 0;
-    }
+  .error-container {
+    text-align: center;
+    padding: var(--space-xl) 0;
+  }
 
-    h1 {
-        font-size: 6rem;
-        margin: 0;
-        color: var(--color-accent);
-    }
+  h1 {
+    font-size: 6rem;
+    margin: 0;
+    color: var(--color-accent);
+  }
 
-    p {
-        font-size: 1.2rem;
-        margin: var(--space-md) 0 var(--space-xl);
-    }
+  p {
+    font-size: 1.2rem;
+    margin: var(--space-md) 0 var(--space-xl);
+  }
 
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    align-items: center;
+  }
+
+  .button {
+    display: inline-block;
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: 4px;
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .button:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  .button.secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+  }
+
+  @media (min-width: 636px) {
     .actions {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-md);
-        align-items: center;
+      flex-direction: row;
+      justify-content: center;
     }
-
-    .button {
-        display: inline-block;
-        padding: var(--space-sm) var(--space-lg);
-        border-radius: 4px;
-        background-color: var(--color-accent);
-        color: var(--color-bg);
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-
-    .button:hover {
-        transform: translateY(-2px);
-        text-decoration: none;
-    }
-
-    .button.secondary {
-        background-color: var(--color-secondary);
-        color: var(--color-text);
-    }
-
-    @media (min-width: 636px) {
-        .actions {
-            flex-direction: row;
-            justify-content: center;
-        }
-    }
+  }
 </style>
