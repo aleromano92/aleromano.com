@@ -103,7 +103,7 @@ jobs:
             # Verify deployment
             echo "Waiting for service to start..."
             sleep 10
-            if curl -s http://localhost > /dev/null; then
+            if curl -s -I https://aleromano.com | grep -q "200 OK"; then
               echo "Deployment successful!"
             else
               echo "Deployment might have issues - check logs with: docker-compose logs"
