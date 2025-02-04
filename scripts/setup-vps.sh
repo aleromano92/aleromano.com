@@ -73,6 +73,18 @@ usermod -aG docker "$USERNAME"
 PROJECT_DIR="/home/$USERNAME/app"
 print_status "Creating project directory at $PROJECT_DIR..."
 mkdir -p "$PROJECT_DIR"
+
+# Set up Docker volumes directories
+print_status "Setting up Docker volumes directories..."
+DOCKER_DATA_DIR="/var/docker/aleromano.com"
+mkdir -p "$DOCKER_DATA_DIR/nginx/logs"
+mkdir -p "$DOCKER_DATA_DIR/nginx/cache"
+
+# Set proper ownership and permissions
+chown -R "$USERNAME:docker" "$DOCKER_DATA_DIR"
+chmod -R 775 "$DOCKER_DATA_DIR"
+
+# Set proper ownership for project directory
 chown -R "$USERNAME:$USERNAME" "$PROJECT_DIR"
 
 # Configure SSH
@@ -131,6 +143,7 @@ echo "3. Add these secrets to your GitHub repository:"
 echo "   HETZNER_HOST: <your-server-ip>"
 echo "   HETZNER_USERNAME: $USERNAME"
 echo "   HETZNER_SSH_KEY: <your-private-ssh-key>"
+echo "4. Docker volumes are set up at: $DOCKER_DATA_DIR"
 
 # Print warning about SSH key
 print_error "IMPORTANT: Make sure to add your SSH public key before logging out!" 

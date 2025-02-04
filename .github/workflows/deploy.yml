@@ -46,6 +46,9 @@ jobs:
     environment: prod
     
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Check required secrets
         run: |
           if [ -z "${{ secrets.HETZNER_HOST }}" ]; then
@@ -78,6 +81,10 @@ jobs:
               git clone https://github.com/${{ github.repository }}.git .
             fi
 
+            # Export environment variables for docker-compose
+            export REGISTRY="${{ env.REGISTRY }}"
+            export IMAGE_NAME="${{ env.IMAGE_NAME }}"
+
             # Login to GitHub Container Registry
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             
@@ -85,10 +92,20 @@ jobs:
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             
             # Stop and remove existing containers
-            docker-compose down
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
             
             # Start new containers with production configuration
-            docker-compose up -d
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
             
             # Clean up unused images
-            docker image prune -f 
+            docker image prune -f
+            
+            # Verify deployment
+            echo "Waiting for service to start..."
+            sleep 10
+            if curl -s http://localhost > /dev/null; then
+              echo "Deployment successful!"
+            else
+              echo "Deployment might have issues - check logs with: docker-compose logs"
+              exit 1
+            fi 
