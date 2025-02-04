@@ -1,0 +1,21 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    expose:
+      - 4321
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - nginx_logs:/var/log/nginx
+      - nginx_cache:/var/cache/nginx
+    depends_on:
+      - app
+
+volumes:
+  nginx_logs:
+  nginx_cache:
