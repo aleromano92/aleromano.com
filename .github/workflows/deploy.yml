@@ -43,8 +43,24 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
+    environment: prod
     
     steps:
+      - name: Check required secrets
+        run: |
+          if [ -z "${{ secrets.HETZNER_HOST }}" ]; then
+            echo "Error: HETZNER_HOST secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.HETZNER_USERNAME }}" ]; then
+            echo "Error: HETZNER_USERNAME secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.HETZNER_SSH_KEY }}" ]; then
+            echo "Error: HETZNER_SSH_KEY secret is not set"
+            exit 1
+          fi
+
       - name: Deploy to Hetzner
         uses: appleboy/ssh-action@master
         with:
@@ -71,7 +87,7 @@ jobs:
             # Stop and remove existing containers
             docker-compose down
             
-            # Start new containers
+            # Start new containers with production configuration
             docker-compose up -d
             
             # Clean up unused images
