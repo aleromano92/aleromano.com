@@ -81,6 +81,16 @@ jobs:
               git clone https://github.com/${{ github.repository }}.git .
             fi
 
+            # Create self-signed certificate for default server if it doesn't exist
+            if [ ! -f /etc/ssl/certs/nginx-selfsigned.crt ]; then
+              sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+                -keyout /etc/ssl/private/nginx-selfsigned.key \
+                -out /etc/ssl/certs/nginx-selfsigned.crt \
+                -subj "/CN=localhost"
+              sudo chmod 644 /etc/ssl/certs/nginx-selfsigned.crt
+              sudo chmod 640 /etc/ssl/private/nginx-selfsigned.key
+            fi
+
             # Export environment variables for docker-compose
             export REGISTRY="${{ env.REGISTRY }}"
             export IMAGE_NAME="${{ env.IMAGE_NAME }}"
@@ -100,12 +110,26 @@ jobs:
             # Clean up unused images
             docker image prune -f
             
-            # Verify deployment
+            # Verify deployment with retries
             echo "Waiting for service to start..."
-            sleep 10
-            if curl -s -I https://aleromano.com | grep -q "200 OK"; then
-              echo "Deployment successful!"
-            else
-              echo "Deployment might have issues - check logs with: docker-compose logs"
-              exit 1
-            fi 
+            max_retries=12
+            retry_count=0
+            while [ $retry_count -lt $max_retries ]; do
+              sleep 10
+              if curl -sk -I https://aleromano.com | grep -q "200 OK"; then
+                echo "Deployment successful!"
+                exit 0
+              fi
+              echo "Attempt $((retry_count + 1))/$max_retries - Service not ready yet..."
+              retry_count=$((retry_count + 1))
+              
+              # Check container logs if we're halfway through retries
+              if [ $retry_count -eq $((max_retries / 2)) ]; then
+                echo "Checking container logs..."
+                docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=50
+              fi
+            done
+            
+            echo "Deployment verification failed. Checking final logs..."
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=100
+            exit 1 
