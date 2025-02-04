@@ -14,10 +14,13 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
       - /var/docker/aleromano.com/nginx/logs:/var/log/nginx
       - /var/docker/aleromano.com/nginx/cache:/var/cache/nginx
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
     depends_on:
       - app
     environment:
