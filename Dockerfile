@@ -16,10 +16,20 @@ COPY . .
 RUN npm run build
 
 FROM base AS runtime
+# Create a non-root user
+RUN addgroup -g 1001 nodejs && \
+    adduser -S -u 1001 -G nodejs nodejs
+
 # Copy dependencies
 COPY --from=prod-deps /app/node_modules ./node_modules 
 # Copy the built output
 COPY --from=build /app/dist ./dist 
+
+# Set proper ownership
+RUN chown -R nodejs:nodejs /app
+
+# Switch to non-root user
+USER nodejs
 
 # Bind to all interfaces
 ENV HOST=0.0.0.0
