@@ -19,8 +19,9 @@ services:
       - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
       - /var/docker/aleromano.com/nginx/logs:/var/log/nginx
       - /var/docker/aleromano.com/nginx/cache:/var/cache/nginx
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
+      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
+      - /etc/letsencrypt/renewal:/etc/letsencrypt/renewal:ro
     depends_on:
       - app
     environment:
