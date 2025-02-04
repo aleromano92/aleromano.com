@@ -5,112 +5,119 @@ import type { CollectionEntry } from 'astro:content';
 import { getLocalizedPostUrl } from '../../utils/posts';
 
 type Props = {
-    post: CollectionEntry<'blog'>;
+  post: CollectionEntry<'blog'>;
 };
 
 const { post } = Astro.props;
 const { title, description, pubDate, tags, image } = post.data;
+const postUrl = getLocalizedPostUrl(post);
 ---
 
 <article class="post-card">
-    <a href={getLocalizedPostUrl(post)} class="post-link">
-        {
-            image && (
-                <div class="image-container">
-                    <Image
-                        src={image.url}
-                        alt={image.alt}
-                        width={600}
-                        height={315}
-                        densities={[1, 2]}
-                        class="featured-image"
-                        quality="mid"
-                    />
-                </div>
-            )
-        }
-        <div class="content">
-            <h2>{title}</h2>
-            <time datetime={pubDate.toISOString()}>
-                Published on
-                {
-                    pubDate.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                    })
-                }
-            </time>
-            <p class="description">{description}</p>
-            <Tags tags={tags} />
+  <a href={postUrl} class="post-link">
+    {
+      image && (
+        <div class="image-container">
+          <Image
+            src={image.url}
+            alt={image.alt}
+            width={600}
+            height={315}
+            densities={[1, 2]}
+            class="featured-image"
+            quality="mid"
+          />
         </div>
-    </a>
+      )
+    }
+    <div class="content">
+      <h2>{title}</h2>
+      <time datetime={pubDate.toISOString()}>
+        Published on
+        {
+          pubDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })
+        }
+      </time>
+      <p class="description">{description}</p>
+    </div>
+  </a>
+  <div class="content-footer">
+    <Tags tags={tags} />
+  </div>
 </article>
 
 <style>
-    .post-card {
-        background-color: var(--color-bg);
-        border: 1px solid var(--color-border);
-        border-radius: 8px;
-        overflow: hidden;
-        transition:
-            transform 0.3s ease,
-            box-shadow 0.3s ease;
-    }
+  .post-card {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+  }
 
-    .post-card:hover {
-        transform: translateY(-4px) scale(1.01);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+  .post-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 
-    .post-link {
-        text-decoration: none;
-        color: inherit;
-        display: block;
-    }
+  .post-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
 
-    .image-container {
-        width: 100%;
-        height: 200px;
-        overflow: hidden;
-    }
+  .image-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+  }
 
-    .featured-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
+  .featured-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
 
-    .post-card:hover .featured-image {
-        transform: scale(1.05);
-    }
+  .post-card:hover .featured-image {
+    transform: scale(1.05);
+  }
 
-    .content {
-        padding: var(--space-md);
-    }
+  .content {
+    padding: var(--space-md);
+  }
 
-    h2 {
-        margin: 0;
-        font-size: 1.5rem;
-        color: var(--color-text);
-    }
+  .content-footer {
+    padding: 0 var(--space-md) var(--space-md);
+  }
 
-    time {
-        display: block;
-        margin: var(--space-xs) 0;
-        color: var(--color-text);
-        font-size: 0.9rem;
-    }
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--color-text);
+  }
 
-    .description {
-        margin: var(--space-sm) 0;
-        color: var(--color-text);
-        line-height: 1.5;
-    }
+  time {
+    display: block;
+    margin: var(--space-xs) 0;
+    color: var(--color-text);
+    font-size: 0.9rem;
+  }
 
-    /* Override Tags component margins */
-    :global(.post-card .tags) {
-        margin: var(--space-sm) 0 0;
-    }
+  .description {
+    margin: var(--space-sm) 0;
+    color: var(--color-text);
+    line-height: 1.5;
+  }
+
+  /* Override Tags component margins */
+  :global(.post-card .tags) {
+    margin: var(--space-sm) 0 0;
+  }
 </style>
