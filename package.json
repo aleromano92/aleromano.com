@@ -10,6 +10,8 @@
     "astro": "astro",
     "predocker:build": "npm test",
     "docker:build": "docker build -t aleromano.com .",
+    "docker:clean": "docker compose down --remove-orphans",
+    "docker:dev": "npm run docker:clean && docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build",
     "predeploy": "docker context use hetzner && docker build -t aleromano.com .",
     "deploy": "docker stop $(docker ps -q --filter publish=4321) && docker run -d -p 4321:4321 aleromano.com",
     "postdeploy": "docker context use default",

@@ -1,30 +1,27 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getLanguageFromURL, getLocalizedPathname } from '../utils/i18n';
-import { LANGUAGES, type SupportedLanguage } from '../types/i18n';
+import { getLanguageFromURL } from '../utils/i18n';
+import { type SupportedLanguage } from '../types/i18n';
 
 const pathname = new URL(Astro.request.url).pathname;
 const currentLang = getLanguageFromURL(pathname) as SupportedLanguage;
-const otherLang = currentLang === 'en' ? 'it' : 'en';
-const otherLangPath = getLocalizedPathname(pathname, otherLang);
 
 const messages = {
   en: {
     title: 'Page Not Found',
     description: 'The page you are looking for does not exist.',
-    suggestion: `Try viewing this page in ${LANGUAGES[otherLang].name}`,
     back: 'Go back to homepage',
   },
   it: {
     title: 'Pagina Non Trovata',
     description: 'La pagina che stai cercando non esiste.',
-    suggestion: `Prova a visualizzare questa pagina in ${LANGUAGES[otherLang].name}`,
     back: 'Torna alla homepage',
   },
 };
 
 const msg = messages[currentLang];
-export const prerender = true;
+
+Astro.response.status = 404;
 ---
 
 <BaseLayout pageTitle={msg.title}>
@@ -32,7 +29,6 @@ export const prerender = true;
     <h1>404</h1>
     <p>{msg.description}</p>
     <div class="actions">
-      <a href={otherLangPath} class="button">{msg.suggestion}</a>
       <a href="/" class="button secondary">{msg.back}</a>
     </div>
   </div>
