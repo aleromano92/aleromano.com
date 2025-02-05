@@ -16,7 +16,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     environment: prod
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -87,19 +87,19 @@ jobs:
 
             # Login to GitHub Container Registry
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            
+
             # Pull the latest image
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            
+
             # Stop and remove existing containers
             docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
-            
+
             # Start new containers with production configuration
             docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-            
+
             # Clean up unused images
             docker image prune -f
-            
+
             # Function to check container health
             check_container_health() {
               local container_name=$1
@@ -134,7 +134,7 @@ jobs:
                 echo "Nginx container health check failed"
                 docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=50 nginx-1
                 return 1
-              }
+              fi
 
               # Check HTTP response
               local http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4321)
@@ -154,11 +154,11 @@ jobs:
               if ! curl -sk https://aleromano.com | grep -q "Alessandro Romano"; then
                 echo "Content verification failed"
                 return 1
-              }
+              fi
 
               return 0
             }
-            
+
             # Verify deployment with improved checks
             echo "Starting deployment verification..."
             max_attempts=12
@@ -181,10 +181,10 @@ jobs:
               sleep 10
               attempt=$((attempt + 1))
             done
-            
+
             echo "❌ Deployment verification failed after $max_attempts attempts"
             echo "📊 Final system status:"
             docker-compose -f docker-compose.yml -f docker-compose.prod.yml ps
             echo "📋 Final logs:"
             docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=200
-            exit 1 
+            exit 1
