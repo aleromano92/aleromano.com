@@ -124,24 +124,27 @@ jobs:
               echo "Attempt $attempt/$max_attempts - Checking service health..."
               
               # Check container health first
-              if ! check_container_health "app-1"; then
+              if ! check_container_health "app-app-1"; then
                 echo "Container health check failed"
-                docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=50 app-1
+                docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=50 app
                 return 1
               fi
               
-              if ! check_container_health "nginx-1"; then
+              if ! check_container_health "app-nginx-1"; then
                 echo "Nginx container health check failed"
-                docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=50 nginx-1
+                docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=50 nginx
                 return 1
               fi
 
-              # Check HTTP response
+              # Check HTTP response (from app container)
               local http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4321)
               if [ "$http_code" != "200" ] && [ "$http_code" != "301" ] && [ "$http_code" != "308" ]; then
                 echo "HTTP check failed with status $http_code"
                 return 1
               fi
+
+              # Add a small delay before checking HTTPS
+              sleep 2
 
               # Check HTTPS response (production URL)
               local https_code=$(curl -sk -o /dev/null -w "%{http_code}" https://aleromano.com)
