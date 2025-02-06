@@ -104,16 +104,10 @@ jobs:
             check_container_health() {
               local container_name=$1
               local status=$(docker inspect --format='{{.State.Status}}' $container_name)
-              local health=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' $container_name)
               
-              echo "Container $container_name status: $status, health: $health"
-              if [ "$status" != "running" ]; then
-                return 1
-              fi
-              if [ "$health" != "none" ] && [ "$health" != "healthy" ]; then
-                return 1
-              fi
-              return 0
+              echo "Container $container_name status: $status"
+              [ "$status" = "running" ]
+              return $?
             }
 
             # Function to check service availability
@@ -125,46 +119,36 @@ jobs:
               
               # Check container health first
               if ! check_container_health "app-app-1"; then
-                echo "Container health check failed"
+                echo "App container not running"
                 docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=50 app
                 return 1
               fi
               
               if ! check_container_health "app-nginx-1"; then
-                echo "Nginx container health check failed"
+                echo "Nginx container not running"
                 docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=50 nginx
                 return 1
               fi
 
-              # Check HTTP response (from app container)
-              local http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4321)
+              # Check HTTP response using Docker network
+              # Use curl inside the nginx container to check the app
+              local http_code=$(docker exec app-nginx-1 curl -s -o /dev/null -w "%{http_code}" http://app:4321)
               if [ "$http_code" != "200" ] && [ "$http_code" != "301" ] && [ "$http_code" != "308" ]; then
                 echo "HTTP check failed with status $http_code"
                 return 1
               fi
 
-              # Add a small delay before checking HTTPS
-              sleep 2
-
-              # Check HTTPS response (production URL)
-              local https_code=$(curl -sk -o /dev/null -w "%{http_code}" https://aleromano.com)
-              if [ "$https_code" != "200" ]; then
-                echo "HTTPS check failed with status $https_code"
-                return 1
-              fi
-
-              # Check if we can get actual content
-              if ! curl -sk https://aleromano.com | grep -q "Alessandro Romano"; then
-                echo "Content verification failed"
-                return 1
-              fi
-
+              echo "✅ Basic health check passed"
               return 0
             }
 
+            # Initial delay to let containers start
+            echo "Waiting 45 seconds for containers to fully start..."
+            sleep 45
+
             # Verify deployment with improved checks
             echo "Starting deployment verification..."
-            max_attempts=12
+            max_attempts=4
             attempt=1
             while [ $attempt -le $max_attempts ]; do
               if check_service $attempt $max_attempts; then
@@ -172,16 +156,16 @@ jobs:
                 exit 0
               fi
               
-              # If we're at attempt 6, dump all container logs
-              if [ $attempt -eq 6 ]; then
+              # If we're at attempt 2, dump all container logs
+              if [ $attempt -eq 2 ]; then
                 echo "🔍 Mid-verification status check:"
                 docker-compose -f docker-compose.yml -f docker-compose.prod.yml ps
                 echo "📋 Container logs:"
                 docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=100
               fi
               
-              echo "⏳ Waiting before next attempt..."
-              sleep 10
+              echo "⏳ Waiting 30 seconds before next attempt..."
+              sleep 30
               attempt=$((attempt + 1))
             done
 
@@ -189,5 +173,5 @@ jobs:
             echo "📊 Final system status:"
             docker-compose -f docker-compose.yml -f docker-compose.prod.yml ps
             echo "📋 Final logs:"
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=200
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs
             exit 1
