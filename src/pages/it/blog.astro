@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostsGrid from '../../components/posts/PostsGrid.astro';
+
+const posts = await getCollection('blog');
+const localizedPosts = posts
+    .filter((post) => post.slug.startsWith('it/'))
+    .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+// Set Italian page title
+const pageTitle = 'Blog';
+
+// Set language info for BaseLayout
+const i18nData = {
+    currentLang: 'it',
+};
+
+export const prerender = true;
+---
+
+<BaseLayout pageTitle={pageTitle} i18nData={i18nData}>
+    <section>
+        <PostsGrid posts={localizedPosts} />
+    </section>
+</BaseLayout>
