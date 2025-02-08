@@ -79,7 +79,7 @@ _Continua a scrollare... Hai ormai risposto, giusto?_
 
 _Ecco la risposta..._
 
-## Perché `useCallback` ha performance peggiori?!
+## Perché `useCallback` ha performance peggiori?
 
 Si legge spesso che l'uso di `React.useCallback` migliora le performance e che "le funzioni inline possono essere problematiche per le performance", quindi perché è meglio _non_ usare `useCallback`?
 

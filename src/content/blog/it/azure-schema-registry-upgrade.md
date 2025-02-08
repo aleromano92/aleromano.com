@@ -70,7 +70,7 @@ Siamo stati in grado di aggiornare il Producer dopo 2 settimane: non appena ness
 
 ## SUCCESSO 🤘🏻
 
--   cerca di limitare lo scope degli aggiornamenti e non avere troppi sistemi che dipendono l'uno dall'altro ⛓️
--   sempre provare l'aggiornamento in un ambiente di test 🦺
--   quando pianifichi di usare un nuovo servizio cloud, assicurati di conoscere i limiti del piano scelto e quanto è difficile l'aggiornamento 🤓
--   discuti la tua strategia di migrazione con un collega o qualcuno che stimi 🧑‍🤝‍🧑
+- cerca di limitare lo scope degli aggiornamenti e non avere troppi sistemi che dipendono l'uno dall'altro ⛓️
+- sempre provare l'aggiornamento in un ambiente di test 🦺
+- quando pianifichi di usare un nuovo servizio cloud, assicurati di conoscere i limiti del piano scelto e quanto è difficile l'aggiornamento 🤓
+- discuti la tua strategia di migrazione con un collega o qualcuno che stimi 🧑‍🤝‍🧑

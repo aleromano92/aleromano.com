@@ -16,10 +16,10 @@ I decided to renovate my Home Office.
 
 The 4 traits I focused on:
 
-1.  increase comfort 💺
-2.  improve sound experience 🔊
-3.  look better during video calls 💅🏻
-4.  reduce distractions ❗
+1. increase comfort 💺
+2. improve sound experience 🔊
+3. look better during video calls 💅🏻
+4. reduce distractions ❗
 
 ## This was the starting point.
 
@@ -29,12 +29,12 @@ A horizontal desk 160x60cm, an external monitor, keyboard and mouse. In this pic
 
 ## The cons
 
--   The chair did not have lumbar support.
--   I could not lay my arms on the desk while typing, because the desk was not large enough: the keyboard was too close to the desk border.
--   The keyboard was an old (but good) apple Keyboard with a Mighty Mouse.
--   🔊 I had no external speakers nor microphone, so my day was always wearing in-ear headphones (a Sony pair which I really love [**amzn.to/3pH7TwQ**](https://amzn.to/3pH7TwQ) ).
--   💅🏻 I did have a lot of shadows and light coming from the left, making me not look good on the webcam.
--   ❗The room was shared with my wife: her desk was on the opposite side of the room. but we had problems when we both attended meetings. Plus, we used that room as a closet so it was a bit messy.
+- The chair did not have lumbar support.
+- I could not lay my arms on the desk while typing, because the desk was not large enough: the keyboard was too close to the desk border.
+- The keyboard was an old (but good) apple Keyboard with a Mighty Mouse.
+- 🔊 I had no external speakers nor microphone, so my day was always wearing in-ear headphones (a Sony pair which I really love [**amzn.to/3pH7TwQ**](https://amzn.to/3pH7TwQ) ).
+- 💅🏻 I did have a lot of shadows and light coming from the left, making me not look good on the webcam.
+- ❗The room was shared with my wife: her desk was on the opposite side of the room. but we had problems when we both attended meetings. Plus, we used that room as a closet so it was a bit messy.
 
 ## Start renovating
 
@@ -92,11 +92,11 @@ This is a bit of what the office looks like right now 😁
 
 ## Still missing
 
-1.  a microphone that makes me sound like a rock star 🧑🏻‍🎤🎙️
-2.  external speakers that make my in-ear headphones not needed at all 🎶
-3.  a fixed external webcam with higher definition 📸
-4.  sound absorbing panels
-5.  a big wide curved monitor (I think 1 big monitor may be superior to the 2 monitors setup)
-6.  probably, an air conditioner as I think summer may be really hot
-7.  a beautiful organizer like [**amzn.to/372JWcV**](https://amzn.to/372JWcV)
-8.  some paintings
+1. a microphone that makes me sound like a rock star 🧑🏻‍🎤🎙️
+2. external speakers that make my in-ear headphones not needed at all 🎶
+3. a fixed external webcam with higher definition 📸
+4. sound absorbing panels
+5. a big wide curved monitor (I think 1 big monitor may be superior to the 2 monitors setup)
+6. probably, an air conditioner as I think summer may be really hot
+7. a beautiful organizer like [**amzn.to/372JWcV**](https://amzn.to/372JWcV)
+8. some paintings
