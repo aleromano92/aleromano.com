@@ -3,7 +3,7 @@ title: "Upgrade Azure Schema Registry Without Downtime"
 description: "Be careful updating apps due to breaking changes. Get inspired from what I did."
 pubDate: 2022-08-31
 author: "Alessandro Romano"
-tags: ["Tech","Cloud"]
+tags: ["Design Pattern","Tech","Cloud"]
 language: "en"
 image:
     url: ../../../assets/blog/azure-schema-registry-upgrade/featured.jpg
@@ -62,7 +62,7 @@ import { Context } from "@azure/functions"
     context.log('AVRO Message deserialized.');
 ```
 
-_NOTE:_ Using `DefaultAzureCredential()` allows us to use a `Managed Identity` to handle authorization [**better than using a client secret**](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview).
+> _NOTE:_ Using `DefaultAzureCredential()` allows us to use a `Managed Identity` to handle authorization [**better than using a client secret**](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview).
 
 The test consisted in just deploying it in Test and observing it always enters the fallback branch.
 
