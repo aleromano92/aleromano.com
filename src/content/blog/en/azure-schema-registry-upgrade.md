@@ -70,7 +70,7 @@ We were able to update the Producer after 2 weeks: as soon as no other message w
 
 ## SUCCEED 🤘🏻
 
--   try to limit updates' scope and not have too many systems depending on each other ⛓️
--   always try the upgrade in a Test environment 🦺
--   when you plan on using a new Cloud Service, make sure you know the limit of the chosen plan and how hard is to upgrade 🤓
--   discuss your migration strategy with a colleague or someone you respect so you may catch some flaw in your logic 🧑‍🤝‍🧑
+- try to limit updates' scope and not have too many systems depending on each other ⛓️
+- always try the upgrade in a Test environment 🦺
+- when you plan on using a new Cloud Service, make sure you know the limit of the chosen plan and how hard is to upgrade 🤓
+- discuss your migration strategy with a colleague or someone you respect so you may catch some flaw in your logic 🧑‍🤝‍🧑
