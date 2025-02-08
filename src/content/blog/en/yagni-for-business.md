@@ -26,9 +26,9 @@ Consider you want to build a form to collect phone numbers for an alerting syste
 
 There are things you should define from the beginning, like making sure you are compliant with GDPR in EU countries and that you have a monitoring system to justify the invoices. But instead of focusing on all those things in the beginning, you can choose an MVP where:
 
--   the country is not in the EU so GDPR does not apply (reduce _compliance activities_)
--   the country is not so big, so you won't have billion of records from day one (reduce _technology constraints_)
--   the country has a simple fiscal system to apply VAT on invoices (reduce _processes burden_)
+- the country is not in the EU so GDPR does not apply (reduce _compliance activities_)
+- the country is not so big, so you won't have billion of records from day one (reduce _technology constraints_)
+- the country has a simple fiscal system to apply VAT on invoices (reduce _processes burden_)
 
 You launch the form in the chosen country in a relatively small time and monitor how it is going: it may happen that the revenues you obtain from this MVP are already aligned to your plan.
 
@@ -38,16 +38,16 @@ This is **Agile**, this is **Lean**, you ain't gonna need GDPR compliance nor in
 
 There are **risks** to using YAGNI without asking yourself questions. First, there are [2 types of decisions you can take](https://www.businessinsider.com/jeff-bezos-on-type-1-and-type-2-decisions-2016-4?r=US&IR=T):
 
-1.  Type 1 decisions, the not reversible one
-2.  Type 2 decisions, from where you can always go back
+1. Type 1 decisions, the not reversible one
+2. Type 2 decisions, from where you can always go back
 
-On Type 1 problems, not thinking about the future and the consequences may make you incur sunk costs later on in refactoring costs. So, while you may still not define and plan anything in advance, you must stress your decision by asking yourself things like:
+On Type 1 problems, not thinking about the future and the consequences may make you incur sunk costs later on. So, while you may still not define and plan anything in advance, you must stress your decision by asking yourself things like:
 
--   what would I do if I later need to support GDPR-relevant countries?
--   what if the volume hits so hard that our storage crashes? or our storage costs increase exponentially?
--   how would I make sure the feature I build supports a country where the percentage of VAT is higher than the country I'm launching in?
+- what would I do if I later need to support GDPR-relevant countries?
+- what if the volume hits so hard that our storage crashes? or our storage costs increase exponentially?
+- how would I make sure the feature I build supports a country where the percentage of VAT is higher than the country I'm launching in?
 
-While you are not **************solving************** these problems right now, you need to think of a way of doing them later and be **********aware********** on the risks and the shortcuts you are taking.
+While you are not **solving** these problems right now, you need to think of a way of doing them later and be **aware** on the risks and the shortcuts you are taking.
 
 ## Conclusion
 
