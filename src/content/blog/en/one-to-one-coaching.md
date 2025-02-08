@@ -10,7 +10,7 @@ image:
     alt: One-to-one wooden
 ---
 
-## **Coaching Helps You Develop a Safe Continuous Feedback Culture ♾️**
+## Coaching Helps You Develop a Safe Continuous Feedback Culture ♾️
 
 If the culture of your company is not conducive to open communication, then you could be missing out on one of the biggest benefits of a coaching relationship—namely, more frequent and consistent opportunities to give and receive feedback.
 
@@ -20,7 +20,7 @@ Being able to give and receive feedback on the job is important since all employ
 
 By getting coaching, you can ensure that feedback is happening in a safe, constructive way that is beneficial for both the person giving it and the person receiving it.
 
-## **Coaching Helps You Foster Employee Growth 🚀**
+## Coaching Helps You Foster Employee Growth 🚀
 
 As a coach, you can provide training, support and guidance to employees who may be struggling with their careers.
 
@@ -28,7 +28,7 @@ The more closely you can observe and understand the employee’s needs and goals
 
 A coach will also be able to provide helpful **feedback that helps employees build on their strengths and grow as individuals**. These feedback sessions should include providing advice on how to improve a particular skill (e.g., communication, refactoring, testing) or identifying areas to develop to be promoted (e.g., understanding budget concepts).
 
-## **Coaching Helps You Improve your Emotional Intelligence 🧘**
+## Coaching Helps You Improve your Emotional Intelligence 🧘
 
 Having one-to-one sessions is extremely beneficial for the coachee, but they have a high return on the coach as well.
 
@@ -38,6 +38,6 @@ You’ll get better at reading people, handling sticky situations, and helping o
 
 You must be patient and have a desire to help others. You’ll also have to have some knowledge about the topic you’re coaching.
 
-## **Conclusion 🧑‍🤝‍🧑**
+## Conclusion 🧑‍🤝‍🧑
 
 During these meetings, you will come across many different personalities, each with their quirks and ways of thinking. By actively listening to your coachee and asking the right questions, you will be able to improve your emotional intelligence which leads to a **more meaningful career**.
