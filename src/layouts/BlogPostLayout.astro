@@ -17,10 +17,34 @@ const i18nData = {
   currentLang,
   originalPost: originalPost ? `/posts/${originalPost.slug.split('/').slice(1).join('/')}` : frontmatter.originalLink,
 };
+
+// Determine back link text based on language
+const backText = currentLang === 'it' ? 'Torna alla lista' : 'Back to overview';
+
+// Default fallback URL if no history
+const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
 ---
 
 <BaseLayout pageTitle={pageTitle} i18nData={i18nData}>
   <article class="post">
+    <button class="back-link" data-fallback-url={fallbackUrl}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      {backText}
+    </button>
+
     <header class="post-header">
       <div class="post-meta">
         <time datetime={frontmatter.pubDate.toISOString()}>
@@ -66,7 +90,50 @@ const i18nData = {
 
 <ImageModal />
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const backButton = document.querySelector('.back-link');
+    if (!backButton) return;
+
+    backButton.addEventListener('click', () => {
+      // If we have history to go back to, use it
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        // If no history, use the fallback URL
+        const fallbackUrl = backButton.getAttribute('data-fallback-url') || '/blog';
+        window.location.href = fallbackUrl;
+      }
+    });
+  });
+</script>
+
 <style>
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1.1rem;
+    margin-bottom: var(--space-lg);
+    transition: all 0.2s ease;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+    transform: translateX(-4px);
+  }
+
+  .back-link svg {
+    width: 20px;
+    height: 20px;
+  }
+
   .post-header {
     margin-bottom: var(--space-xl);
   }
@@ -75,7 +142,7 @@ const i18nData = {
     display: flex;
     gap: var(--space-md);
     color: var(--color-text);
-    font-size: 0.9rem;
+    font-size: 1.3rem;
     margin-bottom: var(--space-md);
   }
 

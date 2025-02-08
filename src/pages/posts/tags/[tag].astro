@@ -38,8 +38,8 @@ export async function getStaticPaths() {
 }
 
 const { tag } = Astro.params;
-const { posts, lang } = Astro.props;
-const pageTitle = lang === 'en' ? `Posts about "${tag}"` : `Post che parlano di "${tag}"`;
+const { posts } = Astro.props;
+const pageTitle = `Posts about "${tag}"`;
 export const prerender = true;
 ---
 
