@@ -21,7 +21,7 @@ The 4 traits I focused on:
 3. look better during video calls 💅🏻
 4. reduce distractions ❗
 
-## This was the starting point.
+## This was the starting point
 
 ![image](../../../assets/blog/home-office-renovation/starting.jpeg)
 
