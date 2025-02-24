@@ -3,7 +3,7 @@ title: "Effective meetings start from the agenda"
 description: "You can find here my recipe on how to properly set up an agenda for an effective meeting. The questions you'll need to answer beforehand will challenge you at the point you may recognize you don't need the meeting at all."
 pubDate: 2022-01-16
 author: "Alessandro Romano"
-tags: ["Productivity","Async Work"]
+tags: ["Productivity", "Remote Work", "Leadership"]
 language: "en"
 image:
     url: ../../../assets/blog/effective-meetings-agenda/featured.jpg

@@ -3,7 +3,7 @@ title: "From Mac OS X to Windows 10 as a Developer"
 description: "You may think you'll get a poorer Developer eXperience and miss a lot of features you take for granted. I can show you how I migrated to good ol' Windows without losing my head."
 pubDate: 2020-11-01
 author: "Alessandro Romano"
-tags: ["Tech","DX", "Productivity"]
+tags: ["Tech", "Developer Experience", "Productivity", "Tools"]
 language: "en"
 image:
     url: ../../../assets/blog/mac-to-windows/featured.jpg

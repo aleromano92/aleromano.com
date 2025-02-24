@@ -3,7 +3,7 @@ title: 'Come gestire gli errori in TypeScript'
 description: 'Impara a gestire correttamente gli errori in TypeScript utilizzando i tipi unknown ed Error.'
 pubDate: 2024-03-21
 author: 'Alessandro Romano'
-tags: ['Typescript']
+tags: ["TypeScript"]
 language: 'it'
 originalLink: 'https://kentcdodds.com/blog/get-a-catch-block-error-message-with-typescript'
 image:

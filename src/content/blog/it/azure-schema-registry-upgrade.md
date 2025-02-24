@@ -3,7 +3,7 @@ title: "Upgrade di Azure Schema Registry Senza Alcun Downtime"
 description: "Attento all'aggiornamento delle tue app che contengono breaking changes. Prendi spunto da ciò che ho fatto."
 pubDate: 2022-08-31
 author: "Alessandro Romano"
-tags: ["Design Pattern","Tech","Cloud"]
+tags: ["Design Pattern", "Tech", "Cloud"]
 language: "it"
 image:
     url: ../../../assets/blog/azure-schema-registry-upgrade/featured.jpg

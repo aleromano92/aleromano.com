@@ -3,7 +3,7 @@ title: "La Mia Routine Mattutina"
 description: "Cosa faccio per mantenermi in salute e produttivo."
 pubDate: 2022-07-18
 author: "Alessandro Romano"
-tags: ["Inspiration","Wellness"]
+tags: ["Inspiration", "Wellness"]
 language: "it"
 image:
     url: ../../../assets/blog/morning-routine/featured.jpg

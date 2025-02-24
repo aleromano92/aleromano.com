@@ -3,7 +3,7 @@ title: "Ho rinnovato il mio Home Office"
 description: "Ci sono cose da considerare quando si crea una postazione di lavoro da casa per il lavoro da remoto. Ecco cosa ho fatto."
 pubDate: 2022-03-07
 author: "Alessandro Romano"
-tags: ["Productivity","Office Setup","Remote Work"]
+tags: ["Productivity", "Remote Work", "Workspace", "Personal Growth"]
 language: "it"
 image:
     url: ../../../assets/blog/home-office-renovation/featured.jpg

@@ -3,7 +3,7 @@ title: YAGNI for Business
 description: YAGNI stands for "You Ain't Gonna Need It". It's a principle of Extreme Programming (XP) that suggests not implementing a feature until it is necessary. It is an essential tool to avoid waste of time and resources that can be applied even in domains different than Software Development.
 pubDate: 2023-05-31
 author: Alessandro Romano
-tags: ["Productivity","Inspiration"]
+tags: ["Productivity", "Inspiration"]
 language: en
 image:
   url: ../../../assets/blog/yagni-for-business/featured.jpg

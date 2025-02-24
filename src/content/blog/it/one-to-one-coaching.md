@@ -3,7 +3,7 @@ title: "One-to-One Coaching: 3 Motivi Per Cui Ne Hai Bisogno!"
 description: "Nel mondo aziendale di oggi, frenetico e ad alta pressione, con così tante aziende che faticano a raggiungere gli ambiziosi obiettivi trimestrali, è facile capire perché alcuni leader pensino che non ci sia tempo per qualcosa di superfluo come il coaching one-to-one. Se sei in una posizione di leadership o aspiri ad esserlo, non rinunciare  al coaching. Ecco 3 motivi per cui hai bisogno di condurre sessioni one-to-one."
 pubDate: 2022-09-12
 author: "Alessandro Romano"
-tags: ["Inspiration","Coaching","1to1"]
+tags: ["Inspiration", "Coaching", "One To One"]
 language: "it"
 image:
     url: ../../../assets/blog/one-to-one-coaching/featured.jpg

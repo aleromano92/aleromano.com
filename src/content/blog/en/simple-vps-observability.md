@@ -1,7 +1,7 @@
 ---
 title: "Simple VPS Observability for Your Personal Website"
 description: "Learn how a lightweight monitoring solution can provide sufficient coverage for your personal website without the complexity of enterprise-grade tools."
-pubDate: 2024-02-24
+pubDate: 2025-02-24
 author: "Alessandro Romano"
 tags: ["DevOps", "Monitoring", "Docker", "Node.js"]
 language: "en"

@@ -3,7 +3,7 @@ title: "Le riunioni efficaci iniziano dall'agenda"
 description: "Ecco la mia ricetta su come preparare correttamente l'agenda per una riunione efficace. Le domande a cui dovrai rispondere in anticipo ti metteranno alla prova al punto che potresti realizzare che la riunione non è nemmeno necessaria."
 pubDate: 2022-01-16
 author: "Alessandro Romano"
-tags: ["Productivity","Async Work"]
+tags: ["Productivity", "Remote Work", "Leadership"]
 language: "it"
 image:
     url: ../../../assets/blog/effective-meetings-agenda/featured.jpg

@@ -3,7 +3,7 @@ title: "I renovated my Home Office"
 description: "There are things you should consider when creating a home office setup for remote working. Here's what I did."
 pubDate: 2022-03-07
 author: "Alessandro Romano"
-tags: ["Productivity","Office Setup","Remote Work"]
+tags: ["Productivity", "Remote Work", "Workspace", "Personal Growth"]
 language: "en"
 image:
     url: ../../../assets/blog/home-office-renovation/featured.jpg

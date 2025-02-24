@@ -3,7 +3,7 @@ title: "My Morning Routine"
 description: "What I do to stay healthy and productive."
 pubDate: 2022-07-18
 author: "Alessandro Romano"
-tags: ["Inspiration","Wellness"]
+tags: ["Inspiration", "Wellness"]
 language: "en"
 image:
     url: ../../../assets/blog/morning-routine/featured.jpg
