@@ -101,3 +101,14 @@ The deployment process consists of these automated steps:
 2. Builds the Docker image on the remote server (`predeploy`)
 3. Runs the container in detached mode on port 4321
 4. Switches back to local Docker context
+
+## 🔍 VPS Observability
+
+The project includes a monitoring solution for the VPS that hosts the website. This observability daemon:
+
+- Monitors Docker container status
+- Checks Docker logs for errors
+- Verifies website availability
+- Sends alerts via Telegram when issues are detected
+
+For detailed documentation, installation instructions, and configuration options, see the [Observability README](scripts/observability/README.md).
