@@ -136,19 +136,34 @@ const checkContainerStatus = () => {
 
         const containers = stdout.trim().split('\n');
         const stoppedContainers = [];
+        const monitoredContainers = new Set(CONFIG.containers);
+        let foundMonitoredContainers = 0;
 
         containers.forEach((container) => {
             const [name, status] = container.split('|');
 
             // Skip if we're only monitoring specific containers and this isn't one of them
-            if (CONFIG.containers.length > 0 && !CONFIG.containers.includes(name)) {
+            if (CONFIG.containers.length > 0 && !monitoredContainers.has(name)) {
                 return;
             }
+
+            // Count how many monitored containers we found
+            foundMonitoredContainers++;
 
             if (!status.startsWith('Up')) {
                 stoppedContainers.push({ name, status });
             }
         });
+
+        // Check if any monitored containers are missing entirely
+        if (CONFIG.containers.length > 0 && foundMonitoredContainers < CONFIG.containers.length) {
+            const foundContainerNames = new Set(containers.map(c => c.split('|')[0]));
+            const missingContainers = CONFIG.containers.filter(name => !foundContainerNames.has(name));
+
+            missingContainers.forEach(name => {
+                stoppedContainers.push({ name, status: 'Missing (not found in docker ps output)' });
+            });
+        }
 
         if (stoppedContainers.length > 0) {
             const message = stoppedContainers
@@ -212,7 +227,6 @@ const checkDockerLogs = () => {
 // Check website availability
 const checkWebsite = () => {
     log(`Checking website availability: ${CONFIG.website.url}`);
-
     const startTime = Date.now();
 
     // Create options for the request
@@ -270,7 +284,6 @@ const checkWebsite = () => {
         );
     });
 
-    // End the request
     request.end();
 };
 

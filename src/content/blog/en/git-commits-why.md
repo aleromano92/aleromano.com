@@ -1,7 +1,7 @@
 ---
 title: "Commit messages should explain why"
 description: "If you think AI-generated commit messages are a time-saving feature, you're wrong. If your commit messages summarize what you changed, read this post."
-pubDate: 2024-03-22
+pubDate: 2024-01-22
 author: "Alessandro Romano"
 tags: ["Git", "Best Practices", "Productivity"]
 language: "en"
