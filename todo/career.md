@@ -1,0 +1,8 @@
+- understand the rules of the game: what your company rewards..if there is a career framework it's a starting point, but it is too generic so ask your manager to convert principles to practical examples.
+- evergreen things
+  - business impact. quantifiable
+  - make your work visible: presentation, asynchronous communication and documentation , blog posts
+  - peer feedback: in particular from non-engineers
+  - external validation: meetups, talks, community 
+  - mentor others (connected to peer feedback)
+  - keep your promises
