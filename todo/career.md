@@ -1,8 +1,13 @@
-- understand the rules of the game: what your company rewards..if there is a career framework it's a starting point, but it is too generic so ask your manager to convert principles to practical examples.
-- evergreen things
-  - business impact. quantifiable
+- understand the rules of the game: what your company rewards. 
+  - If there is a career framework it's a starting point, but it is too generic so ask your manager to convert principles to practical examples.
+  - evergreen is business impact. Quantify it.
+  - understand how your manager is evaluated. Help them.
+- "I'm on it" or the Power of Accountability. Show up, take ownership and action, solve the problem. Seek for more work and responsibilities before asking for a promotion.
   - make your work visible: presentation, asynchronous communication and documentation , blog posts
+  - always keep your promises. When you cannot, tell people.
+  - own your career. You should care the most, managers can change.
+- ask and give back
+  - ask feedback from people you think highly of. Not all the feedback is useful, filter it.
   - peer feedback: in particular from non-engineers
   - external validation: meetups, talks, community 
   - mentor others (connected to peer feedback)
-  - keep your promises
