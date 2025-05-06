@@ -17,6 +17,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./acme-challenge:/var/www/acme-challenge # Added for Let's Encrypt
       - /var/docker/aleromano.com/nginx/logs:/var/log/nginx
       - /var/docker/aleromano.com/nginx/cache:/var/cache/nginx
       - /etc/letsencrypt/live:/etc/letsencrypt/live:ro

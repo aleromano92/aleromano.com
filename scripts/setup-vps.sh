@@ -135,6 +135,47 @@ ufw allow 80/tcp
 ufw allow 443/tcp
 echo "y" | ufw enable
 
+# Install Certbot for SSL certificates with Let's Encrypt
+print_status "Installing Certbot..."
+apt-get install -y certbot
+
+# Create ACME challenge directory on the host
+# This directory will be mapped into the Nginx container for Let's Encrypt HTTP-01 challenges.
+# $PROJECT_DIR is typically /home/$USERNAME/app as defined earlier in this script.
+ACME_CHALLENGE_DIR_HOST="$PROJECT_DIR/acme-challenge"
+print_status "Creating ACME challenge directory at $ACME_CHALLENGE_DIR_HOST for Let's Encrypt..."
+mkdir -p "$ACME_CHALLENGE_DIR_HOST"
+# Set ownership to the deployment user so they can manage it if needed,
+# and ensure it's readable by Nginx (which runs as root in the container by default).
+chown "$USERNAME:$USERNAME" "$ACME_CHALLENGE_DIR_HOST"
+chmod 755 "$ACME_CHALLENGE_DIR_HOST"
+
+print_status "Certbot Installation Complete."
+echo "----------------------------------------------------------------------------------------------------"
+echo "IMPORTANT POST-SETUP STEPS FOR SSL (Let's Encrypt with Certbot):"
+echo "1. Ensure your domain (e.g., aleromano.com and www.aleromano.com) points to this server's IP address."
+echo "2. Your 'docker-compose.prod.yml' should map '$ACME_CHALLENGE_DIR_HOST' on the host to"
+echo "   '/var/www/acme-challenge' inside the Nginx container. For example:"
+echo "   volumes:"
+echo "     - ./acme-challenge:/var/www/acme-challenge"
+echo "3. Your Nginx configuration (e.g., 'nginx/prod.conf') must have a location block for ACME challenges:"
+echo "   location /.well-known/acme-challenge/ { root /var/www/acme-challenge; }"
+echo "4. Deploy your application and Nginx using Docker Compose (e.g., docker-compose -f docker-compose.prod.yml up -d)."
+echo "5. Once Nginx is running and publicly accessible, run Certbot MANUALLY AS ROOT on the HOST server:"
+echo "   sudo certbot certonly --webroot -w $ACME_CHALLENGE_DIR_HOST \\"
+echo "     -d YOUR_DOMAIN -d www.YOUR_DOMAIN \\"
+echo "     --email YOUR_EMAIL --agree-tos --no-eff-email --non-interactive"
+echo "   (Replace YOUR_DOMAIN and YOUR_EMAIL with your actual details. Use your primary domain for YOUR_DOMAIN)."
+echo "6. Certbot automatically sets up a renewal process (usually via a systemd timer or cron job)."
+echo "   Test this with: sudo certbot renew --dry-run"
+echo "7. To ensure Nginx uses the renewed certificate, Certbot's renewal process needs to reload/restart Nginx."
+echo "   You can add a --post-hook to a cron job/systemd timer for 'certbot renew'."
+echo "   Example cron job (run 'sudo crontab -e' and add this line, adjust paths if necessary):"
+echo "   0 3 * * * /usr/bin/certbot renew --quiet --post-hook \\"
+echo "     \\"cd $PROJECT_DIR && /usr/local/bin/docker-compose -f $PROJECT_DIR/docker-compose.prod.yml restart nginx\\""
+echo "   (This assumes docker-compose is at /usr/local/bin/docker-compose and your project is at $PROJECT_DIR)"
+echo "----------------------------------------------------------------------------------------------------"
+
 # Print completion message
 print_status "Setup complete! Please:"
 echo "1. Add your SSH public key to: /home/$USERNAME/.ssh/authorized_keys"
@@ -146,4 +187,4 @@ echo "   HETZNER_SSH_KEY: <your-private-ssh-key>"
 echo "4. Docker volumes are set up at: $DOCKER_DATA_DIR"
 
 # Print warning about SSH key
-print_error "IMPORTANT: Make sure to add your SSH public key before logging out!" 
+print_error "IMPORTANT: Make sure to add your SSH public key before logging out!"
