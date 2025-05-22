@@ -21,7 +21,7 @@ function createJsonResponse(responseData: ApiResponseData, status: number): Resp
 }
 
 // Define allowed contact reasons that require full form data and email sending
-const VALID_EMAIL_REASONS = ["consultancy", "mentoring", "job", "general"];
+const VALID_CONTACT_REASONS = ["consultancy", "mentoring", "job", "general"];
 
 export const POST: APIRoute = async ({ request }) => {
   if (request.headers.get("Content-Type") !== "application/json") {
@@ -40,7 +40,7 @@ export const POST: APIRoute = async ({ request }) => {
     // Validate if the reason is one of the allowed types for processing
     // "bug" reason is handled client-side and should not reach this API endpoint with full form data.
     // If it does, or if the reason is unknown, it's an invalid request.
-    if (!VALID_EMAIL_REASONS.includes(reason)) {
+    if (!VALID_CONTACT_REASONS.includes(reason)) {
         return createJsonResponse({ success: false, message: "Invalid contact reason provided." }, HTTP_BAD_REQUEST);
     }
 
@@ -54,7 +54,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const PERSONAL_EMAIL = import.meta.env.ALE_PERSONAL_EMAIL;
-    if (!PERSONAL_EMAIL) {
+    if (!PERSONAL_EMAIL && VALID_CONTACT_REASONS.includes(reason)) { // Check added to ensure PERSONAL_EMAIL is only critical if we intend to send an email
       console.error("ALE_PERSONAL_EMAIL environment variable is not set.");
       return createJsonResponse({ success: false, message: "Server configuration error. Please try again later." }, HTTP_INTERNAL_SERVER_ERROR);
     }

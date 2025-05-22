@@ -48,3 +48,12 @@ I have feedback I want you to address in contact.ts API:
   - use apital letters and _ for personalEmail since it is a constant
 
 ask me any clarification question before implementing.
+
+-- Step 3 - wiring the form to the API
+Before we proceed, i have feedback to share:
+  - the input fields label/id are not aligned among the contact.astro and the expected input for the contact.ts API
+  - are you sure the form is accessible, navigable by keyboard and submittable by pressing enter?
+  - contactReasons and prefillMessages in contact.ts are constant, use capital letters and _
+  - VALID_EMAIL_REASONS should be renamed to VALID_CONTACT_REASONS in contact.ts
+  - resetting the form in contact.astro is duplicated, extract it to a single function and re-use it
+
