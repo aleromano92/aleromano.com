@@ -33,3 +33,18 @@ Let's do this step by step and ask for my validation before proceeding to the ne
 
 Ask me any clarification question before implementing.
 
+--
+
+Step 1 - extracting button and creating the form
+No additional prompt, I just did a little manual intervention
+
+-- Step 2 - expose an API to hanlde contact requests
+I have feedback I want you to address in contact.ts API:
+  - you defined missingLinks as a let, but it is an array on which you push so you can use const there
+  - define an enum or reuse an existing one coming from Astro for the "magic numbers" about HTTP status. Like 400, 500
+  - there is a lot of repetition on returning the response, setting the status and the body, plus HTTP header for Content-Type. Please refactor and centralize in a function.
+  - define a type that properly represent the Response including the success boolean field and the string message field
+  - tweak the check for "bug" reason to basically check that the reason is one of the allowed ones, instead of checking for the not allowed ones
+  - use apital letters and _ for personalEmail since it is a constant
+
+ask me any clarification question before implementing.
