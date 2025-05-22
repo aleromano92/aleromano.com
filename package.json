@@ -26,12 +26,14 @@
     "@astrojs/node": "^9.0.1",
     "@astrojs/rss": "^4.0.11",
     "astro": "^5.5.6",
+    "nodemailer": "^7.0.3",
     "rehype-external-links": "^3.0.0",
     "shiki": "^1.1.7",
     "turndown": "^7.2.0",
     "typescript": "^5.5.4"
   },
   "devDependencies": {
+    "@types/nodemailer": "^6.4.17",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
     "eslint": "^8.57.0",
