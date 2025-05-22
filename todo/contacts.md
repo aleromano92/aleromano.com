@@ -13,6 +13,7 @@ In the form, the inputs should be in this order:
 
 Here is the list of contact reasons and dedicated actions:
 
+- blank option selected as default -> before an option is selected, the rest of the form will be hidden
 - problems on the website, wether it's a bug or issue with the content -> the form will hide all the input and just render a button that links to opening an issue on GitHub directly on my project, https://github.com/aleromano92/aleromano.com
 - consultancy request -> prefill the Message textarea with a sentence that says "Please, in order to make good use of your time and mine, please don't contact me before reviewing at least my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). If you think I could be a good help for your company, write here why you think so and leave me a link to get more details". The submit button will send those info to my personal email.
 - mentoring -> prefill the Message textarea with a sentence that says "Please, in order to make good use of your time and mine, write here why you think I could be of any help and I will happily do my best to help you". The submit button will send those info to my personal email.
@@ -26,7 +27,7 @@ The spirit of this project is to be back at the basics and build things from scr
 
 Use in-page <style> just put it after the HTML content like the other files you could use for reference. Remember to use the CSS variables i've defined in the styles/theme.css file.
 Make the layout responsive and be sure to use proper colors as I support light/dark theme.
-For the buttons, use the same styles as the 404.astro page. Export button styles to a separate file and import it in the contact.astro page and the 404 page if you think it's relevant.
+For all the buttons, use the same styles as the 404.astro page. Export button styles to a separate file and import it in the contact.astro page and the 404 page if you think it's relevant.
 
 Let's do this step by step and ask for my validation before proceeding to the next step.
 

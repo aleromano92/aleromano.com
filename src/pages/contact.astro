@@ -3,12 +3,171 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const pageTitle = 'Contact';
 export const prerender = true;
+
+const contactReasons = {
+  '': 'Select a reason...',
+  problems: 'Problems on the website',
+  consultancy: 'Consultancy request',
+  mentoring: 'Mentoring',
+  job: 'Job opportunities',
+  general: 'General inquiry',
+};
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  <p>
-    Oops! My AI Engineer got a bit too comfortable in their virtual hammock and hasn't built the contact form yet. They
-    claim they were "optimizing their neural pathways" (aka napping in binary). Check back soon - once I reboot them
-    with some fresh training data, this page will be fully functional!
-  </p>
+  <div class="contact-form-container">
+    <h1>{pageTitle}</h1>
+    <form id="contactForm">
+      <div class="form-group">
+        <label for="contactReason">Contact reason</label>
+        <select id="contactReason" name="contactReason">
+          {Object.entries(contactReasons).map(([value, text]) => <option value={value}>{text}</option>)}
+        </select>
+      </div>
+
+      <div id="formFields" style="display: none;">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+        </div>
+
+        <button type="submit" class="button">Submit</button>
+      </div>
+    </form>
+
+    <div id="githubIssueButtonContainer" style="display: none;">
+      <a
+        href="https://github.com/aleromano92/aleromano.com/issues/new"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="button"
+      >
+        Open GitHub Issue
+      </a>
+    </div>
+  </div>
 </BaseLayout>
+
+<script>
+  const contactReasonSelect = document.getElementById('contactReason') as HTMLSelectElement;
+  const formFields = document.getElementById('formFields') as HTMLDivElement;
+  const githubIssueButtonContainer = document.getElementById('githubIssueButtonContainer') as HTMLDivElement;
+  const messageTextarea = document.getElementById('message') as HTMLTextAreaElement;
+  const contactForm = document.getElementById('contactForm') as HTMLFormElement;
+
+  const prefillMessages: Record<string, string> = {
+    consultancy:
+      "Please, in order to make good use of your time and mine, please don't contact me before reviewing at least my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). If you think I could be a good help for your company, write here why you think so and leave me a link to get more details",
+    mentoring:
+      'Please, in order to make good use of your time and mine, write here why you think I could be of any help and I will happily do my best to help you',
+    job: "please, in order to make good use of your time and mine, please don't contact me before reviewing at least my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). If you think I could be a good fit for your company, write here why you think so and leave me a link to get more details",
+  };
+
+  contactReasonSelect.addEventListener('change', () => {
+    const reason = contactReasonSelect.value;
+
+    messageTextarea.value = ''; // Clear message on change
+    formFields.style.display = 'none';
+    githubIssueButtonContainer.style.display = 'none';
+
+    if (reason === 'problems') {
+      githubIssueButtonContainer.style.display = 'block';
+    } else if (reason === 'consultancy' || reason === 'mentoring' || reason === 'job' || reason === 'general') {
+      formFields.style.display = 'block';
+      if (prefillMessages[reason]) {
+        messageTextarea.value = prefillMessages[reason];
+      }
+    }
+  });
+
+  contactForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    // API call logic will be added in the next step
+    console.log('Form submitted');
+    const formData = new FormData(contactForm);
+    const data = Object.fromEntries(formData.entries());
+    console.log(data);
+    // For now, just log to console. Later, this will send to the API endpoint.
+    alert('Form submission logic to be implemented.');
+  });
+</script>
+
+<style>
+  @import '../styles/buttons.css';
+
+  .contact-form-container {
+    max-width: 600px;
+    margin: var(--space-xl) auto;
+    padding: var(--space-lg);
+    background-color: var(--color-bg-offset);
+    border-radius: 8px;
+    color: var(--color-text);
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+    color: var(--color-headings);
+  }
+
+  .form-group {
+    margin-bottom: var(--space-md);
+  }
+
+  label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    font-weight: bold;
+    color: var(--color-text-offset);
+  }
+
+  input[type='text'],
+  input[type='email'],
+  select,
+  textarea {
+    width: 100%;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    box-sizing: border-box; /* Ensures padding doesn't affect overall width */
+  }
+
+  input[type='text']:focus,
+  input[type='email']:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px var(--color-accent-transparent);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  #githubIssueButtonContainer {
+    text-align: center;
+    margin-top: var(--space-md);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .contact-form-container {
+      margin: var(--space-lg) var(--space-md);
+      padding: var(--space-md);
+    }
+  }
+</style>

@@ -1,0 +1,24 @@
+/* Buttons */
+.button {
+    display: inline-block;
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: 4px;
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    /* Added to ensure consistency if <button> elements are used */
+    cursor: pointer;
+    /* Added for better UX on <button> elements */
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.button.secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+}
