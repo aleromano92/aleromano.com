@@ -63,6 +63,7 @@ const contactReasons = {
   const githubIssueButtonContainer = document.getElementById('githubIssueButtonContainer') as HTMLDivElement;
   const messageTextarea = document.getElementById('message') as HTMLTextAreaElement;
   const contactForm = document.getElementById('contactForm') as HTMLFormElement;
+  const submitButton = contactForm.querySelector('button[type="submit"]') as HTMLButtonElement;
 
   const prefillMessages: Record<string, string> = {
     consultancy:
@@ -78,11 +79,14 @@ const contactReasons = {
     messageTextarea.value = ''; // Clear message on change
     formFields.style.display = 'none';
     githubIssueButtonContainer.style.display = 'none';
+    // Ensure submit button is visible if form fields are shown, and hidden if not
+    if (submitButton) submitButton.style.display = 'none';
 
     if (reason === 'problems') {
       githubIssueButtonContainer.style.display = 'block';
     } else if (reason === 'consultancy' || reason === 'mentoring' || reason === 'job' || reason === 'general') {
       formFields.style.display = 'block';
+      if (submitButton) submitButton.style.display = 'block'; // Show submit button
       if (prefillMessages[reason]) {
         messageTextarea.value = prefillMessages[reason];
       }
@@ -91,13 +95,67 @@ const contactReasons = {
 
   contactForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-    // API call logic will be added in the next step
-    console.log('Form submitted');
+
     const formData = new FormData(contactForm);
     const data = Object.fromEntries(formData.entries());
-    console.log(data);
-    // For now, just log to console. Later, this will send to the API endpoint.
-    alert('Form submission logic to be implemented.');
+
+    // Basic client-side validation for required fields if the form is visible
+    if (formFields.style.display === 'block') {
+      if (!data.name || !data.email || !data.message) {
+        alert('Please fill in all required fields: Name, Email, and Message.');
+        return;
+      }
+    }
+
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = 'Submitting...';
+    }
+
+    let feedbackMessage = '';
+    let feedbackSuccess = false;
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        feedbackMessage = result.message || 'Your message has been sent successfully!';
+        feedbackSuccess = true;
+        contactForm.reset(); // Reset form on success
+        // Trigger change on contactReasonSelect to reset form visibility to initial state
+        contactReasonSelect.dispatchEvent(new Event('change'));
+      } else {
+        feedbackMessage = result.message || 'An error occurred. Please try again.';
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      feedbackMessage = 'An unexpected error occurred. Please check your connection and try again.';
+    }
+
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Submit';
+    }
+
+    // Display feedback to the user (e.g., using an alert or a dedicated element)
+    // For now, using alert. Consider a more integrated UI element later.
+    alert(feedbackMessage);
+
+    if (feedbackSuccess) {
+      // Optionally, clear fields or redirect, here we reset and hide based on reason change
+      messageTextarea.value = ''; // Clear message textarea specifically
+      formFields.style.display = 'none';
+      if (submitButton) submitButton.style.display = 'none';
+      contactReasonSelect.value = ''; // Reset select to default
+    }
   });
 </script>
 
