@@ -63,3 +63,7 @@ Before we proceed, i have feedback to share:
 
 --
 
+Step 4 - Sendinf the email for real
+Before we proceed, I have feedback to share:
+  - I want just one call to nodemailer.createTransport(). Please, extract in a function the SMTP config resolver so we can encapsulate the check of wether we are in dev or prod environment
+  - the resolver should return the information about wether we are using a real SMTP server or Ethereal. use this value to refactor the if (!smtpHost) { // If using Ethereal
