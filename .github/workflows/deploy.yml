@@ -95,11 +95,11 @@ jobs:
 
             # Create .env file for docker-compose
             echo "Creating .env file for Docker Compose on the server..."
-            echo "REGISTRY=\\'${{ env.REGISTRY }}\\'" > .env
-            echo "IMAGE_NAME=\\'${{ github.repository }}\\'" >> .env # Using github.repository directly as IMAGE_NAME
-            echo "ALE_PERSONAL_EMAIL=\\'${{ secrets.ALE_PERSONAL_EMAIL }}\\'" >> .env
-            echo "GOOGLE_APP_USER=\\'${{ secrets.GOOGLE_APP_USER }}\\'" >> .env
-            echo "GOOGLE_APP_PASSWORD=\\'${{ secrets.GOOGLE_APP_PASSWORD }}\\'" >> .env
+            echo "REGISTRY=${{ env.REGISTRY }}" > .env
+            echo "IMAGE_NAME=${{ github.repository }}" >> .env # Using github.repository directly as IMAGE_NAME
+            echo "ALE_PERSONAL_EMAIL=\'${{ secrets.ALE_PERSONAL_EMAIL }}\'" >> .env
+            echo "GOOGLE_APP_USER=\'${{ secrets.GOOGLE_APP_USER }}\'" >> .env
+            echo "GOOGLE_APP_PASSWORD=\'${{ secrets.GOOGLE_APP_PASSWORD }}\'" >> .env
 
             echo "DEBUG: Contents of .env file created on server:"
             cat .env # This will print the .env file content to your GitHub Actions log
