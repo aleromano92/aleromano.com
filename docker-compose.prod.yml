@@ -8,6 +8,11 @@ services:
       - NODE_ENV=production
       - HOST=0.0.0.0
       - PORT=4321
+      - SMTP_HOST=smtp-relay
+      - SMTP_PORT=1025
+      # ALE_PERSONAL_EMAIL will be set in the environment
+    depends_on:
+      - smtp-relay
 
   nginx:
     image: nginx:alpine
@@ -27,3 +32,22 @@ services:
       - app
     environment:
       - ENVIRONMENT=prod
+
+  smtp-relay:
+    image: namshi/smtp:latest
+    restart: unless-stopped
+    ports:
+      - "1025:25" # Exposes the relay on host port 1025, mapping to container port 25
+    environment:
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USERNAME=${GOOGLE_APP_USER} # Your Gmail address
+      - SMTP_PASSWORD=${GOOGLE_APP_PASSWORD} # Your Google App Password
+      - SMTP_AUTH=login # Use 'login' for Gmail
+      - RELAY_DOMAINS=* # Or specify domains if needed, * allows all
+    # Add healthcheck if desired
+    # healthcheck:
+    #   test: ["CMD", "nc", "-z", "localhost", "25"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3

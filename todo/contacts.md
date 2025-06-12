@@ -67,3 +67,16 @@ Step 4 - Sendinf the email for real
 Before we proceed, I have feedback to share:
   - I want just one call to nodemailer.createTransport(). Please, extract in a function the SMTP config resolver so we can encapsulate the check of wether we are in dev or prod environment
   - the resolver should return the information about wether we are using a real SMTP server or Ethereal. use this value to refactor the if (!smtpHost) { // If using Ethereal
+
+  --
+
+Step 5 - Configuring SMTP server with Docker
+While my end goal in the future is to setup and own a full fledged SMTP server, I want to get things done today. So we should proceed with an SMTP relayer congfigured in docker and use Google SMTP server to send the emails.
+I'm not interested at the moment at receiving email to something like contact@aleromano.com nor setup mailboxes.
+
+Since in dev setup we are using Ethereal through nodemailer, I expect you to touch only the docker-compose.prod.yml file.
+You have already defined constants for the SMTP configuration in contact.ts, so you can reuse those values in the docker-compose.prod.yml file. If you need somerhing specific for Google, define additional constants. Guide me on how to get credentials from my Google account, like App Passwords.
+
+Note there isn't any custom network configured in docker within the app container and the nginx container. I suppose the default bridge network is used.
+
+Ask me any clarification question before implementing.
