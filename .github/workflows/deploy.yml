@@ -63,6 +63,18 @@ jobs:
             echo "Error: HETZNER_SSH_KEY secret is not set"
             exit 1
           fi
+          if [ -z "${{ secrets.ALE_PERSONAL_EMAIL }}" ]; then
+            echo "Error: ALE_PERSONAL_EMAIL secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.GOOGLE_APP_USER }}" ]; then
+            echo "Error: GOOGLE_APP_USER secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.GOOGLE_APP_PASSWORD }}" ]; then
+            echo "Error: GOOGLE_APP_PASSWORD secret is not set"
+            exit 1
+          fi
 
       - name: Deploy to Hetzner
         uses: appleboy/ssh-action@master
@@ -84,6 +96,9 @@ jobs:
             # Export environment variables for docker-compose
             export REGISTRY="${{ env.REGISTRY }}"
             export IMAGE_NAME="${{ env.IMAGE_NAME }}"
+            export ALE_PERSONAL_EMAIL="${{ secrets.ALE_PERSONAL_EMAIL }}"
+            export GOOGLE_APP_USER="${{ secrets.GOOGLE_APP_USER }}"
+            export GOOGLE_APP_PASSWORD="${{ secrets.GOOGLE_APP_PASSWORD }}"
 
             # Login to GitHub Container Registry
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
