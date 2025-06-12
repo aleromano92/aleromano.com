@@ -93,12 +93,16 @@ jobs:
               git clone https://github.com/${{ github.repository }}.git .
             fi
 
-            # Export environment variables for docker-compose
-            export REGISTRY="${{ env.REGISTRY }}"
-            export IMAGE_NAME="${{ env.IMAGE_NAME }}"
-            export ALE_PERSONAL_EMAIL="${{ secrets.ALE_PERSONAL_EMAIL }}"
-            export GOOGLE_APP_USER="${{ secrets.GOOGLE_APP_USER }}"
-            export GOOGLE_APP_PASSWORD="${{ secrets.GOOGLE_APP_PASSWORD }}"
+            # Create .env file for docker-compose
+            echo "Creating .env file for Docker Compose on the server..."
+            echo "REGISTRY=\\'${{ env.REGISTRY }}\\'" > .env
+            echo "IMAGE_NAME=\\'${{ github.repository }}\\'" >> .env # Using github.repository directly as IMAGE_NAME
+            echo "ALE_PERSONAL_EMAIL=\\'${{ secrets.ALE_PERSONAL_EMAIL }}\\'" >> .env
+            echo "GOOGLE_APP_USER=\\'${{ secrets.GOOGLE_APP_USER }}\\'" >> .env
+            echo "GOOGLE_APP_PASSWORD=\\'${{ secrets.GOOGLE_APP_PASSWORD }}\\'" >> .env
+
+            echo "DEBUG: Contents of .env file created on server:"
+            cat .env # This will print the .env file content to your GitHub Actions log
 
             # Login to GitHub Container Registry
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
