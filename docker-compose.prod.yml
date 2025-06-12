@@ -10,7 +10,7 @@ services:
       - PORT=4321
       - SMTP_HOST=smtp-relay
       - SMTP_PORT=1025
-      # ALE_PERSONAL_EMAIL will be set in the environment
+      - ALE_PERSONAL_EMAIL=${ALE_PERSONAL_EMAIL}
     depends_on:
       - smtp-relay
 
