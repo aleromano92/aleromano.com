@@ -39,11 +39,8 @@ services:
     ports:
       - "1025:25" # Exposes the relay on host port 1025, mapping to container port 25
     environment:
-      - SMTP_HOST=smtp.gmail.com
-      - SMTP_PORT=587
-      - SMTP_USERNAME=${GOOGLE_APP_USER} # Your Gmail address
-      - SMTP_PASSWORD=${GOOGLE_APP_PASSWORD} # Your Google App Password
-      - SMTP_AUTH=login # Use 'login' for Gmail
+      - GMAIL_USER=${GOOGLE_APP_USER} # Your Gmail address
+      - GMAIL_PASSWORD=${GOOGLE_APP_PASSWORD} # Your Google App Password
       - RELAY_DOMAINS=* # Or specify domains if needed, * allows all
     # Add healthcheck if desired
     # healthcheck:

@@ -30,10 +30,10 @@ interface MailTransportConfig {
 }
 
 async function getMailTransportConfig(): Promise<MailTransportConfig> {
-  const smtpHost = import.meta.env.SMTP_HOST;
-
+  const smtpHost = import.meta.env.SMTP_HOST || process.env.SMTP_HOST;
   // Defaulting to 1025 here is a fallback if SMTP_PORT is somehow not set when using smtp-relay.
-  const smtpPort = parseInt(import.meta.env.SMTP_PORT || '1025', 10);
+  const smtpPortString = import.meta.env.SMTP_PORT || process.env.SMTP_PORT || '1025';
+  const smtpPort = parseInt(smtpPortString, 10);
 
   if (smtpHost === 'smtp-relay') {
     console.log(`Using internal SMTP relay for email sending: ${smtpHost}:${smtpPort}`);
@@ -103,9 +103,9 @@ export const POST: APIRoute = async ({ request }) => {
       return createJsonResponse({ success: false, message: `Missing required fields: ${missingFields.join(', ')}.` }, HTTP_BAD_REQUEST);
     }
 
-    const PERSONAL_EMAIL = import.meta.env.ALE_PERSONAL_EMAIL;
-    if (!PERSONAL_EMAIL && VALID_CONTACT_REASONS.includes(reason)) {
-      console.error("ALE_PERSONAL_EMAIL environment variable is not set.");
+    const PERSONAL_EMAIL = import.meta.env.ALE_PERSONAL_EMAIL || process.env.ALE_PERSONAL_EMAIL;
+    if (!PERSONAL_EMAIL) {
+      console.error("ALE_PERSONAL_EMAIL environment variable is not set through import.meta.env or process.env.");
       return createJsonResponse({ success: false, message: "Server configuration error (email recipient not set). Please try again later." }, HTTP_INTERNAL_SERVER_ERROR);
     }
 
