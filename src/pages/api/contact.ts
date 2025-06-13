@@ -31,44 +31,47 @@ interface MailTransportConfig {
 
 async function getMailTransportConfig(): Promise<MailTransportConfig> {
   const smtpHost = import.meta.env.SMTP_HOST;
-  const smtpPort = parseInt(import.meta.env.SMTP_PORT || '587', 10);
-  const smtpUser = import.meta.env.SMTP_USER;
-  const smtpPass = import.meta.env.SMTP_PASS;
-  // Secure defaults to true if port is 465, otherwise false, unless explicitly set.
-  const smtpSecureEnv = import.meta.env.SMTP_SECURE;
-  let smtpSecure = smtpPort === 465; // Default for port 465
-  if (smtpSecureEnv !== undefined) {
-    smtpSecure = smtpSecureEnv === 'true';
-  }
 
-  if (smtpHost && smtpUser && smtpPass) {
-    console.log(`Using SMTP server: ${smtpHost}:${smtpPort}`);
+  // Defaulting to 1025 here is a fallback if SMTP_PORT is somehow not set when using smtp-relay.
+  const smtpPort = parseInt(import.meta.env.SMTP_PORT || '1025', 10);
+
+  if (smtpHost === 'smtp-relay') {
+    console.log(`Using internal SMTP relay for email sending: ${smtpHost}:${smtpPort}`);
     return {
       transportOptions: {
         host: smtpHost,
         port: smtpPort,
-        secure: smtpSecure,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass,
-        },
-      } as nodemailer.TransportOptions, // Added type assertion for narrowing
+        secure: false, // Typically, internal relays might not use TLS for app-to-relay communication.
+                      // The relay itself handles secure connection to the external SMTP (e.g., Gmail).
+      } as nodemailer.TransportOptions,
       isEthereal: false,
     };
   } else {
-    console.log("SMTP configuration not fully provided, creating a test Ethereal account for email sending.");
+    // This 'else' block is entered if SMTP_HOST is not 'smtp-relay'.
+    // This indicates a deviation from the primary intended production setup or local dev without the relay.
+    // Fallback to Ethereal for local development or as an indicator of misconfiguration.
+    console.warn(
+      `WARNING: SMTP_HOST is configured to '${smtpHost || 'undefined'}' instead of 'smtp-relay'. ` +
+      `The system is intended to use 'smtp-relay' for actual email delivery. ` +
+      `Falling back to an Ethereal test account. Emails sent via this fallback WILL NOT be delivered to actual recipients. ` +
+      `They will go to a test inbox on Ethereal. ` +
+      `For production/real email sending, ensure SMTP_HOST is set to 'smtp-relay' and SMTP_PORT is correctly configured (usually 1025 for the relay).`
+    );
     const testAccount = await nodemailer.createTestAccount();
-    console.log("Ethereal test account created. User: %s, Pass: %s", testAccount.user, testAccount.pass);
+    console.log(
+      `Ethereal fallback: Test account created. User: ${testAccount.user}, Pass: ${testAccount.pass}. ` +
+      `Emails can be previewed at Ethereal if sent successfully.`
+    );
     return {
       transportOptions: {
         host: 'smtp.ethereal.email',
-        port: 587,
-        secure: false,
+        port: 587, // Ethereal's standard SMTP port
+        secure: false, // Ethereal typically uses STARTTLS on port 587, so \`secure: false\` is correct.
         auth: {
           user: testAccount.user,
           pass: testAccount.pass,
         },
-      } as nodemailer.TransportOptions, // Added type assertion for narrowing
+      } as nodemailer.TransportOptions,
       isEthereal: true,
     };
   }
@@ -111,7 +114,7 @@ export const POST: APIRoute = async ({ request }) => {
       const transporter = nodemailer.createTransport(transportOptions);
 
       const mailOptions = {
-        from: `"${name} via aleromano.com" <${PERSONAL_EMAIL || 'fallback@example.com'}>`, // Added fallback for PERSONAL_EMAIL for safety, though validated above
+        from: `"${name} via aleromano.com" ${PERSONAL_EMAIL}>`,
         to: PERSONAL_EMAIL,
         replyTo: email,
         subject: `Contact Form: ${reason}`,
