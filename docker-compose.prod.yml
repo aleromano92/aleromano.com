@@ -9,7 +9,7 @@ services:
       - HOST=0.0.0.0
       - PORT=4321
       - SMTP_HOST=smtp-relay
-      - SMTP_PORT=1025
+      - SMTP_PORT=25 # App connects to smtp-relay container on its internal port 25
       - ALE_PERSONAL_EMAIL=${ALE_PERSONAL_EMAIL}
     depends_on:
       - smtp-relay
