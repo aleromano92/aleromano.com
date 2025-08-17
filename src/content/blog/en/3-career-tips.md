@@ -115,10 +115,12 @@ Few things are as important in your growth as helping others do the same. **Be a
 
 ## Conclusions
 
-Before you close this tab, I want to go against what I was saying at the beginning: learning a new programming language, sometimes, is the right thing to do to grow. Just like studying Design Patterns or automated testing.
+If you think your career is all about the stack you know, you’re screwed. You can learn Rust, Go, or the latest JavaScript framework… but if you don’t create impact, if you don’t take responsibility, and if nobody sees what you do, you’ll stay exactly where you are.
 
-But I believe the Internet is full of people promoting this as if it were the only thing needed in an Individual Contributor career.
-It's not like that, or at least there are very few companies in the world that reward only this component without all the rest I've told you about.
+Companies don’t promote "walking API dictionaries." They promote people who move the business needle and build trust.
+And you don’t learn that in an online course.
+
+So next time you think "I need another language to grow", ask yourself: am I really investing in my career… or just finding an elegant way to procrastinate?
 
 Happy growing! 🚀
 

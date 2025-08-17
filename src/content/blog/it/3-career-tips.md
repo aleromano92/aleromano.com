@@ -10,13 +10,13 @@ image:
     alt: Maechen che spiega cose a Tidus
 ---
 
-Nella mia esperienza pluriennale nel settore tech, ho lavorato per aziende con processi di promozione struttrati e altre che andavano a _sentimento_. Incredibilmente però, i profili delle persone che venivano promossi tendevano ad avere alcune caratteristiche in comune. 
+Nella mia esperienza pluriennale nel settore tech, ho lavorato per aziende con processi di promozione strutturati e altre che andavano a _sentimento_. Incredibilmente però, i profili delle persone che venivano promossi tendevano ad avere alcune caratteristiche in comune. 
 Quando leggo o sento Software Engineer dire cose come "voglio crescere come Individual Contributor, quindi ho deciso di studiare Rust per puntare ad una promozione" mi viene naturale sorridere e pensare tra me e me che difficilamente quel piano finirà bene. Non fraintendermi, ci sono tantissime cose che puoi imparare dallo studio di un nuovo linguaggio di programmazione, ma ci sono altre cose su cui concentrarti che potrebbero avere molto più effetto nel farti avere una promozione.
 
 ## 1. Capisci Cosa Premia la Tua Azienda
 
 **La prima regola: ogni azienda ha i suoi criteri di valutazione.**
-Ci sono aziende che valorizzano le persone che creano feature/prodotti nuovi e ne seguono il ciclo di vita completo, da ideazione a messa a produzione. Un esempio è Google dove soprattutto per certi ruoli sei "obbligato" a lanciare nuovi prodotti per ottenere una nuova promozione. Infatti, è pieno di prodotti che una volta esaurito lo scopo dell'Individual Contributor che spingeva per essi, finisce [abbandaonato e dismesso](https://gcemetery.co/).
+Ci sono aziende che valorizzano le persone che creano feature/prodotti nuovi e ne seguono il ciclo di vita completo, da ideazione a messa a produzione. Un esempio è Google dove soprattutto per certi ruoli sei "obbligato" a lanciare nuovi prodotti per ottenere una nuova promozione. Infatti, è pieno di prodotti che una volta esaurito lo scopo dell'Individual Contributor che spingeva per essi, finisce [abbandonato e dismesso](https://gcemetery.co/).
 Altre aziende invece premiano chi migliora i processi esistenti, come ad esempio Amazon, dove il focus è sull'efficienza e sull'ottimizzazione continua.
 Altre ancora guardano con ammirazione chi riesce semplicemente a far risparmiare i costi mastodontici del Cloud.
 
@@ -43,7 +43,7 @@ Alcuni esempi:
 - evita "ho aumentato la resilienza del sistema", spiega come "dopo il mio refactoring, il numero di incident in produzione su quel componente si è ridotto da 4 al mese a 1 ogni 3 mesi".
 - riscrivi "ho rilasciato la nuova feature X che ha velocizzato il tempo di analisi da parte delle persone di Operations" citando come "la nuova feature X permette di gestire il 10% in più di casi a parità di tempo, permettendoci di crescere senza necessità di assumere ulteriormente nel reparto Operations".
 
-### Capisci come viene valutato la tua Manager
+### Capisci come viene valutata la tua Manager
 
 Non è solo una questione di farti delegare parti del suo lavoro, nonostante sia un modo per te di crescere e provare sfide nuove. I suoi obiettivi diventano opportunità per te. Se il suo successo dipende dalla retention del team, proponi iniziative per migliorare l'employee experience. Se deve accelerare il delivery, concentrati sull'automazione e l'efficienza.
 
@@ -115,10 +115,12 @@ Poche cose sono importanti nella tua crescita quanto aiutare altri a farlo. **Fa
 
 ## Conclusioni
 
-Prima che chiudi questa Tab, voglio andare contro a quello che dicevo in apertura: imparare un nuovo linguaggio di programmazione, a volte, è la cosa giusta da fare per crescere. Così come studiare i Deisgn Pattern o i test automatici.
+Se pensi che la tua carriera si giochi solo sullo stack che conosci, sei fregato. La verità è che puoi studiare Rust, Go o l’ennesimo framework JavaScript… ma se non sai generare impatto, se non prendi responsabilità e se nessuno vede quello che fai, rimarrai esattamente dove sei.
 
-Ma credo che Internet sia pieno di persone che promuovono questo come se fosse l'unica cosa che serve nella carriera da Individual Contributor.  
-Non è così o quanto meno ci sono pochissime aziende al mondo che premiano solo questa componente senza tutto il resto che ti ho raccontato.
+Le aziende non promuovono "dizionari umani di API". Promuovono persone che spostano l’ago della bilancia sul business e che ispirano fiducia.
+E questa parte non la impari nei corsi online.
+
+Quindi, la prossima volta che pensi "mi serve un altro linguaggio per crescere", chiediti: sto cercando davvero di fare carriera… o sto solo procrastinando quello che conta davvero?
 
 Buona crescita! 🚀
 
