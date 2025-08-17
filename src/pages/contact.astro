@@ -18,7 +18,7 @@ const CONTACT_REASONS_DATA = {
   <div class="contact-form-container">
     <form id="contactForm">
       <div class="form-group">
-        <label for="contactReason">Contact reason</label>
+        <label for="contactReason">Reason</label>
         <select id="contactReason" name="reason">
           {/* Changed name to "reason" */}
           {Object.entries(CONTACT_REASONS_DATA).map(([value, text]) => <option value={value}>{text}</option>)}
@@ -116,8 +116,8 @@ const CONTACT_REASONS_DATA = {
     }
 
     if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.textContent = 'Submitting...';
+      submitButton.disabled = true;
+      submitButton.textContent = 'Submitting...';
     }
 
     let feedbackMessage = '';
@@ -145,8 +145,8 @@ const CONTACT_REASONS_DATA = {
     }
 
     if (submitButton) {
-        submitButton.disabled = false;
-        submitButton.textContent = 'Submit';
+      submitButton.disabled = false;
+      submitButton.textContent = 'Submit';
     }
 
     alert(feedbackMessage);

@@ -34,7 +34,7 @@ Poni domande specifiche:
 
 ### L'Impatto sul Business
 
-Questo è un denominatore comune a tutte le aziende. Sì, prima ti ho spiegato che aziende ddiverse premiano comportamenti diversi, ma avere nel proprio Promo Case la descrizione dell'impatto di business portato è un evergreen che piace a qualsiasi manager.
+Questo è un denominatore comune a tutte le aziende. Sì, prima ti ho spiegato che aziende diverse premiano comportamenti diversi, ma avere nel proprio Promo Case la descrizione dell'impatto di business portato è un evergreen che piace a qualsiasi manager.
 La cosa più importante che devi fare è **quantificarlo**. 
 
 Alcuni esempi:
@@ -121,7 +121,5 @@ Ma credo che Internet sia pieno di persone che promuovono questo come se fosse l
 Non è così o quanto meno ci sono pochissime aziende al mondo che premiano solo questa componente senza tutto il resto che ti ho raccontato.
 
 Buona crescita! 🚀
-
----
 
 *Se questo articolo ti è stato utile, condividilo con un collega che potrebbe beneficiarne. E se vuoi discutere di questi temi, [scrivimi](/contact).*
