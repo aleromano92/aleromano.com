@@ -1,10 +1,18 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
+import TwitterFeed from '../components/TwitterFeed.astro';
 import profilePic from '../assets/alepro.png';
+import { getTwitterFeedData } from '../utils/twitter/twitter-feed';
+import { getLanguageFromURL } from '../utils/i18n';
 
 const pageTitle = 'Alessandro Romano';
-export const prerender = true;
+
+// Get the current language from URL (defaults to 'en' for homepage)
+const language = getLanguageFromURL(Astro.url.pathname) || 'en';
+
+// Fetch Twitter data server-side for live updates
+const twitterData = await getTwitterFeedData();
 ---
 
 <BaseLayout pageTitle={pageTitle}>
@@ -42,6 +50,13 @@ export const prerender = true;
       class="profile-pic"
     />
   </div>
+
+  <TwitterFeed
+    posts={twitterData.posts}
+    error={twitterData.error}
+    language={language}
+    freshness={twitterData.freshness}
+  />
 </BaseLayout>
 
 <style>

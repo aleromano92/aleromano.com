@@ -1,0 +1,111 @@
+{
+    "data": [
+        {
+            "id": "1747982341234567890",
+            "text": "Just shipped a new feature! Excited to see how users respond to the improved UX. The devil is always in the details when it comes to making software that people actually want to use. #webdev #typescript #ux",
+            "created_at": "2024-01-15T14:30:00.000Z",
+            "author_id": "4266046641",
+            "public_metrics": {
+                "retweet_count": 8,
+                "like_count": 24,
+                "reply_count": 5,
+                "quote_count": 2
+            },
+            "attachments": {
+                "media_keys": [
+                    "3_1747982341234567890"
+                ]
+            }
+        },
+        {
+            "id": "1747925678901234567",
+            "text": "Watching the tennis finals while debugging. Nothing like a good match to clear your head between problem-solving sessions 🎾 Sometimes the best solutions come when you're not actively thinking about the problem.",
+            "created_at": "2024-01-15T10:15:00.000Z",
+            "author_id": "4266046641",
+            "public_metrics": {
+                "retweet_count": 3,
+                "like_count": 18,
+                "reply_count": 2,
+                "quote_count": 1
+            }
+        },
+        {
+            "id": "1747890123456789012",
+            "text": "RT @engineering_lead: Great insights on scaling engineering teams. The human side of tech leadership is often underestimated. Building great software is 20% technical, 80% understanding people and their motivations.",
+            "created_at": "2024-01-15T08:45:00.000Z",
+            "author_id": "987654321098765432",
+            "public_metrics": {
+                "retweet_count": 67,
+                "like_count": 234,
+                "reply_count": 18,
+                "quote_count": 12
+            }
+        },
+        {
+            "id": "1747754567890123456",
+            "text": "Political take: Maybe if we approached policy debates with the same systematic thinking we use for debugging code, we'd actually solve some problems instead of just arguing about them. 🤷‍♂️ #politics #thoughtexperiment",
+            "created_at": "2024-01-14T20:22:00.000Z",
+            "author_id": "4266046641",
+            "public_metrics": {
+                "retweet_count": 12,
+                "like_count": 45,
+                "reply_count": 23,
+                "quote_count": 8
+            }
+        },
+        {
+            "id": "1747698765432109876",
+            "text": "That feeling when you finally understand why your Docker container was failing after 3 hours of debugging and it was a missing environment variable. Classic. 🐳 #docker #devops #debugging",
+            "created_at": "2024-01-14T16:18:00.000Z",
+            "author_id": "4266046641",
+            "public_metrics": {
+                "retweet_count": 5,
+                "like_count": 32,
+                "reply_count": 8,
+                "quote_count": 3
+            },
+            "attachments": {
+                "media_keys": [
+                    "3_1747698765432109876"
+                ]
+            }
+        }
+    ],
+    "includes": {
+        "users": [
+            {
+                "id": "4266046641",
+                "name": "Alessandro Romano",
+                "username": "_aleromano"
+            },
+            {
+                "id": "987654321098765432",
+                "name": "Engineering Lead",
+                "username": "engineering_lead"
+            }
+        ],
+        "media": [
+            {
+                "media_key": "3_1747982341234567890",
+                "type": "photo",
+                "url": "https://pbs.twimg.com/media/example-feature-screenshot.jpg",
+                "alt_text": "Screenshot showing the new UX feature with improved interface design",
+                "width": 1200,
+                "height": 800
+            },
+            {
+                "media_key": "3_1747698765432109876",
+                "type": "photo",
+                "url": "https://pbs.twimg.com/media/docker-meme.jpg",
+                "alt_text": "Funny meme about Docker debugging frustrations",
+                "width": 800,
+                "height": 600
+            }
+        ]
+    },
+    "meta": {
+        "result_count": 5,
+        "newest_id": "1747982341234567890",
+        "oldest_id": "1747698765432109876"
+    }
+}

@@ -1,0 +1,217 @@
+---
+import type { TwitterPost } from '../utils/twitter/twitter';
+import { DataFreshness } from '../utils/twitter/twitter';
+import TwitterPostCard from './TwitterPostCard.astro';
+
+interface Props {
+    posts: TwitterPost[] | null;
+    error?: string;
+    language: 'en' | 'it';
+    freshness?: DataFreshness;
+}
+
+const { posts, error, language, freshness = DataFreshness.MOCK } = Astro.props;
+
+const disclaimerText = {
+    en: {
+        title: 'Latest from Twitter',
+        disclaimer:
+            "I use Twitter for my random thoughts—from videogames, tennis and football to political satire. I don't take myself too seriously, especially on Twitter. I try to include users with opposite worldviews in my bubble and sometimes end up liking their posts too.",
+        errorMessage: 'Unable to load tweets at the moment. Please try again later.',
+        liveLabel: 'LIVE',
+        mockLabel: 'DEMO',
+        cacheLabel: 'CACHED',
+    },
+    it: {
+        title: 'Ultimi da Twitter',
+        disclaimer:
+            'Uso Twitter per i miei pensieri casuali—dai videogiochi, tennis e calcio alla satira politica. Non mi prendo troppo sul serio, specialmente su Twitter. Cerco di includere nella mia bolla utenti con visioni del mondo opposte e a volte finisco per mettere like anche ai loro post.',
+        errorMessage: 'Impossibile caricare i tweet al momento. Riprova più tardi.',
+        liveLabel: 'LIVE',
+        mockLabel: 'DEMO',
+        cacheLabel: 'CACHE',
+    },
+};
+
+const localizedDisclaimerText = disclaimerText[language];
+
+function getFreshnessLabel(freshness: DataFreshness, localizedText: typeof localizedDisclaimerText): string {
+    switch (freshness) {
+        case DataFreshness.LIVE:
+            return localizedText.liveLabel;
+        case DataFreshness.CACHE:
+            return localizedText.cacheLabel;
+        case DataFreshness.MOCK:
+            return localizedText.mockLabel;
+        default:
+            return localizedText.mockLabel;
+    }
+}
+
+function getFreshnessClass(freshness: DataFreshness): string {
+    switch (freshness) {
+        case DataFreshness.LIVE:
+            return '';
+        case DataFreshness.CACHE:
+            return 'live-indicator--cache';
+        case DataFreshness.MOCK:
+            return 'live-indicator--mock';
+        default:
+            return 'live-indicator--mock';
+    }
+}
+---
+
+<section class="twitter-feed">
+    <div class="twitter-header">
+        <h2>{localizedDisclaimerText.title}</h2>
+        <span class={`live-indicator ${error ? 'live-indicator--error' : getFreshnessClass(freshness)}`}>
+            {error ? localizedDisclaimerText.liveLabel : getFreshnessLabel(freshness, localizedDisclaimerText)}
+        </span>
+    </div>
+    <p class="twitter-disclaimer">{localizedDisclaimerText.disclaimer}</p>
+
+    {
+        error ? (
+            <div class="twitter-error">
+                <p>{localizedDisclaimerText.errorMessage}</p>
+            </div>
+        ) : posts && posts.length > 0 ? (
+            <div class="twitter-posts">
+                {posts.map((post) => (
+                    <TwitterPostCard post={post} />
+                ))}
+            </div>
+        ) : (
+            <div class="twitter-loading">
+                <p>{language === 'en' ? 'No tweets to display' : 'Nessun tweet da mostrare'}</p>
+            </div>
+        )
+    }
+</section>
+
+<style>
+    .twitter-feed {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        border: 1px solid var(--color-border);
+        border-radius: 0.5rem;
+        background: var(--color-bg-secondary);
+    }
+
+    .twitter-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .twitter-header h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: var(--color-text-primary);
+    }
+
+    .live-indicator {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        background: #ff0000;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: bold;
+        border-radius: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        position: relative;
+    }
+
+    .live-indicator::before {
+        content: '';
+        width: 0.5rem;
+        height: 0.5rem;
+        background: white;
+        border-radius: 50%;
+        margin-right: 0.25rem;
+        animation: pulse 2s infinite;
+    }
+
+    .live-indicator--error {
+        background: #666;
+    }
+
+    .live-indicator--error::before {
+        animation: none;
+    }
+
+    .live-indicator--mock {
+        background: #2563eb;
+    }
+
+    .live-indicator--mock::before {
+        animation: none;
+        background: #93c5fd;
+    }
+
+    .live-indicator--cache {
+        background: #f59e0b;
+    }
+
+    .live-indicator--cache::before {
+        animation: none;
+        background: #fbbf24;
+    }
+    @keyframes pulse {
+        0%,
+        100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.3;
+        }
+    }
+
+    .twitter-disclaimer {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        font-style: italic;
+        padding: 0.75rem;
+        background: var(--color-bg-tertiary);
+        border-radius: 0.25rem;
+        border-left: 3px solid var(--color-accent);
+    }
+
+    .twitter-posts {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .twitter-error,
+    .twitter-loading {
+        text-align: center;
+        padding: 2rem;
+        color: var(--color-text-secondary);
+    }
+
+    .twitter-error {
+        background: var(--color-bg-tertiary);
+        border-radius: 0.375rem;
+        border: 1px solid var(--color-border);
+    }
+
+    @media (max-width: 768px) {
+        .twitter-feed {
+            margin: 1rem 0;
+            padding: 1rem;
+        }
+
+        .twitter-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+    }
+</style>

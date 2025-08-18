@@ -1,0 +1,224 @@
+---
+import type { TwitterPost } from '../utils/twitter/twitter';
+
+interface Props {
+    post: TwitterPost;
+}
+
+const { post } = Astro.props;
+
+// Clean the tweet text by removing t.co links if media is present
+function cleanTweetText(text: string, hasMedia: boolean): string {
+    if (!hasMedia) return text;
+
+    // Remove t.co links at the end of tweets when media is present
+    return text.replace(/\s*https:\/\/t\.co\/\w+\s*$/, '').trim();
+}
+
+const cleanText = cleanTweetText(post.text, Boolean(post.media?.length));
+---
+
+<article class="tweet-card">
+    <div class="tweet-header">
+        <div class="tweet-author">
+            <strong>{post.author_name}</strong>
+            <span class="username">@{post.author_username}</span>
+        </div>
+        <div class="tweet-meta">
+            <span class="tweet-type">{post.type}</span>
+            <time datetime={post.created_at}>
+                {new Date(post.created_at).toLocaleDateString()}
+            </time>
+        </div>
+    </div>
+
+    <div class="tweet-content">
+        <p class="tweet-text">{cleanText}</p>
+
+        {
+            post.media && post.media.length > 0 && (
+                <div class="tweet-media">
+                    {post.media.map((mediaItem) => (
+                        <div class="media-item">
+                            {mediaItem.type === 'photo' && (
+                                <img
+                                    src={mediaItem.url || mediaItem.preview_image_url}
+                                    alt={mediaItem.alt_text || 'Image from tweet'}
+                                    width={mediaItem.width}
+                                    height={mediaItem.height}
+                                    loading="lazy"
+                                    class="tweet-image"
+                                />
+                            )}
+                            {mediaItem.type === 'video' && (
+                                <div class="video-placeholder">
+                                    <p>🎥 Video content</p>
+                                    <a href={post.url} target="_blank" rel="noopener noreferrer">
+                                        View on X/Twitter
+                                    </a>
+                                </div>
+                            )}
+                            {mediaItem.type === 'animated_gif' && (
+                                <div class="gif-placeholder">
+                                    <p>🎬 GIF content</p>
+                                    <a href={post.url} target="_blank" rel="noopener noreferrer">
+                                        View on X/Twitter
+                                    </a>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )
+        }
+    </div>
+
+    <div class="tweet-metrics">
+        <span class="metric">
+            💬 {post.public_metrics.reply_count}
+        </span>
+        <span class="metric">
+            🔄 {post.public_metrics.retweet_count}
+        </span>
+        <span class="metric">
+            ❤️ {post.public_metrics.like_count}
+        </span>
+    </div>
+
+    <div class="tweet-actions">
+        <a href={post.url} target="_blank" rel="noopener noreferrer" class="view-tweet-link"> View on X/Twitter → </a>
+    </div>
+</article>
+
+<style>
+    .tweet-card {
+        border: 1px solid var(--color-border);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background: var(--color-surface);
+        transition: border-color 0.2s ease;
+    }
+
+    .tweet-card:hover {
+        border-color: var(--color-primary);
+    }
+
+    .tweet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.75rem;
+    }
+
+    .tweet-author strong {
+        color: var(--color-text);
+        margin-right: 0.5rem;
+    }
+
+    .username {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+    }
+
+    .tweet-meta {
+        display: flex;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+    }
+
+    .tweet-type {
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    .tweet-content {
+        margin-bottom: 0.75rem;
+    }
+
+    .tweet-text {
+        color: var(--color-text);
+        line-height: 1.5;
+        margin: 0 0 1rem 0;
+    }
+
+    .tweet-media {
+        border-radius: 0.5rem;
+        overflow: hidden;
+        margin-top: 1rem;
+    }
+
+    .media-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .tweet-image {
+        width: 100%;
+        height: auto;
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: 0.5rem;
+    }
+
+    .video-placeholder,
+    .gif-placeholder {
+        background: var(--color-surface-variant);
+        border: 2px dashed var(--color-border);
+        border-radius: 0.5rem;
+        padding: 2rem;
+        text-align: center;
+        color: var(--color-text-muted);
+    }
+
+    .video-placeholder a,
+    .gif-placeholder a {
+        color: var(--color-primary);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .video-placeholder a:hover,
+    .gif-placeholder a:hover {
+        text-decoration: underline;
+    }
+
+    .tweet-metrics {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .metric {
+        color: var(--color-text-muted);
+    }
+
+    .tweet-actions {
+        border-top: 1px solid var(--color-border);
+        padding-top: 0.75rem;
+    }
+
+    .view-tweet-link {
+        color: var(--color-primary);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .view-tweet-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Dark mode adjustments */
+    @media (prefers-color-scheme: dark) {
+        .tweet-card {
+            background: var(--color-surface-dark, #1a1a1a);
+            border-color: var(--color-border-dark, #333);
+        }
+
+        .tweet-card:hover {
+            border-color: var(--color-primary-dark, #60a5fa);
+        }
+    }
+</style>
