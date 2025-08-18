@@ -28,7 +28,6 @@ npm run test:watch            # Test watch mode
 
 # Docker workflows
 npm run docker:dev            # Full dev stack with nginx
-npm run deploy                # Deploy to Hetzner VPS (switches Docker context)
 
 # Content operations
 npx astro check               # TypeScript validation for .astro files
@@ -82,7 +81,6 @@ export const prerender = true;
 ## Docker Deployment Context
 
 The site runs in **server mode** with Docker multi-stage builds:
-- Uses Docker contexts to deploy to remote VPS (`hetzner` context)
 - Node.js adapter generates `dist/server/entry.mjs` for container runtime
 - nginx proxy handles SSL termination and static assets
 
@@ -98,7 +96,6 @@ The site runs in **server mode** with Docker multi-stage builds:
 - `src/utils/i18n.ts` - All internationalization logic
 - `src/utils/posts.ts` - Blog post URL generation and parsing
 - `src/pages/[...slug].astro` - Dynamic blog post routing
-- `package.json` - Docker deployment scripts and context switching
 
 ## Observability
 
