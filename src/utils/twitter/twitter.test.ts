@@ -19,7 +19,6 @@ describe('twitter.ts', () => {
 
   describe('getTwitterPosts', () => {
     it('should fetch and return Twitter posts successfully', async () => {
-      clearCache();
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -39,7 +38,6 @@ describe('twitter.ts', () => {
     });
 
     it('should correctly identify retweets from raw API response', async () => {
-      clearCache();
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -54,7 +52,6 @@ describe('twitter.ts', () => {
     });
 
     it('should sort posts by creation date (newest first)', async () => {
-      clearCache();
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -68,7 +65,6 @@ describe('twitter.ts', () => {
     });
 
     it('should limit results to 6 posts', async () => {
-      clearCache();  
       const manyPosts = {
         data: Array.from({ length: 10 }, (_, i) => ({
           id: `post${i}`,
@@ -92,7 +88,6 @@ describe('twitter.ts', () => {
     });
 
     it('should handle missing author information gracefully', async () => {
-      clearCache();
       const responseWithMissingAuthor = {
         data: [{
           id: '123',
@@ -116,15 +111,12 @@ describe('twitter.ts', () => {
       expect(response.posts[0].author_username).toBe('_aleromano');
     });
 
-    it('should throw error when Bearer token is missing', async () => {
-      clearCache();
-      
+    it('should throw error when Bearer token is missing', async () => {      
       // Don't pass any Bearer token
       await expect(getTwitterPosts()).rejects.toThrow('Twitter Bearer Token not configured');
     });
 
     it('should throw error when API request fails and no cache exists', async () => {
-      clearCache();  
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 401,
@@ -135,7 +127,6 @@ describe('twitter.ts', () => {
     });
 
     it('should handle empty response data', async () => {
-      clearCache();
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve({ data: null })
@@ -148,7 +139,6 @@ describe('twitter.ts', () => {
     });
 
     it('should generate correct Twitter URLs from raw API data', async () => {
-      clearCache();
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -160,7 +150,6 @@ describe('twitter.ts', () => {
     });
 
     it('should correctly parse all fields from raw API response', async () => {
-      clearCache();
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -183,7 +172,6 @@ describe('twitter.ts', () => {
     });
 
     it('should parse media attachments from API response', async () => {
-      clearCache();
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -216,7 +204,6 @@ describe('twitter.ts', () => {
 
   describe('caching behavior', () => {
     it('should cache results and return cached data on subsequent calls', async () => {
-      clearCache();
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -234,7 +221,6 @@ describe('twitter.ts', () => {
     });
 
     it('should refresh cache after TTL expires', async () => {
-      clearCache();      
       // Mock timers to control cache expiration
       vi.useFakeTimers();
       
@@ -271,7 +257,6 @@ describe('twitter.ts', () => {
     });
 
     it('should return cached data when new fetch fails', async () => {
-      clearCache();
       vi.useFakeTimers();
       
       // First successful call
