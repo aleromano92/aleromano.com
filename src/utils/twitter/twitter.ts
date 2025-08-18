@@ -148,7 +148,7 @@ export function getTwitterPostsMock(): TwitterResponse {
 // Fetches raw data from Twitter API and parses it to TwitterPost[]
 // Throws error if API call fails - no fallback logic here
 async function fetchTwitterData(bearerToken?: string): Promise<TwitterPost[]> {
-  const token = bearerToken || import.meta.env.TWITTER_BEARER_TOKEN;
+  const token = bearerToken || import.meta.env.TWITTER_BEARER_TOKEN || process.env.TWITTER_BEARER_TOKEN;
   
   if (!token) {
     throw new Error('Twitter Bearer Token not configured');

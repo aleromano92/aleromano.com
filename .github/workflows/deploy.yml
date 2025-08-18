@@ -75,6 +75,10 @@ jobs:
             echo "Error: GOOGLE_APP_PASSWORD secret is not set"
             exit 1
           fi
+          if [ -z "${{ secrets.TWITTER_BEARER_TOKEN }}" ]; then
+            echo "Error: TWITTER_BEARER_TOKEN secret is not set"
+            exit 1
+          fi
 
       - name: Deploy to Hetzner
         uses: appleboy/ssh-action@master
@@ -100,6 +104,7 @@ jobs:
             echo "ALE_PERSONAL_EMAIL=${{ secrets.ALE_PERSONAL_EMAIL }}" >> .env
             echo "GOOGLE_APP_USER=${{ secrets.GOOGLE_APP_USER }}" >> .env
             echo "GOOGLE_APP_PASSWORD=${{ secrets.GOOGLE_APP_PASSWORD }}" >> .env
+            echo "TWITTER_BEARER_TOKEN=${{ secrets.TWITTER_BEARER_TOKEN }}" >> .env
 
             # Login to GitHub Container Registry
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
