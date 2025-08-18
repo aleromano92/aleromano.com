@@ -29,7 +29,7 @@ describe('twitter.ts', () => {
 
       const response = await getTwitterPosts('mock-bearer-token');
 
-      expect(response.posts).toHaveLength(5);
+      expect(response.posts).toHaveLength(6); // Updated to 6 posts with new mock data
       expect(response.freshness).toBe(DataFreshness.LIVE);
       expect(response.posts[0]).toMatchObject({
         id: '1747982341234567890',
@@ -73,7 +73,7 @@ describe('twitter.ts', () => {
       );
     });
 
-    it('should limit results to 5 posts', async () => {
+    it('should limit results to 6 posts', async () => {
       // Ensure cache is clear
       clearCache();
       
@@ -96,7 +96,7 @@ describe('twitter.ts', () => {
       });
 
       const response = await getTwitterPosts('mock-bearer-token');
-      expect(response.posts).toHaveLength(5);
+      expect(response.posts).toHaveLength(6);
     });
 
     it('should handle missing author information gracefully', async () => {
@@ -230,7 +230,7 @@ describe('twitter.ts', () => {
       const response = getTwitterPostsMock();
       
       expect(response.freshness).toBe(DataFreshness.MOCK);
-      expect(response.posts).toHaveLength(5);
+      expect(response.posts).toHaveLength(6); // Updated to match the new mock data count
       expect(response.posts[0].author_username).toBe('_aleromano');
       expect(response.posts[0]).toHaveProperty('public_metrics');
     });

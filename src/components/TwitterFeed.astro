@@ -16,20 +16,27 @@ const disclaimerText = {
     en: {
         title: 'Latest from Twitter',
         disclaimer:
-            "I use Twitter for my random thoughts—from videogames, tennis and football to political satire. I don't take myself too seriously, especially on Twitter. I try to include users with opposite worldviews in my bubble and sometimes end up liking their posts too.",
+            "I use Twitter for my random thoughts, from videogames, tennis and football to political satire. I don't take myself too seriously, especially on Twitter. I try to include users with opposite worldviews in my bubble and sometimes end up liking their posts too.",
         errorMessage: 'Unable to load tweets at the moment. Please try again later.',
         liveLabel: 'LIVE',
         mockLabel: 'DEMO',
         cacheLabel: 'CACHED',
+        liveDisclaimer: "You're lucky! I fetched the most recent content despite X API's incredibly limited free plan.",
+        cacheDisclaimer: "Sorry, but X API's free plan is quite stingy with requests.",
+        mockDisclaimer: "You shouldn't be able to see this in production 😕",
     },
     it: {
-        title: 'Ultimi da Twitter',
+        title: 'Ultimi Tweets',
         disclaimer:
-            'Uso Twitter per i miei pensieri casuali—dai videogiochi, tennis e calcio alla satira politica. Non mi prendo troppo sul serio, specialmente su Twitter. Cerco di includere nella mia bolla utenti con visioni del mondo opposte e a volte finisco per mettere like anche ai loro post.',
+            'Uso Twitter per i miei random thoughts, dai videogiochi, tennis e calcio alla satira politica. Non mi prendo troppo sul serio, specialmente su Twitter. Cerco di includere nella mia bolla utenti con visioni del mondo opposte e a volte finisco per mettere like anche ai loro post.',
         errorMessage: 'Impossibile caricare i tweet al momento. Riprova più tardi.',
         liveLabel: 'LIVE',
         mockLabel: 'DEMO',
         cacheLabel: 'CACHE',
+        liveDisclaimer:
+            'Sei fortunato! Ho recuperato i contenuti più recenti nonostante il piano gratuito delle API di X sia incredibilmente limitato.',
+        cacheDisclaimer: 'Scusa, ma il piano gratuito delle API di X è piuttosto tirchio con le richieste.',
+        mockDisclaimer: 'Non dovresti riuscire a vedere questo in produzione 😕',
     },
 };
 
@@ -60,14 +67,30 @@ function getFreshnessClass(freshness: DataFreshness): string {
             return 'live-indicator--mock';
     }
 }
+
+function getFreshnessDisclaimer(freshness: DataFreshness, localizedText: typeof localizedDisclaimerText): string {
+    switch (freshness) {
+        case DataFreshness.LIVE:
+            return localizedText.liveDisclaimer;
+        case DataFreshness.CACHE:
+            return localizedText.cacheDisclaimer;
+        case DataFreshness.MOCK:
+            return localizedText.mockDisclaimer;
+        default:
+            return localizedText.mockDisclaimer;
+    }
+}
 ---
 
 <section class="twitter-feed">
     <div class="twitter-header">
         <h2>{localizedDisclaimerText.title}</h2>
-        <span class={`live-indicator ${error ? 'live-indicator--error' : getFreshnessClass(freshness)}`}>
-            {error ? localizedDisclaimerText.liveLabel : getFreshnessLabel(freshness, localizedDisclaimerText)}
-        </span>
+        <div class="freshness-container">
+            <span class={`live-indicator ${error ? 'live-indicator--error' : getFreshnessClass(freshness)}`}>
+                {error ? localizedDisclaimerText.liveLabel : getFreshnessLabel(freshness, localizedDisclaimerText)}
+            </span>
+            {!error && <p class="freshness-disclaimer">{getFreshnessDisclaimer(freshness, localizedDisclaimerText)}</p>}
+        </div>
     </div>
     <p class="twitter-disclaimer">{localizedDisclaimerText.disclaimer}</p>
 
@@ -92,16 +115,11 @@ function getFreshnessClass(freshness: DataFreshness): string {
 
 <style>
     .twitter-feed {
-        margin: 2rem 0;
-        padding: 1.5rem;
-        border: 1px solid var(--color-border);
-        border-radius: 0.5rem;
-        background: var(--color-bg-secondary);
+        margin: 3rem 0;
     }
 
     .twitter-header {
         display: flex;
-        align-items: center;
         justify-content: space-between;
         margin-bottom: 1rem;
     }
@@ -124,6 +142,24 @@ function getFreshnessClass(freshness: DataFreshness): string {
         text-transform: uppercase;
         letter-spacing: 0.05em;
         position: relative;
+    }
+
+    .freshness-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.25rem;
+    }
+
+    .freshness-disclaimer {
+        font-size: 0.6rem;
+        color: var(--color-text-secondary);
+        font-style: italic;
+        margin: 0;
+        max-width: 200px;
+        text-align: right;
+        line-height: 1.2;
+        opacity: 0.8;
     }
 
     .live-indicator::before {
@@ -184,9 +220,10 @@ function getFreshnessClass(freshness: DataFreshness): string {
     }
 
     .twitter-posts {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         gap: 1rem;
+        margin-top: 1.5rem;
     }
 
     .twitter-error,
@@ -202,6 +239,12 @@ function getFreshnessClass(freshness: DataFreshness): string {
         border: 1px solid var(--color-border);
     }
 
+    @media (max-width: 1024px) {
+        .twitter-posts {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
     @media (max-width: 768px) {
         .twitter-feed {
             margin: 1rem 0;
@@ -212,6 +255,20 @@ function getFreshnessClass(freshness: DataFreshness): string {
             flex-direction: column;
             align-items: flex-start;
             gap: 0.5rem;
+        }
+
+        .freshness-container {
+            align-items: flex-start;
+        }
+
+        .freshness-disclaimer {
+            text-align: left;
+            max-width: 100%;
+        }
+
+        .twitter-posts {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
         }
     }
 </style>

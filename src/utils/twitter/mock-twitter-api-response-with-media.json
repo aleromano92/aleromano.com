@@ -69,6 +69,18 @@
                     "3_1747698765432109876"
                 ]
             }
+        },
+        {
+            "id": "1747512345678901234",
+            "text": "Working from a café today and someone's discussing their startup idea loudly on a call. Classic tech bro move: 'It's like Uber but for...' I've heard this at least 5 times already. 😂 #startup #workfromcafe",
+            "created_at": "2024-01-14T12:30:00.000Z",
+            "author_id": "4266046641",
+            "public_metrics": {
+                "retweet_count": 2,
+                "like_count": 15,
+                "reply_count": 4,
+                "quote_count": 1
+            }
         }
     ],
     "includes": {
@@ -104,8 +116,8 @@
         ]
     },
     "meta": {
-        "result_count": 5,
+        "result_count": 6,
         "newest_id": "1747982341234567890",
-        "oldest_id": "1747698765432109876"
+        "oldest_id": "1747512345678901234"
     }
 }

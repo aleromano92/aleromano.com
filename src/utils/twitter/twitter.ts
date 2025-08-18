@@ -124,9 +124,9 @@ function parseTwitterApiResponse(apiResponse: TwitterApiResponse): TwitterPost[]
     }
   }
 
-  // Sort by creation date (newest first) and take top 5
+  // Sort by creation date (newest first) and take top 6
   posts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-  return posts.slice(0, 5);
+  return posts.slice(0, 6);
 }
 
 // Mock data from JSON file (raw API response format)
