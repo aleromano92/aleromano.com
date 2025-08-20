@@ -215,7 +215,7 @@ export async function getTwitterPosts(bearerToken?: string): Promise<TwitterResp
     };
     
   } catch (error) {
-    console.error('Twitter API error:', error);
+    console.warn('Twitter API error:', error);
     
     // If we have cached data, return it as fallback
     if (cache) {
@@ -226,7 +226,8 @@ export async function getTwitterPosts(bearerToken?: string): Promise<TwitterResp
       };
     }
     
-    // No cache available, re-throw the error
-    throw error;
+    // No cache available, return mock data as final fallback
+    console.warn('No cache available, returning mock data');
+    return getTwitterPostsMock();
   }
 }

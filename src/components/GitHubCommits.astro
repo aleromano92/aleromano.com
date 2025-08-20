@@ -1,0 +1,169 @@
+---
+import type { GitHubCommit } from '../utils/github';
+
+interface Props {
+    commits: GitHubCommit[];
+    error?: string;
+    language: string;
+}
+
+const { commits, error, language } = Astro.props;
+
+const title = language === 'it' ? 'Ultimi Commit GitHub' : 'Latest GitHub Commits';
+const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit' : 'Unable to load latest commits';
+
+function formatDate(dateString: string, lang: string): string {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    };
+
+    return date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', options);
+}
+
+function truncateMessage(message: string, maxLength: number = 80): string {
+    if (message.length <= maxLength) return message;
+    return message.substring(0, maxLength) + '...';
+}
+---
+
+<section class="github-commits">
+    <h3>{title}</h3>
+
+    {
+        error ? (
+            <div class="error-message">
+                <p>{errorMessage}</p>
+            </div>
+        ) : commits.length > 0 ? (
+            <div class="commits-list">
+                {commits.map((commit) => (
+                    <article class="commit-item">
+                        <div class="commit-header">
+                            <a href={commit.url} target="_blank" rel="noopener noreferrer" class="commit-link">
+                                <code class="commit-sha">{commit.sha}</code>
+                            </a>
+                            <span class="commit-repo">{commit.repo}</span>
+                        </div>
+                        <p class="commit-message">{truncateMessage(commit.message)}</p>
+                        <time class="commit-date" datetime={commit.date}>
+                            {formatDate(commit.date, language)}
+                        </time>
+                    </article>
+                ))}
+            </div>
+        ) : (
+            <p class="no-commits">{language === 'it' ? 'Nessun commit recente trovato' : 'No recent commits found'}</p>
+        )
+    }
+</section>
+
+<style>
+    .github-commits {
+        margin: var(--space-xl) 0;
+    }
+
+    .github-commits h3 {
+        margin-bottom: var(--space-md);
+        color: var(--color-text-primary);
+    }
+
+    .commits-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-md);
+        margin-top: var(--space-md);
+    }
+
+    .commit-item {
+        padding: var(--space-sm);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-surface);
+        transition: border-color 0.2s ease;
+    }
+
+    .commit-item:hover {
+        border-color: var(--color-accent);
+    }
+
+    .commit-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        margin-bottom: var(--space-xs);
+    }
+
+    .commit-link {
+        text-decoration: none;
+        color: var(--color-accent);
+        font-weight: 500;
+    }
+
+    .commit-link:hover {
+        text-decoration: underline;
+    }
+
+    .commit-sha {
+        font-family: var(--font-mono, 'Monaco', 'Menlo', monospace);
+        font-size: 0.875rem;
+        background: var(--color-code-bg);
+        padding: 0.125rem 0.25rem;
+        border-radius: 0.25rem;
+    }
+
+    .commit-repo {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        font-weight: 400;
+    }
+
+    .commit-message {
+        margin: var(--space-xs) 0;
+        color: var(--color-text-primary);
+        line-height: 1.4;
+        font-size: 0.9rem;
+    }
+
+    .commit-date {
+        font-size: 0.8rem;
+        color: var(--color-text-secondary);
+    }
+
+    .error-message,
+    .no-commits {
+        padding: var(--space-md);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-surface);
+        color: var(--color-text-secondary);
+        text-align: center;
+    }
+
+    @media (max-width: 1024px) {
+        .commits-list {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 636px) {
+        .commits-list {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .commit-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-xs);
+        }
+
+        .commit-message {
+            font-size: 0.85rem;
+        }
+    }
+</style>

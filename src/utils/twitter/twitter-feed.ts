@@ -17,17 +17,6 @@ export async function getTwitterFeedData(): Promise<TwitterFeedData> {
   } catch (error) {
     console.error('Failed to load Twitter feed:', error);
     
-    // In development mode, always provide mock data as fallback
-    if (import.meta.env.NODE_ENV !== 'production') {
-      console.warn('Development mode: Using mock data as fallback for Twitter feed');
-      const { getTwitterPostsMock } = await import('./twitter');
-      const mockResponse = getTwitterPostsMock();
-      return {
-        posts: mockResponse.posts,
-        freshness: mockResponse.freshness
-      };
-    }
-    
     // Provide more specific error messages based on the error type
     let errorMessage = 'Unknown error occurred';
     

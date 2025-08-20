@@ -1,16 +1,38 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { getTwitterPosts, clearCache, type TwitterPost, DataFreshness } from './twitter';
+import { getTwitterPosts, clearCache, DataFreshness } from './twitter';
 import mockTwitterApiResponse from './mock-twitter-api-response-with-media.json';
 
 // Mock fetch globally
 const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);
 
+// Mock process.env
+const mockEnv = vi.hoisted(() => ({
+  NODE_ENV: 'test',
+  TWITTER_BEARER_TOKEN: undefined
+}));
+
+vi.stubGlobal('process', {
+  env: mockEnv
+});
+
+// Mock import.meta.env
+vi.stubGlobal('import', {
+  meta: {
+    env: {
+      TWITTER_BEARER_TOKEN: undefined
+    }
+  }
+});
+
 describe('twitter.ts', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Clear the in-memory cache between tests
     clearCache();
+    // Reset environment to test mode
+    mockEnv.NODE_ENV = 'test';
+    mockEnv.TWITTER_BEARER_TOKEN = undefined;
   });
 
   afterEach(() => {
@@ -19,6 +41,9 @@ describe('twitter.ts', () => {
 
   describe('getTwitterPosts', () => {
     it('should fetch and return Twitter posts successfully', async () => {
+      // Set to production mode to test actual API behavior
+      mockEnv.NODE_ENV = 'production';
+      
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -26,7 +51,7 @@ describe('twitter.ts', () => {
 
       const response = await getTwitterPosts('mock-bearer-token');
 
-      expect(response.posts).toHaveLength(6); // Updated to 6 posts with new mock data
+      expect(response.posts).toHaveLength(6);
       expect(response.freshness).toBe(DataFreshness.LIVE);
       expect(response.posts[0]).toMatchObject({
         id: '1747982341234567890',
@@ -38,13 +63,15 @@ describe('twitter.ts', () => {
     });
 
     it('should correctly identify retweets from raw API response', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
       });
 
       const response = await getTwitterPosts('mock-bearer-token');
-      const retweet = response.posts.find(p => p.text.startsWith('RT @'));
+      const retweet = response.posts.find((p: any) => p.text.startsWith('RT @'));
       
       expect(retweet?.type).toBe('retweet');
       expect(retweet?.author_name).toBe('Engineering Lead');
@@ -52,6 +79,8 @@ describe('twitter.ts', () => {
     });
 
     it('should sort posts by creation date (newest first)', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -65,6 +94,8 @@ describe('twitter.ts', () => {
     });
 
     it('should limit results to 6 posts', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       const manyPosts = {
         data: Array.from({ length: 10 }, (_, i) => ({
           id: `post${i}`,
@@ -88,6 +119,8 @@ describe('twitter.ts', () => {
     });
 
     it('should handle missing author information gracefully', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       const responseWithMissingAuthor = {
         data: [{
           id: '123',
@@ -111,22 +144,37 @@ describe('twitter.ts', () => {
       expect(response.posts[0].author_username).toBe('_aleromano');
     });
 
-    it('should throw error when Bearer token is missing', async () => {      
-      // Don't pass any Bearer token
-      await expect(getTwitterPosts()).rejects.toThrow('Twitter Bearer Token not configured');
+    it('should return mock data when Bearer token is missing in production', async () => {
+      mockEnv.NODE_ENV = 'production';
+      // Don't set any bearer token
+      
+      const response = await getTwitterPosts();
+      
+      // Should return mock data instead of throwing
+      expect(response.posts).toBeDefined();
+      expect(response.freshness).toBe(DataFreshness.MOCK);
+      expect(mockFetch).not.toHaveBeenCalled();
     });
 
-    it('should throw error when API request fails and no cache exists', async () => {
+    it('should return mock data when API request fails and no cache exists', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 401,
         text: () => Promise.resolve('Unauthorized')
       });
 
-      await expect(getTwitterPosts('mock-bearer-token')).rejects.toThrow('Twitter Timeline error: 401 - Unauthorized');
+      const response = await getTwitterPosts('mock-bearer-token');
+      
+      // Should return mock data as fallback when no cache exists
+      expect(response.posts).toBeDefined();
+      expect(response.freshness).toBe(DataFreshness.MOCK);
     });
 
     it('should handle empty response data', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve({ data: null })
@@ -139,6 +187,8 @@ describe('twitter.ts', () => {
     });
 
     it('should generate correct Twitter URLs from raw API data', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -150,6 +200,8 @@ describe('twitter.ts', () => {
     });
 
     it('should correctly parse all fields from raw API response', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -172,6 +224,8 @@ describe('twitter.ts', () => {
     });
 
     it('should parse media attachments from API response', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -179,7 +233,7 @@ describe('twitter.ts', () => {
 
       const response = await getTwitterPosts('mock-bearer-token');
       
-      const postsWithMedia = response.posts.filter(post => post.media && post.media.length > 0);
+      const postsWithMedia = response.posts.filter((post: any) => post.media && post.media.length > 0);
       expect(postsWithMedia.length).toBeGreaterThan(0);      
       const postWithMedia = postsWithMedia[0];
       expect(postWithMedia.media).toBeDefined();
@@ -190,20 +244,23 @@ describe('twitter.ts', () => {
       expect(postWithMedia.media![0]).toHaveProperty('height');
     });
 
-    it('should use separate mock function for testing', async () => {
-      // Test the dedicated mock function
-      const { getTwitterPostsMock } = await import('./twitter');
-      const response = getTwitterPostsMock();
+    it('should use mock data in non-production environment', async () => {
+      // NODE_ENV is already 'test' from beforeEach
+      
+      const response = await getTwitterPosts('mock-bearer-token');
       
       expect(response.freshness).toBe(DataFreshness.MOCK);
-      expect(response.posts).toHaveLength(6); // Updated to match the new mock data count
+      expect(response.posts).toHaveLength(6);
       expect(response.posts[0].author_username).toBe('_aleromano');
       expect(response.posts[0]).toHaveProperty('public_metrics');
+      expect(mockFetch).not.toHaveBeenCalled();
     });
   });
 
   describe('caching behavior', () => {
     it('should cache results and return cached data on subsequent calls', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
@@ -221,6 +278,8 @@ describe('twitter.ts', () => {
     });
 
     it('should refresh cache after TTL expires', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       // Mock timers to control cache expiration
       vi.useFakeTimers();
       
@@ -257,6 +316,8 @@ describe('twitter.ts', () => {
     });
 
     it('should return cached data when new fetch fails', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
       vi.useFakeTimers();
       
       // First successful call
