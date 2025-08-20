@@ -39,6 +39,7 @@ const imageUrl = image ? new URL(image.src, 'https://aleromano.com').href : unde
 <!-- Basic SEO Meta Tags -->
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalUrl} />
+<link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
 <!-- Language Alternates -->
 {alternateLinks.map(({ href, hreflang }) => <link rel="alternate" hreflang={hreflang} href={href} />)}
