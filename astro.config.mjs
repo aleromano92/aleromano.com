@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
+import sitemap from '@astrojs/sitemap';
 import rehypeExternalLinks from 'rehype-external-links';
 
 // https://astro.build/config
@@ -10,7 +11,20 @@ export default defineConfig({
     mode: 'standalone'
   }),
 
-  integrations: [],
+  integrations: [sitemap({
+    i18n: {
+      defaultLocale: 'en',
+      locales: {
+        en: 'en',
+        it: 'it',
+      }
+    },
+    // Custom filter to exclude API routes
+    filter: (page) => !page.includes('/api/'),
+    changefreq: 'weekly',
+    priority: 0.7,
+    lastmod: new Date(),
+  })],
 
   markdown: {
     shikiConfig: {

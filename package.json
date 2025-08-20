@@ -30,6 +30,7 @@
     "typescript": "^5.5.4"
   },
   "devDependencies": {
+    "@astrojs/sitemap": "^3.5.0",
     "@types/node": "^24.0.1",
     "@types/nodemailer": "^6.4.17",
     "@typescript-eslint/eslint-plugin": "^7.3.1",

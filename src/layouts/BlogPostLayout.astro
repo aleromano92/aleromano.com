@@ -35,7 +35,17 @@ const contactMeFooterText =
 const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
 ---
 
-<BaseLayout pageTitle={pageTitle} i18nData={i18nData} showNotACookieBannerAutomatically={false}>
+<BaseLayout
+  pageTitle={pageTitle}
+  i18nData={i18nData}
+  showNotACookieBannerAutomatically={false}
+  description={frontmatter.description}
+  type="article"
+  image={frontmatter.image?.url}
+  imageAlt={frontmatter.image?.alt}
+  publishedTime={frontmatter.pubDate}
+  author={frontmatter.author}
+>
   <article class="post">
     <button class="back-link" data-fallback-url={fallbackUrl}>
       <svg

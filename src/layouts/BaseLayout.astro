@@ -2,19 +2,61 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import NotACookieBanner from '../components/NotACookieBanner.astro';
+import SEO from '../components/SEO.astro';
 import '../styles/theme.css';
 import '../styles/global.css';
+import type { ImageMetadata } from 'astro';
 
-const { pageTitle, i18nData, showNotACookieBannerAutomatically } = Astro.props;
+export interface Props {
+  pageTitle: string;
+  i18nData?: {
+    currentLang: 'en' | 'it';
+    originalPost?: string;
+  };
+  showNotACookieBannerAutomatically?: boolean;
+  description?: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  type?: 'website' | 'article';
+  publishedTime?: Date;
+  author?: string;
+}
+
+const {
+  pageTitle,
+  i18nData,
+  showNotACookieBannerAutomatically,
+  description,
+  image,
+  imageAlt,
+  type = 'website',
+  publishedTime,
+  author,
+} = Astro.props;
+
+// Get current language from i18nData or default to 'en'
+const currentLang = i18nData?.currentLang || 'en';
 ---
 
-<html lang="en">
+<html lang={currentLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle + ' | Alessandro Romano'}</title>
+
+    <SEO
+      title={pageTitle + ' | Alessandro Romano'}
+      description={description || 'Alessandro Romano - Software Engineering Manager and Father'}
+      currentUrl={Astro.url.href}
+      currentLang={currentLang}
+      type={type}
+      image={image}
+      imageAlt={imageAlt}
+      publishedTime={publishedTime}
+      author={author}
+    />
   </head>
   <body>
     <Header i18nData={i18nData} />

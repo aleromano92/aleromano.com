@@ -11,19 +11,24 @@ const pageTitle = 'Home';
 // Get the current language from URL (defaults to 'en' for homepage)
 const language = getLanguageFromURL(Astro.url.pathname) || 'en';
 
+// Page description for SEO and social sharing
+const pageDescription =
+  "I'm a Software Engineering Manager addicted to details and obsessed with how things work: from Cloud services to human relationships. Since my first Hello World in RPG Maker, I have come to believe that being an Engineer is much more than coding.";
+
 // Fetch GitHub commits data server-side
 const githubData = await getGitHubCommitsData(language);
 ---
 
-<BaseLayout pageTitle={pageTitle} showNotACookieBannerAutomatically={true}>
+<BaseLayout pageTitle={pageTitle} showNotACookieBannerAutomatically={true} description={pageDescription}>
   <h2>Insightful. Precise. Human.</h2>
 
   <div class="intro">
     <div class="content">
       <p>
-        I'm addicted to details and obsessed with how things work: from Cloud services to human relationships. Since my
-        first Hello World in RPG Maker, I have come to believe that being an <strong>Engineer</strong> is much more than
-        coding.
+        I'm a Software Engineering Manager addicted to details and obsessed with how things work: from Cloud services to
+        human relationships. Since my first Hello World in RPG Maker, I have come to believe that being an <strong
+          >Engineer</strong
+        > is much more than coding.
       </p>
       <p>
         Wanna know more about me? <a href="/about">Read my story.</a>
