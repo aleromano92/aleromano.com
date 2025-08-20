@@ -1,10 +1,11 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import NotACookieBanner from '../components/NotACookieBanner.astro';
 import '../styles/theme.css';
 import '../styles/global.css';
 
-const { pageTitle, i18nData } = Astro.props;
+const { pageTitle, i18nData, showNotACookieBannerAutomatically } = Astro.props;
 ---
 
 <html lang="en">
@@ -22,5 +23,6 @@ const { pageTitle, i18nData } = Astro.props;
       <slot />
     </main>
     <Footer />
+    <NotACookieBanner showAutomatically={showNotACookieBannerAutomatically} />
   </body>
 </html>

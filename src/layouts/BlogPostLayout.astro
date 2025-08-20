@@ -25,7 +25,7 @@ const backText = currentLang === 'it' ? 'Torna alla lista' : 'Back to overview';
 const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
 ---
 
-<BaseLayout pageTitle={pageTitle} i18nData={i18nData}>
+<BaseLayout pageTitle={pageTitle} i18nData={i18nData} showNotACookieBannerAutomatically={false}>
   <article class="post">
     <button class="back-link" data-fallback-url={fallbackUrl}>
       <svg

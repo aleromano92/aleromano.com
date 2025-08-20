@@ -20,6 +20,11 @@ const currentYear = new Date().getFullYear();
                 >
             </p>
         </div>
+        <p class="banner-link">
+            <a href="#" onclick="if(typeof showNotACookieBanner === 'function') showNotACookieBanner(); return false;"
+                >(Not a) Cookie Policy</a
+            >
+        </p>
         <div class="social-links">
             <SocialLink platform="github" />
             <SocialLink platform="x" />
@@ -54,6 +59,22 @@ const currentYear = new Date().getFullYear();
 
     .copyright-text {
         margin-bottom: 0 !important;
+    }
+
+    .banner-link {
+        margin: 0;
+        font-size: 0.85rem;
+    }
+
+    .banner-link a {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .banner-link a:hover {
+        color: var(--color-accent);
+        text-decoration: underline;
     }
 
     .social-links {

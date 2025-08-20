@@ -184,6 +184,11 @@ async function fetchTwitterData(bearerToken?: string): Promise<TwitterPost[]> {
 
 // Caching wrapper that fetches Twitter data with graceful fallback to stale cache
 export async function getTwitterPosts(bearerToken?: string): Promise<TwitterResponse> {
+  // on local-dev return mocked data
+  if (process.env.NODE_ENV !== 'production') {
+    return getTwitterPostsMock();
+  }
+
   // Return cached data if valid
   if (isCacheValid() && cache) {
     console.log('Using cached Twitter data');
