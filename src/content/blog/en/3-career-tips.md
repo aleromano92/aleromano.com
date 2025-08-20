@@ -122,4 +122,3 @@ It's not like that, or at least there are very few companies in the world that r
 
 Happy growing! 🚀
 
-*If this article was useful to you, share it with a colleague who might benefit from it. And if you want to discuss these topics, [write to me](/contact).*

@@ -21,6 +21,16 @@ const i18nData = {
 // Determine back link text based on language
 const backText = currentLang === 'it' ? 'Torna alla lista' : 'Back to overview';
 
+// Contact me footer text
+const contactMeFooterText =
+  currentLang === 'it'
+    ? 'Se questo articolo ti è stato utile, condividilo con chi potrebbe beneficiarne. E se vuoi <strong>discutere</strong> di questi temi, <a href="/contact?reason=blogpost&title=' +
+      encodeURIComponent(frontmatter.title) +
+      '">scrivimi</a>.'
+    : 'If this article was useful to you, share it with who might benefit from it. And if you want <strong>to discuss</strong> these topics, <a href="/contact?reason=blogpost&title=' +
+      encodeURIComponent(frontmatter.title) +
+      '">write to me</a>.';
+
 // Default fallback URL if no history
 const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
 ---
@@ -84,6 +94,7 @@ const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
 
     <footer class="post-footer">
       <p>Written by {frontmatter.author}</p>
+      <p set:html={contactMeFooterText} />
     </footer>
   </article>
 </BaseLayout>

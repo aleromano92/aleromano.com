@@ -10,6 +10,7 @@ const CONTACT_REASONS_DATA = {
   consultancy: 'Consultancy request',
   mentoring: 'Mentoring',
   job: 'Job opportunities',
+  blogpost: 'Blog Post Feedback',
   general: 'General inquiry',
 };
 ---
@@ -20,9 +21,13 @@ const CONTACT_REASONS_DATA = {
       <div class="form-group">
         <label for="contactReason">Reason</label>
         <select id="contactReason" name="reason">
-          {/* Changed name to "reason" */}
           {Object.entries(CONTACT_REASONS_DATA).map(([value, text]) => <option value={value}>{text}</option>)}
         </select>
+      </div>
+
+      <div class="form-group" id="blogPostTitleGroup" style="display: none;">
+        <label for="blogPostTitle">Blog Post Title</label>
+        <input type="text" id="blogPostTitle" name="blogPostTitle" />
       </div>
 
       <div id="formFields" style="display: none;">
@@ -67,6 +72,8 @@ const CONTACT_REASONS_DATA = {
   const submitButton = contactForm.querySelector('button[type="submit"]') as HTMLButtonElement;
   const nameInput = document.getElementById('name') as HTMLInputElement;
   const emailInput = document.getElementById('email') as HTMLInputElement;
+  const blogPostTitleInput = document.getElementById('blogPostTitle') as HTMLInputElement;
+  const blogPostTitleGroup = document.getElementById('blogPostTitleGroup') as HTMLDivElement;
 
   const PREFILL_MESSAGES: Record<string, string> = {
     consultancy:
@@ -74,23 +81,33 @@ const CONTACT_REASONS_DATA = {
     mentoring:
       'Please, in order to make good use of your time and mine, write here why you think I could be of any help and I will happily do my best to help you',
     job: "please, in order to make good use of your time and mine, please don't contact me before reviewing at least my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). If you think I could be a good fit for your company, write here why you think so and leave me a link to get more details",
+    blogpost:
+      'Please share your thoughts, feedback, or questions about this blog post. I appreciate constructive feedback and engaging discussions!',
   };
 
   function resetAndInitializeForm(selectedReason: string = '') {
     messageTextarea.value = '';
     nameInput.value = '';
     emailInput.value = '';
+    blogPostTitleInput.value = '';
     contactReasonSelect.value = selectedReason; // Set to specific reason or default
 
     formFields.style.display = 'none';
     githubIssueButtonContainer.style.display = 'none';
+    blogPostTitleGroup.style.display = 'none';
     if (submitButton) submitButton.style.display = 'none';
 
     if (selectedReason === 'problems') {
       githubIssueButtonContainer.style.display = 'block';
-    } else if (['consultancy', 'mentoring', 'job', 'general'].includes(selectedReason)) {
+    } else if (['consultancy', 'mentoring', 'job', 'blogpost', 'general'].includes(selectedReason)) {
       formFields.style.display = 'block';
       if (submitButton) submitButton.style.display = 'block';
+
+      // Show blog post title field only for blogpost reason
+      if (selectedReason === 'blogpost') {
+        blogPostTitleGroup.style.display = 'block';
+      }
+
       if (PREFILL_MESSAGES[selectedReason]) {
         messageTextarea.value = PREFILL_MESSAGES[selectedReason];
       }
@@ -153,7 +170,24 @@ const CONTACT_REASONS_DATA = {
   });
 
   // Initialize form state on page load
-  resetAndInitializeForm(contactReasonSelect.value);
+  document.addEventListener('DOMContentLoaded', () => {
+    // Check for URL parameters to pre-fill the form
+    const urlParams = new URLSearchParams(window.location.search);
+    const preselectedReason = urlParams.get('reason');
+    const prefilledTitle = urlParams.get('title');
+
+    const validReasons = ['consultancy', 'mentoring', 'job', 'blogpost', 'general', 'problems'];
+    if (preselectedReason && validReasons.includes(preselectedReason)) {
+      resetAndInitializeForm(preselectedReason);
+
+      // Pre-fill blog post title if provided
+      if (preselectedReason === 'blogpost' && prefilledTitle) {
+        blogPostTitleInput.value = decodeURIComponent(prefilledTitle);
+      }
+    } else {
+      resetAndInitializeForm(contactReasonSelect.value);
+    }
+  });
 </script>
 
 <style>

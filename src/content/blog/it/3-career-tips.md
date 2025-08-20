@@ -121,5 +121,3 @@ Ma credo che Internet sia pieno di persone che promuovono questo come se fosse l
 Non è così o quanto meno ci sono pochissime aziende al mondo che premiano solo questa componente senza tutto il resto che ti ho raccontato.
 
 Buona crescita! 🚀
-
-*Se questo articolo ti è stato utile, condividilo con un collega che potrebbe beneficiarne. E se vuoi discutere di questi temi, [scrivimi](/contact).*

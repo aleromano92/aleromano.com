@@ -22,7 +22,7 @@ function createJsonResponse(responseData: ApiResponseData, status: number): Resp
 }
 
 // Define allowed contact reasons that require full form data and email sending
-const VALID_CONTACT_REASONS = ["consultancy", "mentoring", "job", "general"];
+const VALID_CONTACT_REASONS = ["consultancy", "mentoring", "job", "blogpost", "general"];
 
 interface MailTransportConfig {
   transportOptions: nodemailer.TransportOptions;
@@ -84,7 +84,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     const data = await request.json();
-    const { reason, name, email, message } = data;
+    const { reason, name, email, message, blogPostTitle } = data;
 
     // Basic validation for the reason
     if (!reason) {
@@ -117,13 +117,14 @@ export const POST: APIRoute = async ({ request }) => {
         from: `"${name} via aleromano.com" ${PERSONAL_EMAIL}>`,
         to: PERSONAL_EMAIL,
         replyTo: email,
-        subject: `Contact Form: ${reason}`,
-        text: `You have a new contact form submission:\n\nName: ${name}\nEmail: ${email}\nReason: ${reason}\nMessage:\n${message}`,
+        subject: `Contact Form: ${reason}${blogPostTitle ? ` - ${blogPostTitle}` : ''}`,
+        text: `You have a new contact form submission:\n\nName: ${name}\nEmail: ${email}\nReason: ${reason}${blogPostTitle ? `\nBlog Post Title: ${blogPostTitle}` : ''}\nMessage:\n${message}`,
         html: `<p>You have a new contact form submission:</p>
                <ul>
                  <li><strong>Name:</strong> ${name}</li>
                  <li><strong>Email:</strong> ${email}</li>
                  <li><strong>Reason:</strong> ${reason}</li>
+                 ${blogPostTitle ? `<li><strong>Blog Post Title:</strong> ${blogPostTitle}</li>` : ''}
                </ul>
                <p><strong>Message:</strong></p>
                <p>${message.replace(/\n/g, '<br>')}</p>`,
