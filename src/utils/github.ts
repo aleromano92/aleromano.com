@@ -4,6 +4,8 @@ export interface GitHubCommit {
   date: string;
   url: string;
   repo: string;
+  formattedDate: string;
+  truncatedMessage: string;
 }
 
 export interface GitHubCommitsData {
@@ -12,10 +14,29 @@ export interface GitHubCommitsData {
 }
 
 const GITHUB_USERNAME = 'aleromano92';
-const GITHUB_TOKEN = import.meta.env.PERSONAL_GITHUB_TOKEN || process.env.PERSONAL_GITHUB_TOKEN;
+const GITHUB_REPO = 'aleromano.com';
+const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN;
 
-async function fetchUserEvents(): Promise<any[]> {
-  const url = `https://api.github.com/users/${GITHUB_USERNAME}/events/public`;
+function formatDate(dateString: string, lang: string = 'en'): string {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+
+  return date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', options);
+}
+
+function truncateMessage(message: string, maxLength: number = 180): string {
+  if (message.length <= maxLength) return message;
+  return message.substring(0, maxLength) + '...';
+}
+
+async function fetchRepositoryCommits(): Promise<any[]> {
+  const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits?per_page=9&author=${GITHUB_USERNAME}`;
   const headers: Record<string, string> = {
     'Accept': 'application/vnd.github.v3+json',
     'User-Agent': 'aleromano.com'
@@ -34,44 +55,44 @@ async function fetchUserEvents(): Promise<any[]> {
     
     return await response.json();
   } catch (error) {
-    console.error('Error fetching GitHub events:', error);
+    console.error('Error fetching GitHub commits:', error);
     throw error;
   }
 }
 
-function extractCommitsFromEvents(events: any[]): GitHubCommit[] {
-  const commits: GitHubCommit[] = [];
+function extractCommitsFromRepositoryData(commits: any[], language: string = 'en'): GitHubCommit[] {
+  const gitHubCommits: GitHubCommit[] = [];
   
-  for (const event of events) {
-    if (event.type === 'PushEvent' && event.payload?.commits) {
-      for (const commit of event.payload.commits) {
-        // Skip merge commits and commits by other authors
-        if (!commit.message.startsWith('Merge') && commit.author?.name) {
-          commits.push({
-            sha: commit.sha.substring(0, 7), // Short SHA
-            message: commit.message.split('\n')[0], // First line only
-            date: event.created_at,
-            url: `https://github.com/${event.repo.name}/commit/${commit.sha}`,
-            repo: event.repo.name
-          });
-        }
-      }
+  for (const commit of commits) {
+    // Skip merge commits
+    if (!commit.commit.message.startsWith('Merge')) {
+      const message = commit.commit.message.split('\n')[0]; // First line only
+      const date = commit.commit.author.date;
+      
+      gitHubCommits.push({
+        sha: commit.sha.substring(0, 7), // Short SHA
+        message,
+        date,
+        url: commit.html_url,
+        repo: `${GITHUB_USERNAME}/${GITHUB_REPO}`,
+        formattedDate: formatDate(date, language),
+        truncatedMessage: truncateMessage(message)
+      });
     }
   }
   
-  // Sort by date descending and take first 10
-  return commits
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 10);
+  // Sort by date descending
+  return gitHubCommits
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
-export async function getGitHubCommitsData(): Promise<GitHubCommitsData> {
+export async function getGitHubCommitsData(language: string = 'en'): Promise<GitHubCommitsData> {
   try {
-    const events = await fetchUserEvents();
-    const commits = extractCommitsFromEvents(events);
+    const commits = await fetchRepositoryCommits();
+    const gitHubCommits = extractCommitsFromRepositoryData(commits, language);
     
     return {
-      commits
+      commits: gitHubCommits
     };
   } catch (error) {
     console.error('Failed to fetch GitHub commits:', error);

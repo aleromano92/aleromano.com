@@ -9,55 +9,55 @@ vi.stubGlobal('fetch', mockFetch);
 // Mock console.error to avoid noise in tests
 const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-describe('GitHub API utilities', () => {
+describe('GitHub Repository Commits API utilities', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockConsoleError.mockClear();
   });
 
   describe('getGitHubCommitsData', () => {
-    it('should return commits when API call is successful', async () => {
-      const mockEvents = [
+    it('should return commits when Repository Commits API call is successful', async () => {
+      const mockCommits = [
         {
-          type: 'PushEvent',
-          created_at: '2024-01-15T10:30:00Z',
-          repo: { name: 'user/test-repo' },
-          payload: {
-            commits: [
-              {
-                sha: 'abc123def456789',
-                message: 'Add new feature\n\nDetailed description here',
-                author: { name: 'Test User' }
-              },
-              {
-                sha: 'def456abc123789',
-                message: 'Fix bug in component',
-                author: { name: 'Test User' }
-              }
-            ]
-          }
+          sha: 'abc123def456789fullhash',
+          commit: {
+            message: 'Add new feature\n\nDetailed description here',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-15T10:30:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/abc123def456789fullhash'
         },
         {
-          type: 'PushEvent',
-          created_at: '2024-01-14T15:20:00Z',
-          repo: { name: 'user/another-repo' },
-          payload: {
-            commits: [
-              {
-                sha: 'xyz789abc123def',
-                message: 'Update documentation',
-                author: { name: 'Test User' }
-              }
-            ]
-          }
+          sha: 'def456abc123789fullhash',
+          commit: {
+            message: 'Fix bug in component',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-14T15:20:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/def456abc123789fullhash'
+        },
+        {
+          sha: 'xyz789abc123deffullhash',
+          commit: {
+            message: 'Update documentation',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-13T12:10:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/xyz789abc123deffullhash'
         }
       ];
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockEvents
+        json: async () => mockCommits
       });
 
-      const result: GitHubCommitsData = await getGitHubCommitsData();
+      const result: GitHubCommitsData = await getGitHubCommitsData('en');
 
       expect(result.error).toBeUndefined();
       expect(result.commits).toHaveLength(3);
@@ -67,8 +67,10 @@ describe('GitHub API utilities', () => {
         sha: 'abc123d',
         message: 'Add new feature',
         date: '2024-01-15T10:30:00Z',
-        url: 'https://github.com/user/test-repo/commit/abc123def456789',
-        repo: 'user/test-repo'
+        url: 'https://github.com/aleromano92/aleromano.com/commit/abc123def456789fullhash',
+        repo: 'aleromano92/aleromano.com',
+        formattedDate: 'Jan 15, 2024, 11:30 AM',
+        truncatedMessage: 'Add new feature'
       });
 
       // Check that commits are sorted by date (newest first)
@@ -78,30 +80,33 @@ describe('GitHub API utilities', () => {
     });
 
     it('should filter out merge commits', async () => {
-      const mockEvents = [
+      const mockCommits = [
         {
-          type: 'PushEvent',
-          created_at: '2024-01-15T10:30:00Z',
-          repo: { name: 'user/test-repo' },
-          payload: {
-            commits: [
-              {
-                sha: 'abc123def456789',
-                message: 'Merge pull request #123 from feature-branch',
-                author: { name: 'Test User' }
-              },
-              {
-                sha: 'def456abc123789',
-                message: 'Add actual feature',
-                author: { name: 'Test User' }
-              }
-            ]
-          }
+          sha: 'abc123def456789',
+          commit: {
+            message: 'Merge pull request #123 from feature-branch',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-15T10:30:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/abc123def456789'
+        },
+        {
+          sha: 'def456abc123789',
+          commit: {
+            message: 'Add actual feature',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-15T09:30:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/def456abc123789'
         }
       ];
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockEvents
+        json: async () => mockCommits
       });
 
       const result = await getGitHubCommitsData();
@@ -111,116 +116,24 @@ describe('GitHub API utilities', () => {
       expect(result.commits[0].message).not.toContain('Merge');
     });
 
-    it('should filter out commits without author names', async () => {
-      const mockEvents = [
-        {
-          type: 'PushEvent',
-          created_at: '2024-01-15T10:30:00Z',
-          repo: { name: 'user/test-repo' },
-          payload: {
-            commits: [
-              {
-                sha: 'abc123def456789',
-                message: 'Commit without author',
-                author: null
-              },
-              {
-                sha: 'def456abc123789',
-                message: 'Commit with author',
-                author: { name: 'Test User' }
-              }
-            ]
-          }
-        }
-      ];
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents
-      });
-
-      const result = await getGitHubCommitsData();
-
-      expect(result.commits).toHaveLength(1);
-      expect(result.commits[0].message).toBe('Commit with author');
-    });
-
-    it('should ignore non-PushEvent events', async () => {
-      const mockEvents = [
-        {
-          type: 'IssuesEvent',
-          created_at: '2024-01-15T10:30:00Z',
-          repo: { name: 'user/test-repo' }
-        },
-        {
-          type: 'PushEvent',
-          created_at: '2024-01-15T10:30:00Z',
-          repo: { name: 'user/test-repo' },
-          payload: {
-            commits: [
-              {
-                sha: 'abc123def456789',
-                message: 'Valid commit',
-                author: { name: 'Test User' }
-              }
-            ]
-          }
-        }
-      ];
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents
-      });
-
-      const result = await getGitHubCommitsData();
-
-      expect(result.commits).toHaveLength(1);
-      expect(result.commits[0].message).toBe('Valid commit');
-    });
-
-    it('should limit results to 10 commits', async () => {
-      const mockCommits = Array.from({ length: 15 }, (_, i) => ({
-        sha: `commit${i}abc123def456789`,
-        message: `Commit ${i}`,
-        author: { name: 'Test User' }
-      }));
-      const mockEvents = [
-        {
-          type: 'PushEvent',
-          created_at: '2024-01-15T10:30:00Z',
-          repo: { name: 'user/test-repo' },
-          payload: { commits: mockCommits }
-        }
-      ];
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents
-      });
-
-      const result = await getGitHubCommitsData();
-
-      expect(result.commits).toHaveLength(10);
-    });
-
     it('should truncate SHA to 7 characters', async () => {
-      const mockEvents = [
+      const mockCommits = [
         {
-          type: 'PushEvent',
-          created_at: '2024-01-15T10:30:00Z',
-          repo: { name: 'user/test-repo' },
-          payload: {
-            commits: [
-              {
-                sha: 'abcdef123456789fullhash',
-                message: 'Test commit',
-                author: { name: 'Test User' }
-              }
-            ]
-          }
+          sha: 'abcdef123456789fullhash',
+          commit: {
+            message: 'Test commit',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-15T10:30:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/abcdef123456789fullhash'
         }
       ];
+
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockEvents
+        json: async () => mockCommits
       });
 
       const result = await getGitHubCommitsData();
@@ -230,25 +143,22 @@ describe('GitHub API utilities', () => {
     });
 
     it('should use only first line of commit message', async () => {
-      const mockEvents = [
+      const mockCommits = [
         {
-          type: 'PushEvent',
-          created_at: '2024-01-15T10:30:00Z',
-          repo: { name: 'user/test-repo' },
-          payload: {
-            commits: [
-              {
-                sha: 'abc123def456789',
-                message: 'First line of commit\n\nSecond line\nThird line',
-                author: { name: 'Test User' }
-              }
-            ]
-          }
+          sha: 'abc123def456789',
+          commit: {
+            message: 'First line of commit\n\nSecond line\nThird line',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-15T10:30:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/abc123def456789'
         }
       ];
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockEvents
+        json: async () => mockCommits
       });
 
       const result = await getGitHubCommitsData();
@@ -261,7 +171,7 @@ describe('GitHub API utilities', () => {
         ok: false,
         status: 404
       });
-      
+
       const result = await getGitHubCommitsData();
 
       expect(result.commits).toEqual([]);
@@ -279,35 +189,32 @@ describe('GitHub API utilities', () => {
       expect(mockConsoleError).toHaveBeenCalled();
     });
 
-    it('should include correct URL format', async () => {
-      const mockEvents = [
+    it('should include correct repository name and URL format', async () => {
+      const mockCommits = [
         {
-          type: 'PushEvent',
-          created_at: '2024-01-15T10:30:00Z',
-          repo: { name: 'username/repository-name' },
-          payload: {
-            commits: [
-              {
-                sha: 'abc123def456789',
-                message: 'Test commit',
-                author: { name: 'Test User' }
-              }
-            ]
-          }
+          sha: 'abc123def456789',
+          commit: {
+            message: 'Test commit',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-15T10:30:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/abc123def456789'
         }
       ];
-
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockEvents
+        json: async () => mockCommits
       });
 
       const result = await getGitHubCommitsData();
 
-      expect(result.commits[0].url).toBe('https://github.com/username/repository-name/commit/abc123def456789');
+      expect(result.commits[0].url).toBe('https://github.com/aleromano92/aleromano.com/commit/abc123def456789');
+      expect(result.commits[0].repo).toBe('aleromano92/aleromano.com');
     });
 
-    it('should make API call with correct headers', async () => {
+    it('should make API call with correct headers and URL', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => []
@@ -316,7 +223,7 @@ describe('GitHub API utilities', () => {
       await getGitHubCommitsData();
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.github.com/users/aleromano92/events/public',
+        'https://api.github.com/repos/aleromano92/aleromano.com/commits?per_page=9&author=aleromano92',
         {
           headers: {
             'Accept': 'application/vnd.github.v3+json',
@@ -325,5 +232,108 @@ describe('GitHub API utilities', () => {
         }
       );
     });
+
+    it('should sort commits by date (newest first)', async () => {
+      const mockCommits = [
+        {
+          sha: 'older123',
+          commit: {
+            message: 'Older commit',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-14T10:30:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/older123'
+        },
+        {
+          sha: 'newer456',
+          commit: {
+            message: 'Newer commit',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-15T10:30:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/newer456'
+        }
+      ];
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCommits
+      });
+
+      const result = await getGitHubCommitsData();
+
+      expect(result.commits[0].sha).toBe('newer45'); // Newer commit first
+      expect(result.commits[1].sha).toBe('older12'); // Older commit second
+    });
+
+    it('should handle empty response gracefully', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => []
+      });
+
+      const result = await getGitHubCommitsData();
+
+      expect(result.commits).toEqual([]);
+      expect(result.error).toBeUndefined();
+    });
+
+    it('should format dates according to language preference', async () => {
+      const mockCommits = [
+        {
+          sha: 'abc123def456789',
+          commit: {
+            message: 'Test commit',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-15T10:30:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/abc123def456789'
+        }
+      ];
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCommits
+      });
+
+      const result = await getGitHubCommitsData('en');
+
+      expect(result.commits[0].formattedDate).toBeDefined();
+      expect(typeof result.commits[0].formattedDate).toBe('string');
+    });
+
+    it('should truncate long commit messages', async () => {
+      const longMessage = 'A'.repeat(200); // 200 character message
+      const mockCommits = [
+        {
+          sha: 'abc123def456789',
+          commit: {
+            message: longMessage,
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-15T10:30:00Z'
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/abc123def456789'
+        }
+      ];
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCommits
+      });
+
+      const result = await getGitHubCommitsData();
+
+      expect(result.commits[0].truncatedMessage).toBe('A'.repeat(180) + '...');
+      expect(result.commits[0].truncatedMessage.length).toBe(183); // 180 + '...'
+    });
+  
   });
 });

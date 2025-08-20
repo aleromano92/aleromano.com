@@ -12,7 +12,7 @@ const pageTitle = 'Home';
 const language = getLanguageFromURL(Astro.url.pathname) || 'en';
 
 // Fetch GitHub commits data server-side
-const githubData = await getGitHubCommitsData();
+const githubData = await getGitHubCommitsData(language);
 ---
 
 <BaseLayout pageTitle={pageTitle} showNotACookieBannerAutomatically={true}>

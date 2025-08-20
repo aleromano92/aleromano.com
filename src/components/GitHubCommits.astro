@@ -11,24 +11,6 @@ const { commits, error, language } = Astro.props;
 
 const title = language === 'it' ? 'Ultimi Commit GitHub' : 'Latest GitHub Commits';
 const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit' : 'Unable to load latest commits';
-
-function formatDate(dateString: string, lang: string): string {
-    const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    };
-
-    return date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', options);
-}
-
-function truncateMessage(message: string, maxLength: number = 80): string {
-    if (message.length <= maxLength) return message;
-    return message.substring(0, maxLength) + '...';
-}
 ---
 
 <section class="github-commits">
@@ -49,9 +31,9 @@ function truncateMessage(message: string, maxLength: number = 80): string {
                             </a>
                             <span class="commit-repo">{commit.repo}</span>
                         </div>
-                        <p class="commit-message">{truncateMessage(commit.message)}</p>
+                        <p class="commit-message">{commit.truncatedMessage}</p>
                         <time class="commit-date" datetime={commit.date}>
-                            {formatDate(commit.date, language)}
+                            {commit.formattedDate}
                         </time>
                     </article>
                 ))}
