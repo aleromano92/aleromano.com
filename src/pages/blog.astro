@@ -9,10 +9,15 @@ const posts = await getCollection('blog');
 const localizedPosts = posts
   .filter((post) => post.slug.startsWith(currentLang + '/'))
   .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+// Page description for SEO and social sharing
+const pageDescription =
+  'Latest blog posts about software engineering, leadership, career growth, and engineering culture by Alessandro Romano.';
+
 export const prerender = true;
 ---
 
-<BaseLayout pageTitle="Blog">
+<BaseLayout pageTitle="Blog" description={pageDescription}>
   <section>
     <PostsGrid posts={localizedPosts} />
   </section>

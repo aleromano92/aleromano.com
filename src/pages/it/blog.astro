@@ -11,15 +11,19 @@ const localizedPosts = posts
 // Set Italian page title
 const pageTitle = 'Blog';
 
+// Page description for SEO and social sharing
+const pageDescription =
+    'Gli ultimi articoli del blog su ingegneria del software, leadership, crescita professionale e cultura ingegneristica di Alessandro Romano.';
+
 // Set language info for BaseLayout
 const i18nData = {
-    currentLang: 'it',
+    currentLang: 'it' as const,
 };
 
 export const prerender = true;
 ---
 
-<BaseLayout pageTitle={pageTitle} i18nData={i18nData}>
+<BaseLayout pageTitle={pageTitle} i18nData={i18nData} description={pageDescription}>
     <section>
         <PostsGrid posts={localizedPosts} />
     </section>
