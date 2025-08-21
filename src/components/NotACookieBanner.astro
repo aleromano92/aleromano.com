@@ -1,29 +1,77 @@
 ---
-const { showAutomatically = false } = Astro.props;
+import type { SupportedLanguage } from '../types/i18n';
+
+export interface NotACookieBannerTranslations {
+    title: string;
+    closeLabel: string;
+    paragraph1: string;
+    paragraph2: string;
+    paragraph3: string;
+    euAccText: string;
+    aveEuropeText: string;
+    drivePositiveChange: string;
+}
+
+export const notACookieBannerTranslations: Record<SupportedLanguage, NotACookieBannerTranslations> = {
+    en: {
+        title: 'This is NOT a cookie banner',
+        closeLabel: 'Close banner',
+        paragraph1:
+            "Cookie banners are a perfect example of a <strong>bad implementation</strong> of a good-in-theory principle. They've created an anti-pattern in user behavior where people immediately click and dismiss banners without reading them, making the entire exercise <strong>pointless</strong>. Meanwhile, EU bureaucracy continues to hinder the investment power of EU companies with such <strong>misguided regulations</strong>.",
+        paragraph2:
+            'My website does <strong>not use any form of analytics</strong> at the current moment. If I implement analytics in the future, it will probably be a <strong>self-hosted solution</strong> (custom-built or open source) without any tracking or targeting data.',
+        paragraph3:
+            'I support initiatives like {euAcc} and {aveEurope} to spread awareness and <strong>drive positive change</strong>.',
+        euAccText: 'eu/acc',
+        aveEuropeText: 'AVE Europe',
+        drivePositiveChange: 'drive positive change',
+    },
+    it: {
+        title: 'Questo NON è un banner dei cookie',
+        closeLabel: 'Chiudi banner',
+        paragraph1:
+            "I banner dei cookie sono un perfetto esempio di <strong>cattiva implementazione</strong> di un principio buono in teoria. Hanno creato un anti-pattern nel comportamento degli utenti dove le persone cliccano immediatamente e chiudono i banner senza leggerli, rendendo l'intero esercizio <strong>inutile</strong>. Nel frattempo, la burocrazia UE continua a ostacolare il potere di investimento delle aziende europee con tali <strong>regolamentazioni sbagliate</strong>.",
+        paragraph2:
+            'Il mio sito web <strong>non utilizza alcuna forma di analytics</strong> al momento. Se implementerò analytics in futuro, probabilmente sarà una <strong>soluzione self-hosted</strong> (custom o open source) senza alcun dato di tracciamento o targeting.',
+        paragraph3:
+            'Supporto iniziative come {euAcc} e {aveEurope} per diffondere consapevolezza e <strong>promuovere cambiamenti positivi</strong>.',
+        euAccText: 'eu/acc',
+        aveEuropeText: 'AVE Europe',
+        drivePositiveChange: 'promuovere cambiamenti positivi',
+    },
+};
+
+export function getNotACookieBannerTranslations(language: SupportedLanguage): NotACookieBannerTranslations {
+    return notACookieBannerTranslations[language];
+}
+
+interface Props {
+    showAutomatically?: boolean;
+    language: SupportedLanguage;
+}
+
+const { showAutomatically = false, language } = Astro.props;
+
+// Get translations for the current language
+const t = getNotACookieBannerTranslations(language);
+
+// Process paragraph3 to replace placeholders with actual HTML links
+const paragraph3Html = t.paragraph3
+    .replace('{euAcc}', `<a href="https://eu-acc.com/" target="_blank" rel="noopener noreferrer">${t.euAccText}</a>`)
+    .replace(
+        '{aveEurope}',
+        `<a href="https://ave-europa.eu/" target="_blank" rel="noopener noreferrer">${t.aveEuropeText}</a>`,
+    );
 ---
 
 <div id="not-a-cookie-banner" class="banner-overlay">
     <div class="banner-content">
-        <button class="close-btn" aria-label="Close banner">&times;</button>
-        <h2>This is NOT a cookie banner</h2>
+        <button class="close-btn" aria-label={t.closeLabel}>&times;</button>
+        <h2>{t.title}</h2>
         <div class="banner-text">
-            <p>
-                Cookie banners are a perfect example of a <strong>bad implementation</strong> of a good-in-theory principle.
-                They've created an anti-pattern in user behavior where people immediately click and dismiss banners without
-                reading them, making the entire exercise <strong>pointless</strong>. Meanwhile, EU bureaucracy continues
-                to hinder the investment power of EU companies with such <strong>misguided regulations</strong>.
-            </p>
-            <p>
-                My website does <strong>not use any form of analytics</strong> at the current moment. If I implement analytics
-                in the future, it will probably be a <strong>self-hosted solution</strong> (custom-built or open source)
-                without any tracking or targeting data.
-            </p>
-            <p>
-                I support initiatives like <a href="https://eu-acc.com/" target="_blank" rel="noopener noreferrer"
-                    >eu/acc</a
-                > and <a href="https://ave-europa.eu/" target="_blank" rel="noopener noreferrer">AVE Europe</a> to spread
-                awareness and <strong>drive positive change</strong>.
-            </p>
+            <p set:html={t.paragraph1} />
+            <p set:html={t.paragraph2} />
+            <p set:html={paragraph3Html} />
         </div>
     </div>
 </div>
