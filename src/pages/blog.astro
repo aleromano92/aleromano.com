@@ -1,24 +1,40 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getLanguageFromURL } from '../utils/i18n';
+import BaseBlog, { getBlogTranslations } from '../components/pages/BaseBlog.astro';
 import PostsGrid from '../components/posts/PostsGrid.astro';
+import { getLanguageFromURL } from '../utils/i18n';
+import type { SupportedLanguage } from '../types/i18n';
 
-const currentLang = getLanguageFromURL(Astro.url.pathname);
-const posts = await getCollection('blog');
-const localizedPosts = posts
-  .filter((post) => post.slug.startsWith(currentLang + '/'))
-  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+const pageTitle = 'Blog';
+
+// Get the current language from URL
+const language = (getLanguageFromURL(Astro.url.pathname) || 'en') as SupportedLanguage;
+
+// Get translations for the current language
+const t = getBlogTranslations(language);
 
 // Page description for SEO and social sharing
-const pageDescription =
-  'Latest blog posts about software engineering, leadership, career growth, and engineering culture by Alessandro Romano.';
+const pageDescription = t.pageDescription;
+
+// Get blog posts filtered by language
+const posts = await getCollection('blog', ({ data }) => {
+  return data.language === language;
+});
+
+// Sort posts by publication date (newest first)
+const sortedPosts = posts.sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
+
+// Set language info for BaseLayout
+const i18nData = {
+  currentLang: language,
+};
 
 export const prerender = true;
 ---
 
-<BaseLayout pageTitle="Blog" description={pageDescription}>
-  <section>
-    <PostsGrid posts={localizedPosts} />
-  </section>
+<BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData}>
+  <BaseBlog language={language} posts={sortedPosts}>
+    <PostsGrid posts={sortedPosts} />
+  </BaseBlog>
 </BaseLayout>

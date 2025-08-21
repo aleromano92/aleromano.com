@@ -1,0 +1,47 @@
+---
+import type { SupportedLanguage } from '../../types/i18n';
+import type { CollectionEntry } from 'astro:content';
+
+export interface BlogTranslations {
+    pageTitle: string;
+    pageDescription: string;
+    heading: string;
+    subheading: string;
+    noPostsMessage: string;
+}
+
+export const blogTranslations: Record<SupportedLanguage, BlogTranslations> = {
+    en: {
+        pageTitle: 'Blog',
+        pageDescription: "Alessandro Romano's thoughts on software engineering, leadership, and technology.",
+        heading: 'Blog',
+        subheading: 'My thoughts on software engineering, leadership, and technology.',
+        noPostsMessage: 'No posts found.',
+    },
+    it: {
+        pageTitle: 'Blog',
+        pageDescription: 'I pensieri di Alessandro Romano su ingegneria del software, leadership e tecnologia.',
+        heading: 'Blog',
+        subheading: 'I miei pensieri su ingegneria del software, leadership e tecnologia.',
+        noPostsMessage: 'Nessun articolo trovato.',
+    },
+};
+
+export function getBlogTranslations(language: SupportedLanguage): BlogTranslations {
+    return blogTranslations[language];
+}
+
+interface Props {
+    language: SupportedLanguage;
+    posts: CollectionEntry<'blog'>[];
+}
+
+const { language, posts } = Astro.props;
+
+// Get translations for the current language
+const t = getBlogTranslations(language);
+---
+
+<p>{t.subheading}</p>
+
+{posts.length > 0 ? <slot /> : <p>{t.noPostsMessage}</p>}
