@@ -1,14 +1,13 @@
 ---
 import { isNavigationItemActive } from '../utils/navigation';
-import type { ROUTES } from './Navigation.astro';
 
 interface Props {
-    href: (typeof ROUTES)[number];
+    href: string;
+    label: string;
     currentUrl: string;
 }
 
-const { href, currentUrl } = Astro.props;
-const label = href === '/' ? 'HOME' : href.slice(1).toUpperCase();
+const { href, label, currentUrl } = Astro.props;
 ---
 
 <a href={href} class:list={[{ active: isNavigationItemActive(currentUrl, href) }]}>

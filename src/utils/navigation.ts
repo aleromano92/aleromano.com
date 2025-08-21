@@ -1,5 +1,3 @@
-import type { ROUTES } from "../components/Navigation.astro";
-
 /**
  * Gets the clean path from a URL or path string, removing:
  * - Leading/trailing slashes
@@ -32,18 +30,19 @@ function getCleanPath(urlString: string): string {
 /**
  * Determines if a navigation item should be active based on the current URL
  */
-export function isNavigationItemActive(currentUrl: string, targetPath: typeof ROUTES[number]): boolean {
+export function isNavigationItemActive(currentUrl: string, targetPath: string): boolean {
   const currentPath = getCleanPath(currentUrl);
+  const targetCleanPath = getCleanPath(targetPath);
 
   // Home page
-  if (targetPath === '/') {
+  if (targetCleanPath === '/') {
     return currentPath === '/';
   }
 
   // Blog section (including posts)
-  if (targetPath === '/blog') {
+  if (targetCleanPath === '/blog') {
     return currentPath === '/blog' || currentPath.includes('posts/');
   }
 
-  return currentPath === targetPath;
+  return currentPath === targetCleanPath;
 } 

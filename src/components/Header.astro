@@ -11,7 +11,7 @@ const { i18nData } = Astro.props;
 <header class="container">
   <Hamburger />
   <BrandLogo />
-  <Navigation />
+  <Navigation language={i18nData?.currentLang} />
   <section class="switchers">
     <LanguageSwitcher i18nData={i18nData} />
     <ThemeSwitcher />
