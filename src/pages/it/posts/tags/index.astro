@@ -1,22 +1,21 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import BaseTagsIndex, { getTagsIndexTranslations } from '../../../components/pages/BaseTagsIndex.astro';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import BaseTagsIndex, { getTagsIndexTranslations } from '../../../../components/pages/BaseTagsIndex.astro';
 import { getCollection } from 'astro:content';
-import { getLanguageFromURL } from '../../../utils/i18n';
-import type { SupportedLanguage } from '../../../types/i18n';
+import type { SupportedLanguage } from '../../../../types/i18n';
 
-const pageTitle = 'Topics';
+const pageTitle = 'Argomenti';
 
-// Get the current language from URL
-const language = (getLanguageFromURL(Astro.url.pathname) || 'en') as SupportedLanguage;
+// Set language to Italian for this page
+const language: SupportedLanguage = 'it';
 
-// Get translations for the current language
+// Get translations for Italian
 const t = getTagsIndexTranslations(language);
 
 // Page description for SEO and social sharing
 const pageDescription = t.pageDescription;
 
-// Get all posts and filter by language
+// Get all posts and filter by Italian language
 const allPosts = await getCollection('blog');
 const localizedPosts = allPosts.filter((post) => post.slug.startsWith(language + '/'));
 const tags = [...new Set(localizedPosts.map((post) => post.data.tags).flat())] as string[];

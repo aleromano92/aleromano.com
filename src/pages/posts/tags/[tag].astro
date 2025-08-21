@@ -1,65 +1,53 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BaseTagDetail, { getTagDetailTranslations } from '../../../components/pages/BaseTagDetail.astro';
 import { getCollection } from 'astro:content';
-import PostsGrid from '../../../components/posts/PostsGrid.astro';
+import type { SupportedLanguage } from '../../../types/i18n';
 
 export async function getStaticPaths() {
   const allPosts = await getCollection('blog');
 
-  // Get tags for each language
-  const tagsByLang = {
-    en: new Set(
-      allPosts
-        .filter((post) => post.slug.startsWith('en/'))
-        .map((post) => post.data.tags)
-        .flat(),
-    ),
-    it: new Set(
-      allPosts
-        .filter((post) => post.slug.startsWith('it/'))
-        .map((post) => post.data.tags)
-        .flat(),
-    ),
-  };
-
-  // Generate paths for each tag in each language
-  return Object.entries(tagsByLang).flatMap(([lang, tags]) =>
-    Array.from(tags).map((tag) => {
-      const filteredPosts = allPosts
-        .filter((post) => post.slug.startsWith(lang + '/') && post.data.tags.includes(tag))
-        .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
-
-      return {
-        params: { tag },
-        props: { posts: filteredPosts, lang },
-      };
-    }),
+  // Get tags for English only
+  const englishTags = new Set(
+    allPosts
+      .filter((post) => post.slug.startsWith('en/'))
+      .map((post) => post.data.tags)
+      .flat(),
   );
+
+  // Generate paths for English tags only
+  return Array.from(englishTags).map((tag) => {
+    const filteredPosts = allPosts
+      .filter((post) => post.slug.startsWith('en/') && post.data.tags.includes(tag))
+      .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+    return {
+      params: { tag },
+      props: { posts: filteredPosts },
+    };
+  });
 }
 
 const { tag } = Astro.params;
 const { posts } = Astro.props;
-const pageTitle = `Posts about "${tag}"`;
+
+// Type assertion for tag parameter
+const tagString = tag as string;
+
+// Set language to English for this page
+const language: SupportedLanguage = 'en';
+
+// Get translations for English
+const t = getTagDetailTranslations(language, tagString);
+
+// Set language info for BaseLayout
+const i18nData = {
+  currentLang: language,
+};
+
 export const prerender = true;
 ---
 
-<BaseLayout pageTitle={pageTitle}>
-  <PostsGrid posts={posts} />
+<BaseLayout pageTitle={t.pageTitle} description={t.pageDescription} i18nData={i18nData}>
+  <BaseTagDetail language={language} tag={tagString} posts={posts} />
 </BaseLayout>
-
-<style>
-  .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 500px), 1fr));
-    gap: var(--space-lg);
-    margin: var(--space-lg) 0;
-  }
-
-  @media (max-width: 636px) {
-    .posts-grid {
-      grid-template-columns: 1fr;
-      gap: var(--space-md);
-      margin: var(--space-md) 0;
-    }
-  }
-</style>

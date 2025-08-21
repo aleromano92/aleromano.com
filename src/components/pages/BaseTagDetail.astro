@@ -1,0 +1,42 @@
+---
+import PostsGrid from '../posts/PostsGrid.astro';
+import type { SupportedLanguage } from '../../types/i18n';
+import type { CollectionEntry } from 'astro:content';
+
+export interface TagDetailTranslations {
+    pageTitle: string;
+    pageDescription: string;
+}
+
+export const tagDetailTranslations: Record<SupportedLanguage, TagDetailTranslations> = {
+    en: {
+        pageTitle: 'Posts about "{tag}"',
+        pageDescription: 'Browse all blog posts tagged with "{tag}".',
+    },
+    it: {
+        pageTitle: 'Articoli su "{tag}"',
+        pageDescription: 'Esplora tutti gli articoli del blog taggati con "{tag}".',
+    },
+};
+
+export function getTagDetailTranslations(language: SupportedLanguage, tag: string): TagDetailTranslations {
+    const translations = tagDetailTranslations[language];
+    return {
+        pageTitle: translations.pageTitle.replace('{tag}', tag),
+        pageDescription: translations.pageDescription.replace('{tag}', tag),
+    };
+}
+
+interface Props {
+    language: SupportedLanguage;
+    tag: string;
+    posts: CollectionEntry<'blog'>[];
+}
+
+const { language, tag, posts } = Astro.props;
+
+// Get translations for the current language
+const t = getTagDetailTranslations(language, tag);
+---
+
+<PostsGrid posts={posts} />

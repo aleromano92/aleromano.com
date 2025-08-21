@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import BaseTagDetail, { getTagDetailTranslations } from '../../../../components/pages/BaseTagDetail.astro';
+import { getCollection } from 'astro:content';
+import type { SupportedLanguage } from '../../../../types/i18n';
+
+export async function getStaticPaths() {
+    const allPosts = await getCollection('blog');
+
+    // Get tags for Italian only
+    const italianTags = new Set(
+        allPosts
+            .filter((post) => post.slug.startsWith('it/'))
+            .map((post) => post.data.tags)
+            .flat(),
+    );
+
+    // Generate paths for Italian tags only
+    return Array.from(italianTags).map((tag) => {
+        const filteredPosts = allPosts
+            .filter((post) => post.slug.startsWith('it/') && post.data.tags.includes(tag))
+            .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+        return {
+            params: { tag },
+            props: { posts: filteredPosts },
+        };
+    });
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+
+// Type assertion for tag parameter
+const tagString = tag as string;
+
+// Set language to Italian for this page
+const language: SupportedLanguage = 'it';
+
+// Get translations for Italian
+const t = getTagDetailTranslations(language, tagString);
+
+// Set language info for BaseLayout
+const i18nData = {
+    currentLang: language,
+};
+
+export const prerender = true;
+---
+
+<BaseLayout pageTitle={t.pageTitle} description={t.pageDescription} i18nData={i18nData}>
+    <BaseTagDetail language={language} tag={tagString} posts={posts} />
+</BaseLayout>

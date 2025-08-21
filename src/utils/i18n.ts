@@ -42,14 +42,14 @@ function getLocalizedPagePath(pathname: string, targetLang: SupportedLanguage): 
 }
 
 export function getLocalizedPathname(pathname: string, targetLang: SupportedLanguage): string {
-  const parts = pathname.split('/');
+  const parts = pathname.split('/').filter(Boolean); // Remove empty parts
 
-  // Special handling for blog posts
-  if (parts[1] === 'posts') {
+  // Special handling for blog posts only (exclude /posts/tags/ and other metadata pages)
+  if (parts[0] === 'posts' && parts.length > 1 && parts[1] !== 'tags') {
     return getLocalizedBlogPath(pathname, targetLang);
   }
 
-  // Regular pages
+  // Regular pages (including /posts/tags/)
   return getLocalizedPagePath(pathname, targetLang);
 }
 

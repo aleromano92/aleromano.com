@@ -54,6 +54,70 @@ describe('getLocalizedPathname', () => {
       expect(getLocalizedPathname('/posts/it/tech/azure/my-post', 'en')).toBe('/posts/tech/azure/my-post');
     });
   });
+
+  describe('posts metadata pages (tags, etc.)', () => {
+    it('should treat /posts/tags/ as regular page, not blog post', () => {
+      expect(getLocalizedPathname('/posts/tags/', 'it')).toBe('/it/posts/tags/');
+      expect(getLocalizedPathname('/posts/tags', 'it')).toBe('/it/posts/tags');
+    });
+
+    it('should handle /posts/tags/ with existing language prefix', () => {
+      expect(getLocalizedPathname('/it/posts/tags/', 'en')).toBe('/posts/tags/');
+      expect(getLocalizedPathname('/it/posts/tags', 'en')).toBe('/posts/tags');
+    });
+
+    it('should handle nested tags paths', () => {
+      expect(getLocalizedPathname('/posts/tags/javascript', 'it')).toBe('/it/posts/tags/javascript');
+      expect(getLocalizedPathname('/it/posts/tags/javascript', 'en')).toBe('/posts/tags/javascript');
+    });
+
+    it('should handle edge cases with trailing slashes', () => {
+      expect(getLocalizedPathname('/posts/tags/', 'it')).toBe('/it/posts/tags/');
+      expect(getLocalizedPathname('/posts/tags', 'it')).toBe('/it/posts/tags');
+      expect(getLocalizedPathname('/it/posts/tags/', 'en')).toBe('/posts/tags/');
+      expect(getLocalizedPathname('/it/posts/tags', 'en')).toBe('/posts/tags');
+    });
+
+    it('should properly distinguish between blog posts and tags paths', () => {
+      // These should be treated as blog posts (language goes after /posts/)
+      expect(getLocalizedPathname('/posts/my-blog-post', 'it')).toBe('/posts/it/my-blog-post');
+      expect(getLocalizedPathname('/posts/another-post', 'it')).toBe('/posts/it/another-post');
+      
+      // These should be treated as regular pages (language goes at the beginning)
+      expect(getLocalizedPathname('/posts/tags/react', 'it')).toBe('/it/posts/tags/react');
+      expect(getLocalizedPathname('/posts/tags/javascript', 'it')).toBe('/it/posts/tags/javascript');
+    });
+
+    it('should handle language switching on tags pages correctly', () => {
+      // English tags page to Italian
+      expect(getLocalizedPathname('/posts/tags/', 'it')).toBe('/it/posts/tags/');
+      expect(getLocalizedPathname('/posts/tags/react', 'it')).toBe('/it/posts/tags/react');
+      
+      // Italian tags page to English  
+      expect(getLocalizedPathname('/it/posts/tags/', 'en')).toBe('/posts/tags/');
+      expect(getLocalizedPathname('/it/posts/tags/react', 'en')).toBe('/posts/tags/react');
+    });
+
+    it('should NOT generate /posts/it/tags/ for tags pages (regression test)', () => {
+      // This was the bug: generating /posts/it/tags/ instead of /it/posts/tags/
+      expect(getLocalizedPathname('/posts/tags/', 'it')).not.toBe('/posts/it/tags/');
+      expect(getLocalizedPathname('/posts/tags', 'it')).not.toBe('/posts/it/tags');
+      
+      // Should generate correct paths
+      expect(getLocalizedPathname('/posts/tags/', 'it')).toBe('/it/posts/tags/');
+      expect(getLocalizedPathname('/posts/tags', 'it')).toBe('/it/posts/tags');
+    });
+
+    it('should handle same language switching (no-op)', () => {
+      // English to English
+      expect(getLocalizedPathname('/posts/tags/', 'en')).toBe('/posts/tags/');
+      expect(getLocalizedPathname('/posts/tags/react', 'en')).toBe('/posts/tags/react');
+      
+      // Italian to Italian  
+      expect(getLocalizedPathname('/it/posts/tags/', 'it')).toBe('/it/posts/tags/');
+      expect(getLocalizedPathname('/it/posts/tags/react', 'it')).toBe('/it/posts/tags/react');
+    });
+  });
 });
 
 describe('detectLanguage', () => {

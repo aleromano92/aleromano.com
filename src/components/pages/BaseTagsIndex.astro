@@ -1,0 +1,61 @@
+---
+import Tags from '../posts/Tags.astro';
+import type { SupportedLanguage } from '../../types/i18n';
+import type { CollectionEntry } from 'astro:content';
+
+export interface TagsIndexTranslations {
+    pageTitle: string;
+    pageDescription: string;
+}
+
+export const tagsIndexTranslations: Record<SupportedLanguage, TagsIndexTranslations> = {
+    en: {
+        pageTitle: 'Topics',
+        pageDescription: 'Browse all topics and categories covered in the blog posts.',
+    },
+    it: {
+        pageTitle: 'Argomenti',
+        pageDescription: 'Esplora tutti gli argomenti e le categorie trattate negli articoli del blog.',
+    },
+};
+
+export function getTagsIndexTranslations(language: SupportedLanguage): TagsIndexTranslations {
+    return tagsIndexTranslations[language];
+}
+
+interface Props {
+    language: SupportedLanguage;
+    tags: string[];
+}
+
+const { language, tags } = Astro.props;
+
+// Get translations for the current language
+const t = getTagsIndexTranslations(language);
+---
+
+<Tags tags={tags} />
+
+<style>
+    .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+        margin: 1rem 0;
+    }
+
+    .tag {
+        padding: 0.5em 1em;
+        background-color: var(--color-accent);
+        color: var(--color-bg);
+        border-radius: 0.5em;
+        text-decoration: none;
+        font-size: 0.9em;
+        transition: all 0.2s ease;
+    }
+
+    .tag:hover {
+        background-color: var(--color-accent-dark);
+        transform: translateY(-2px);
+    }
+</style>
