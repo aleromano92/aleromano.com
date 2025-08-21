@@ -1,121 +1,32 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { Image } from 'astro:assets';
-import GitHubCommits from '../components/GitHubCommits.astro';
-import profilePic from '../assets/alepro.png';
+import BaseIndex from '../components/pages/BaseIndex.astro';
 import { getLanguageFromURL } from '../utils/i18n';
-import { getGitHubCommitsData } from '../utils/github';
+import { getHomeTranslations } from '../utils/translations';
+import type { SupportedLanguage } from '../types/i18n';
 
 const pageTitle = 'Home';
 
 // Get the current language from URL (defaults to 'en' for homepage)
-const language = getLanguageFromURL(Astro.url.pathname) || 'en';
+const language = (getLanguageFromURL(Astro.url.pathname) || 'en') as SupportedLanguage;
+
+// Get translations for the current language
+const t = getHomeTranslations(language);
 
 // Page description for SEO and social sharing
-const pageDescription =
-  "I'm a Software Engineering Manager addicted to details and obsessed with how things work: from Cloud services to human relationships. Since my first Hello World in RPG Maker, I have come to believe that being an Engineer is much more than coding.";
+const pageDescription = t.pageDescription;
 
-// Fetch GitHub commits data server-side
-const githubData = await getGitHubCommitsData(language);
+// Set language info for BaseLayout
+const i18nData = {
+  currentLang: language,
+};
 ---
 
-<BaseLayout pageTitle={pageTitle} showNotACookieBannerAutomatically={true} description={pageDescription}>
-  <h2>Insightful. Precise. Human.</h2>
-
-  <div class="intro">
-    <div class="content">
-      <p>
-        I'm a Software Engineering Manager addicted to details and obsessed with how things work: from Cloud services to
-        human relationships. Since my first Hello World in RPG Maker, I have come to believe that being an <strong
-          >Engineer</strong
-        > is much more than coding.
-      </p>
-      <p>
-        Wanna know more about me? <a href="/about">Read my story.</a>
-      </p>
-      <p>
-        Wanna stay updated? <a
-          href="https://x.com/intent/user?screen_name=_aleromano"
-          target="_blank"
-          rel="noopener noreferrer">Follow @_aleromano</a
-        > or <a href="/rss.xml">subscribe to my RSS feed.</a>
-      </p>
-      <p>
-        Need help launching your startup, scaling your engineering team, or growing as a software engineer? <a
-          href="/contact">Let's talk.</a
-        >
-      </p>
-    </div>
-    <Image
-      src={profilePic}
-      alt="Alessandro Romano profile picture"
-      width={300}
-      densities={[1, 2]}
-      quality="max"
-      class="profile-pic"
-    />
-  </div>
-
-  <GitHubCommits commits={githubData.commits} error={githubData.error} language={language} />
+<BaseLayout
+  pageTitle={pageTitle}
+  showNotACookieBannerAutomatically={true}
+  description={pageDescription}
+  i18nData={i18nData}
+>
+  <BaseIndex language={language} />
 </BaseLayout>
-
-<style>
-  .intro {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    margin: var(--space-lg) 0 0;
-  }
-
-  .content {
-    flex: 1;
-  }
-
-  .mollie-logo-wrapper {
-    display: inline-block;
-  }
-
-  .mollie-logo {
-    height: 1rem;
-  }
-
-  /* Show/hide based on theme */
-  .dark-logo {
-    display: none;
-  }
-
-  :global([data-theme='dark']) .dark-logo {
-    display: inline;
-  }
-
-  :global([data-theme='dark']) .light-logo {
-    display: none;
-  }
-
-  .profile-pic {
-    margin-bottom: calc(-1 * var(--space-lg));
-    max-width: 100%;
-    height: auto;
-    transform: translateY(0);
-    animation: slideDown 1s ease-out 0.2s backwards;
-  }
-
-  @keyframes slideDown {
-    from {
-      transform: translateY(-25%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
-  @media (max-width: 636px) {
-    .intro {
-      flex-direction: column;
-    }
-
-    .profile-pic {
-      margin-bottom: -1.2rem;
-    }
-  }
-</style>

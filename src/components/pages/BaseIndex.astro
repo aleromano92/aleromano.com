@@ -1,0 +1,108 @@
+---
+import { Image } from 'astro:assets';
+import GitHubCommits from '../GitHubCommits.astro';
+import profilePic from '../../assets/alepro.png';
+import { getGitHubCommitsData } from '../../utils/github';
+import { getHomeTranslations } from '../../utils/translations';
+import type { SupportedLanguage } from '../../types/i18n';
+
+interface Props {
+    language: SupportedLanguage;
+}
+
+const { language } = Astro.props;
+
+// Get translations for the current language
+const t = getHomeTranslations(language);
+
+// Fetch GitHub commits data server-side
+const githubData = await getGitHubCommitsData(language);
+---
+
+<h2>{t.tagline}</h2>
+
+<div class="intro">
+    <div class="content">
+        <p>
+            {t.intro}
+        </p>
+        <p>
+            {t.readMore}
+            <a href={language === 'it' ? '/it/about' : '/about'}>{t.readMoreLink}</a>
+        </p>
+        <p>
+            {t.stayUpdated}
+            <a href="https://x.com/intent/user?screen_name=_aleromano" target="_blank" rel="noopener noreferrer"
+                >{t.followTwitter}</a
+            > or <a href="/rss.xml">{t.subscribeRss}</a>
+        </p>
+        <p>
+            {t.needHelp}
+            <a href={language === 'it' ? '/it/contact' : '/contact'}>{t.letsTalk}</a>
+        </p>
+    </div>
+    <Image src={profilePic} alt={t.profilePicAlt} width={300} densities={[1, 2]} quality="max" class="profile-pic" />
+</div>
+
+<GitHubCommits commits={githubData.commits} error={githubData.error} language={language} />
+
+<style>
+    .intro {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        margin: var(--space-lg) 0 0;
+    }
+
+    .content {
+        flex: 1;
+    }
+
+    .mollie-logo-wrapper {
+        display: inline-block;
+    }
+
+    .mollie-logo {
+        height: 1rem;
+    }
+
+    /* Show/hide based on theme */
+    .dark-logo {
+        display: none;
+    }
+
+    :global([data-theme='dark']) .dark-logo {
+        display: inline;
+    }
+
+    :global([data-theme='dark']) .light-logo {
+        display: none;
+    }
+
+    .profile-pic {
+        margin-bottom: calc(-1 * var(--space-lg));
+        max-width: 100%;
+        height: auto;
+        transform: translateY(0);
+        animation: slideDown 1s ease-out 0.2s backwards;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-25%);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 636px) {
+        .intro {
+            flex-direction: column;
+        }
+
+        .profile-pic {
+            margin-bottom: -1.2rem;
+        }
+    }
+</style>
