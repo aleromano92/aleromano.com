@@ -3,7 +3,7 @@ title: "Mindfulness per Sviluppatori: Clean Code con una Mente Fresca"
 description: "La mindfulness è un modo di vivere nel momento presente, concentrandosi su ciò che sta accadendo ora. Può aiutarti a diventare più calmo, rilassato e concentrato. Questa è un'incredibile abilità per uno sviluppatore."
 pubDate: 2022-08-27
 author: "Alessandro Romano"
-tags: ["Wellness", "Developer Experience", "Tech", "Inspiration"]
+tags: ["Developer Experience", "Software Engineering", "Wellness"]
 language: "it"
 image:
     url: ../../../assets/blog/mindfulness-for-developers/featured.jpg

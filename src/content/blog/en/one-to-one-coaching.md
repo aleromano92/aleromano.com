@@ -3,7 +3,7 @@ title: "One-to-One Coaching: 3 Reasons Why You Need It!"
 description: "In today's fast-paced, high-pressure business world, with so many companies struggling to meet demanding quarterly targets, it's easy to see why some leaders think there is no time for anything as superfluous as one-to-one coaching. If you are in a leadership position or have aspirations of being one then do not give up on coaching just yet. Here are 3 reasons why you need to run one-to-one sessions."
 pubDate: 2022-09-12
 author: "Alessandro Romano"
-tags: ["Inspiration", "Coaching", "One To One"]
+tags: ["Career", "Coaching"]
 language: "en"
 image:
     url: ../../../assets/blog/one-to-one-coaching/featured.jpg

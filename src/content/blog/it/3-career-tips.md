@@ -3,7 +3,7 @@ title: "3 Consigli sulla Carriera di cui nessuno parla"
 description: "Se pensi che per crescere come Software Engineer tu debba imparare un altro linguaggio di programmazione... hai torto! E questo post ti spiega perché."
 pubDate: 2025-08-17
 author: "Alessandro Romano"
-tags: ["Career", "Software Engineering", "People"]
+tags: ["Career", "Leadership", "Software Engineering", "People"]
 language: "it"
 image:
     url: ../../../assets/blog/3-career-tips/featured.png

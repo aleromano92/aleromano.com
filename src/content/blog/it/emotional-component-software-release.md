@@ -3,7 +3,7 @@ title: "La Componente Emotiva di un Rilascio Software"
 description: "La componente emotiva di un rilascio software è cruciale per il suo successo. I leader tecnici devono creare un ambiente positivo, comunicare efficacemente, gestire le aspettative e celebrare i successi per garantire un'esperienza gratificante per tutti gli stakeholder."
 pubDate: 2023-03-05
 author: "Alessandro Romano"
-tags: ["Development", "Career", "Personal Growth", "Empathy"]
+tags: ["Career", "Wellness"]
 language: "it"
 image:
     url: ../../../assets/blog/emotional-component-software-release/featured.jpg

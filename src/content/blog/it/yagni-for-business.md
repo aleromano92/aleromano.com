@@ -3,7 +3,7 @@ title: YAGNI per il Business
 description: YAGNI significa "You Ain't Gonna Need It" (Non Ne Avrai Bisogno). È un principio dell'Extreme Programming (XP) che suggerisce di non implementare una funzionalità finché non è necessaria. È uno strumento essenziale per evitare sprechi di tempo e risorse che può essere applicato anche in ambiti diversi dallo Sviluppo Software.
 pubDate: 2023-05-31
 author: Alessandro Romano
-tags: ["Productivity", "Inspiration"]
+tags: ["Productivity"]
 language: it
 image:
   url: ../../../assets/blog/yagni-for-business/featured.jpg

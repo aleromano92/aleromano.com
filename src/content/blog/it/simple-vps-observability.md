@@ -3,7 +3,7 @@ title: "Monitoraggio Semplice su VPS per il Tuo Sito Web Personale"
 description: "Scopri come una soluzione di monitoraggio light può fornire una copertura sufficiente per il tuo sito web personale senza la complessità degli strumenti enterprise."
 pubDate: 2025-02-24
 author: "Alessandro Romano"
-tags: ["DevOps", "Monitoring", "Docker", "Node.js", "aleromano.com"]
+tags: ["aleromano.com", "DevOps", "Docker", "Node.js", "Observability"]
 language: "it"
 image:
   url: ../../../assets/blog/simple-vps-observability/featured.jpg

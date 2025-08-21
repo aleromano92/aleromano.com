@@ -3,7 +3,7 @@ title: "Da Mac OS X a Windows 10 (per uno Sviluppatore)"
 description: "Potresti pensare che avrai un'esperienza di sviluppo peggiore e che ti mancheranno molte funzionalità che dai per scontate. Ti mostro come sono migrato al caro vecchio Windows senza perdere la testa."
 pubDate: 2020-11-01
 author: "Alessandro Romano"
-tags: ["Tech", "Developer Experience", "Productivity", "Tools"]
+tags: ["Developer Experience", "Productivity"]
 language: "it"
 image:
     url: ../../../assets/blog/mac-to-windows/featured.jpg

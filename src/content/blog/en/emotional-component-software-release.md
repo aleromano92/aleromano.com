@@ -3,7 +3,7 @@ title: "The Emotional Component of a Software Release"
 description: "The emotional component of a software release is crucial to success. Technical leaders must create a positive environment, communicate effectively, manage expectations, and celebrate success to ensure a rewarding experience for all stakeholders."
 pubDate: 2023-03-05
 author: "Alessandro Romano"
-tags: ["Development", "Career", "Personal Growth", "Empathy"]
+tags: ["Career", "Wellness"]
 language: "en"
 image:
     url: ../../../assets/blog/emotional-component-software-release/featured.jpg

@@ -3,7 +3,7 @@ title: "3 Career Tips Nobody Talks About"
 description: "If you think that to grow as a Software Engineer you need to learn another programming language... you're wrong! And this post explains why."
 pubDate: 2025-08-17
 author: "Alessandro Romano"
-tags: ["Career", "Software Engineering", "People"]
+tags: ["Career", "Leadership", "Software Engineering", "People"]
 language: "en"
 image:
     url: ../../../assets/blog/3-career-tips/featured.png

@@ -3,7 +3,7 @@ title: "Questo Sito e il mio Ritorno alle Basi"
 description: "Perché ho deciso di utilizzare un VPS e adottare un flusso di lavoro assistito dall'AI."
 pubDate: 2025-04-10
 author: "Alessandro Romano"
-tags: ["Tech", "Web Development", "aleromano.com", "VPS", "AI"]
+tags: ["AI", "aleromano.com", "Docker", "VPS"]
 language: "it"
 image:
     url: ../../../assets/blog/about-this-site/featured.jpg

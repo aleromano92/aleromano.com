@@ -3,7 +3,7 @@ title: "Migliorare il Mio Blog Con Claude Code"
 description: "Come ho utilizzato Claude Code, un assistente AI, per rifattorizzare il sistema di tag del mio blog e migliorare l'organizzazione dei contenuti."
 pubDate: 2025-02-25
 author: "Alessandro Romano"
-tags: ["AI", "Developer Experience", "Productivity", "Tools"]
+tags: ["AI", "Developer Experience", "Productivity"]
 language: "it"
 image:
   url: ../../../assets/blog/improving-blog-with-claude/featured.jpeg

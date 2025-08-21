@@ -3,7 +3,7 @@ title: "I messaggi di commit devono spiegare il perché"
 description: "Se pensi che i commit message generati dall'AI siano una feature salva tempo, ti sbagli. Se i tuoi commit message riassumono quello che hai modificato, leggi questo post."
 pubDate: 2024-01-22
 author: "Alessandro Romano"
-tags: ["Development", "Git", "Best Practices", "Productivity"]
+tags: ["Best Practices", "Git", "Productivity", "Software Engineering"]
 language: "it"
 image:
   url: ../../../assets/blog/git-commits-why/featured.jpg

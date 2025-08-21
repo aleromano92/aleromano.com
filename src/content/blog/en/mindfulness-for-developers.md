@@ -3,7 +3,7 @@ title: "Mindfulness for Developers: Clean Code with a Clean Mind"
 description: "Mindfulness is a way of living in the present moment, focusing on what's happening right now. It can help you become more calm, relaxed and focused. This is an incredible skill for a developer."
 pubDate: 2022-08-27
 author: "Alessandro Romano"
-tags: ["Wellness", "Developer Experience", "Tech", "Inspiration"]
+tags: ["Developer Experience", "Software Engineering", "Wellness"]
 language: "en"
 image:
     url: ../../../assets/blog/mindfulness-for-developers/featured.jpg

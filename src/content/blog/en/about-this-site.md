@@ -3,7 +3,7 @@ title: "This Site and My Return to Basics"
 description: "Why I decided to use a VPS and adopt an AI-assisted workflow."
 pubDate: 2025-04-10
 author: "Alessandro Romano"
-tags: ["Tech", "Web Development", "aleromano.com", "VPS", "AI"]
+tags: ["AI", "aleromano.com", "Docker", "VPS"]
 language: "en"
 image:
     url: ../../../assets/blog/about-this-site/featured.jpg
