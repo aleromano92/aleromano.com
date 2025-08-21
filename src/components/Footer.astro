@@ -1,5 +1,39 @@
 ---
 import SocialLink from './SocialLink.astro';
+import type { SupportedLanguage } from '../types/i18n';
+
+export interface FooterTranslations {
+    copyrightText: string;
+    cookiePolicyText: string;
+    licensedUnder: string;
+}
+
+export const footerTranslations: Record<SupportedLanguage, FooterTranslations> = {
+    en: {
+        copyrightText: 'All content on this website by ',
+        cookiePolicyText: '(Not a) Cookie Policy',
+        licensedUnder: 'is licensed under',
+    },
+    it: {
+        copyrightText: 'Tutto il contenuto di questo sito web di ',
+        cookiePolicyText: '(Non è una) Cookie Policy',
+        licensedUnder: 'è concesso in licenza',
+    },
+};
+
+export function getFooterTranslations(language: SupportedLanguage): FooterTranslations {
+    return footerTranslations[language];
+}
+
+interface Props {
+    language: SupportedLanguage;
+}
+
+const { language } = Astro.props;
+
+// Get translations for the current language
+const t = getFooterTranslations(language);
+
 const currentYear = new Date().getFullYear();
 ---
 
@@ -8,11 +42,13 @@ const currentYear = new Date().getFullYear();
         <div class="copyright">
             <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/" class="copyright-text">
                 @ {currentYear}
-                <span property="dct:title">All content on this website</span> by <a
+                <span property="dct:title">{t.copyrightText}</span><a
                     rel="cc:attributionURL dct:creator"
                     property="cc:attributionName"
                     href="https://aleromano.com">Alessandro Romano</a
-                > is licensed under <a
+                >
+                {t.licensedUnder}
+                <a
                     href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1"
                     target="_blank"
                     rel="license noopener noreferrer"
@@ -22,7 +58,7 @@ const currentYear = new Date().getFullYear();
         </div>
         <p class="banner-link">
             <a href="#" onclick="if(typeof showNotACookieBanner === 'function') showNotACookieBanner(); return false;"
-                >(Not a) Cookie Policy</a
+                >{t.cookiePolicyText}</a
             >
         </p>
         <div class="social-links">

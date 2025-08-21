@@ -64,7 +64,7 @@ const currentLang = i18nData?.currentLang || 'en';
       <h1>{pageTitle}</h1>
       <slot />
     </main>
-    <Footer />
+    <Footer language={currentLang} />
     <NotACookieBanner showAutomatically={showNotACookieBannerAutomatically} language={currentLang} />
   </body>
 </html>
