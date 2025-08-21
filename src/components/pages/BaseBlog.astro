@@ -13,16 +13,16 @@ export interface BlogTranslations {
 export const blogTranslations: Record<SupportedLanguage, BlogTranslations> = {
     en: {
         pageTitle: 'Blog',
-        pageDescription: "Alessandro Romano's thoughts on software engineering, leadership, and technology.",
+        pageDescription: `Alessandro Romano's thoughts.`,
         heading: 'Blog',
-        subheading: 'My thoughts on software engineering, leadership, and technology.',
+        subheading: 'My thoughts on <a href="/posts/tags">various topics.</a>',
         noPostsMessage: 'No posts found.',
     },
     it: {
         pageTitle: 'Blog',
-        pageDescription: 'I pensieri di Alessandro Romano su ingegneria del software, leadership e tecnologia.',
+        pageDescription: 'I pensieri di Alessandro Romano.',
         heading: 'Blog',
-        subheading: 'I miei pensieri su ingegneria del software, leadership e tecnologia.',
+        subheading: 'I miei pensieri su <a href="/it/posts/tags">vari argomenti.</a>',
         noPostsMessage: 'Nessun articolo trovato.',
     },
 };
@@ -42,6 +42,5 @@ const { language, posts } = Astro.props;
 const t = getBlogTranslations(language);
 ---
 
-<p>{t.subheading}</p>
-
+<p set:html={t.subheading} />
 {posts.length > 0 ? <slot /> : <p>{t.noPostsMessage}</p>}
