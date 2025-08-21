@@ -1,251 +1,29 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseContact from '../components/pages/BaseContact.astro';
+import { getLanguageFromURL } from '../utils/i18n';
+import { getContactTranslations } from '../utils/translations';
+import type { SupportedLanguage } from '../types/i18n';
 
 const pageTitle = 'Contact';
 
+// Get the current language from URL
+const language = (getLanguageFromURL(Astro.url.pathname) || 'en') as SupportedLanguage;
+
+// Get translations for the current language
+const t = getContactTranslations(language);
+
 // Page description for SEO and social sharing
-const pageDescription =
-  'Get in touch with Alessandro Romano for consultancy, mentoring, job opportunities, or general inquiries about software engineering and leadership.';
+const pageDescription = t.pageDescription;
+
+// Set language info for BaseLayout
+const i18nData = {
+  currentLang: language,
+};
 
 export const prerender = true;
-
-const CONTACT_REASONS_DATA = {
-  '': 'Select a reason...',
-  problems: 'Problems on the website',
-  consultancy: 'Consultancy request',
-  mentoring: 'Mentoring',
-  job: 'Job opportunities',
-  blogpost: 'Blog Post Feedback',
-  general: 'General inquiry',
-};
 ---
 
-<BaseLayout pageTitle={pageTitle} description={pageDescription}>
-  <div class="contact-form-container">
-    <form id="contactForm">
-      <div class="form-group">
-        <label for="contactReason">Reason</label>
-        <select id="contactReason" name="reason">
-          {Object.entries(CONTACT_REASONS_DATA).map(([value, text]) => <option value={value}>{text}</option>)}
-        </select>
-      </div>
-
-      <div class="form-group" id="blogPostTitleGroup" style="display: none;">
-        <label for="blogPostTitle">Blog Post Title</label>
-        <input type="text" id="blogPostTitle" name="blogPostTitle" />
-      </div>
-
-      <div id="formFields" style="display: none;">
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name" required />
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required />
-        </div>
-
-        <div class="form-group">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5" required></textarea>
-        </div>
-
-        <button type="submit" class="button">Submit</button>
-      </div>
-    </form>
-
-    <div id="githubIssueButtonContainer" style="display: none;">
-      <a
-        href="https://github.com/aleromano92/aleromano.com/issues/new"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="button"
-      >
-        Open GitHub Issue
-      </a>
-    </div>
-  </div>
+<BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData}>
+  <BaseContact language={language} />
 </BaseLayout>
-
-<script>
-  const contactReasonSelect = document.getElementById('contactReason') as HTMLSelectElement;
-  const formFields = document.getElementById('formFields') as HTMLDivElement;
-  const githubIssueButtonContainer = document.getElementById('githubIssueButtonContainer') as HTMLDivElement;
-  const messageTextarea = document.getElementById('message') as HTMLTextAreaElement;
-  const contactForm = document.getElementById('contactForm') as HTMLFormElement;
-  const submitButton = contactForm.querySelector('button[type="submit"]') as HTMLButtonElement;
-  const nameInput = document.getElementById('name') as HTMLInputElement;
-  const emailInput = document.getElementById('email') as HTMLInputElement;
-  const blogPostTitleInput = document.getElementById('blogPostTitle') as HTMLInputElement;
-  const blogPostTitleGroup = document.getElementById('blogPostTitleGroup') as HTMLDivElement;
-
-  const PREFILL_MESSAGES: Record<string, string> = {
-    consultancy:
-      "Please, in order to make good use of your time and mine, please don't contact me before reviewing at least my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). If you think I could be a good help for your company, write here why you think so and leave me a link to get more details",
-    mentoring:
-      'Please, in order to make good use of your time and mine, write here why you think I could be of any help and I will happily do my best to help you',
-    job: "please, in order to make good use of your time and mine, please don't contact me before reviewing at least my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). If you think I could be a good fit for your company, write here why you think so and leave me a link to get more details",
-    blogpost:
-      'Please share your thoughts, feedback, or questions about this blog post. I appreciate constructive feedback and engaging discussions!',
-  };
-
-  function resetAndInitializeForm(selectedReason: string = '') {
-    messageTextarea.value = '';
-    nameInput.value = '';
-    emailInput.value = '';
-    blogPostTitleInput.value = '';
-    contactReasonSelect.value = selectedReason; // Set to specific reason or default
-
-    formFields.style.display = 'none';
-    githubIssueButtonContainer.style.display = 'none';
-    blogPostTitleGroup.style.display = 'none';
-    if (submitButton) submitButton.style.display = 'none';
-
-    if (selectedReason === 'problems') {
-      githubIssueButtonContainer.style.display = 'block';
-    } else if (['consultancy', 'mentoring', 'job', 'blogpost', 'general'].includes(selectedReason)) {
-      formFields.style.display = 'block';
-      if (submitButton) submitButton.style.display = 'block';
-
-      // Show blog post title field only for blogpost reason
-      if (selectedReason === 'blogpost') {
-        blogPostTitleGroup.style.display = 'block';
-      }
-
-      if (PREFILL_MESSAGES[selectedReason]) {
-        messageTextarea.value = PREFILL_MESSAGES[selectedReason];
-      }
-    }
-  }
-
-  contactReasonSelect.addEventListener('change', () => {
-    const reason = contactReasonSelect.value;
-    resetAndInitializeForm(reason);
-  });
-
-  contactForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-
-    const formData = new FormData(contactForm);
-    const data = Object.fromEntries(formData.entries());
-
-    if (formFields.style.display === 'block') {
-      if (!data.name || !data.email || !data.message) {
-        alert('Please fill in all required fields: Name, Email, and Message.');
-        return;
-      }
-    }
-
-    if (submitButton) {
-      submitButton.disabled = true;
-      submitButton.textContent = 'Submitting...';
-    }
-
-    let feedbackMessage = '';
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        feedbackMessage = result.message || 'Your message has been sent successfully!';
-        resetAndInitializeForm(); // Reset to initial state (empty reason)
-      } else {
-        feedbackMessage = result.message || 'An error occurred. Please try again.';
-      }
-    } catch (error) {
-      console.error('Error submitting contact form:', error);
-      feedbackMessage = 'An unexpected error occurred. Please check your connection and try again.';
-    }
-
-    if (submitButton) {
-      submitButton.disabled = false;
-      submitButton.textContent = 'Submit';
-    }
-
-    alert(feedbackMessage);
-  });
-
-  // Initialize form state on page load
-  document.addEventListener('DOMContentLoaded', () => {
-    // Check for URL parameters to pre-fill the form
-    const urlParams = new URLSearchParams(window.location.search);
-    const preselectedReason = urlParams.get('reason');
-    const prefilledTitle = urlParams.get('title');
-
-    const validReasons = ['consultancy', 'mentoring', 'job', 'blogpost', 'general', 'problems'];
-    if (preselectedReason && validReasons.includes(preselectedReason)) {
-      resetAndInitializeForm(preselectedReason);
-
-      // Pre-fill blog post title if provided
-      if (preselectedReason === 'blogpost' && prefilledTitle) {
-        blogPostTitleInput.value = decodeURIComponent(prefilledTitle);
-      }
-    } else {
-      resetAndInitializeForm(contactReasonSelect.value);
-    }
-  });
-</script>
-
-<style>
-  @import '../styles/buttons.css';
-
-  .contact-form-container {
-    max-width: 600px;
-    margin: var(--space-lg) auto;
-    background-color: var(--color-bg-offset);
-    border-radius: 8px;
-    color: var(--color-text);
-  }
-
-  .form-group {
-    margin-bottom: var(--space-md);
-  }
-
-  label {
-    display: block;
-    margin-bottom: var(--space-xs);
-    font-weight: bold;
-    color: var(--color-text-offset);
-  }
-
-  input[type='text'],
-  input[type='email'],
-  select,
-  textarea {
-    width: 100%;
-    padding: var(--space-sm);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    background-color: var(--color-bg);
-    color: var(--color-text);
-    box-sizing: border-box; /* Ensures padding doesn't affect overall width */
-  }
-
-  input[type='text']:focus,
-  input[type='email']:focus,
-  select:focus,
-  textarea:focus {
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 2px var(--color-accent-transparent);
-  }
-
-  textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-
-  #githubIssueButtonContainer {
-    text-align: center;
-    margin-top: var(--space-md);
-  }
-</style>

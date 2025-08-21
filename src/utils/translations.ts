@@ -99,3 +99,122 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 export function getAboutTranslations(language: SupportedLanguage): AboutTranslations {
   return aboutTranslations[language];
 }
+
+export interface ContactTranslations {
+  pageTitle: string;
+  pageDescription: string;
+  formLabels: {
+    reason: string;
+    blogPostTitle: string;
+    name: string;
+    email: string;
+    message: string;
+  };
+  reasonOptions: {
+    select: string;
+    problems: string;
+    consultancy: string;
+    mentoring: string;
+    job: string;
+    blogpost: string;
+    general: string;
+  };
+  buttons: {
+    submit: string;
+    submitting: string;
+    openGitHubIssue: string;
+  };
+  prefillMessages: {
+    consultancy: string;
+    mentoring: string;
+    job: string;
+    blogpost: string;
+  };
+  alerts: {
+    fillRequired: string;
+    success: string;
+    error: string;
+    networkError: string;
+  };
+}
+
+export const contactTranslations: Record<SupportedLanguage, ContactTranslations> = {
+  en: {
+    pageTitle: 'Contact',
+    pageDescription: 'Get in touch with Alessandro Romano for consultancy, mentoring, job opportunities, or general inquiries about software engineering and leadership.',
+    formLabels: {
+      reason: 'Reason',
+      blogPostTitle: 'Blog Post Title',
+      name: 'Name',
+      email: 'Email',
+      message: 'Message',
+    },
+    reasonOptions: {
+      select: 'Select a reason...',
+      problems: 'Problems on the website',
+      consultancy: 'Consultancy request',
+      mentoring: 'Mentoring',
+      job: 'Job opportunities',
+      blogpost: 'Blog Post Feedback',
+      general: 'General inquiry',
+    },
+    buttons: {
+      submit: 'Submit',
+      submitting: 'Submitting...',
+      openGitHubIssue: 'Open GitHub Issue',
+    },
+    prefillMessages: {
+      consultancy: "Please, in order to make good use of your time and mine, please don't contact me before reviewing at least my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). If you think I could be a good help for your company, write here why you think so and leave me a link to get more details",
+      mentoring: 'Please, in order to make good use of your time and mine, write here why you think I could be of any help and I will happily do my best to help you',
+      job: "please, in order to make good use of your time and mine, please don't contact me before reviewing at least my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). If you think I could be a good fit for your company, write here why you think so and leave me a link to get more details",
+      blogpost: 'Please share your thoughts, feedback, or questions about this blog post. I appreciate constructive feedback and engaging discussions!',
+    },
+    alerts: {
+      fillRequired: 'Please fill in all required fields: Name, Email, and Message.',
+      success: 'Your message has been sent successfully!',
+      error: 'An error occurred. Please try again.',
+      networkError: 'An unexpected error occurred. Please check your connection and try again.',
+    },
+  },
+  it: {
+    pageTitle: 'Contatti',
+    pageDescription: 'Contatta Alessandro Romano per consulenza, mentoring, opportunità di lavoro o domande generali su ingegneria del software e leadership.',
+    formLabels: {
+      reason: 'Motivo',
+      blogPostTitle: 'Titolo del Post',
+      name: 'Nome',
+      email: 'Email',
+      message: 'Messaggio',
+    },
+    reasonOptions: {
+      select: 'Seleziona un motivo...',
+      problems: 'Problemi sul sito web',
+      consultancy: 'Richiesta di consulenza',
+      mentoring: 'Mentoring',
+      job: 'Opportunità di lavoro',
+      blogpost: 'Feedback su articolo',
+      general: 'Domanda generale',
+    },
+    buttons: {
+      submit: 'Invia',
+      submitting: 'Invio in corso...',
+      openGitHubIssue: 'Apri Issue su GitHub',
+    },
+    prefillMessages: {
+      consultancy: "Per favore, per sfruttare al meglio il tuo tempo e il mio, non contattarmi prima di aver visto almeno il mio profilo LinkedIn (https://www.linkedin.com/in/aleromano92/). Se pensi che potrei essere d'aiuto per la tua azienda, scrivi qui perché lo pensi e lasciami un link per maggiori dettagli",
+      mentoring: 'Per favore, per sfruttare al meglio il tuo tempo e il mio, scrivi qui perché pensi che potrei esserti d\'aiuto e farò del mio meglio per aiutarti',
+      job: "Per favore, per sfruttare al meglio il tuo tempo e il mio, non contattarmi prima di aver visto almeno il mio profilo LinkedIn (https://www.linkedin.com/in/aleromano92/). Se pensi che potrei essere adatto per la tua azienda, scrivi qui perché lo pensi e lasciami un link per maggiori dettagli",
+      blogpost: 'Condividi i tuoi pensieri, feedback o domande su questo articolo. Apprezzo feedback costruttivi e discussioni interessanti!',
+    },
+    alerts: {
+      fillRequired: 'Compila tutti i campi obbligatori: Nome, Email e Messaggio.',
+      success: 'Il tuo messaggio è stato inviato con successo!',
+      error: 'Si è verificato un errore. Riprova.',
+      networkError: 'Si è verificato un errore imprevisto. Controlla la connessione e riprova.',
+    },
+  },
+};
+
+export function getContactTranslations(language: SupportedLanguage): ContactTranslations {
+  return contactTranslations[language];
+}

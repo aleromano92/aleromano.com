@@ -1,0 +1,240 @@
+---
+import { getContactTranslations } from '../../utils/translations';
+import type { SupportedLanguage } from '../../types/i18n';
+
+interface Props {
+    language: SupportedLanguage;
+}
+
+const { language } = Astro.props;
+
+// Get translations for the current language
+const t = getContactTranslations(language);
+---
+
+<div class="contact-form-container">
+    <form id="contactForm">
+        <div class="form-group">
+            <label for="contactReason">{t.formLabels.reason}</label>
+            <select id="contactReason" name="reason">
+                <option value="">{t.reasonOptions.select}</option>
+                <option value="problems">{t.reasonOptions.problems}</option>
+                <option value="consultancy">{t.reasonOptions.consultancy}</option>
+                <option value="mentoring">{t.reasonOptions.mentoring}</option>
+                <option value="job">{t.reasonOptions.job}</option>
+                <option value="blogpost">{t.reasonOptions.blogpost}</option>
+                <option value="general">{t.reasonOptions.general}</option>
+            </select>
+        </div>
+
+        <div class="form-group" id="blogPostTitleGroup" style="display: none;">
+            <label for="blogPostTitle">{t.formLabels.blogPostTitle}</label>
+            <input type="text" id="blogPostTitle" name="blogPostTitle" />
+        </div>
+
+        <div id="formFields" style="display: none;">
+            <div class="form-group">
+                <label for="name">{t.formLabels.name}</label>
+                <input type="text" id="name" name="name" required />
+            </div>
+
+            <div class="form-group">
+                <label for="email">{t.formLabels.email}</label>
+                <input type="email" id="email" name="email" required />
+            </div>
+
+            <div class="form-group">
+                <label for="message">{t.formLabels.message}</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+            </div>
+
+            <button type="submit" class="button">{t.buttons.submit}</button>
+        </div>
+    </form>
+
+    <div id="githubIssueButtonContainer" style="display: none;">
+        <a
+            href="https://github.com/aleromano92/aleromano.com/issues/new"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="button"
+        >
+            {t.buttons.openGitHubIssue}
+        </a>
+    </div>
+</div>
+
+<script define:vars={{ t }}>
+    const contactReasonSelect = document.getElementById('contactReason');
+    const formFields = document.getElementById('formFields');
+    const githubIssueButtonContainer = document.getElementById('githubIssueButtonContainer');
+    const messageTextarea = document.getElementById('message');
+    const contactForm = document.getElementById('contactForm');
+    const submitButton = contactForm.querySelector('button[type="submit"]');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const blogPostTitleInput = document.getElementById('blogPostTitle');
+    const blogPostTitleGroup = document.getElementById('blogPostTitleGroup');
+
+    const PREFILL_MESSAGES = {
+        consultancy: t.prefillMessages.consultancy,
+        mentoring: t.prefillMessages.mentoring,
+        job: t.prefillMessages.job,
+        blogpost: t.prefillMessages.blogpost,
+    };
+
+    function resetAndInitializeForm(selectedReason = '') {
+        messageTextarea.value = '';
+        nameInput.value = '';
+        emailInput.value = '';
+        blogPostTitleInput.value = '';
+        contactReasonSelect.value = selectedReason;
+
+        formFields.style.display = 'none';
+        githubIssueButtonContainer.style.display = 'none';
+        blogPostTitleGroup.style.display = 'none';
+        if (submitButton) submitButton.style.display = 'none';
+
+        if (selectedReason === 'problems') {
+            githubIssueButtonContainer.style.display = 'block';
+        } else if (['consultancy', 'mentoring', 'job', 'blogpost', 'general'].includes(selectedReason)) {
+            formFields.style.display = 'block';
+            if (submitButton) submitButton.style.display = 'block';
+
+            if (selectedReason === 'blogpost') {
+                blogPostTitleGroup.style.display = 'block';
+            }
+
+            if (PREFILL_MESSAGES[selectedReason]) {
+                messageTextarea.value = PREFILL_MESSAGES[selectedReason];
+            }
+        }
+    }
+
+    contactReasonSelect.addEventListener('change', () => {
+        const reason = contactReasonSelect.value;
+        resetAndInitializeForm(reason);
+    });
+
+    contactForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(contactForm);
+        const data = Object.fromEntries(formData.entries());
+
+        if (formFields.style.display === 'block') {
+            if (!data.name || !data.email || !data.message) {
+                alert(t.alerts.fillRequired);
+                return;
+            }
+        }
+
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = t.buttons.submitting;
+        }
+
+        let feedbackMessage = '';
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                feedbackMessage = result.message || t.alerts.success;
+                resetAndInitializeForm();
+            } else {
+                feedbackMessage = result.message || t.alerts.error;
+            }
+        } catch (error) {
+            console.error('Error submitting contact form:', error);
+            feedbackMessage = t.alerts.networkError;
+        }
+
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = t.buttons.submit;
+        }
+
+        alert(feedbackMessage);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const preselectedReason = urlParams.get('reason');
+        const prefilledTitle = urlParams.get('title');
+
+        const validReasons = ['consultancy', 'mentoring', 'job', 'blogpost', 'general', 'problems'];
+        if (preselectedReason && validReasons.includes(preselectedReason)) {
+            resetAndInitializeForm(preselectedReason);
+
+            if (preselectedReason === 'blogpost' && prefilledTitle) {
+                blogPostTitleInput.value = decodeURIComponent(prefilledTitle);
+            }
+        } else {
+            resetAndInitializeForm(contactReasonSelect.value);
+        }
+    });
+</script>
+
+<style>
+    @import '../../styles/buttons.css';
+
+    .contact-form-container {
+        max-width: 600px;
+        margin: var(--space-lg) auto;
+        background-color: var(--color-bg-offset);
+        border-radius: 8px;
+        color: var(--color-text);
+    }
+
+    .form-group {
+        margin-bottom: var(--space-md);
+    }
+
+    label {
+        display: block;
+        margin-bottom: var(--space-xs);
+        font-weight: bold;
+        color: var(--color-text-offset);
+    }
+
+    input[type='text'],
+    input[type='email'],
+    select,
+    textarea {
+        width: 100%;
+        padding: var(--space-sm);
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        box-sizing: border-box;
+    }
+
+    input[type='text']:focus,
+    input[type='email']:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 2px var(--color-accent-transparent);
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    #githubIssueButtonContainer {
+        text-align: center;
+        margin-top: var(--space-md);
+    }
+</style>
