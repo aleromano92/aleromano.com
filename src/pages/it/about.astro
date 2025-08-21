@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseAbout from '../../components/pages/BaseAbout.astro';
+import { getAboutTranslations } from '../../utils/translations';
+import type { SupportedLanguage } from '../../types/i18n';
+
+const pageTitle = 'Chi Sono';
+
+// Set language to Italian for this page
+const language: SupportedLanguage = 'it';
+
+// Get translations for Italian
+const t = getAboutTranslations(language);
+
+// Page description for SEO and social sharing
+const pageDescription = t.pageDescription;
+
+// Set language info for BaseLayout
+const i18nData = {
+    currentLang: language,
+};
+
+export const prerender = true;
+---
+
+<BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData}>
+    <BaseAbout language={language} />
+</BaseLayout>

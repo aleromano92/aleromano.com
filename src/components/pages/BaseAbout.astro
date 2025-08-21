@@ -1,9 +1,9 @@
 ---
 import { Image } from 'astro:assets';
-import GitHubCommits from '../GitHubCommits.astro';
+import TwitterFeed from '../TwitterFeed.astro';
 import profilePic from '../../assets/alepro.png';
-import { getGitHubCommitsData } from '../../utils/github';
-import { getHomeTranslations } from '../../utils/translations';
+import { getTwitterFeedData } from '../../utils/twitter/twitter-feed';
+import { getAboutTranslations } from '../../utils/translations';
 import type { SupportedLanguage } from '../../types/i18n';
 
 interface Props {
@@ -13,10 +13,10 @@ interface Props {
 const { language } = Astro.props;
 
 // Get translations for the current language
-const t = getHomeTranslations(language);
+const t = getAboutTranslations(language);
 
-// Fetch GitHub commits data server-side
-const githubData = await getGitHubCommitsData(language);
+// Fetch Twitter data server-side for live updates
+const twitterData = await getTwitterFeedData();
 ---
 
 <h2>{t.tagline}</h2>
@@ -24,11 +24,18 @@ const githubData = await getGitHubCommitsData(language);
 <div class="intro">
     <div class="content">
         <p>
-            {t.intro}
+            {t.intro1}
+        </p>
+
+        <p>
+            {t.intro2}
+            <span class="mollie-logo-wrapper">
+                <img src="/Mollie-Logo-Black-2023.svg" class="mollie-logo light-logo" alt="Mollie" />
+                <img src="/Mollie-Logo-White-2023.svg" class="mollie-logo dark-logo" alt="Mollie" />
+            </span>.
         </p>
         <p>
-            {t.readMore}
-            <a href={language === 'it' ? '/it/about' : '/about'}>{t.readMoreLink}</a>
+            {t.intro3}
         </p>
         <p>
             {t.stayUpdated}
@@ -44,7 +51,12 @@ const githubData = await getGitHubCommitsData(language);
     <Image src={profilePic} alt={t.profilePicAlt} width={300} densities={[1, 2]} quality="max" class="profile-pic" />
 </div>
 
-<GitHubCommits commits={githubData.commits} error={githubData.error} language={language} />
+<TwitterFeed
+    posts={twitterData.posts}
+    error={twitterData.error}
+    language={language}
+    freshness={twitterData.freshness}
+/>
 
 <style>
     .intro {
@@ -56,6 +68,14 @@ const githubData = await getGitHubCommitsData(language);
 
     .content {
         flex: 1;
+    }
+
+    .mollie-logo-wrapper {
+        display: inline-block;
+    }
+
+    .mollie-logo {
+        height: 1rem;
     }
 
     /* Show/hide based on theme */

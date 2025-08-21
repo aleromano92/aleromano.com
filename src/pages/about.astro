@@ -1,134 +1,29 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { Image } from 'astro:assets';
-import TwitterFeed from '../components/TwitterFeed.astro';
-import profilePic from '../assets/alepro.png';
-import { getTwitterFeedData } from '../utils/twitter/twitter-feed';
+import BaseAbout from '../components/pages/BaseAbout.astro';
 import { getLanguageFromURL } from '../utils/i18n';
+import { getAboutTranslations } from '../utils/translations';
+import type { SupportedLanguage } from '../types/i18n';
 
 const pageTitle = 'About';
 
 // Get the current language from URL
-const language = getLanguageFromURL(Astro.url.pathname) || 'en';
+const language = (getLanguageFromURL(Astro.url.pathname) || 'en') as SupportedLanguage;
+
+// Get translations for the current language
+const t = getAboutTranslations(language);
 
 // Page description for SEO and social sharing
-const pageDescription =
-  'Engineering Manager at Mollie, father of two amazing kids, and funny lovely husband. Addicted to details and obsessed with how things work: from Cloud services to human relationships.';
+const pageDescription = t.pageDescription;
 
-// Fetch Twitter data server-side for live updates
-const twitterData = await getTwitterFeedData();
+// Set language info for BaseLayout
+const i18nData = {
+  currentLang: language,
+};
+
+export const prerender = true;
 ---
 
-<BaseLayout pageTitle={pageTitle} description={pageDescription}>
-  <h2>Insightful. Precise. Human.</h2>
-
-  <div class="intro">
-    <div class="content">
-      <p>
-        I'm addicted to details and obsessed with how things work: from Cloud services to human relationships. Since my
-        first Hello World in RPG Maker, I have come to believe that being an <strong>Engineer</strong> is much more than
-        coding.
-      </p>
-
-      <p>
-        I'm currently an Engineering Manager at
-        <span class="mollie-logo-wrapper">
-          <img src="/Mollie-Logo-Black-2023.svg" class="mollie-logo light-logo" alt="Mollie" />
-          <img src="/Mollie-Logo-White-2023.svg" class="mollie-logo dark-logo" alt="Mollie" />
-        </span>, where I focus on helping teams collaborate effectively and deliver impactful solutions.
-      </p>
-      <p>
-        When I'm not fostering great engineering culture, you can find me in Busto Arsizio (near Milan's Malpensa
-        airport) where I'm a proud father of two amazing kids and a funny lovely husband.
-      </p>
-      <p>
-        Wanna stay updated? <a
-          href="https://x.com/intent/user?screen_name=_aleromano"
-          target="_blank"
-          rel="noopener noreferrer">Follow @_aleromano</a
-        > or <a href="/rss.xml">subscribe to my RSS feed.</a>
-      </p>
-      <p>
-        Need help launching your startup, scaling your engineering team, or growing as a software engineer? <a
-          href="/contact">Let's talk.</a
-        >
-      </p>
-    </div>
-    <Image
-      src={profilePic}
-      alt="Alessandro Romano profile picture"
-      width={300}
-      densities={[1, 2]}
-      quality="max"
-      class="profile-pic"
-    />
-  </div>
-
-  <TwitterFeed
-    posts={twitterData.posts}
-    error={twitterData.error}
-    language={language}
-    freshness={twitterData.freshness}
-  />
+<BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData}>
+  <BaseAbout language={language} />
 </BaseLayout>
-
-<style>
-  .intro {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    margin: var(--space-lg) 0 0;
-  }
-
-  .content {
-    flex: 1;
-  }
-
-  .mollie-logo-wrapper {
-    display: inline-block;
-  }
-
-  .mollie-logo {
-    height: 1rem;
-  }
-
-  /* Show/hide based on theme */
-  .dark-logo {
-    display: none;
-  }
-
-  :global([data-theme='dark']) .dark-logo {
-    display: inline;
-  }
-
-  :global([data-theme='dark']) .light-logo {
-    display: none;
-  }
-
-  .profile-pic {
-    margin-bottom: calc(-1 * var(--space-lg));
-    max-width: 100%;
-    height: auto;
-    transform: translateY(0);
-    animation: slideDown 1s ease-out 0.2s backwards;
-  }
-
-  @keyframes slideDown {
-    from {
-      transform: translateY(-25%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
-  @media (max-width: 636px) {
-    .intro {
-      flex-direction: column;
-    }
-
-    .profile-pic {
-      margin-bottom: -1.2rem;
-    }
-  }
-</style>
