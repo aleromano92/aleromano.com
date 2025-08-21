@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import BaseIndex from '../components/pages/BaseIndex.astro';
+import BaseIndex, { getHomeTranslations } from '../components/pages/BaseIndex.astro';
 import { getLanguageFromURL } from '../utils/i18n';
-import { getHomeTranslations } from '../utils/translations';
 import type { SupportedLanguage } from '../types/i18n';
 
 const pageTitle = 'Home';

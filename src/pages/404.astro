@@ -1,35 +1,60 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getLanguageFromURL } from '../utils/i18n';
-import { type SupportedLanguage } from '../types/i18n';
+import type { SupportedLanguage } from '../types/i18n';
 
-const pathname = new URL(Astro.request.url).pathname;
-const currentLang = getLanguageFromURL(pathname) as SupportedLanguage;
+export interface NotFoundTranslations {
+  pageTitle: string;
+  pageDescription: string;
+  heading: string;
+  description: string;
+  backButton: string;
+}
 
-const messages = {
+export const notFoundTranslations: Record<SupportedLanguage, NotFoundTranslations> = {
   en: {
-    title: 'Page Not Found',
+    pageTitle: 'Page Not Found',
+    pageDescription: 'The page you are looking for does not exist.',
+    heading: '404',
     description: 'The page you are looking for does not exist.',
-    back: 'Go back to homepage',
+    backButton: 'Go back to homepage',
   },
   it: {
-    title: 'Pagina Non Trovata',
+    pageTitle: 'Pagina Non Trovata',
+    pageDescription: 'La pagina che stai cercando non esiste.',
+    heading: '404',
     description: 'La pagina che stai cercando non esiste.',
-    back: 'Torna alla homepage',
+    backButton: 'Torna alla homepage',
   },
 };
 
-const msg = messages[currentLang];
+export function getNotFoundTranslations(language: SupportedLanguage): NotFoundTranslations {
+  return notFoundTranslations[language];
+}
+
+const pathname = new URL(Astro.request.url).pathname;
+const currentLang = (getLanguageFromURL(pathname) || 'en') as SupportedLanguage;
+
+// Get translations for the current language
+const t = getNotFoundTranslations(currentLang);
+
+// Set language info for BaseLayout
+const i18nData = {
+  currentLang,
+};
+
+// Determine the homepage URL based on language
+const homepageUrl = currentLang === 'it' ? '/it/' : '/';
 
 Astro.response.status = 404;
 ---
 
-<BaseLayout pageTitle={msg.title}>
+<BaseLayout pageTitle={t.pageTitle} description={t.pageDescription} i18nData={i18nData}>
   <div class="error-container">
-    <h1>404</h1>
-    <p>{msg.description}</p>
+    <h1>{t.heading}</h1>
+    <p>{t.description}</p>
     <div class="actions">
-      <a href="/" class="button secondary">{msg.back}</a>
+      <a href={homepageUrl} class="button secondary">{t.backButton}</a>
     </div>
   </div>
 </BaseLayout>
