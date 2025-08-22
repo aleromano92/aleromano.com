@@ -104,3 +104,86 @@ Includes VPS monitoring daemon (`scripts/observability/`) that:
 - Checks website availability
 - Sends Telegram alerts for issues
 - Runs as systemd service on the VPS
+
+## Feature Request Template
+
+Use this template when requesting new features for the aleromano.com website:
+
+### 1. Feature Overview
+**Problem Statement**: What problem does this feature solve?
+**User Goal**: What should users be able to do after this feature is implemented?
+**Business Value**: Why is this feature important for the website's goals?
+
+### 2. User Story
+**As a** [type of user]
+**I want** [specific functionality]
+**So that** [desired outcome/benefit]
+
+### 3. Technical Context
+**Affected Systems**: Which parts of the architecture will be involved? (SSR pages, content collections, i18n, Docker, etc.)
+**Integration Points**: How does this feature interact with existing code?
+**Constraints**: Any technical limitations or requirements (no SaaS, build from scratch, performance, etc.)
+**Architecture Dependencies**: Which existing utils, components, or patterns should be leveraged?
+
+### 4. Acceptance Criteria
+**Core Functionality**:
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
+
+**Technical Requirements**:
+- [ ] TypeScript strict typing
+- [ ] Responsive design (mobile/desktop)
+- [ ] Light/dark theme support
+- [ ] i18n support (English/Italian)
+- [ ] Accessibility compliance
+
+**Quality Gates**:
+- [ ] Business logic has automated tests
+- [ ] Error handling implemented
+- [ ] Performance considerations addressed
+
+### 5. Implementation Approach
+**Preferred Method**: Incremental/step-by-step development
+**Phase Breakdown**: List the logical phases for implementation
+**Validation Points**: Where should I pause for your approval?
+**Technical Design**: Upfront discussion of architecture, data flow, and key decisions
+
+### 6. Testing Strategy
+**Business Logic**: What core functionality needs automated testing?
+**Integration Points**: How should interactions between systems be validated?
+**Manual Testing**: What manual verification steps are needed?
+
+### 7. Examples & References
+**Similar Features**: Point to existing code that demonstrates similar patterns
+**External Inspiration**: Links to websites/libraries that show the desired behavior
+**Design Mockups**: Any visual references or wireframes
+
+### 8. Change Impact Assessment
+**Files to Modify**: List of expected files that will be created/changed
+**Breaking Changes**: Any potential impacts on existing functionality
+**Documentation Updates**: What needs to be documented or updated
+
+### 9. Questions for Clarification
+**Technical Decisions**: Any upfront architectural choices to discuss
+**Scope Boundaries**: What's explicitly included/excluded from this feature
+**Future Considerations**: How might this feature evolve or connect to future work
+
+---
+
+**Example Usage:**
+```
+## Feature: Add RSS feed for newsletter subscribers
+
+### 1. Feature Overview
+**Problem Statement**: Readers want to subscribe to new blog posts via RSS but the current feed doesn't include enough metadata for newsletter services.
+**User Goal**: Subscribe to a rich RSS feed that includes full post content and proper categorization.
+**Business Value**: Increases subscriber retention and makes content more discoverable.
+
+### 2. User Story
+**As a** blog reader
+**I want** to subscribe to an RSS feed with full post content
+**So that** I can read new posts in my preferred RSS reader without visiting the website
+
+[Continue with remaining sections...]
+```
