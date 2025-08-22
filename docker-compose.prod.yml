@@ -12,6 +12,7 @@ services:
       - SMTP_PORT=25 # App connects to smtp-relay container on its internal port 25
       - ALE_PERSONAL_EMAIL=${ALE_PERSONAL_EMAIL}
       - TWITTER_BEARER_TOKEN=${TWITTER_BEARER_TOKEN}
+      - GITHUB_TOKEN=${PERSONAL_GITHUB_TOKEN}
     depends_on:
       - smtp-relay
 
