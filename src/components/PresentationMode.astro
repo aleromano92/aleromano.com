@@ -1,13 +1,15 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import type { SupportedLanguage } from '../types/i18n';
+import { parseSlides, SLIDE_DELIMITER } from '../utils/presentations';
 
 import 'reveal.js/dist/reveal.css';
 import 'reveal.js/dist/theme/night.css';
 
 declare global {
     interface Window {
-        presentationContent?: string;
+        presentationSlides?: string[];
+        slideDelimiter?: string;
     }
 }
 
@@ -19,13 +21,15 @@ interface Props {
 
 const { presentation, language, blogPostSlug } = Astro.props;
 
+// Parse slides on the server side for better performance and reliability
+const slides = parseSlides(presentation.body);
+
 // Generate back to blog post URL
 const backUrl = language === 'en' ? `/posts/${blogPostSlug}` : `/it/posts/${blogPostSlug}`;
 const backText = language === 'it' ? 'Torna al post' : 'Back to post';
 
 // Generate print URL with query parameter
-const currentUrl = Astro.url.pathname;
-const printUrl = `${currentUrl}?print-pdf`;
+const printUrl = `${Astro.url.pathname}?print-pdf`;
 const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
 ---
 
@@ -49,9 +53,10 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
         <a href={backUrl} class="back-to-blog">{backText}</a>
         <a href={printUrl} class="print-pdf" target="_blank" rel="noopener">{printText}</a>
 
-        <!-- Pass presentation content to global scope -->
-        <script define:vars={{ presentationContent: presentation.body }}>
-            window.presentationContent = presentationContent;
+        <!-- Pass pre-parsed slides to global scope for better performance -->
+        <script define:vars={{ presentationSlides: slides, slideDelimiter: SLIDE_DELIMITER }}>
+            window.presentationSlides = presentationSlides;
+            window.slideDelimiter = slideDelimiter;
         </script>
 
         <script>
@@ -59,80 +64,101 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
             import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
             import Notes from 'reveal.js/plugin/notes/notes.esm.js';
 
+            // Helper function to create slide elements
+            function createSlideElement(slideContent: string): HTMLElement {
+                const slideElement = document.createElement('section');
+                slideElement.setAttribute('data-markdown', '');
+                slideElement.setAttribute('data-separator', `^${window.slideDelimiter}$`);
+                slideElement.setAttribute('data-separator-notes', '^Note:');
+
+                // Create a script tag with the markdown content
+                const scriptElement = document.createElement('script');
+                scriptElement.type = 'text/template';
+                scriptElement.textContent = slideContent;
+                slideElement.appendChild(scriptElement);
+
+                return slideElement;
+            }
+
+            // Helper function to initialize Reveal.js
+            function initializeReveal(): void {
+                const deck = new Reveal({
+                    plugins: [Markdown, Notes],
+                    hash: true,
+                    transition: 'slide',
+                    controls: true,
+                    progress: true,
+                    center: false,
+                    touch: true,
+                    keyboard: true,
+                    overview: true,
+                    help: true,
+                    // PDF export configuration
+                    pdfMaxPagesPerSlide: 1,
+                    pdfSeparateFragments: false,
+                    showNotes: new URLSearchParams(window.location.search).has('print-pdf'),
+                });
+                deck.initialize();
+            }
+
+            // Helper function to handle keyboard shortcuts
+            function setupKeyboardHandlers(): void {
+                document.addEventListener('keydown', function (event) {
+                    if (event.key === 'Escape') {
+                        const backLink = document.querySelector('.back-to-blog') as HTMLAnchorElement;
+                        if (backLink) {
+                            window.location.href = backLink.href || '/';
+                        }
+                    }
+                });
+            }
+
+            // Helper function to show error message
+            function showError(message: string): void {
+                const slidesContainer = document.getElementById('slides-container');
+                if (slidesContainer) {
+                    slidesContainer.innerHTML = `<section><h1>Error loading presentation</h1><p>${message}</p></section>`;
+                }
+            }
+
+            // Main initialization function
             document.addEventListener('DOMContentLoaded', function () {
                 try {
-                    if (!window.presentationContent || !window.presentationContent.trim()) {
-                        console.error('No presentation data found');
+                    // Validate that we have presentation data
+                    if (
+                        !window.presentationSlides ||
+                        !Array.isArray(window.presentationSlides) ||
+                        window.presentationSlides.length === 0
+                    ) {
+                        console.error('No presentation slides found');
+                        showError('No presentation data found. Check the browser console for details.');
                         return;
                     }
-
-                    const trimmedPresentationContent = window.presentationContent.trim();
-
-                    // Parse slides and create sections with markdown content
-                    const slides = trimmedPresentationContent
-                        .split(/^---$/gm)
-                        .map((slide) => slide.trim())
-                        .filter((slide) => slide.length > 0);
 
                     const slidesContainer = document.getElementById('slides-container');
                     if (!slidesContainer) {
                         console.error('Slides container not found');
+                        showError('Slides container not found.');
                         return;
                     }
 
                     // Clear existing content (loading slide)
                     slidesContainer.innerHTML = '';
 
-                    // Create slides with data-markdown attribute for Reveal.js to process
-                    slides.forEach((slideContent) => {
-                        const slideElement = document.createElement('section');
-                        slideElement.setAttribute('data-markdown', '');
-                        slideElement.setAttribute('data-separator', '^---$');
-                        slideElement.setAttribute('data-separator-notes', '^Note:');
-
-                        // Create a script tag with the markdown content
-                        const scriptElement = document.createElement('script');
-                        scriptElement.type = 'text/template';
-                        scriptElement.textContent = slideContent;
-                        slideElement.appendChild(scriptElement);
-
+                    // Create slides using pre-parsed data
+                    window.presentationSlides.forEach((slideContent: string) => {
+                        const slideElement = createSlideElement(slideContent);
                         slidesContainer.appendChild(slideElement);
                     });
 
-                    let deck = new Reveal({
-                        plugins: [Markdown, Notes],
-                        hash: true,
-                        transition: 'slide',
-                        controls: true,
-                        progress: true,
-                        center: false,
-                        touch: true,
-                        keyboard: true,
-                        overview: true,
-                        help: true,
-                        // PDF export configuration
-                        pdfMaxPagesPerSlide: 1,
-                        pdfSeparateFragments: false,
-                        showNotes: new URLSearchParams(window.location.search).has('print-pdf'),
-                    });
-                    deck.initialize();
+                    // Initialize Reveal.js
+                    initializeReveal();
 
-                    // Handle ESC key
-                    document.addEventListener('keydown', function (event) {
-                        if (event.key === 'Escape') {
-                            const backLink = document.querySelector('.back-to-blog');
-                            if (backLink) {
-                                window.location.href = (backLink as HTMLAnchorElement).href || '/';
-                            }
-                        }
-                    });
+                    // Setup keyboard handlers
+                    setupKeyboardHandlers();
                 } catch (error) {
                     console.error('Error initializing presentation:', error);
-                    const slidesContainer = document.getElementById('slides-container');
-                    if (slidesContainer) {
-                        slidesContainer.innerHTML =
-                            '<section><h1>Error loading presentation</h1><p>Check the browser console for details.</p></section>';
-                    }
+                    showError('Check the browser console for details.');
                 }
             });
         </script>
