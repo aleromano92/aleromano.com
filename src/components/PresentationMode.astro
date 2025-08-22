@@ -1,0 +1,169 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { SupportedLanguage } from '../types/i18n';
+
+import 'reveal.js/dist/reveal.css';
+import 'reveal.js/dist/theme/black.css';
+
+declare global {
+    interface Window {
+        presentationContent?: string;
+    }
+}
+
+interface Props {
+    presentation: CollectionEntry<'presentations'>;
+    language: SupportedLanguage;
+    blogPostSlug: string;
+}
+
+const { presentation, language, blogPostSlug } = Astro.props;
+
+// Generate back to blog post URL
+const backUrl = language === 'en' ? `/posts/${blogPostSlug}` : `/it/posts/${blogPostSlug}`;
+const backText = language === 'it' ? 'Torna al post' : 'Back to post';
+---
+
+<!doctype html>
+<html lang={language}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{presentation.data.title} - Presentation</title>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides" id="slides-container">
+                <section>
+                    <h1>Loading presentation...</h1>
+                    <p>If this message persists, there might be an issue with the presentation content.</p>
+                </section>
+            </div>
+        </div>
+
+        <a href={backUrl} class="back-to-blog">{backText}</a>
+
+        <!-- Pass presentation content to global scope -->
+        <script define:vars={{ presentationContent: presentation.body }}>
+            window.presentationContent = presentationContent;
+        </script>
+
+        <script>
+            import Reveal from 'reveal.js';
+            import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
+
+            document.addEventListener('DOMContentLoaded', function () {
+                try {
+                    if (!window.presentationContent || !window.presentationContent.trim()) {
+                        console.error('No presentation data found');
+                        return;
+                    }
+
+                    const trimmedPresentationContent = window.presentationContent.trim();
+
+                    // Parse slides and create sections with markdown content
+                    const slides = trimmedPresentationContent
+                        .split(/^---$/gm)
+                        .map((slide) => slide.trim())
+                        .filter((slide) => slide.length > 0);
+
+                    const slidesContainer = document.getElementById('slides-container');
+                    if (!slidesContainer) {
+                        console.error('Slides container not found');
+                        return;
+                    }
+
+                    // Clear existing content (loading slide)
+                    slidesContainer.innerHTML = '';
+
+                    // Create slides with data-markdown attribute for Reveal.js to process
+                    slides.forEach((slideContent) => {
+                        const slideElement = document.createElement('section');
+                        slideElement.setAttribute('data-markdown', '');
+                        slideElement.setAttribute('data-separator', '^---$');
+
+                        // Create a script tag with the markdown content
+                        const scriptElement = document.createElement('script');
+                        scriptElement.type = 'text/template';
+                        scriptElement.textContent = slideContent;
+                        slideElement.appendChild(scriptElement);
+
+                        slidesContainer.appendChild(slideElement);
+                    });
+
+                    let deck = new Reveal({
+                        plugins: [Markdown],
+                        hash: true,
+                        transition: 'slide',
+                        controls: true,
+                        progress: true,
+                        center: false,
+                        touch: true,
+                    });
+                    deck.initialize();
+
+                    // Handle ESC key
+                    document.addEventListener('keydown', function (event) {
+                        if (event.key === 'Escape') {
+                            const backLink = document.querySelector('.back-to-blog');
+                            if (backLink) {
+                                window.location.href = (backLink as HTMLAnchorElement).href || '/';
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error initializing presentation:', error);
+                    const slidesContainer = document.getElementById('slides-container');
+                    if (slidesContainer) {
+                        slidesContainer.innerHTML =
+                            '<section><h1>Error loading presentation</h1><p>Check the browser console for details.</p></section>';
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
+
+<!-- Custom styles to match website theme -->
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #111;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .reveal {
+        font-family: inherit;
+    }
+
+    .reveal .slides section {
+        text-align: left;
+    }
+
+    .reveal h1,
+    .reveal h2,
+    .reveal h3 {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .back-to-blog {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: background 0.2s ease;
+    }
+
+    .back-to-blog:hover {
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+    }
+</style>
