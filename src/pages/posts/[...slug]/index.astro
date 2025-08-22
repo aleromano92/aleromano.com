@@ -1,8 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
-import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
-import { getLanguageFromURL } from '../../utils/i18n';
-import { findPostBySlug, getLocalizedPostUrl } from '../../utils/posts';
+import BlogPostLayout from '../../../layouts/BlogPostLayout.astro';
+import { getLanguageFromURL } from '../../../utils/i18n';
+import { findPostBySlug, getLocalizedPostUrl } from '../../../utils/posts';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');

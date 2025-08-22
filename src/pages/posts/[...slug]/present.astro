@@ -2,35 +2,35 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { getLanguageFromURL } from '../../../utils/i18n';
 import type { SupportedLanguage } from '../../../types/i18n';
-import { findPresentationByBlogPost } from '../../../utils/presentations';
 import PresentationMode from '../../../components/PresentationMode.astro';
 
-// Since we're in SSR mode, we don't use getStaticPaths
-// Instead, we handle the routing dynamically
+export const prerender = true;
 
-const { slug } = Astro.params;
+export async function getStaticPaths() {
+    const presentations = await getCollection('presentations');
 
-// Extract blog post slug from the URL
-const slugString = slug as string;
-const blogPostSlug = slugString?.replace('/present', '').split('/').pop() || '';
+    return presentations.map((presentation) => {
+        const blogPostSlug = presentation.data.blogPostSlug;
+        const language = presentation.data.language;
 
-// Get the current language from URL
-const currentLang = getLanguageFromURL(Astro.url.pathname) || 'en';
+        // Generate the correct slug parameter for the [...slug] catch-all route
+        // The route is /posts/[...slug]/present.astro, so slug should be just the post slug
+        const slugParam = language === 'en' ? blogPostSlug : `it/${blogPostSlug}`;
 
-// Verify this presentation exists and matches the route
-const presentationInfo = await findPresentationByBlogPost(blogPostSlug, currentLang as SupportedLanguage);
-
-if (!presentationInfo) {
-    return Astro.redirect('/404');
+        return {
+            params: {
+                slug: slugParam,
+            },
+            props: {
+                presentation,
+                language: language as SupportedLanguage,
+                blogPostSlug,
+            },
+        };
+    });
 }
 
-// Get the actual presentation from the collection
-const presentations = await getCollection('presentations');
-const presentation = presentations.find((p) => p.data.blogPostSlug === blogPostSlug && p.data.language === currentLang);
-
-if (!presentation) {
-    return Astro.redirect('/404');
-}
+const { presentation, language, blogPostSlug } = Astro.props;
 ---
 
-<PresentationMode presentation={presentation} language={currentLang as SupportedLanguage} blogPostSlug={blogPostSlug} />
+<PresentationMode presentation={presentation} language={language} blogPostSlug={blogPostSlug} />

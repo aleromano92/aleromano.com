@@ -17,7 +17,8 @@ This is a bilingual (English/Italian) personal blog built with **Astro 5** using
 ### 🎤 Presentation Mode
 Blog posts can have associated presentations powered by reveal.js:
 - **Presentation URL**: `/posts/[slug]/present`
-- **Speaker Notes**: Press `S` key to open speaker notes window
+- **Speaker Notes**: Press `S` key to open speaker notes window  
+- **PDF Export**: Click "Print PDF" button in top-right corner
 - **Full keyboard navigation**: Arrow keys, overview mode (`O`), help (`?`)
 - **Content**: Defined in `src/content/presentations/` with markdown
 - **Speaker Notes**: Add `Note:` sections for private presenter notes

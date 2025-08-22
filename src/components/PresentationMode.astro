@@ -22,6 +22,11 @@ const { presentation, language, blogPostSlug } = Astro.props;
 // Generate back to blog post URL
 const backUrl = language === 'en' ? `/posts/${blogPostSlug}` : `/it/posts/${blogPostSlug}`;
 const backText = language === 'it' ? 'Torna al post' : 'Back to post';
+
+// Generate print URL with query parameter
+const currentUrl = Astro.url.pathname;
+const printUrl = `${currentUrl}?print-pdf`;
+const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
 ---
 
 <!doctype html>
@@ -42,6 +47,7 @@ const backText = language === 'it' ? 'Torna al post' : 'Back to post';
         </div>
 
         <a href={backUrl} class="back-to-blog">{backText}</a>
+        <a href={printUrl} class="print-pdf" target="_blank" rel="noopener">{printText}</a>
 
         <!-- Pass presentation content to global scope -->
         <script define:vars={{ presentationContent: presentation.body }}>
@@ -104,6 +110,10 @@ const backText = language === 'it' ? 'Torna al post' : 'Back to post';
                         keyboard: true,
                         overview: true,
                         help: true,
+                        // PDF export configuration
+                        pdfMaxPagesPerSlide: 1,
+                        pdfSeparateFragments: false,
+                        showNotes: new URLSearchParams(window.location.search).has('print-pdf'),
                     });
                     deck.initialize();
 
@@ -170,5 +180,41 @@ const backText = language === 'it' ? 'Torna al post' : 'Back to post';
     .back-to-blog:hover {
         background: rgba(0, 0, 0, 0.9);
         color: white;
+    }
+
+    .print-pdf {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: background 0.2s ease;
+    }
+
+    .print-pdf:hover {
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+    }
+
+    /* Print mode optimizations */
+    @media print {
+        .back-to-blog,
+        .print-pdf {
+            display: none !important;
+        }
+    }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+        .back-to-blog,
+        .print-pdf {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+        }
     }
 </style>
