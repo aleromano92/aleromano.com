@@ -1,5 +1,5 @@
 ---
-import { LANGUAGES, DEFAULT_LANGUAGE } from '../types/i18n';
+import { LANGUAGES } from '../types/i18n';
 import { getLanguageFromURL } from '../utils/i18n';
 
 const { i18nData } = Astro.props;
@@ -64,7 +64,6 @@ const currentLang = i18nData?.currentLang || getLanguageFromURL(pathname);
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
         const lang = button.getAttribute('data-lang') as SupportedLanguage;
-        const currentLang = button.getAttribute('data-current-lang') as SupportedLanguage;
         const currentPath = button.getAttribute('data-current-path') || '';
         const originalLink = button.getAttribute('data-original-link');
 

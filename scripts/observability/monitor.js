@@ -14,7 +14,6 @@
 const { exec } = require('child_process');
 const https = require('https');
 const fs = require('fs');
-const path = require('path');
 
 // Configuration
 const CONFIG = {
@@ -183,7 +182,7 @@ const checkDockerLogs = () => {
     log('Checking Docker logs for errors...');
 
     // Get the list of containers to check
-    exec('docker ps --format "{{.Names}}"', (error, stdout, stderr) => {
+    exec('docker ps --format "{{.Names}}"', (error, stdout, _stderr) => {
         if (error) {
             log(`Error getting container list: ${error.message}`, 'ERROR');
             return;
@@ -201,7 +200,7 @@ const checkDockerLogs = () => {
             const since = Math.floor((Date.now() - CONFIG.logCheckInterval) / 1000);
             const command = `docker logs --since ${since} ${containerName} 2>&1 | grep -i "error\\|exception\\|fatal" | tail -n 10`;
 
-            exec(command, (error, stdout, stderr) => {
+            exec(command, (error, stdout, _stderr) => {
                 // grep returns exit code 1 if no matches, which causes exec to return an error
                 // We only care about actual errors, not the absence of matches
                 if (error && error.code !== 1) {
@@ -262,7 +261,7 @@ const checkWebsite = () => {
         request.destroy();
 
         // Try a simple curl command to see if the website is reachable
-        exec(`curl -s -o /dev/null -w "%{http_code}" -m 10 ${CONFIG.website.url}`, (error, stdout, stderr) => {
+        exec(`curl -s -o /dev/null -w "%{http_code}" -m 10 ${CONFIG.website.url}`, (error, stdout, _stderr) => {
             if (!error && stdout.trim() >= 200 && stdout.trim() < 400) {
                 log(`Curl check succeeded with status ${stdout.trim()} despite timeout in Node.js request`, 'WARNING');
                 sendTelegramNotification(

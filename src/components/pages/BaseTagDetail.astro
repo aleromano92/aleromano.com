@@ -33,10 +33,7 @@ interface Props {
     posts: CollectionEntry<'blog'>[];
 }
 
-const { language, tag, posts } = Astro.props;
-
-// Get translations for the current language
-const t = getTagDetailTranslations(language, tag);
+const { posts } = Astro.props;
 ---
 
 <PostsGrid posts={posts} />

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { getGitHubCommitsData } from './github';
-import type { GitHubCommit, GitHubCommitsData } from './github';
+import type { GitHubCommitsData } from './github';
 
 // Mock fetch globally
 const mockFetch = vi.fn();

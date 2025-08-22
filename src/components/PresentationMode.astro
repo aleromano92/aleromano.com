@@ -54,7 +54,7 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
         <a href={printUrl} class="print-pdf" target="_blank" rel="noopener">{printText}</a>
 
         <!-- Pass pre-parsed slides to global scope for better performance -->
-        <script define:vars={{ presentationSlides: slides, slideDelimiter: SLIDE_DELIMITER }}>
+        <script is:inline define:vars={{ presentationSlides: slides, slideDelimiter: SLIDE_DELIMITER }}>
             window.presentationSlides = presentationSlides;
             window.slideDelimiter = slideDelimiter;
         </script>

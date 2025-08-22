@@ -1,12 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { CollectionEntry } from 'astro:content';
 import { 
   findPresentationByBlogPost, 
   parseSlides, 
   getPresentationUrl, 
   extractBlogPostSlugFromPathname 
 } from './presentations';
-import type { SupportedLanguage } from '../types/i18n';
 
 // Mock Astro content collection
 vi.mock('astro:content', () => ({
