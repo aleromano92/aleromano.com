@@ -5,6 +5,7 @@ set -e
 
 # Default values
 DEFAULT_USERNAME="deploy"
+AXEL_USERNAME="axel"
 DEFAULT_SSH_PORT=22
 
 # Colors for output
@@ -31,7 +32,7 @@ fi
 read -p "Enter deployment username (default: $DEFAULT_USERNAME): " USERNAME
 USERNAME=${USERNAME:-$DEFAULT_USERNAME}
 
-# Create user if it doesn't exist
+# Create "deploy" user if it doesn't exist
 if id "$USERNAME" &>/dev/null; then
     print_status "User $USERNAME already exists, skipping creation..."
 else
@@ -40,15 +41,42 @@ else
         print_error "Failed to create user"
         exit 1
     }
+    # Add user to docker group
+    print_status "Adding $USERNAME to docker group..."
+    usermod -aG docker "$USERNAME"
 fi
 
-# Set up SSH directory
-print_status "Setting up SSH directory..."
+# Create a non-root "axel" user with sudo privileges
+if id "$AXEL_USERNAME" &>/dev/null; then
+    print_status "User $AXEL_USERNAME already exists, skipping creation..."
+else
+    print_status "Creating user $AXEL_USERNAME..."
+    useradd -m -s /bin/bash "$AXEL_USERNAME" || {
+        print_error "Failed to create user $AXEL_USERNAME"
+        exit 1
+    }
+    print_status "Adding $AXEL_USERNAME to sudo group..."
+    usermod -aG sudo "$AXEL_USERNAME"
+    # Add axel to docker group
+    print_status "Adding $AXEL_USERNAME to docker group..."
+    usermod -aG docker "$AXEL_USERNAME"
+fi
+
+# Set up SSH directory for deploy user
+print_status "Setting up SSH directory for $USERNAME..."
 mkdir -p "/home/$USERNAME/.ssh"
 chmod 700 "/home/$USERNAME/.ssh"
 touch "/home/$USERNAME/.ssh/authorized_keys"
 chmod 600 "/home/$USERNAME/.ssh/authorized_keys"
 chown -R "$USERNAME:$USERNAME" "/home/$USERNAME/.ssh"
+
+# Set up SSH directory for axel user
+print_status "Setting up SSH directory for $AXEL_USERNAME..."
+mkdir -p "/home/$AXEL_USERNAME/.ssh"
+chmod 700 "/home/$AXEL_USERNAME/.ssh"
+touch "/home/$AXEL_USERNAME/.ssh/authorized_keys"
+chmod 600 "/home/$AXEL_USERNAME/.ssh/authorized_keys"
+chown -R "$AXEL_USERNAME:$AXEL_USERNAME" "/home/$AXEL_USERNAME/.ssh"
 
 # Install Docker if not present
 if ! command -v docker &> /dev/null; then
@@ -56,6 +84,8 @@ if ! command -v docker &> /dev/null; then
     curl -fsSL https://get.docker.com | sh
     systemctl enable docker
     systemctl start docker
+else
+    print_status "Docker already installed, skipping installation."
 fi
 
 # Install Docker Compose if not present
@@ -63,11 +93,9 @@ if ! command -v docker-compose &> /dev/null; then
     print_status "Installing Docker Compose..."
     curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
+else
+    print_status "Docker Compose already installed, skipping installation."
 fi
-
-# Add user to docker group
-print_status "Adding $USERNAME to docker group..."
-usermod -aG docker "$USERNAME"
 
 # Set up project directory
 PROJECT_DIR="/home/$USERNAME/app"
@@ -95,17 +123,49 @@ if ! command -v sshd &> /dev/null; then
     print_status "Installing OpenSSH Server..."
     apt-get update
     apt-get install -y openssh-server
+else
+    print_status "OpenSSH Server already installed, skipping installation."
 fi
 
-# Configure SSH regardless of config file location
-for sshd_config in /etc/ssh/sshd_config /etc/sshd_config; do
-    if [ -f "$sshd_config" ]; then
-        print_status "Configuring SSH at $sshd_config..."
-        sed -i 's/#\?PermitRootLogin.*/PermitRootLogin no/' "$sshd_config"
-        sed -i 's/#\?PasswordAuthentication.*/PasswordAuthentication no/' "$sshd_config"
+# Check if non-root sudo users exist before hardening SSH
+print_status "Checking for non-root sudo users..."
+NON_ROOT_SUDO_EXISTS=false
+for user in $(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd); do
+    if groups "$user" 2>/dev/null | grep -q '\bsudo\b'; then
+        NON_ROOT_SUDO_EXISTS=true
+        print_status "Found non-root sudo user: $user"
         break
     fi
 done
+
+# Configure SSH regardless of config file location
+
+# Harden SSH configuration
+if [ "$NON_ROOT_SUDO_EXISTS" = true ]; then
+    echo ""
+    print_status "Non-root sudo users found. SSH hardening is recommended for security."
+    read -p "Do you want to disable root SSH login? (y/n): " DISABLE_ROOT_LOGIN
+    echo ""
+    
+    if [ "$DISABLE_ROOT_LOGIN" = "y" ] || [ "$DISABLE_ROOT_LOGIN" = "Y" ]; then
+        for sshd_config in /etc/ssh/sshd_config /etc/sshd_config; do
+            if [ -f "$sshd_config" ]; then
+                print_status "Configuring SSH at $sshd_config..."
+                sed -i 's/#\?PermitRootLogin.*/PermitRootLogin no/' "$sshd_config"
+                sed -i 's/#\?PasswordAuthentication.*/PasswordAuthentication no/' "$sshd_config"
+                sed -i 's/#\?UsePAM.*/UsePAM no/' "$sshd_config"
+                break
+            fi
+        done
+        print_status "SSH hardening applied."
+    else
+        print_status "Skipping SSH root login disable as per user request."
+        print_status "WARNING: Root SSH login remains enabled. Consider hardening later."
+    fi
+else
+    print_error "No non-root sudo users found. Skipping SSH hardening to prevent lockout."
+    print_error "Please create and test access with a non-root sudo user before hardening SSH."
+fi
 
 # Try to restart SSH service
 print_status "Attempting to restart SSH service..."
@@ -127,7 +187,14 @@ fi
 # Set up UFW firewall
 print_status "Configuring firewall..."
 apt-get update
-apt-get install -y ufw
+
+if ! dpkg -s ufw &> /dev/null; then
+    print_status "Installing UFW firewall..."
+    apt-get install -y ufw
+else
+    print_status "UFW already installed, skipping installation."
+fi
+
 ufw default deny incoming
 ufw default allow outgoing
 ufw allow $DEFAULT_SSH_PORT/tcp
@@ -135,9 +202,49 @@ ufw allow 80/tcp
 ufw allow 443/tcp
 echo "y" | ufw enable
 
+# Install and enable fail2ban for SSH brute-force protection
+if ! dpkg -s fail2ban &> /dev/null; then
+    print_status "Installing fail2ban..."
+    apt-get install -y fail2ban
+else
+    print_status "fail2ban already installed, skipping installation."
+fi
+
+systemctl enable fail2ban
+systemctl start fail2ban
+
+# Configure fail2ban for SSH protection
+if [ ! -f /etc/fail2ban/jail.local ]; then
+    print_status "Creating fail2ban SSH jail configuration..."
+    cat <<EOF > /etc/fail2ban/jail.local
+[DEFAULT]
+bantime = 10m
+findtime = 10m
+maxretry = 5
+
+[sshd]
+enabled = true
+port = ssh
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 5
+bantime = 1h
+EOF
+    systemctl restart fail2ban
+    print_status "fail2ban configured for SSH protection."
+else
+    print_status "fail2ban jail.local already exists, skipping configuration."
+fi
+
+print_status "fail2ban installed and running."
+
 # Install Certbot for SSL certificates with Let's Encrypt
-print_status "Installing Certbot..."
-apt-get install -y certbot
+if ! dpkg -s certbot &> /dev/null; then
+    print_status "Installing Certbot..."
+    apt-get install -y certbot
+else
+    print_status "Certbot already installed, skipping installation."
+fi
 
 # Create ACME challenge directory on the host
 # This directory will be mapped into the Nginx container for Let's Encrypt HTTP-01 challenges.
@@ -177,14 +284,21 @@ echo "   (This assumes docker-compose is at /usr/local/bin/docker-compose and yo
 echo "----------------------------------------------------------------------------------------------------"
 
 # Print completion message
+
+# Fix /etc/shadow permissions
+print_status "Setting /etc/shadow permissions to 600..."
+chmod 600 /etc/shadow
+
 print_status "Setup complete! Please:"
 echo "1. Add your SSH public key to: /home/$USERNAME/.ssh/authorized_keys"
-echo "2. Place your docker-compose.yml in: $PROJECT_DIR"
-echo "3. Add these secrets to your GitHub repository:"
+echo "2. Add your SSH public key to: /home/$AXEL_USERNAME/.ssh/authorized_keys (for axel user)"
+echo "3. Place your docker-compose.yml in: $PROJECT_DIR"
+echo "4. Add these secrets to your GitHub repository:"
 echo "   HETZNER_HOST: <your-server-ip>"
 echo "   HETZNER_USERNAME: $USERNAME"
 echo "   HETZNER_SSH_KEY: <your-private-ssh-key>"
-echo "4. Docker volumes are set up at: $DOCKER_DATA_DIR"
+echo "5. Docker volumes are set up at: $DOCKER_DATA_DIR"
+echo "6. Security hardening applied: sudo users ($USERNAME, $AXEL_USERNAME), fail2ban, SSH config, shadow permissions."
 
 # Print warning about SSH key
-print_error "IMPORTANT: Make sure to add your SSH public key before logging out!"
+print_error "IMPORTANT: Make sure to add your SSH public keys for both users before logging out!"
