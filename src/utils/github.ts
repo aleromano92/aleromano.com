@@ -15,7 +15,7 @@ export interface GitHubCommitsData {
 
 const GITHUB_USERNAME = 'aleromano92';
 const GITHUB_REPO = 'aleromano.com';
-const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+const PERSONAL_GITHUB_TOKEN = import.meta.env.PERSONAL_GITHUB_TOKEN || process.env.PERSONAL_GITHUB_TOKEN;
 
 function formatDate(dateString: string, lang: string = 'en'): string {
   const date = new Date(dateString);
@@ -42,8 +42,8 @@ async function fetchRepositoryCommits(): Promise<any[]> {
     'User-Agent': 'aleromano.com'
   };
 
-  if (GITHUB_TOKEN) {
-    headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+  if (PERSONAL_GITHUB_TOKEN) {
+    headers['Authorization'] = `token ${PERSONAL_GITHUB_TOKEN}`;
   }
 
   try {
