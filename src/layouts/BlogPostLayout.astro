@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Tags from '../components/posts/Tags.astro';
 import { getReadingTime } from '../utils/reading-time';
 import ImageModal from '../components/ImageModal.astro';
+import { findPresentationByBlogPost, getPresentationUrl } from '../utils/presentations';
 
 const { frontmatter, currentLang, originalPost } = Astro.props;
 const pageTitle = frontmatter.title;
@@ -11,6 +12,10 @@ const pageTitle = frontmatter.title;
 // Get the content as a string for reading time calculation
 const content = await Astro.slots.render('default');
 const readingTime = getReadingTime(content);
+
+// Check if a presentation exists for this blog post
+const blogPostSlug = Astro.url.pathname.split('/').pop() || '';
+const presentationInfo = await findPresentationByBlogPost(blogPostSlug, currentLang);
 
 // Pass language info to BaseLayout
 const i18nData = {
@@ -80,6 +85,35 @@ const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
       </div>
       <p class="description"><em>{frontmatter.description}</em></p>
       <Tags tags={frontmatter.tags} />
+
+      {
+        presentationInfo && (
+          <div class="presentation-actions">
+            <a
+              href={getPresentationUrl(blogPostSlug, currentLang)}
+              class="presentation-button"
+              title={currentLang === 'it' ? 'Visualizza come presentazione' : 'View as presentation'}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+              {currentLang === 'it' ? 'Presentazione' : 'Presentation'}
+            </a>
+          </div>
+        )
+      }
     </header>
 
     {
@@ -182,6 +216,36 @@ const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
     font-size: 1.1rem;
     line-height: 1.6;
     margin: var(--space-md) 0;
+  }
+
+  .presentation-actions {
+    margin-top: var(--space-md);
+  }
+
+  .presentation-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: var(--font-weight-medium);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    border: 2px solid var(--color-primary);
+  }
+
+  .presentation-button:hover {
+    background: transparent;
+    color: var(--color-primary);
+    transform: translateY(-1px);
+  }
+
+  .presentation-button svg {
+    width: 18px;
+    height: 18px;
   }
 
   .featured-image-container {

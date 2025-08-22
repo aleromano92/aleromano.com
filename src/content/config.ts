@@ -20,6 +20,19 @@ const blogCollection = defineCollection({
   })
 });
 
+const presentationsCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    blogPostSlug: z.string(), // Links to the corresponding blog post
+    language: z.enum(supportedLanguages as [string, ...string[]]),
+    theme: z.string().optional(), // Optional reveal.js theme override
+    transition: z.string().optional(), // Optional reveal.js transition override
+  })
+});
+
 export const collections = {
-  'blog': blogCollection
+  'blog': blogCollection,
+  'presentations': presentationsCollection
 }; 

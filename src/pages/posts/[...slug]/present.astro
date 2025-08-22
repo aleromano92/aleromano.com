@@ -1,0 +1,36 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { getLanguageFromURL } from '../../../utils/i18n';
+import type { SupportedLanguage } from '../../../types/i18n';
+import PresentationMode from '../../../components/PresentationMode.astro';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+    const presentations = await getCollection('presentations');
+
+    return presentations.map((presentation) => {
+        const blogPostSlug = presentation.data.blogPostSlug;
+        const language = presentation.data.language;
+
+        // Generate the correct slug parameter for the [...slug] catch-all route
+        // The route is /posts/[...slug]/present.astro, so slug should be just the post slug
+        const slugParam = language === 'en' ? blogPostSlug : `it/${blogPostSlug}`;
+
+        return {
+            params: {
+                slug: slugParam,
+            },
+            props: {
+                presentation,
+                language: language as SupportedLanguage,
+                blogPostSlug,
+            },
+        };
+    });
+}
+
+const { presentation, language, blogPostSlug } = Astro.props;
+---
+
+<PresentationMode presentation={presentation} language={language} blogPostSlug={blogPostSlug} />
