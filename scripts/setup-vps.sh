@@ -153,7 +153,7 @@ if [ "$NON_ROOT_SUDO_EXISTS" = true ]; then
                 print_status "Configuring SSH at $sshd_config..."
                 sed -i 's/#\?PermitRootLogin.*/PermitRootLogin no/' "$sshd_config"
                 sed -i 's/#\?PasswordAuthentication.*/PasswordAuthentication no/' "$sshd_config"
-                sed -i 's/#\?UsePAM.*/UsePAM no/' "$sshd_config"
+                sed -i 's/#\?UsePAM.*/UsePAM yes/' "$sshd_config"
                 break
             fi
         done
