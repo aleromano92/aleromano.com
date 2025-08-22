@@ -60,6 +60,10 @@ else
     # Add axel to docker group
     print_status "Adding $AXEL_USERNAME to docker group..."
     usermod -aG docker "$AXEL_USERNAME"
+
+    # Set password for axel user
+    print_status "Please set a password for the user so it can sudo '$AXEL_USERNAME'."
+    passwd "$AXEL_USERNAME"
 fi
 
 # Set up SSH directory for deploy user
@@ -217,21 +221,12 @@ systemctl start fail2ban
 if [ ! -f /etc/fail2ban/jail.local ]; then
     print_status "Creating fail2ban SSH jail configuration..."
     cat <<EOF > /etc/fail2ban/jail.local
-[DEFAULT]
-bantime = 10m
-findtime = 10m
-maxretry = 5
-
 [sshd]
 enabled = true
-port = ssh
-filter = sshd
-logpath = /var/log/auth.log
-maxretry = 5
-bantime = 1h
+mode = aggressive
 EOF
     systemctl restart fail2ban
-    print_status "fail2ban configured for SSH protection."
+    print_status "fail2ban configured for SSH protection with aggressive mode."
 else
     print_status "fail2ban jail.local already exists, skipping configuration."
 fi
