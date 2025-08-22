@@ -208,16 +208,4 @@ const cleanText = cleanTweetText(post.text, Boolean(post.media?.length));
     .view-tweet-link:hover {
         text-decoration: underline;
     }
-
-    /* Dark mode adjustments */
-    @media (prefers-color-scheme: dark) {
-        .tweet-card {
-            background: var(--color-surface-dark, #1a1a1a);
-            border-color: var(--color-border-dark, #333);
-        }
-
-        .tweet-card:hover {
-            border-color: var(--color-primary-dark, #60a5fa);
-        }
-    }
 </style>

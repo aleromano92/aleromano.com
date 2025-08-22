@@ -1,27 +1,7 @@
 import mockTwitterApiResponse from './mock-twitter-api-response-with-media.json';
+import { TwitterViewAdapter, type TwitterPost, type TwitterApiResponse } from './twitter-view-adapter';
 
-export interface TwitterPost {
-  id: string;
-  text: string;
-  created_at: string;
-  author_name: string;
-  author_username: string;
-  public_metrics: {
-    retweet_count: number;
-    like_count: number;
-    reply_count: number;
-  };
-  url: string;
-  type: 'tweet' | 'retweet' | 'like';
-  media?: {
-    type: 'photo' | 'video' | 'animated_gif';
-    url?: string;
-    preview_image_url?: string;
-    alt_text?: string;
-    width?: number;
-    height?: number;
-  }[];
-}
+export type { TwitterPost } from './twitter-view-adapter';
 
 export enum DataFreshness {
   LIVE = 'LIVE',
@@ -34,201 +14,199 @@ export interface TwitterResponse {
   freshness: DataFreshness;
 }
 
-interface TwitterApiResponse {
-  data: any[];
-  includes?: {
-    users?: any[];
-    tweets?: any[];
-    media?: any[];
-  };
-  meta?: {
-    result_count?: number;
-    next_token?: string;
-  };
-}
-
-interface CacheEntry {
-  data: TwitterPost[];
-  timestamp: number;
-  freshness: DataFreshness;
-}
-
 // Alessandro Romano's Twitter user ID (this never changes)
 const TWITTER_USER_ID = '4266046641';
 
 // 30 minutes TTL (twice the X API rate limit window)
 const CACHE_TTL = 30 * 60 * 1000;
 
-// In-memory cache
-let cache: CacheEntry | null = null;
+/**
+ * Interface for different Twitter data retrieval strategies
+ */
+interface TwitterDataStrategy {
+  fetchPosts(): Promise<TwitterResponse>;
+}
+
+/**
+ * Simple in-memory cache for Twitter posts
+ */
+class TwitterCache {
+  private cachedData: TwitterPost[] | null = null;
+  private cacheTimestamp: number = 0;
+
+  public set(posts: TwitterPost[]): void {
+    this.cachedData = posts;
+    this.cacheTimestamp = Date.now();
+  }
+
+  public get(): TwitterPost[] | null {
+    if (!this.isValid()) {
+      return null;
+    }
+    return this.cachedData;
+  }
+
+  public getStale(): TwitterPost[] | null {
+    return this.cachedData; // Returns cached data even if expired
+  }
+
+  public isValid(): boolean {
+    if (!this.cachedData) return false;
+    
+    const timeSinceCache = Date.now() - this.cacheTimestamp;
+    return timeSinceCache < CACHE_TTL;
+  }
+
+  public clear(): void {
+    this.cachedData = null;
+    this.cacheTimestamp = 0;
+  }
+}
+
+// Global cache instance
+const twitterCache = new TwitterCache();
 
 // Export function to clear cache (for testing)
 export function clearCache(): void {
-  cache = null;
+  twitterCache.clear();
 }
 
-function isCacheValid(): boolean {
-  if (!cache) return false;
-  
-  const now = Date.now();
-  const timeSinceCache = now - cache.timestamp;
-  
-  return timeSinceCache < CACHE_TTL;
-}
-
-// Parse raw Twitter API response to our TwitterPost format
-function parseTwitterApiResponse(apiResponse: TwitterApiResponse): TwitterPost[] {
-  const posts: TwitterPost[] = [];
-
-  if (apiResponse.data) {
-    for (const tweet of apiResponse.data) {
-      const author = apiResponse.includes?.users?.find(user => user.id === tweet.author_id);
-      
-      // Parse media attachments if present
-      let media: TwitterPost['media'] = undefined;
-      if (tweet.attachments?.media_keys && apiResponse.includes?.media) {
-        const mediaItems = tweet.attachments.media_keys
-          .map((mediaKey: string) => {
-            const mediaItem = apiResponse.includes?.media?.find(m => m.media_key === mediaKey);
-            if (mediaItem) {
-              return {
-                type: mediaItem.type,
-                url: mediaItem.url,
-                preview_image_url: mediaItem.preview_image_url,
-                alt_text: mediaItem.alt_text,
-                width: mediaItem.width,
-                height: mediaItem.height,
-              };
-            }
-            return null;
-          })
-          .filter(Boolean);
-        
-        // Only include media array if it has items
-        if (mediaItems.length > 0) {
-          media = mediaItems;
-        }
-      }
-      
-      posts.push({
-        id: tweet.id,
-        text: tweet.text,
-        created_at: tweet.created_at,
-        author_name: author?.name || 'Alessandro Romano',
-        author_username: author?.username || '_aleromano',
-        public_metrics: tweet.public_metrics,
-        url: `https://twitter.com/${author?.username || '_aleromano'}/status/${tweet.id}`,
-        type: tweet.text.startsWith('RT @') ? 'retweet' : 'tweet',
-        media,
-      });
-    }
-  }
-
-  // Sort by creation date (newest first) and take top 6
-  posts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-  return posts.slice(0, 6);
-}
-
-// Mock data from JSON file (raw API response format)
-function getMockTwitterPosts(): TwitterPost[] {
-  return parseTwitterApiResponse(mockTwitterApiResponse as TwitterApiResponse);
-}
-
-// Development-only function that returns mock data (for testing and development)
-export function getTwitterPostsMock(): TwitterResponse {
-  console.warn('Using mock Twitter data for development/testing');
-  const mockData = getMockTwitterPosts();
-  
-  return {
-    posts: mockData,
-    freshness: DataFreshness.MOCK
-  };
-}
-
-// Fetches raw data from Twitter API and parses it to TwitterPost[]
-// Throws error if API call fails - no fallback logic here
-async function fetchTwitterData(bearerToken?: string): Promise<TwitterPost[]> {
-  const token = bearerToken || import.meta.env.TWITTER_BEARER_TOKEN || process.env.TWITTER_BEARER_TOKEN;
-  
-  if (!token) {
-    throw new Error('Twitter Bearer Token not configured');
-  }
-
-  const headers = {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  };
-
-  // Use hardcoded user ID (saves one API call vs username lookup)
-  const userId = TWITTER_USER_ID;
-
-  // Fetch user's timeline (tweets and retweets)
-  const timelineUrl = `https://api.twitter.com/2/users/${userId}/tweets?` +
-    `tweet.fields=created_at,public_metrics,author_id,attachments&` +
-    `expansions=author_id,attachments.media_keys&` +
-    `user.fields=name,username&` +
-    `media.fields=type,url,preview_image_url,alt_text,width,height&` +
-    `max_results=10`;
-
-  const timelineResponse = await fetch(timelineUrl, { headers });
-
-  if (!timelineResponse.ok) {
-    const errorText = await timelineResponse.text();
-    throw new Error(`Twitter Timeline error: ${timelineResponse.status} - ${errorText}`);
-  }
-
-  const timelineData: TwitterApiResponse = await timelineResponse.json();
-  
-  return parseTwitterApiResponse(timelineData);
-}
-
-// Caching wrapper that fetches Twitter data with graceful fallback to stale cache
-export async function getTwitterPosts(bearerToken?: string): Promise<TwitterResponse> {
-  // on local-dev return mocked data
-  const nodeEnv = import.meta.env.NODE_ENV || process.env.NODE_ENV;
-  if (nodeEnv !== 'production') {
-    return getTwitterPostsMock();
-  }
-
-  // Return cached data if valid
-  if (isCacheValid() && cache) {
-    console.log('Using cached Twitter data');
-    return {
-      posts: cache.data,
-      freshness: DataFreshness.CACHE
-    };
-  }
-
-  try {
-    // Fetch fresh data from Twitter API
-    const posts = await fetchTwitterData(bearerToken);
-    
-    // Update cache with successful data
-    cache = {
-      data: posts,
-      timestamp: Date.now(),
-      freshness: DataFreshness.LIVE,
-    };
+/**
+ * Strategy for returning mock Twitter data (development/testing only)
+ */
+class MockTwitterStrategy implements TwitterDataStrategy {
+  async fetchPosts(): Promise<TwitterResponse> {
+    console.warn('Using mock Twitter data for development/testing');
+    const mockPosts = TwitterViewAdapter.parseApiResponse(mockTwitterApiResponse as TwitterApiResponse);
     
     return {
-      posts,
-      freshness: DataFreshness.LIVE
+      posts: mockPosts,
+      freshness: DataFreshness.MOCK
     };
-    
-  } catch (error) {
-    console.warn('Twitter API error:', error);
-    
-    // If we have cached data, return it as fallback
-    if (cache) {
-      console.warn('Using stale cached Twitter data due to API error');
+  }
+}
+
+/**
+ * Strategy for fetching live data from Twitter API with caching
+ */
+class LiveTwitterStrategy implements TwitterDataStrategy {
+  constructor(private bearerToken?: string) {}
+
+  async fetchPosts(): Promise<TwitterResponse> {
+    // Check cache first
+    const cachedPosts = twitterCache.get();
+    if (cachedPosts) {
+      console.log('Using cached Twitter data');
       return {
-        posts: cache.data,
+        posts: cachedPosts,
         freshness: DataFreshness.CACHE
       };
     }
-    
-    // No cache available, return mock data as final fallback
-    console.warn('No cache available, returning mock data');
-    return getTwitterPostsMock();
+
+    try {
+      // Fetch fresh data from API
+      const posts = await this.fetchFromApi();
+      
+      // Update cache with successful data
+      twitterCache.set(posts);
+      
+      return {
+        posts,
+        freshness: DataFreshness.LIVE
+      };
+      
+    } catch (error) {
+      throw new Error(`Failed to fetch Twitter data: ${error}`);
+    }
   }
+
+  private async fetchFromApi(): Promise<TwitterPost[]> {
+    const token = this.bearerToken || import.meta.env.TWITTER_BEARER_TOKEN || process.env.TWITTER_BEARER_TOKEN;
+    
+    if (!token) {
+      throw new Error('Twitter Bearer Token not configured');
+    }
+
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+
+    // Use hardcoded user ID (saves one API call vs username lookup)
+    const userId = TWITTER_USER_ID;
+
+    // Fetch user's timeline (tweets and retweets)
+    const timelineUrl = `https://api.twitter.com/2/users/${userId}/tweets?` +
+      `tweet.fields=created_at,public_metrics,author_id,attachments&` +
+      `expansions=author_id,attachments.media_keys&` +
+      `user.fields=name,username&` +
+      `media.fields=type,url,preview_image_url,alt_text,width,height&` +
+      `max_results=10`;
+
+    const timelineResponse = await fetch(timelineUrl, { headers });
+
+    if (!timelineResponse.ok) {
+      const errorText = await timelineResponse.text();
+      throw new Error(`Twitter Timeline error: ${timelineResponse.status} - ${errorText}`);
+    }
+
+    const timelineData: TwitterApiResponse = await timelineResponse.json();
+    
+    return TwitterViewAdapter.parseApiResponse(timelineData);
+  }
+}
+
+/**
+ * Production strategy that gracefully handles API failures with stale cache fallback
+ */
+class ProductionTwitterStrategy implements TwitterDataStrategy {
+  constructor(private bearerToken?: string) {}
+
+  async fetchPosts(): Promise<TwitterResponse> {
+    const liveStrategy = new LiveTwitterStrategy(this.bearerToken);
+
+    try {
+      return await liveStrategy.fetchPosts();
+    } catch (error) {
+      console.warn('Twitter API error:', error);
+      
+      // Try to use any cached data as fallback (even if stale)
+      const staleCachedPosts = twitterCache.getStale();
+      if (staleCachedPosts) {
+        console.warn('Using stale cached Twitter data due to API error');
+        return {
+          posts: staleCachedPosts,
+          freshness: DataFreshness.CACHE
+        };
+      }
+      
+      // In production, throw error instead of returning mock data
+      throw new Error('Twitter API unavailable and no cached data available');
+    }
+  }
+}
+
+/**
+ * Factory to create the appropriate Twitter data strategy based on environment
+ */
+class TwitterStrategyFactory {
+  static create(bearerToken?: string): TwitterDataStrategy {
+    const nodeEnv = import.meta.env.NODE_ENV || process.env.NODE_ENV;
+    
+    if (nodeEnv === 'production') {
+      return new ProductionTwitterStrategy(bearerToken);
+    } else {
+      return new MockTwitterStrategy();
+    }
+  }
+}
+
+/**
+ * Main function to get Twitter posts with appropriate strategy based on environment
+ * - Development/Test: Returns mock data
+ * - Production: Fetches from API with caching and graceful error handling
+ */
+export async function getTwitterPosts(bearerToken?: string): Promise<TwitterResponse> {
+  const strategy = TwitterStrategyFactory.create(bearerToken);
+  return await strategy.fetchPosts();
 }
