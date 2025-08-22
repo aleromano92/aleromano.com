@@ -29,7 +29,7 @@ const CONFIG = {
     },
 
     // Containers to monitor (leave empty to monitor all)
-    containers: [],
+    containers: ['app-app-1', 'app-nginx-1', 'app-smtp-relay-1'],
 
     // Telegram configuration
     telegram: {
