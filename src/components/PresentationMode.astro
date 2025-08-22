@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import type { SupportedLanguage } from '../types/i18n';
 
 import 'reveal.js/dist/reveal.css';
-import 'reveal.js/dist/theme/black.css';
+import 'reveal.js/dist/theme/night.css';
 
 declare global {
     interface Window {
@@ -51,6 +51,7 @@ const backText = language === 'it' ? 'Torna al post' : 'Back to post';
         <script>
             import Reveal from 'reveal.js';
             import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
+            import Notes from 'reveal.js/plugin/notes/notes.esm.js';
 
             document.addEventListener('DOMContentLoaded', function () {
                 try {
@@ -81,6 +82,7 @@ const backText = language === 'it' ? 'Torna al post' : 'Back to post';
                         const slideElement = document.createElement('section');
                         slideElement.setAttribute('data-markdown', '');
                         slideElement.setAttribute('data-separator', '^---$');
+                        slideElement.setAttribute('data-separator-notes', '^Note:');
 
                         // Create a script tag with the markdown content
                         const scriptElement = document.createElement('script');
@@ -92,13 +94,16 @@ const backText = language === 'it' ? 'Torna al post' : 'Back to post';
                     });
 
                     let deck = new Reveal({
-                        plugins: [Markdown],
+                        plugins: [Markdown, Notes],
                         hash: true,
                         transition: 'slide',
                         controls: true,
                         progress: true,
                         center: false,
                         touch: true,
+                        keyboard: true,
+                        overview: true,
+                        help: true,
                     });
                     deck.initialize();
 

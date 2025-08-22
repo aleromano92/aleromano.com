@@ -4,7 +4,8 @@
 
 This is a bilingual (English/Italian) personal blog built with **Astro 5** using:
 - **SSR mode** with Node.js adapter for Docker deployment
-- **Content Collections** for blog posts with strict TypeScript schemas
+- **Content Collections** for blog posts and presentations with strict TypeScript schemas
+- **Presentation Mode** with reveal.js integration and speaker notes support
 - **Custom i18n routing** with URL path prefixing (`/it/` for Italian, no prefix for English)
 - **Docker-based deployment** to a Hetzner VPS with nginx reverse proxy
 
@@ -12,6 +13,42 @@ This is a bilingual (English/Italian) personal blog built with **Astro 5** using
 - **English (default)**: `/blog`, `/posts/my-post`, `/about`
 - **Italian**: `/it/blog`, `/posts/it/my-post`, `/it/about`
 - **Blog posts** use different pattern: `/posts/{lang}/slug` vs `/posts/slug`
+
+### 🎤 Presentation Mode
+Blog posts can have associated presentations powered by reveal.js:
+- **Presentation URL**: `/posts/[slug]/present`
+- **Speaker Notes**: Press `S` key to open speaker notes window
+- **Full keyboard navigation**: Arrow keys, overview mode (`O`), help (`?`)
+- **Content**: Defined in `src/content/presentations/` with markdown
+- **Speaker Notes**: Add `Note:` sections for private presenter notes
+
+#### What are Speaker Notes?
+
+Speaker notes are private notes that only you (the presenter) can see. They appear in a separate browser window that shows:
+- Your current slide
+- Preview of the next slide  
+- Your private notes
+- Timer and clock
+- Slide navigation controls
+
+##### How to Add Speaker Notes
+
+In your presentation markdown file (in `src/content/presentations/`), add notes using the `Note:` delimiter:
+
+```markdown
+## Your Slide Title
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+Note:
+These are your private speaker notes. Only you will see this content in the speaker view. You can include:
+- Talking points and reminders
+- Statistics or data to mention
+- Transitions to the next slide
+- Personal anecdotes or examples
+```
 
 ## 🧞 Essential Commands
 
