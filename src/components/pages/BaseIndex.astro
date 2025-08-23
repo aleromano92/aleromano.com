@@ -93,7 +93,15 @@ const githubData = await getGitHubCommitsData(language);
             <a href={language === 'it' ? '/it/contact' : '/contact'}>{t.letsTalk}</a>
         </p>
     </div>
-    <Image src={profilePic} alt={t.profilePicAlt} width={300} densities={[1, 2]} quality="max" class="profile-pic" />
+    <Image
+        src={profilePic}
+        alt={t.profilePicAlt}
+        width={300}
+        priority
+        densities={[1, 2]}
+        quality="max"
+        class="profile-pic"
+    />
 </div>
 
 <GitHubCommits commits={githubData.commits} error={githubData.error} language={language} />
