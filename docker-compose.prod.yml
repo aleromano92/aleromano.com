@@ -38,8 +38,9 @@ services:
   smtp-relay:
     image: namshi/smtp:latest
     restart: unless-stopped
-    ports:
-      - "1025:25" # Exposes the relay on host port 1025, mapping to container port 25
+    # REMOVED: The 'ports' section below was exposing the SMTP relay to the public internet,
+    # which is a security risk and unnecessary for the app to function.
+    # The 'app' container connects to this service via Docker's internal network.
     environment:
       - GMAIL_USER=${GOOGLE_APP_USER} # Your Gmail address
       - GMAIL_PASSWORD=${GOOGLE_APP_PASSWORD} # Your Google App Password
