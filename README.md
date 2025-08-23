@@ -153,3 +153,40 @@ The project includes a monitoring solution for the VPS that hosts the website. T
 - Sends alerts via Telegram when issues are detected
 
 For detailed documentation, installation instructions, and configuration options, see the dedicated [Observability README](scripts/observability/README.md).
+
+## Troubleshooting
+
+### Checking Production Logs
+
+To check the logs for a specific container in the production environment, use the following commands from your server:
+
+```bash
+# Follow the live logs for a specific service (e.g., nginx)
+docker-compose -f docker-compose.prod.yml logs -f nginx
+
+# Show the last 100 lines of logs for the app container
+docker-compose -f docker-compose.prod.yml logs --tail=100 app
+
+# Show logs for all services
+docker-compose -f docker-compose.prod.yml logs
+```
+
+Replace `nginx` or `app` with the desired service name from your `docker-compose.prod.yml` file.
+
+### Checking Older Error Logs
+
+To search through all stored logs for specific errors, you can pipe the output to `grep`.
+
+```bash
+# Search all nginx logs for errors, warnings, or emergencies (case-insensitive)
+docker-compose -f docker-compose.prod.yml logs nginx | grep -i -E 'error|warn|emerg'
+
+# Search all app logs for the word "error"
+docker-compose -f docker-compose.prod.yml logs app | grep -i 'error'
+```
+
+For `nginx`, you can also view the raw log files directly on the host server, as they are mounted in a volume:
+```bash
+# View the full error log file on the host
+cat /var/docker/aleromano.com/nginx/logs/error.log
+```

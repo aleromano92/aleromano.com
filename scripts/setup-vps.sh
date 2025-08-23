@@ -217,16 +217,47 @@ fi
 systemctl enable fail2ban
 systemctl start fail2ban
 
-# Configure fail2ban for SSH protection
+# Configure fail2ban for comprehensive protection
 if [ ! -f /etc/fail2ban/jail.local ]; then
-    print_status "Creating fail2ban SSH jail configuration..."
+    print_status "Creating fail2ban comprehensive jail configuration..."
     cat <<EOF > /etc/fail2ban/jail.local
+# Default settings for all jails
+[DEFAULT]
+bantime = 1h
+findtime = 10m
+maxretry = 5
+
+# SSH brute-force protection
 [sshd]
 enabled = true
 mode = aggressive
+
+# Blocks scanners probing for non-existent scripts and vulnerabilities
+[nginx-noscript]
+enabled = true
+port = http,https
+logpath = /var/log/nginx/access.log
+maxretry = 6
+bantime = 1d
+
+# Blocks known malicious bots
+[nginx-badbots]
+enabled = true
+port = http,https
+logpath = /var/log/nginx/access.log
+maxretry = 2
+bantime = 2d
+
+# Blocks attempts to use the server as a proxy
+[nginx-noproxy]
+enabled = true
+port = http,https
+logpath = /var/log/nginx/access.log
+maxretry = 2
+bantime = 2d
 EOF
     systemctl restart fail2ban
-    print_status "fail2ban configured for SSH protection with aggressive mode."
+    print_status "fail2ban configured for comprehensive protection (SSH + common web attacks)."
 else
     print_status "fail2ban jail.local already exists, skipping configuration."
 fi
