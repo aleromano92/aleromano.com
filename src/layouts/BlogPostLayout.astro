@@ -90,7 +90,7 @@ const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
           <div class="presentation-actions">
             <a
               href={presentationInfo.url}
-              class="presentation-button"
+              class="button"
               title={currentLang === 'it' ? 'Visualizza come presentazione' : 'View as presentation'}
             >
               <svg
@@ -163,6 +163,8 @@ const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
 </script>
 
 <style>
+  @import '../styles/buttons.css';
+
   .back-link {
     display: inline-flex;
     align-items: center;
@@ -221,28 +223,13 @@ const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
     margin-top: var(--space-md);
   }
 
-  .presentation-button {
+  .presentation-actions .button {
     display: inline-flex;
     align-items: center;
     gap: var(--space-sm);
-    padding: var(--space-sm) var(--space-md);
-    background: var(--color-primary);
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: var(--font-weight-medium);
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-    border: 2px solid var(--color-primary);
   }
 
-  .presentation-button:hover {
-    background: transparent;
-    color: var(--color-primary);
-    transform: translateY(-1px);
-  }
-
-  .presentation-button svg {
+  .presentation-actions .button svg {
     width: 18px;
     height: 18px;
   }

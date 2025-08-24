@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import type { SupportedLanguage } from '../types/i18n';
-import { parseSlides, SLIDE_DELIMITER } from '../utils/presentations';
+import { parseSlides } from '../utils/presentations';
 
 import 'reveal.js/dist/reveal.css';
 import 'reveal.js/dist/theme/night.css';
@@ -42,46 +42,29 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
     </head>
     <body>
         <div class="reveal">
-            <div class="slides" id="slides-container">
-                <section>
-                    <h1>Loading presentation...</h1>
-                    <p>If this message persists, there might be an issue with the presentation content.</p>
-                </section>
+            <div class="slides">
+                {
+                    slides.map((slideContent) => (
+                        <section data-markdown data-separator-notes="^Note:">
+                            <script type="text/template" set:html={slideContent} />
+                        </section>
+                    ))
+                }
             </div>
         </div>
 
         <a href={backUrl} class="back-to-blog">{backText}</a>
         <a href={printUrl} class="print-pdf" target="_blank" rel="noopener">{printText}</a>
 
-        <!-- Pass pre-parsed slides to global scope for better performance -->
-        <script is:inline define:vars={{ presentationSlides: slides, slideDelimiter: SLIDE_DELIMITER }}>
-            window.presentationSlides = presentationSlides;
-            window.slideDelimiter = slideDelimiter;
-        </script>
-
         <script>
             import Reveal from 'reveal.js';
             import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
             import Notes from 'reveal.js/plugin/notes/notes.esm.js';
 
-            // Helper function to create slide elements
-            function createSlideElement(slideContent: string): HTMLElement {
-                const slideElement = document.createElement('section');
-                slideElement.setAttribute('data-markdown', '');
-                slideElement.setAttribute('data-separator', `^${window.slideDelimiter}$`);
-                slideElement.setAttribute('data-separator-notes', '^Note:');
+            // Initialize Reveal.js when DOM is ready
+            document.addEventListener('DOMContentLoaded', function () {
+                const isPrintMode = new URLSearchParams(window.location.search).has('print-pdf');
 
-                // Create a script tag with the markdown content
-                const scriptElement = document.createElement('script');
-                scriptElement.type = 'text/template';
-                scriptElement.textContent = slideContent;
-                slideElement.appendChild(scriptElement);
-
-                return slideElement;
-            }
-
-            // Helper function to initialize Reveal.js
-            function initializeReveal(): void {
                 const deck = new Reveal({
                     plugins: [Markdown, Notes],
                     hash: true,
@@ -96,13 +79,12 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
                     // PDF export configuration
                     pdfMaxPagesPerSlide: 1,
                     pdfSeparateFragments: false,
-                    showNotes: new URLSearchParams(window.location.search).has('print-pdf'),
+                    showNotes: isPrintMode,
                 });
-                deck.initialize();
-            }
 
-            // Helper function to handle keyboard shortcuts
-            function setupKeyboardHandlers(): void {
+                deck.initialize();
+
+                // Setup keyboard handlers
                 document.addEventListener('keydown', function (event) {
                     if (event.key === 'Escape') {
                         const backLink = document.querySelector('.back-to-blog') as HTMLAnchorElement;
@@ -111,55 +93,6 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
                         }
                     }
                 });
-            }
-
-            // Helper function to show error message
-            function showError(message: string): void {
-                const slidesContainer = document.getElementById('slides-container');
-                if (slidesContainer) {
-                    slidesContainer.innerHTML = `<section><h1>Error loading presentation</h1><p>${message}</p></section>`;
-                }
-            }
-
-            // Main initialization function
-            document.addEventListener('DOMContentLoaded', function () {
-                try {
-                    // Validate that we have presentation data
-                    if (
-                        !window.presentationSlides ||
-                        !Array.isArray(window.presentationSlides) ||
-                        window.presentationSlides.length === 0
-                    ) {
-                        console.error('No presentation slides found');
-                        showError('No presentation data found. Check the browser console for details.');
-                        return;
-                    }
-
-                    const slidesContainer = document.getElementById('slides-container');
-                    if (!slidesContainer) {
-                        console.error('Slides container not found');
-                        showError('Slides container not found.');
-                        return;
-                    }
-
-                    // Clear existing content (loading slide)
-                    slidesContainer.innerHTML = '';
-
-                    // Create slides using pre-parsed data
-                    window.presentationSlides.forEach((slideContent: string) => {
-                        const slideElement = createSlideElement(slideContent);
-                        slidesContainer.appendChild(slideElement);
-                    });
-
-                    // Initialize Reveal.js
-                    initializeReveal();
-
-                    // Setup keyboard handlers
-                    setupKeyboardHandlers();
-                } catch (error) {
-                    console.error('Error initializing presentation:', error);
-                    showError('Check the browser console for details.');
-                }
             });
         </script>
     </body>
