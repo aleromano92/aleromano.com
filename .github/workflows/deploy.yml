@@ -94,12 +94,56 @@ jobs:
             # Navigate to app directory
             cd ~/app
 
-            # Pull latest changes from git
+            # Handle git repository updates with proper error handling
             if [ -d .git ]; then
-              git pull
+              echo "📂 Git repository found, updating..."
+              
+              # Check for local modifications
+              if ! git diff --quiet || ! git diff --cached --quiet; then
+                echo "⚠️  Local modifications detected:"
+                git status --porcelain
+                echo "🔄 Resetting repository to clean state..."
+                git reset --hard HEAD
+                git clean -fd
+              fi
+              
+              # Check if we're on the right branch
+              current_branch=$(git rev-parse --abbrev-ref HEAD)
+              echo "📍 Current branch: $current_branch"
+              
+              # Fetch latest changes
+              echo "⬇️  Fetching latest changes..."
+              if ! git fetch origin; then
+                echo "❌ Failed to fetch from remote repository"
+                exit 1
+              fi
+              
+              # Pull/reset to latest main
+              echo "🔄 Updating to latest main..."
+              if ! git reset --hard origin/main; then
+                echo "❌ Failed to reset to origin/main"
+                exit 1
+              fi
+              
+              echo "✅ Repository updated successfully"
             else
-              git clone https://github.com/${{ github.repository }}.git .
+              echo "📥 No git repository found, cloning..."
+              if ! git clone https://github.com/${{ github.repository }}.git .; then
+                echo "❌ Failed to clone repository"
+                exit 1
+              fi
+              echo "✅ Repository cloned successfully"
             fi
+            
+            # Verify we have the expected files
+            if [ ! -f "docker-compose.yml" ] || [ ! -f "docker-compose.prod.yml" ]; then
+              echo "❌ Critical files missing after git update"
+              echo "📋 Current directory contents:"
+              ls -la
+              exit 1
+            fi
+            
+            echo "✅ Git repository is ready"
 
             # Create .env file for docker-compose
             echo "Creating .env file for Docker Compose on the server..."
@@ -112,18 +156,34 @@ jobs:
             echo "PERSONAL_GITHUB_TOKEN=${{ secrets.PERSONAL_GITHUB_TOKEN }}" >> .env
 
             # Login to GitHub Container Registry
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "🔑 Logging into GitHub Container Registry..."
+            if ! echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin; then
+              echo "❌ Failed to login to GitHub Container Registry"
+              exit 1
+            fi
 
             # Pull the latest image
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            echo "⬇️  Pulling latest Docker image..."
+            if ! docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest; then
+              echo "❌ Failed to pull Docker image"
+              exit 1
+            fi
 
             # Stop and remove existing containers
+            echo "🛑 Stopping existing containers..."
             docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
 
             # Start new containers with production configuration
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+            echo "🚀 Starting new containers..."
+            if ! docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d; then
+              echo "❌ Failed to start containers"
+              echo "📋 Docker compose logs:"
+              docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs
+              exit 1
+            fi
 
             # Clean up unused images
+            echo "🧹 Cleaning up unused Docker images..."
             docker image prune -f
 
             # Function to check container health
