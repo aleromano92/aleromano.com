@@ -4,5 +4,10 @@ services:
       - "80:80"
     volumes:
       - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
+      - nginx_cache_dev:/var/cache/nginx # Add Docker volume for cache
     environment:
       - ENVIRONMENT=dev
+
+volumes:
+  nginx_cache_dev:
+    driver: local
