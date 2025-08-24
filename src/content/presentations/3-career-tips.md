@@ -21,6 +21,8 @@ Welcome everyone! Today I want to share three essential career tips that I've le
 - 10+ years in software engineering
 - Led teams from startups to scale-ups
 - Passionate about career growth
+- Item 1 <!-- .element: class="fragment" data-fragment-index="2" -->
+- Item 2 <!-- .element: class="fragment" data-fragment-index="1" -->
 
 Note:
 Let me briefly introduce myself. I'm currently an Engineering Manager at Mollie, a fintech company in Amsterdam. I've been in tech for over 10 years, working across different company sizes from startups to scale-ups. I'm passionate about helping engineers grow their careers because I wish someone had shared these insights with me earlier in my journey.

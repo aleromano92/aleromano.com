@@ -53,20 +53,19 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
             </div>
         </div>
 
-        <a href={backUrl} class="back-to-blog">{backText}</a>
-        <a href={printUrl} class="print-pdf" target="_blank" rel="noopener">{printText}</a>
+        <a href={backUrl} class="back-to-blog-button">{backText}</a>
+        <a href={printUrl} class="print-pdf-button" target="_blank" rel="noopener">{printText}</a>
 
         <script>
             import Reveal from 'reveal.js';
             import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
             import Notes from 'reveal.js/plugin/notes/notes.esm.js';
+            import Zoom from 'reveal.js/plugin/zoom/zoom.esm.js';
 
             // Initialize Reveal.js when DOM is ready
             document.addEventListener('DOMContentLoaded', function () {
-                const isPrintMode = new URLSearchParams(window.location.search).has('print-pdf');
-
                 const deck = new Reveal({
-                    plugins: [Markdown, Notes],
+                    plugins: [Markdown, Notes, Zoom],
                     hash: true,
                     transition: 'slide',
                     controls: true,
@@ -79,7 +78,6 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
                     // PDF export configuration
                     pdfMaxPagesPerSlide: 1,
                     pdfSeparateFragments: false,
-                    showNotes: isPrintMode,
                 });
 
                 deck.initialize();
@@ -122,7 +120,7 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
         margin-bottom: 2rem;
     }
 
-    .back-to-blog {
+    .back-to-blog-button {
         position: fixed;
         top: 1rem;
         left: 1rem;
@@ -136,12 +134,12 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
         transition: background 0.2s ease;
     }
 
-    .back-to-blog:hover {
+    .back-to-blog-button:hover {
         background: rgba(0, 0, 0, 0.9);
         color: white;
     }
 
-    .print-pdf {
+    .print-pdf-button {
         position: fixed;
         top: 1rem;
         right: 1rem;
@@ -155,23 +153,23 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
         transition: background 0.2s ease;
     }
 
-    .print-pdf:hover {
+    .print-pdf-button:hover {
         background: rgba(0, 0, 0, 0.9);
         color: white;
     }
 
     /* Print mode optimizations */
     @media print {
-        .back-to-blog,
-        .print-pdf {
+        .back-to-blog-button,
+        .print-pdf-button {
             display: none !important;
         }
     }
 
     /* Mobile responsive adjustments */
     @media (max-width: 768px) {
-        .back-to-blog,
-        .print-pdf {
+        .back-to-blog-button,
+        .print-pdf-button {
             font-size: 0.8rem;
             padding: 0.4rem 0.8rem;
         }
