@@ -8,7 +8,7 @@ describe('TwitterViewAdapter', () => {
       const posts = TwitterViewAdapter.parseApiResponse(mockTwitterApiResponse as TwitterApiResponse);
       const retweet = posts.find((p: any) => p.text.startsWith('RT @'));
       
-      expect(retweet?.type).toBe('retweet');
+      expect(retweet?.text).toMatch(/^RT @/);
       expect(retweet?.author_name).toBe('Engineering Lead');
       expect(retweet?.author_username).toBe('engineering_lead');
     });
@@ -175,11 +175,11 @@ describe('TwitterViewAdapter', () => {
       expect(post).toHaveProperty('text');
       expect(post).toHaveProperty('created_at');
       expect(post).toHaveProperty('formattedDate');
+      expect(post).toHaveProperty('relativeTime');
       expect(post).toHaveProperty('author_name');
       expect(post).toHaveProperty('author_username');
       expect(post).toHaveProperty('public_metrics');
       expect(post).toHaveProperty('url');
-      expect(post).toHaveProperty('type');
       expect(post.public_metrics).toHaveProperty('retweet_count');
       expect(post.public_metrics).toHaveProperty('like_count');
       expect(post.public_metrics).toHaveProperty('reply_count');

@@ -33,11 +33,59 @@ function formatDate(dateString: string, lang: string = 'en'): string {
   return date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', options);
 }
 
+/**
+ * Calculate relative time like X/Twitter with proper date formatting
+ * - Less than 1 minute: "Xs"
+ * - Less than 1 hour: "Xm" 
+ * - Less than 24 hours: "Xh"
+ * - Less than 7 days: "Xd"
+ * - Same year but 7+ days ago: "Jan 15" (month + day)
+ * - Different year: "Jan 15, 2023" (month + day + year)
+ */
+function getRelativeTime(dateString: string, lang: string = 'en'): string {
+  const now = new Date();
+  const tweetDate = new Date(dateString);
+  const diffMs = now.getTime() - tweetDate.getTime();
+  
+  const seconds = Math.floor(diffMs / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  
+  const currentYear = now.getFullYear();
+  const tweetYear = tweetDate.getFullYear();
+  
+  switch (true) {
+    case seconds < 60:
+      return `${seconds}s`;
+    case minutes < 60:
+      return `${minutes}m`;
+    case hours < 24:
+      return `${hours}h`;
+    case days < 7:
+      return `${days}d`;
+    case currentYear === tweetYear:
+      // Same year: show "Jan 15" format
+      return tweetDate.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    default:
+      // Different year: show "Jan 15, 2023" format
+      return tweetDate.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        year: 'numeric'
+      });
+  }
+}
+
 export interface TwitterPost {
   id: string;
   text: string;
   created_at: string;
   formattedDate: string;
+  relativeTime: string;
   author_name: string;
   author_username: string;
   public_metrics: {
@@ -46,7 +94,6 @@ export interface TwitterPost {
     reply_count: number;
   };
   url: string;
-  type: 'tweet' | 'retweet' | 'like';
   media?: {
     type: 'photo' | 'video' | 'animated_gif';
     url?: string;
@@ -118,11 +165,11 @@ export class TwitterViewAdapter {
           text: cleanText,
           created_at: tweet.created_at,
           formattedDate: formatDate(tweet.created_at, currentLanguage),
+          relativeTime: getRelativeTime(tweet.created_at, currentLanguage),
           author_name: author?.name || 'Alessandro Romano',
           author_username: author?.username || '_aleromano',
           public_metrics: tweet.public_metrics,
           url: `https://twitter.com/${author?.username || '_aleromano'}/status/${tweet.id}`,
-          type: tweet.text.startsWith('RT @') ? 'retweet' : 'tweet',
           media,
         });
       }

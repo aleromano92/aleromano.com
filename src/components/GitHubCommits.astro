@@ -1,5 +1,6 @@
 ---
 import type { GitHubCommit } from '../utils/github';
+import { ICONS } from './SocialLink.astro';
 
 interface Props {
     commits: GitHubCommit[];
@@ -9,12 +10,18 @@ interface Props {
 
 const { commits, error, language } = Astro.props;
 
-const title = language === 'it' ? 'Ultimi Commit GitHub su 𖦥main' : 'Latest GitHub Commits on 𖦥main';
+const title = language === 'it' ? 'Ultimi Commit' : 'Latest Commits';
+const committed = language === 'it' ? 'committato' : 'committed';
+const seeMoreText = language === 'it' ? 'Vedi altri Commit' : 'See More Commits';
 const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit' : 'Unable to load latest commits';
 ---
 
 <section class="github-commits">
-    <h3>{title}</h3>
+    <h3>
+        <span class="github-icon" set:html={ICONS.github} />
+        {title}
+        <span class="branch-name">𖦥main</span>
+    </h3>
 
     {
         error ? (
@@ -22,22 +29,31 @@ const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit
                 <p>{errorMessage}</p>
             </div>
         ) : commits.length > 0 ? (
-            <div class="commits-list">
-                {commits.map((commit) => (
-                    <article class="commit-item">
-                        <div class="commit-header">
-                            <a href={commit.url} target="_blank" rel="noopener noreferrer" class="commit-link">
+            <>
+                <div class="commits-list">
+                    {commits.map((commit) => (
+                        <a href={commit.url} target="_blank" rel="noopener noreferrer" class="commit-item">
+                            <div class="commit-header">
                                 <code class="commit-sha">{commit.sha}</code>
-                            </a>
-                            <span class="commit-repo">{commit.repo}</span>
-                        </div>
-                        <p class="commit-message">{commit.truncatedMessage}</p>
-                        <time class="commit-date" datetime={commit.date} title={commit.formattedDate}>
-                            {commit.relativeTime}
-                        </time>
-                    </article>
-                ))}
-            </div>
+                                <time class="commit-date" datetime={commit.date} title={commit.formattedDate}>
+                                    {committed} {commit.relativeTime}
+                                </time>
+                            </div>
+                            <p class="commit-message">{commit.truncatedMessage}</p>
+                        </a>
+                    ))}
+                </div>
+                <div class="see-more-container">
+                    <a
+                        href="https://github.com/aleromano92/aleromano.com/commits/main/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="button"
+                    >
+                        {seeMoreText}
+                    </a>
+                </div>
+            </>
         ) : (
             <p class="no-commits">{language === 'it' ? 'Nessun commit recente trovato' : 'No recent commits found'}</p>
         )
@@ -45,13 +61,32 @@ const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit
 </section>
 
 <style>
+    @import '../styles/buttons.css';
+
     .github-commits {
         margin: var(--space-xl) 0;
     }
 
     .github-commits h3 {
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
         margin-bottom: var(--space-md);
         color: var(--color-text-primary);
+        font-size: 1.5rem;
+    }
+
+    .github-icon {
+        display: inline-flex;
+        width: 24px;
+        height: 24px;
+    }
+
+    .branch-name {
+        font-family: var(--font-mono, 'Monaco', 'Menlo', monospace);
+        font-size: 1rem;
+        color: var(--color-text-secondary);
+        font-weight: normal;
     }
 
     .commits-list {
@@ -62,43 +97,45 @@ const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit
     }
 
     .commit-item {
-        padding: var(--space-sm);
+        display: block;
+        padding: var(--space-md);
         border: 1px solid var(--color-border);
-        border-radius: var(--border-radius);
+        border-radius: 8px;
         background: white;
-        transition: border-color 0.2s ease;
+        text-decoration: none;
+        color: inherit;
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.2s ease;
     }
+
     :global([data-theme='dark']) .commit-item {
         background: #010409;
     }
 
     .commit-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         border-color: var(--color-accent);
+        text-decoration: none;
     }
 
     .commit-header {
         display: flex;
         align-items: center;
         gap: var(--space-sm);
-        margin-bottom: var(--space-xs);
-    }
-
-    .commit-link {
-        text-decoration: none;
-        color: var(--color-accent);
-        font-weight: 500;
-    }
-
-    .commit-link:hover {
-        text-decoration: underline;
+        margin-bottom: var(--space-sm);
     }
 
     .commit-sha {
         font-family: var(--font-mono, 'Monaco', 'Menlo', monospace);
         font-size: 0.875rem;
-        background: var(--color-code-bg);
+        background: var(--color-secondary);
+        color: var(--color-text);
         padding: 0.125rem 0.25rem;
         border-radius: 0.25rem;
+        font-weight: 500;
     }
 
     .commit-repo {
@@ -109,7 +146,7 @@ const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit
 
     .commit-message {
         margin: var(--space-xs) 0;
-        color: var(--color-text-primary);
+        color: var(--color-text);
         line-height: 1.4;
         font-size: 0.9rem;
     }
@@ -119,12 +156,18 @@ const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit
         color: var(--color-text-secondary);
     }
 
+    .see-more-container {
+        display: flex;
+        justify-content: center;
+        margin-top: var(--space-lg);
+    }
+
     .error-message,
     .no-commits {
         padding: var(--space-md);
         border: 1px solid var(--color-border);
-        border-radius: var(--border-radius);
-        background: var(--color-surface);
+        border-radius: 8px;
+        background: var(--color-bg);
         color: var(--color-text-secondary);
         text-align: center;
     }
@@ -149,6 +192,14 @@ const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit
 
         .commit-message {
             font-size: 0.85rem;
+        }
+
+        .github-commits h3 {
+            font-size: 1.25rem;
+        }
+
+        .branch-name {
+            font-size: 0.9rem;
         }
     }
 </style>

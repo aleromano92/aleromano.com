@@ -60,11 +60,12 @@ describe('twitter.ts', () => {
       expect(response.posts![0]).toHaveProperty('id');
       expect(response.posts![0]).toHaveProperty('text');
       expect(response.posts![0]).toHaveProperty('created_at');
+      expect(response.posts![0]).toHaveProperty('formattedDate');
+      expect(response.posts![0]).toHaveProperty('relativeTime');
       expect(response.posts![0]).toHaveProperty('author_name');
       expect(response.posts![0]).toHaveProperty('author_username');
       expect(response.posts![0]).toHaveProperty('public_metrics');
       expect(response.posts![0]).toHaveProperty('url');
-      expect(response.posts![0]).toHaveProperty('type');
 
       const response2 = await getTwitterPosts(CURRENT_LANGUAGE);
       
@@ -97,7 +98,7 @@ describe('twitter.ts', () => {
       expect(response.posts).not.toBeNull();
       const retweet = response.posts!.find((p: any) => p.text.startsWith('RT @'));
       
-      expect(retweet?.type).toBe('retweet');
+      expect(retweet?.text).toMatch(/^RT @/);
       expect(retweet?.author_name).toBe('Engineering Lead');
       expect(retweet?.author_username).toBe('engineering_lead');
     });

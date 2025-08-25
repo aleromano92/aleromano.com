@@ -9,92 +9,96 @@ const { post } = Astro.props;
 ---
 
 <article class="tweet-card">
-    <div class="tweet-header">
-        <div class="tweet-author">
-            <span class="username">@{post.author_username}</span>
+    <a href={post.url} target="_blank" rel="noopener noreferrer" class="tweet-link">
+        <div class="tweet-header">
+            <div class="tweet-author">
+                <span class="username">@{post.author_username} · </span>
+                <time datetime={post.created_at} title={post.formattedDate}>
+                    {post.relativeTime}
+                </time>
+            </div>
         </div>
-        <div class="tweet-meta">
-            <span class="tweet-type">{post.type}</span>
-            <time datetime={post.created_at}>
-                {post.formattedDate}
-            </time>
+
+        <div class="tweet-content">
+            <p class="tweet-text">{post.text}</p>
+
+            {
+                post.media && post.media.length > 0 && (
+                    <div class="tweet-media">
+                        {post.media.map((mediaItem) => (
+                            <div class="media-item">
+                                {mediaItem.type === 'photo' && (
+                                    <img
+                                        src={mediaItem.url || mediaItem.preview_image_url}
+                                        alt={mediaItem.alt_text || 'Image from tweet'}
+                                        width={mediaItem.width}
+                                        height={mediaItem.height}
+                                        loading="lazy"
+                                        class="tweet-image"
+                                    />
+                                )}
+                                {mediaItem.type === 'video' && (
+                                    <div class="video-placeholder">
+                                        <p>🎥 Video content</p>
+                                    </div>
+                                )}
+                                {mediaItem.type === 'animated_gif' && (
+                                    <div class="gif-placeholder">
+                                        <p>🎬 GIF content</p>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )
+            }
         </div>
-    </div>
 
-    <div class="tweet-content">
-        <p class="tweet-text">{post.text}</p>
-
-        {
-            post.media && post.media.length > 0 && (
-                <div class="tweet-media">
-                    {post.media.map((mediaItem) => (
-                        <div class="media-item">
-                            {mediaItem.type === 'photo' && (
-                                <img
-                                    src={mediaItem.url || mediaItem.preview_image_url}
-                                    alt={mediaItem.alt_text || 'Image from tweet'}
-                                    width={mediaItem.width}
-                                    height={mediaItem.height}
-                                    loading="lazy"
-                                    class="tweet-image"
-                                />
-                            )}
-                            {mediaItem.type === 'video' && (
-                                <div class="video-placeholder">
-                                    <p>🎥 Video content</p>
-                                    <a href={post.url} target="_blank" rel="noopener noreferrer">
-                                        View on X/Twitter
-                                    </a>
-                                </div>
-                            )}
-                            {mediaItem.type === 'animated_gif' && (
-                                <div class="gif-placeholder">
-                                    <p>🎬 GIF content</p>
-                                    <a href={post.url} target="_blank" rel="noopener noreferrer">
-                                        View on X/Twitter
-                                    </a>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            )
-        }
-    </div>
-
-    <div class="tweet-metrics">
-        <span class="metric">
-            💬 {post.public_metrics.reply_count}
-        </span>
-        <span class="metric">
-            🔄 {post.public_metrics.retweet_count}
-        </span>
-        <span class="metric">
-            ❤️ {post.public_metrics.like_count}
-        </span>
-    </div>
-
-    <div class="tweet-actions">
-        <a href={post.url} target="_blank" rel="noopener noreferrer" class="view-tweet-link"> View on X/Twitter → </a>
-    </div>
+        <div class="tweet-metrics">
+            <span class="metric">
+                💬 {post.public_metrics.reply_count}
+            </span>
+            <span class="metric">
+                🔄 {post.public_metrics.retweet_count}
+            </span>
+            <span class="metric">
+                ❤️ {post.public_metrics.like_count}
+            </span>
+        </div>
+    </a>
 </article>
 
 <style>
     .tweet-card {
         border: 1px solid var(--color-border);
-        border-radius: 0.75rem;
-        padding: 1rem;
-        margin-bottom: 1rem;
+        border-radius: 8px;
         background: white;
-        transition: border-color 0.2s ease;
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.2s ease;
+        overflow: hidden;
     }
 
     :global([data-theme='dark']) .tweet-card {
         background: black;
     }
 
+    .tweet-link {
+        display: block;
+        padding: var(--space-md);
+        text-decoration: none;
+        color: inherit;
+    }
+
     .tweet-card:hover {
-        border-color: var(--color-primary);
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: var(--color-accent);
+    }
+
+    .tweet-card:hover .tweet-link {
+        text-decoration: none;
     }
 
     .tweet-header {
@@ -110,19 +114,8 @@ const { post } = Astro.props;
     }
 
     .username {
-        color: var(--color-text-muted);
+        color: var(--color-text);
         font-size: 0.9rem;
-    }
-
-    .tweet-meta {
-        display: flex;
-        gap: 0.5rem;
-        font-size: 0.8rem;
-        color: var(--color-text-muted);
-    }
-
-    .tweet-type {
-        text-transform: uppercase;
         font-weight: 500;
     }
 
@@ -156,50 +149,21 @@ const { post } = Astro.props;
 
     .video-placeholder,
     .gif-placeholder {
-        background: var(--color-surface-variant);
+        background: var(--color-secondary);
         border: 2px dashed var(--color-border);
         border-radius: 0.5rem;
         padding: 2rem;
         text-align: center;
-        color: var(--color-text-muted);
-    }
-
-    .video-placeholder a,
-    .gif-placeholder a {
-        color: var(--color-primary);
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .video-placeholder a:hover,
-    .gif-placeholder a:hover {
-        text-decoration: underline;
+        color: var(--color-text-secondary);
     }
 
     .tweet-metrics {
         display: flex;
         gap: 1rem;
-        margin-bottom: 0.75rem;
         font-size: 0.9rem;
     }
 
     .metric {
-        color: var(--color-text-muted);
-    }
-
-    .tweet-actions {
-        border-top: 1px solid var(--color-border);
-        padding-top: 0.75rem;
-    }
-
-    .view-tweet-link {
-        color: var(--color-primary);
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 0.9rem;
-    }
-
-    .view-tweet-link:hover {
-        text-decoration: underline;
+        color: var(--color-text-secondary);
     }
 </style>

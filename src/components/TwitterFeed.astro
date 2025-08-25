@@ -1,6 +1,7 @@
 ---
 import type { TwitterPost } from '../utils/twitter/twitter';
 import { DataFreshness } from '../utils/twitter/twitter';
+import { ICONS } from './SocialLink.astro';
 import TwitterPostCard from './TwitterPostCard.astro';
 
 interface Props {
@@ -14,7 +15,7 @@ const { posts, error, language, freshness = DataFreshness.MOCK } = Astro.props;
 
 const disclaimerText = {
     en: {
-        title: 'Latest from Twitter',
+        title: 'Latest from',
         disclaimer:
             "I use Twitter for my random thoughts, from videogames, tennis and football to political satire. I don't take myself too seriously, especially on Twitter. I try to include users with opposite worldviews in my bubble and sometimes end up liking their posts too.",
         errorMessage: 'Unable to load tweets at the moment. Please try again later.',
@@ -26,7 +27,7 @@ const disclaimerText = {
         mockDisclaimer: "You shouldn't be able to see this in production 😕",
     },
     it: {
-        title: 'Ultimi Tweets',
+        title: 'Ultimi post da',
         disclaimer:
             'Uso Twitter per i miei random thoughts, dai videogiochi, tennis e calcio alla satira politica. Non mi prendo troppo sul serio, specialmente su Twitter. Cerco di includere nella mia bolla utenti con visioni del mondo opposte e a volte finisco per mettere like anche ai loro post.',
         errorMessage: 'Impossibile caricare i tweet al momento. Riprova più tardi.',
@@ -84,7 +85,8 @@ function getFreshnessDisclaimer(freshness: DataFreshness, localizedText: typeof 
 
 <section class="twitter-feed">
     <div class="twitter-header">
-        <h2>{localizedDisclaimerText.title}</h2>
+        <h2>{localizedDisclaimerText.title} <span class="x-icon" set:html={ICONS.x} /></h2>
+
         <div class="freshness-container">
             <span class={`live-indicator ${error ? 'live-indicator--error' : getFreshnessClass(freshness)}`}>
                 {error ? localizedDisclaimerText.liveLabel : getFreshnessLabel(freshness, localizedDisclaimerText)}
@@ -125,9 +127,14 @@ function getFreshnessDisclaimer(freshness: DataFreshness, localizedText: typeof 
     }
 
     .twitter-header h2 {
+        display: flex;
         margin: 0;
         font-size: 1.25rem;
         color: var(--color-text-primary);
+    }
+
+    .twitter-header .x-icon {
+        margin-left: var(--space-xs);
     }
 
     .live-indicator {
