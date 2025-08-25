@@ -47,8 +47,6 @@ const i18nData = {
 const homepageUrl = currentLang === 'it' ? '/it/' : '/';
 
 Astro.response.status = 404;
-
-export const prerender = true;
 ---
 
 <BaseLayout pageTitle={t.pageTitle} description={t.pageDescription} i18nData={i18nData}>
