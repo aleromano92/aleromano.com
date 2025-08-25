@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getTwitterPosts, clearCache, DataFreshness } from './twitter';
 import mockTwitterApiResponse from './mock-twitter-api-response-with-media.json';
 
+const CURRENT_LANGUAGE = 'en';
+
 // Mock fetch globally
 const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);
@@ -9,7 +11,7 @@ vi.stubGlobal('fetch', mockFetch);
 // Mock process.env
 const mockEnv = vi.hoisted(() => ({
   NODE_ENV: 'test',
-  TWITTER_BEARER_TOKEN: undefined
+  TWITTER_BEARER_TOKEN: 'a-token'
 }));
 
 vi.stubGlobal('process', {
@@ -20,7 +22,7 @@ vi.stubGlobal('process', {
 vi.stubGlobal('import', {
   meta: {
     env: {
-      TWITTER_BEARER_TOKEN: undefined
+      TWITTER_BEARER_TOKEN: 'a-token'
     }
   }
 });
@@ -32,7 +34,7 @@ describe('twitter.ts', () => {
     clearCache();
     // Reset environment to test mode
     mockEnv.NODE_ENV = 'test';
-    mockEnv.TWITTER_BEARER_TOKEN = undefined;
+    mockEnv.TWITTER_BEARER_TOKEN = 'a-token';
   });
 
   afterEach(() => {
@@ -49,7 +51,7 @@ describe('twitter.ts', () => {
         json: () => Promise.resolve(mockTwitterApiResponse)
       });
 
-      const response = await getTwitterPosts('mock-bearer-token');
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
       
       expect(response.posts).toBeDefined();
       expect(response.posts.length).toBeGreaterThan(0);
@@ -63,22 +65,30 @@ describe('twitter.ts', () => {
       expect(response.posts[0]).toHaveProperty('url');
       expect(response.posts[0]).toHaveProperty('type');
 
-      const response2 = await getTwitterPosts('mock-bearer-token');
+      const response2 = await getTwitterPosts(CURRENT_LANGUAGE);
       
       expect(response2.posts[0].author_name).toBe('Alessandro Romano');
       expect(response2.posts[0].author_username).toBe('_aleromano');
     });
 
     it('should throw error when Bearer token is missing in production', async () => {
-    });    it('should correctly identify retweets from raw API response', async () => {
       mockEnv.NODE_ENV = 'production';
+      mockEnv.TWITTER_BEARER_TOKEN = undefined as any;
+      
+      await expect(getTwitterPosts(CURRENT_LANGUAGE)).rejects.toThrow('Twitter API unavailable and no cached data available');
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+
+    it('should correctly identify retweets from raw API response', async () => {
+      mockEnv.NODE_ENV = 'production';
+      mockEnv.TWITTER_BEARER_TOKEN = 'mock-bearer-token';
       
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
       });
 
-      const response = await getTwitterPosts('mock-bearer-token');
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
       const retweet = response.posts.find((p: any) => p.text.startsWith('RT @'));
       
       expect(retweet?.type).toBe('retweet');
@@ -88,13 +98,14 @@ describe('twitter.ts', () => {
 
     it('should sort posts by creation date (newest first)', async () => {
       mockEnv.NODE_ENV = 'production';
+      mockEnv.TWITTER_BEARER_TOKEN = 'mock-bearer-token';
       
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockTwitterApiResponse)
       });
 
-      const response = await getTwitterPosts('mock-bearer-token');
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
       
       expect(new Date(response.posts[0].created_at).getTime()).toBeGreaterThan(
         new Date(response.posts[1].created_at).getTime()
@@ -103,6 +114,7 @@ describe('twitter.ts', () => {
 
     it('should limit results to 6 posts', async () => {
       mockEnv.NODE_ENV = 'production';
+      mockEnv.TWITTER_BEARER_TOKEN = 'mock-bearer-token';
       
       const manyPosts = {
         data: Array.from({ length: 10 }, (_, i) => ({
@@ -121,13 +133,14 @@ describe('twitter.ts', () => {
         json: () => Promise.resolve(manyPosts)
       });
 
-      const response = await getTwitterPosts('mock-bearer-token');
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
 
       expect(response.posts).toHaveLength(6);
     });
 
     it('should handle missing author information gracefully', async () => {
       mockEnv.NODE_ENV = 'production';
+      mockEnv.TWITTER_BEARER_TOKEN = 'mock-bearer-token';
       
       const responseWithMissingAuthor = {
         data: [{
@@ -146,7 +159,7 @@ describe('twitter.ts', () => {
         json: () => Promise.resolve(responseWithMissingAuthor)
       });
 
-      const response = await getTwitterPosts('mock-bearer-token');
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
       
       expect(response.posts[0].author_name).toBe('Alessandro Romano');
       expect(response.posts[0].author_username).toBe('_aleromano');
@@ -154,9 +167,9 @@ describe('twitter.ts', () => {
 
     it('should throw error when Bearer token is missing in production', async () => {
       mockEnv.NODE_ENV = 'production';
-      // Don't set any bearer token
+      mockEnv.TWITTER_BEARER_TOKEN = undefined as any;
       
-      await expect(getTwitterPosts()).rejects.toThrow('Twitter API unavailable and no cached data available');
+      await expect(getTwitterPosts(CURRENT_LANGUAGE)).rejects.toThrow('Twitter API unavailable and no cached data available');
       expect(mockFetch).not.toHaveBeenCalled();
     });
 
@@ -169,25 +182,28 @@ describe('twitter.ts', () => {
         text: () => Promise.resolve('Unauthorized')
       });
 
-      await expect(getTwitterPosts('mock-bearer-token')).rejects.toThrow('Twitter API unavailable and no cached data available');
+      await expect(getTwitterPosts(CURRENT_LANGUAGE)).rejects.toThrow('Twitter API unavailable and no cached data available');
     });
 
     it('should handle empty response data', async () => {
       mockEnv.NODE_ENV = 'production';
+      mockEnv.TWITTER_BEARER_TOKEN = 'mock-bearer-token';
       
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ data: null })
+        json: () => Promise.resolve({ data: [] })
       });
 
-      const response = await getTwitterPosts('mock-bearer-token');
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
       
       expect(response.posts).toEqual([]);
       expect(response.freshness).toBe(DataFreshness.LIVE);
-    });    it('should use mock data in non-production environment', async () => {
+    });    
+    
+    it('should use mock data in non-production environment', async () => {
       // NODE_ENV is already 'test' from beforeEach
       
-      const response = await getTwitterPosts('mock-bearer-token');
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
       
       expect(response.freshness).toBe(DataFreshness.MOCK);
       expect(response.posts).toHaveLength(6);
@@ -200,6 +216,7 @@ describe('twitter.ts', () => {
   describe('caching behavior', () => {
     it('should cache results and return cached data on subsequent calls', async () => {
       mockEnv.NODE_ENV = 'production';
+      mockEnv.TWITTER_BEARER_TOKEN = 'mock-bearer-token';
       
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -207,10 +224,10 @@ describe('twitter.ts', () => {
       });
 
       // First call
-      const response1 = await getTwitterPosts('mock-bearer-token');
+      const response1 = await getTwitterPosts(CURRENT_LANGUAGE);
       
       // Second call should use cache (no additional fetch)
-      const response2 = await getTwitterPosts('mock-bearer-token');
+      const response2 = await getTwitterPosts(CURRENT_LANGUAGE);
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
       expect(response1.posts).toEqual(response2.posts);
@@ -219,9 +236,23 @@ describe('twitter.ts', () => {
 
     it('should refresh cache after TTL expires', async () => {
       mockEnv.NODE_ENV = 'production';
+      mockEnv.TWITTER_BEARER_TOKEN = 'mock-bearer-token';
       
       // Mock timers to control cache expiration
       vi.useFakeTimers();
+      
+      const updatedResponse = {
+        data: [{
+          id: 'updated123',
+          text: 'Updated tweet',
+          created_at: '2024-01-15T14:30:00.000Z',
+          author_id: '4266046641',
+          public_metrics: { retweet_count: 0, like_count: 0, reply_count: 0, quote_count: 0 }
+        }],
+        includes: {
+          users: [{ id: '4266046641', name: 'Alessandro Romano', username: '_aleromano' }]
+        }
+      };
       
       mockFetch
         .mockResolvedValueOnce({
@@ -230,33 +261,29 @@ describe('twitter.ts', () => {
         })
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            ...mockTwitterApiResponse,
-            data: [{
-              ...mockTwitterApiResponse.data[0],
-              text: 'Updated tweet',
-              id: 'updated123'
-            }]
-          })
+          json: () => Promise.resolve(updatedResponse)
         });
 
-      // First call
-      await getTwitterPosts('mock-bearer-token');
+      // First call - should fetch fresh data and cache it
+      const response1 = await getTwitterPosts(CURRENT_LANGUAGE);
+      expect(response1.freshness).toBe(DataFreshness.LIVE);
       
       // Fast forward past cache TTL (30 minutes + 1 minute)
       vi.advanceTimersByTime(31 * 60 * 1000);
       
-      // Second call should fetch fresh data
-      const response = await getTwitterPosts('mock-bearer-token');
+      // Second call should fetch fresh data since cache expired
+      const response2 = await getTwitterPosts(CURRENT_LANGUAGE);
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
-      expect(response.posts[0].text).toBe('Updated tweet');
+      expect(response2.posts[0].text).toBe('Updated tweet');
+      expect(response2.freshness).toBe(DataFreshness.LIVE);
       
       vi.useRealTimers();
     });
 
     it('should return cached data when new fetch fails', async () => {
       mockEnv.NODE_ENV = 'production';
+      mockEnv.TWITTER_BEARER_TOKEN = 'mock-bearer-token';
       
       vi.useFakeTimers();
       
@@ -266,7 +293,8 @@ describe('twitter.ts', () => {
         json: () => Promise.resolve(mockTwitterApiResponse)
       });
 
-      const initialResponse = await getTwitterPosts('mock-bearer-token');
+      const initialResponse = await getTwitterPosts(CURRENT_LANGUAGE);
+      expect(initialResponse.freshness).toBe(DataFreshness.LIVE);
       
       // Fast forward past cache TTL (30 minutes + 1 minute)
       vi.advanceTimersByTime(31 * 60 * 1000);
@@ -274,7 +302,7 @@ describe('twitter.ts', () => {
       // Second call fails, but should return cached data
       mockFetch.mockRejectedValueOnce(new Error('API down'));
 
-      const cachedResponse = await getTwitterPosts('mock-bearer-token');
+      const cachedResponse = await getTwitterPosts(CURRENT_LANGUAGE);
       
       expect(cachedResponse.posts).toEqual(initialResponse.posts);
       expect(cachedResponse.freshness).toBe(DataFreshness.CACHE); // Stale cache returned

@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import TwitterFeed from '../TwitterFeed.astro';
 import profilePic from '../../assets/alepro.png';
-import { getTwitterFeedData } from '../../utils/twitter/twitter-feed';
+import { getTwitterPosts } from '../../utils/twitter/twitter';
 import type { SupportedLanguage } from '../../types/i18n';
 
 export interface AboutTranslations {
@@ -68,7 +68,38 @@ const { language } = Astro.props;
 const t = getAboutTranslations(language);
 
 // Fetch Twitter data server-side for live updates
-const twitterData = await getTwitterFeedData(language);
+let twitterData;
+try {
+    const response = await getTwitterPosts(language);
+    twitterData = {
+        posts: response.posts,
+        freshness: response.freshness,
+    };
+} catch (error) {
+    console.error('Failed to load Twitter feed:', error);
+
+    // Provide more specific error messages based on the error type
+    let errorMessage = 'Unknown error occurred';
+
+    if (error instanceof Error) {
+        if (error.message.includes('Bearer Token not configured')) {
+            errorMessage = 'Twitter API not configured';
+        } else if (error.message.includes('404')) {
+            errorMessage = 'Twitter user not found or API endpoint invalid';
+        } else if (error.message.includes('401')) {
+            errorMessage = 'Twitter API authentication failed';
+        } else if (error.message.includes('429')) {
+            errorMessage = 'Twitter API rate limit exceeded';
+        } else {
+            errorMessage = error.message;
+        }
+    }
+
+    twitterData = {
+        posts: null,
+        error: errorMessage,
+    };
+}
 ---
 
 <h2>

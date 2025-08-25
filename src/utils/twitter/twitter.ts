@@ -92,11 +92,11 @@ class MockTwitterStrategy implements TwitterDataStrategy {
  * Strategy for fetching live data from Twitter API with caching
  */
 class LiveTwitterStrategy implements TwitterDataStrategy {
-  constructor(private bearerToken?: string, private language: string = 'en') {}
+  constructor(private language: string) {}
 
   async fetchPosts(): Promise<TwitterResponse> {
     // Check cache first
-    const cachedPosts = twitterCache.get(this.language);
+    const cachedPosts = twitterCache.get();
     if (cachedPosts) {
       console.log('Using cached Twitter data');
       return {
@@ -123,7 +123,7 @@ class LiveTwitterStrategy implements TwitterDataStrategy {
   }
 
   private async fetchFromApi(): Promise<TwitterPost[]> {
-    const token = this.bearerToken || import.meta.env.TWITTER_BEARER_TOKEN || process.env.TWITTER_BEARER_TOKEN;
+    const token = import.meta.env.TWITTER_BEARER_TOKEN || process.env.TWITTER_BEARER_TOKEN;
     
     if (!token) {
       throw new Error('Twitter Bearer Token not configured');
@@ -162,10 +162,10 @@ class LiveTwitterStrategy implements TwitterDataStrategy {
  * Production strategy that gracefully handles API failures with stale cache fallback
  */
 class ProductionTwitterStrategy implements TwitterDataStrategy {
-  constructor(private bearerToken?: string, private language: string = 'en') {}
+  constructor(private language: string) {}
 
   async fetchPosts(): Promise<TwitterResponse> {
-    const liveStrategy = new LiveTwitterStrategy(this.bearerToken, this.language);
+    const liveStrategy = new LiveTwitterStrategy(this.language);
 
     try {
       return await liveStrategy.fetchPosts();
@@ -173,7 +173,7 @@ class ProductionTwitterStrategy implements TwitterDataStrategy {
       console.warn('Twitter API error:', error);
       
       // Try to use any cached data as fallback (even if stale)
-      const staleCachedPosts = twitterCache.getStale(this.language);
+      const staleCachedPosts = twitterCache.getStale();
       if (staleCachedPosts) {
         console.warn('Using stale cached Twitter data due to API error');
         return {
@@ -192,11 +192,11 @@ class ProductionTwitterStrategy implements TwitterDataStrategy {
  * Factory to create the appropriate Twitter data strategy based on environment
  */
 class TwitterStrategyFactory {
-  static create(bearerToken?: string, language: string = 'en'): TwitterDataStrategy {
+  static create(language: string): TwitterDataStrategy {
     const nodeEnv = import.meta.env.NODE_ENV || process.env.NODE_ENV;
     
     if (nodeEnv === 'production') {
-      return new ProductionTwitterStrategy(bearerToken, language);
+      return new ProductionTwitterStrategy(language);
     } else {
       return new MockTwitterStrategy(language);
     }
@@ -208,7 +208,7 @@ class TwitterStrategyFactory {
  * - Development/Test: Returns mock data
  * - Production: Fetches from API with caching and graceful error handling
  */
-export async function getTwitterPosts(bearerToken?: string, language: string = 'en'): Promise<TwitterResponse> {
-  const strategy = TwitterStrategyFactory.create(bearerToken, language);
+export async function getTwitterPosts(language: string): Promise<TwitterResponse> {
+  const strategy = TwitterStrategyFactory.create(language);
   return await strategy.fetchPosts();
 }
