@@ -4,35 +4,25 @@ import BaseTagDetail, { getTagDetailTranslations } from '../../../components/pag
 import { getCollection } from 'astro:content';
 import type { SupportedLanguage } from '../../../types/i18n';
 
-export async function getStaticPaths() {
-  const allPosts = await getCollection('blog');
-
-  // Get tags for English only
-  const englishTags = new Set(
-    allPosts
-      .filter((post) => post.slug.startsWith('en/'))
-      .map((post) => post.data.tags)
-      .flat(),
-  );
-
-  // Generate paths for English tags only
-  return Array.from(englishTags).map((tag) => {
-    const filteredPosts = allPosts
-      .filter((post) => post.slug.startsWith('en/') && post.data.tags.includes(tag))
-      .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
-
-    return {
-      params: { tag },
-      props: { posts: filteredPosts },
-    };
-  });
-}
-
 const { tag } = Astro.params;
-const { posts } = Astro.props;
 
 // Type assertion for tag parameter
 const tagString = tag as string;
+
+if (!tagString) {
+  return Astro.redirect('/404');
+}
+
+// Get all posts and filter by tag
+const allPosts = await getCollection('blog');
+const posts = allPosts
+  .filter((post) => post.slug.startsWith('en/') && post.data.tags.includes(tagString))
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+// If no posts found for this tag, return 404
+if (posts.length === 0) {
+  return Astro.redirect('/404');
+}
 
 // Set language to English for this page
 const language: SupportedLanguage = 'en';
@@ -44,8 +34,6 @@ const t = getTagDetailTranslations(language, tagString);
 const i18nData = {
   currentLang: language,
 };
-
-export const prerender = true;
 ---
 
 <BaseLayout pageTitle={t.pageTitle} description={t.pageDescription} i18nData={i18nData}>
