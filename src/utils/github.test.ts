@@ -70,7 +70,8 @@ describe('GitHub Repository Commits API utilities', () => {
         url: 'https://github.com/aleromano92/aleromano.com/commit/abc123def456789fullhash',
         repo: 'aleromano92/aleromano.com',
         formattedDate: 'Jan 15, 2024, 11:30 AM',
-        truncatedMessage: 'Add new feature'
+        truncatedMessage: 'Add new feature',
+        relativeTime: expect.any(String)
       });
 
       // Check that commits are sorted by date (newest first)
@@ -306,6 +307,48 @@ describe('GitHub Repository Commits API utilities', () => {
 
       expect(result.commits[0].formattedDate).toBeDefined();
       expect(typeof result.commits[0].formattedDate).toBe('string');
+    });
+
+    it('should include relative time in commit data', async () => {
+      // Set a fixed time for consistent testing
+      const fixedNow = new Date('2024-01-15T12:30:00Z');
+      vi.setSystemTime(fixedNow);
+
+      const mockCommits = [
+        {
+          sha: 'abc123def456789',
+          commit: {
+            message: 'Recent commit',
+            author: {
+              name: 'Alessandro Romano',
+              date: '2024-01-15T10:30:00Z' // 2 hours ago
+            }
+          },
+          html_url: 'https://github.com/aleromano92/aleromano.com/commit/abc123def456789'
+        }
+      ];
+
+      // Mock for English test
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCommits
+      });
+
+      const result = await getGitHubCommitsData('en');
+
+      expect(result.commits[0].relativeTime).toBe('2 hours ago');
+
+      // Mock for Italian test
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCommits
+      });
+
+      // Test Italian language
+      const resultIt = await getGitHubCommitsData('it');
+      expect(resultIt.commits[0].relativeTime).toBe('2 ore fa');
+
+      vi.useRealTimers();
     });
 
     it('should truncate long commit messages', async () => {

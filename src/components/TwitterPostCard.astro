@@ -85,8 +85,12 @@ const { post } = Astro.props;
         border-radius: 0.75rem;
         padding: 1rem;
         margin-bottom: 1rem;
-        background: var(--color-surface);
+        background: white;
         transition: border-color 0.2s ease;
+    }
+
+    :global([data-theme='dark']) .tweet-card {
+        background: black;
     }
 
     .tweet-card:hover {

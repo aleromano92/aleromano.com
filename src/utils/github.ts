@@ -6,6 +6,7 @@ export interface GitHubCommit {
   repo: string;
   formattedDate: string;
   truncatedMessage: string;
+  relativeTime: string;
 }
 
 export interface GitHubCommitsData {
@@ -29,6 +30,88 @@ function formatDate(dateString: string, lang: string = 'en'): string {
   };
 
   return date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', options);
+}
+
+function getRelativeTime(dateString: string, language: string = 'en'): string {
+  const now = new Date();
+  const commitDate = new Date(dateString);
+  const diffInMs = now.getTime() - commitDate.getTime();
+  
+  const minute = 60 * 1000;
+  const hour = minute * 60;
+  const day = hour * 24;
+  const week = day * 7;
+  const month = day * 30;
+  const year = day * 365;
+  
+  // Translation map for relative time strings
+  const translations = {
+    en: {
+      now: 'now',
+      minute: { singular: '1 minute ago', plural: (n: number) => `${n} minutes ago` },
+      hour: { singular: '1 hour ago', plural: (n: number) => `${n} hours ago` },
+      day: { singular: '1 day ago', plural: (n: number) => `${n} days ago` },
+      week: { singular: '1 week ago', plural: (n: number) => `${n} weeks ago` },
+      month: { singular: '1 month ago', plural: (n: number) => `${n} months ago` },
+      year: { singular: '1 year ago', plural: (n: number) => `${n} years ago` }
+    },
+    it: {
+      now: 'adesso',
+      minute: { singular: '1 minuto fa', plural: (n: number) => `${n} minuti fa` },
+      hour: { singular: '1 ora fa', plural: (n: number) => `${n} ore fa` },
+      day: { singular: '1 giorno fa', plural: (n: number) => `${n} giorni fa` },
+      week: { singular: '1 settimana fa', plural: (n: number) => `${n} settimane fa` },
+      month: { singular: '1 mese fa', plural: (n: number) => `${n} mesi fa` },
+      year: { singular: '1 anno fa', plural: (n: number) => `${n} anni fa` }
+    }
+  };
+
+  type Translations = typeof translations;
+
+  const t = translations[language as keyof Translations];
+
+  // Determine the time unit and value using pattern matching
+  let timeUnit: string;
+  let value: number;
+
+  switch (true) {
+    case diffInMs < minute:
+      return t.now;
+    
+    case diffInMs < hour:
+      timeUnit = 'minute';
+      value = Math.floor(diffInMs / minute);
+      break;
+    
+    case diffInMs < day:
+      timeUnit = 'hour';
+      value = Math.floor(diffInMs / hour);
+      break;
+    
+    case diffInMs < week:
+      timeUnit = 'day';
+      value = Math.floor(diffInMs / day);
+      break;
+    
+    case diffInMs < month:
+      timeUnit = 'week';
+      value = Math.floor(diffInMs / week);
+      break;
+    
+    case diffInMs < year:
+      timeUnit = 'month';
+      value = Math.floor(diffInMs / month);
+      break;
+    
+    default:
+      timeUnit = 'year';
+      value = Math.floor(diffInMs / year);
+      break;
+  }
+
+  // Return singular or plural form based on value
+  const unitTranslation = t[timeUnit as keyof typeof t] as { singular: string; plural: (n: number) => string };
+  return value === 1 ? unitTranslation.singular : unitTranslation.plural(value);
 }
 
 function truncateMessage(message: string, maxLength: number = 180): string {
@@ -77,7 +160,8 @@ function extractCommitsFromRepositoryData(commits: any[], language: string = 'en
         url: commit.html_url,
         repo: `${GITHUB_USERNAME}/${GITHUB_REPO}`,
         formattedDate: formatDate(date, language),
-        truncatedMessage: truncateMessage(message)
+        truncatedMessage: truncateMessage(message),
+        relativeTime: getRelativeTime(date, language)
       });
     }
   }

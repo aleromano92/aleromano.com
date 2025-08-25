@@ -9,7 +9,7 @@ interface Props {
 
 const { commits, error, language } = Astro.props;
 
-const title = language === 'it' ? 'Ultimi Commit GitHub' : 'Latest GitHub Commits';
+const title = language === 'it' ? 'Ultimi Commit GitHub su 𖦥main' : 'Latest GitHub Commits on 𖦥main';
 const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit' : 'Unable to load latest commits';
 ---
 
@@ -32,8 +32,8 @@ const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit
                             <span class="commit-repo">{commit.repo}</span>
                         </div>
                         <p class="commit-message">{commit.truncatedMessage}</p>
-                        <time class="commit-date" datetime={commit.date}>
-                            {commit.formattedDate}
+                        <time class="commit-date" datetime={commit.date} title={commit.formattedDate}>
+                            {commit.relativeTime}
                         </time>
                     </article>
                 ))}
@@ -65,8 +65,11 @@ const errorMessage = language === 'it' ? 'Impossibile caricare gli ultimi commit
         padding: var(--space-sm);
         border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
-        background: var(--color-surface);
+        background: white;
         transition: border-color 0.2s ease;
+    }
+    :global([data-theme='dark']) .commit-item {
+        background: #010409;
     }
 
     .commit-item:hover {
