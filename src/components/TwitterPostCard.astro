@@ -6,16 +6,6 @@ interface Props {
 }
 
 const { post } = Astro.props;
-
-// Clean the tweet text by removing t.co links if media is present
-function cleanTweetText(text: string, hasMedia: boolean): string {
-    if (!hasMedia) return text;
-
-    // Remove t.co links at the end of tweets when media is present
-    return text.replace(/\s*https:\/\/t\.co\/\w+\s*$/, '').trim();
-}
-
-const cleanText = cleanTweetText(post.text, Boolean(post.media?.length));
 ---
 
 <article class="tweet-card">
@@ -26,13 +16,13 @@ const cleanText = cleanTweetText(post.text, Boolean(post.media?.length));
         <div class="tweet-meta">
             <span class="tweet-type">{post.type}</span>
             <time datetime={post.created_at}>
-                {new Date(post.created_at).toLocaleDateString()}
+                {post.formattedDate}
             </time>
         </div>
     </div>
 
     <div class="tweet-content">
-        <p class="tweet-text">{cleanText}</p>
+        <p class="tweet-text">{post.text}</p>
 
         {
             post.media && post.media.length > 0 && (

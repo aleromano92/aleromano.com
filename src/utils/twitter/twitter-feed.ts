@@ -6,9 +6,9 @@ export interface TwitterFeedData {
   freshness?: DataFreshness;
 }
 
-export async function getTwitterFeedData(): Promise<TwitterFeedData> {
+export async function getTwitterFeedData(language: string = 'en'): Promise<TwitterFeedData> {
   try {
-    const response = await getTwitterPosts();
+    const response = await getTwitterPosts(undefined, language);
     
     return { 
       posts: response.posts, 

@@ -68,7 +68,7 @@ const { language } = Astro.props;
 const t = getAboutTranslations(language);
 
 // Fetch Twitter data server-side for live updates
-const twitterData = await getTwitterFeedData();
+const twitterData = await getTwitterFeedData(language);
 ---
 
 <h2>
