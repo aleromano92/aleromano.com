@@ -54,28 +54,33 @@ describe('twitter.ts', () => {
       const response = await getTwitterPosts(CURRENT_LANGUAGE);
       
       expect(response.posts).toBeDefined();
-      expect(response.posts.length).toBeGreaterThan(0);
+      expect(response.posts).not.toBeNull();
+      expect(response.posts!.length).toBeGreaterThan(0);
       expect(response.freshness).toBe(DataFreshness.LIVE);
-      expect(response.posts[0]).toHaveProperty('id');
-      expect(response.posts[0]).toHaveProperty('text');
-      expect(response.posts[0]).toHaveProperty('created_at');
-      expect(response.posts[0]).toHaveProperty('author_name');
-      expect(response.posts[0]).toHaveProperty('author_username');
-      expect(response.posts[0]).toHaveProperty('public_metrics');
-      expect(response.posts[0]).toHaveProperty('url');
-      expect(response.posts[0]).toHaveProperty('type');
+      expect(response.posts![0]).toHaveProperty('id');
+      expect(response.posts![0]).toHaveProperty('text');
+      expect(response.posts![0]).toHaveProperty('created_at');
+      expect(response.posts![0]).toHaveProperty('author_name');
+      expect(response.posts![0]).toHaveProperty('author_username');
+      expect(response.posts![0]).toHaveProperty('public_metrics');
+      expect(response.posts![0]).toHaveProperty('url');
+      expect(response.posts![0]).toHaveProperty('type');
 
       const response2 = await getTwitterPosts(CURRENT_LANGUAGE);
       
-      expect(response2.posts[0].author_name).toBe('Alessandro Romano');
-      expect(response2.posts[0].author_username).toBe('_aleromano');
+      expect(response2.posts).not.toBeNull();
+      expect(response2.posts![0].author_name).toBe('Alessandro Romano');
+      expect(response2.posts![0].author_username).toBe('_aleromano');
     });
 
-    it('should throw error when Bearer token is missing in production', async () => {
+    it('should return error when Bearer token is missing in production', async () => {
       mockEnv.NODE_ENV = 'production';
       mockEnv.TWITTER_BEARER_TOKEN = undefined as any;
       
-      await expect(getTwitterPosts(CURRENT_LANGUAGE)).rejects.toThrow('Twitter API unavailable and no cached data available');
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
+      
+      expect(response.posts).toBeNull();
+      expect(response.error).toBe('Twitter API not configured');
       expect(mockFetch).not.toHaveBeenCalled();
     });
 
@@ -89,7 +94,8 @@ describe('twitter.ts', () => {
       });
 
       const response = await getTwitterPosts(CURRENT_LANGUAGE);
-      const retweet = response.posts.find((p: any) => p.text.startsWith('RT @'));
+      expect(response.posts).not.toBeNull();
+      const retweet = response.posts!.find((p: any) => p.text.startsWith('RT @'));
       
       expect(retweet?.type).toBe('retweet');
       expect(retweet?.author_name).toBe('Engineering Lead');
@@ -107,8 +113,9 @@ describe('twitter.ts', () => {
 
       const response = await getTwitterPosts(CURRENT_LANGUAGE);
       
-      expect(new Date(response.posts[0].created_at).getTime()).toBeGreaterThan(
-        new Date(response.posts[1].created_at).getTime()
+      expect(response.posts).not.toBeNull();
+      expect(new Date(response.posts![0].created_at).getTime()).toBeGreaterThan(
+        new Date(response.posts![1].created_at).getTime()
       );
     });
 
@@ -161,19 +168,12 @@ describe('twitter.ts', () => {
 
       const response = await getTwitterPosts(CURRENT_LANGUAGE);
       
-      expect(response.posts[0].author_name).toBe('Alessandro Romano');
-      expect(response.posts[0].author_username).toBe('_aleromano');
+      expect(response.posts).not.toBeNull();
+      expect(response.posts![0].author_name).toBe('Alessandro Romano');
+      expect(response.posts![0].author_username).toBe('_aleromano');
     });
 
-    it('should throw error when Bearer token is missing in production', async () => {
-      mockEnv.NODE_ENV = 'production';
-      mockEnv.TWITTER_BEARER_TOKEN = undefined as any;
-      
-      await expect(getTwitterPosts(CURRENT_LANGUAGE)).rejects.toThrow('Twitter API unavailable and no cached data available');
-      expect(mockFetch).not.toHaveBeenCalled();
-    });
-
-    it('should throw error when API request fails and no cache exists', async () => {
+    it('should return error when API request fails and no cache exists', async () => {
       mockEnv.NODE_ENV = 'production';
       
       mockFetch.mockResolvedValueOnce({
@@ -182,7 +182,87 @@ describe('twitter.ts', () => {
         text: () => Promise.resolve('Unauthorized')
       });
 
-      await expect(getTwitterPosts(CURRENT_LANGUAGE)).rejects.toThrow('Twitter API unavailable and no cached data available');
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
+      
+      expect(response.posts).toBeNull();
+      expect(response.error).toBe('Twitter API authentication failed');
+    });
+
+    it('should return specific error message for rate limiting (429)', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 429,
+        text: () => Promise.resolve('Rate limit exceeded')
+      });
+
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
+      
+      expect(response.posts).toBeNull();
+      expect(response.error).toBe('Twitter API rate limit exceeded');
+    });
+
+    it('should return specific error message for not found (404)', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        text: () => Promise.resolve('Not Found')
+      });
+
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
+      
+      expect(response.posts).toBeNull();
+      expect(response.error).toBe('Twitter user not found or API endpoint invalid');
+    });
+
+    it('should return generic error message for other errors', async () => {
+      mockEnv.NODE_ENV = 'production';
+      
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        text: () => Promise.resolve('Internal Server Error')
+      });
+
+      const response = await getTwitterPosts(CURRENT_LANGUAGE);
+      
+      expect(response.posts).toBeNull();
+      expect(response.error).toContain('500');
+    });
+
+    it('should reformat dates when language changes on cached data', async () => {
+      mockEnv.NODE_ENV = 'production';
+      mockEnv.TWITTER_BEARER_TOKEN = 'mock-bearer-token';
+      
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(mockTwitterApiResponse)
+      });
+
+      // First call in English - should fetch from API
+      const englishResponse = await getTwitterPosts('en');
+      expect(englishResponse.posts).not.toBeNull();
+      expect(englishResponse.freshness).toBe(DataFreshness.LIVE);
+      
+      // Second call in Italian - should use cached API data but reformat with Italian locale
+      const italianResponse = await getTwitterPosts('it');
+      expect(italianResponse.posts).not.toBeNull();
+      expect(italianResponse.freshness).toBe(DataFreshness.CACHE);
+      
+      // Both should have same content but different date formatting
+      expect(englishResponse.posts!.length).toBe(italianResponse.posts!.length);
+      expect(englishResponse.posts![0].id).toBe(italianResponse.posts![0].id);
+      
+      // The formatted dates should be different due to locale
+      // English uses "Jan 15, 2024, 10:30 AM" format
+      // Italian uses "15 gen 2024, 10:30" format
+      expect(englishResponse.posts![0].formattedDate).not.toBe(italianResponse.posts![0].formattedDate);
+      
+      // Only one API call should have been made
+      expect(mockFetch).toHaveBeenCalledTimes(1);
     });
 
     it('should handle empty response data', async () => {
@@ -206,9 +286,10 @@ describe('twitter.ts', () => {
       const response = await getTwitterPosts(CURRENT_LANGUAGE);
       
       expect(response.freshness).toBe(DataFreshness.MOCK);
-      expect(response.posts).toHaveLength(6);
-      expect(response.posts[0].author_username).toBe('_aleromano');
-      expect(response.posts[0]).toHaveProperty('public_metrics');
+      expect(response.posts).not.toBeNull();
+      expect(response.posts!).toHaveLength(6);
+      expect(response.posts![0].author_username).toBe('_aleromano');
+      expect(response.posts![0]).toHaveProperty('public_metrics');
       expect(mockFetch).not.toHaveBeenCalled();
     });
   });
@@ -275,7 +356,8 @@ describe('twitter.ts', () => {
       const response2 = await getTwitterPosts(CURRENT_LANGUAGE);
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
-      expect(response2.posts[0].text).toBe('Updated tweet');
+      expect(response2.posts).not.toBeNull();
+      expect(response2.posts![0].text).toBe('Updated tweet');
       expect(response2.freshness).toBe(DataFreshness.LIVE);
       
       vi.useRealTimers();

@@ -67,39 +67,8 @@ const { language } = Astro.props;
 // Get translations for the current language
 const t = getAboutTranslations(language);
 
-// Fetch Twitter data server-side for live updates
-let twitterData;
-try {
-    const response = await getTwitterPosts(language);
-    twitterData = {
-        posts: response.posts,
-        freshness: response.freshness,
-    };
-} catch (error) {
-    console.error('Failed to load Twitter feed:', error);
-
-    // Provide more specific error messages based on the error type
-    let errorMessage = 'Unknown error occurred';
-
-    if (error instanceof Error) {
-        if (error.message.includes('Bearer Token not configured')) {
-            errorMessage = 'Twitter API not configured';
-        } else if (error.message.includes('404')) {
-            errorMessage = 'Twitter user not found or API endpoint invalid';
-        } else if (error.message.includes('401')) {
-            errorMessage = 'Twitter API authentication failed';
-        } else if (error.message.includes('429')) {
-            errorMessage = 'Twitter API rate limit exceeded';
-        } else {
-            errorMessage = error.message;
-        }
-    }
-
-    twitterData = {
-        posts: null,
-        error: errorMessage,
-    };
-}
+// Fetch Twitter data server-side with built-in error handling
+const twitterData = await getTwitterPosts(language);
 ---
 
 <h2>

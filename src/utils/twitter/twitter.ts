@@ -10,7 +10,13 @@ export enum DataFreshness {
 }
 
 export interface TwitterResponse {
-  posts: TwitterPost[];
+  posts: TwitterPost[] | null;
+  freshness?: DataFreshness;
+  error?: string;
+}
+
+export interface TwitterRawDataResponse {
+  apiResponse: TwitterApiResponse;
   freshness: DataFreshness;
 }
 
@@ -24,29 +30,29 @@ const CACHE_TTL = 30 * 60 * 1000;
  * Interface for different Twitter data retrieval strategies
  */
 interface TwitterDataStrategy {
-  fetchPosts(): Promise<TwitterResponse>;
+  fetchRawData(): Promise<TwitterRawDataResponse>;
 }
 
 /**
- * Simple in-memory cache for Twitter posts
+ * Simple in-memory cache for Twitter API responses
  */
 class TwitterCache {
-  private cachedData: TwitterPost[] | null = null;
+  private cachedData: TwitterApiResponse | null = null;
   private cacheTimestamp: number = 0;
 
-  public set(posts: TwitterPost[]): void {
-    this.cachedData = posts;
+  public set(apiResponse: TwitterApiResponse): void {
+    this.cachedData = apiResponse;
     this.cacheTimestamp = Date.now();
   }
 
-  public get(): TwitterPost[] | null {
+  public get(): TwitterApiResponse | null {
     if (!this.isValid()) {
       return null;
     }
     return this.cachedData;
   }
 
-  public getStale(): TwitterPost[] | null {
+  public getStale(): TwitterApiResponse | null {
     return this.cachedData; // Returns cached data even if expired
   }
 
@@ -75,14 +81,12 @@ export function clearCache(): void {
  * Strategy for returning mock Twitter data (development/testing only)
  */
 class MockTwitterStrategy implements TwitterDataStrategy {
-  constructor(private language: string = 'en') {}
+  constructor() {}
 
-  async fetchPosts(): Promise<TwitterResponse> {
+  async fetchRawData(): Promise<TwitterRawDataResponse> {
     console.warn('Using mock Twitter data for development/testing');
-    const mockPosts = TwitterViewAdapter.parseApiResponse(mockTwitterApiResponse as TwitterApiResponse, this.language);
-    
     return {
-      posts: mockPosts,
+      apiResponse: mockTwitterApiResponse as TwitterApiResponse,
       freshness: DataFreshness.MOCK
     };
   }
@@ -92,28 +96,28 @@ class MockTwitterStrategy implements TwitterDataStrategy {
  * Strategy for fetching live data from Twitter API with caching
  */
 class LiveTwitterStrategy implements TwitterDataStrategy {
-  constructor(private language: string) {}
+  constructor() {}
 
-  async fetchPosts(): Promise<TwitterResponse> {
+  async fetchRawData(): Promise<TwitterRawDataResponse> {
     // Check cache first
-    const cachedPosts = twitterCache.get();
-    if (cachedPosts) {
+    const cachedApiResponse = twitterCache.get();
+    if (cachedApiResponse) {
       console.log('Using cached Twitter data');
       return {
-        posts: cachedPosts,
+        apiResponse: cachedApiResponse,
         freshness: DataFreshness.CACHE
       };
     }
 
     try {
       // Fetch fresh data from API
-      const posts = await this.fetchFromApi();
+      const apiResponse = await this.fetchFromApi();
       
       // Update cache with successful data
-      twitterCache.set(posts);
+      twitterCache.set(apiResponse);
       
       return {
-        posts,
+        apiResponse,
         freshness: DataFreshness.LIVE
       };
       
@@ -122,7 +126,7 @@ class LiveTwitterStrategy implements TwitterDataStrategy {
     }
   }
 
-  private async fetchFromApi(): Promise<TwitterPost[]> {
+  private async fetchFromApi(): Promise<TwitterApiResponse> {
     const token = import.meta.env.TWITTER_BEARER_TOKEN || process.env.TWITTER_BEARER_TOKEN;
     
     if (!token) {
@@ -152,9 +156,7 @@ class LiveTwitterStrategy implements TwitterDataStrategy {
       throw new Error(`Twitter Timeline error: ${timelineResponse.status} - ${errorText}`);
     }
 
-    const timelineData: TwitterApiResponse = await timelineResponse.json();
-    
-    return TwitterViewAdapter.parseApiResponse(timelineData, this.language);
+    return await timelineResponse.json();
   }
 }
 
@@ -162,28 +164,30 @@ class LiveTwitterStrategy implements TwitterDataStrategy {
  * Production strategy that gracefully handles API failures with stale cache fallback
  */
 class ProductionTwitterStrategy implements TwitterDataStrategy {
-  constructor(private language: string) {}
+  private liveStrategy: LiveTwitterStrategy;
 
-  async fetchPosts(): Promise<TwitterResponse> {
-    const liveStrategy = new LiveTwitterStrategy(this.language);
+  constructor() {
+    this.liveStrategy = new LiveTwitterStrategy();
+  }
 
+  async fetchRawData(): Promise<TwitterRawDataResponse> {
     try {
-      return await liveStrategy.fetchPosts();
+      return await this.liveStrategy.fetchRawData();
     } catch (error) {
       console.warn('Twitter API error:', error);
       
       // Try to use any cached data as fallback (even if stale)
-      const staleCachedPosts = twitterCache.getStale();
-      if (staleCachedPosts) {
+      const staleCachedApiResponse = twitterCache.getStale();
+      if (staleCachedApiResponse) {
         console.warn('Using stale cached Twitter data due to API error');
         return {
-          posts: staleCachedPosts,
+          apiResponse: staleCachedApiResponse,
           freshness: DataFreshness.CACHE
         };
       }
       
-      // In production, throw error instead of returning mock data
-      throw new Error('Twitter API unavailable and no cached data available');
+      // Re-throw the error to be handled by the main function
+      throw error;
     }
   }
 }
@@ -192,23 +196,61 @@ class ProductionTwitterStrategy implements TwitterDataStrategy {
  * Factory to create the appropriate Twitter data strategy based on environment
  */
 class TwitterStrategyFactory {
-  static create(language: string): TwitterDataStrategy {
+  static create(): TwitterDataStrategy {
     const nodeEnv = import.meta.env.NODE_ENV || process.env.NODE_ENV;
     
     if (nodeEnv === 'production') {
-      return new ProductionTwitterStrategy(language);
+      return new ProductionTwitterStrategy();
     } else {
-      return new MockTwitterStrategy(language);
+      return new MockTwitterStrategy();
     }
   }
 }
 
 /**
- * Main function to get Twitter posts with appropriate strategy based on environment
+ * Main function to get Twitter posts with comprehensive error handling
  * - Development/Test: Returns mock data
  * - Production: Fetches from API with caching and graceful error handling
+ * 
+ * This function handles all error scenarios internally and never throws.
+ * Instead, it returns a TwitterResponse with error information when failures occur.
+ * The language parameter is used to format dates and other localized content.
  */
 export async function getTwitterPosts(language: string): Promise<TwitterResponse> {
-  const strategy = TwitterStrategyFactory.create(language);
-  return await strategy.fetchPosts();
+  try {
+    const strategy = TwitterStrategyFactory.create();
+    const { apiResponse, freshness } = await strategy.fetchRawData();
+    
+    // Parse the API response with the current language for proper formatting
+    const posts = TwitterViewAdapter.parseApiResponse(apiResponse, language);
+    
+    return {
+      posts,
+      freshness
+    };
+  } catch (error) {
+    console.error('Failed to load Twitter feed:', error);
+
+    // Provide more specific error messages based on the error type
+    let errorMessage = 'Unknown error occurred';
+
+    if (error instanceof Error) {
+      if (error.message.includes('Bearer Token not configured')) {
+        errorMessage = 'Twitter API not configured';
+      } else if (error.message.includes('404')) {
+        errorMessage = 'Twitter user not found or API endpoint invalid';
+      } else if (error.message.includes('401')) {
+        errorMessage = 'Twitter API authentication failed';
+      } else if (error.message.includes('429')) {
+        errorMessage = 'Twitter API rate limit exceeded';
+      } else {
+        errorMessage = error.message;
+      }
+    }
+
+    return {
+      posts: null,
+      error: errorMessage,
+    };
+  }
 }
