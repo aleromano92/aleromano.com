@@ -25,6 +25,7 @@ function formatDate(dateString: string, lang: string = 'en'): string {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: 'Europe/Rome', // Convert UTC to Rome timezone (UTC+1/+2)
   };
 
   return date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', options);
