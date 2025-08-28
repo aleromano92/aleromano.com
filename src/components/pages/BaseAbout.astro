@@ -9,9 +9,58 @@ export interface AboutTranslations {
     pageTitle: string;
     pageDescription: string;
     tagline: string;
-    intro1: string;
-    intro2: string;
-    intro3: string;
+
+    // Table of Contents
+    tocTitle: string;
+    tocBiography: string;
+    tocExperience: string;
+    tocNow: string;
+
+    // Biography Section
+    biographyTitle: string;
+    biographyIntro: string;
+    biographyTechAddiction: string;
+    biographyPokemon: string;
+    biographyJourney: string;
+
+    // Work Experience Section
+    experienceTitle: string;
+    experienceDownloadCV: string;
+    currentPosition: string;
+
+    // Job entries
+    mollieTitle: string;
+    mollieRole: string;
+    molliePeriod: string;
+    mollieDescription: string;
+    mollieAchievements: string[];
+
+    kpnTitle: string;
+    kpnRole: string;
+    kpnPeriod: string;
+    kpnDescription: string;
+    kpnAchievements: string[];
+
+    microsoftTitle: string;
+    microsoftRole: string;
+    microsoftPeriod: string;
+    microsoftDescription: string;
+    microsoftAchievements: string[];
+
+    // Now Section
+    nowTitle: string;
+    nowSubtitle: string;
+    nowCurrently: string;
+    nowLearning: string;
+    nowReading: string;
+    nowSideProjects: string;
+    nowPersonal: string;
+
+    // Historical entries toggle
+    showHistory: string;
+    hideHistory: string;
+
+    // Contact and Social
     stayUpdated: string;
     followTwitter: string;
     subscribeRss: string;
@@ -26,9 +75,92 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         pageDescription:
             'Engineering Manager at Mollie, father of two amazing kids, and funny lovely husband. Addicted to details and obsessed with how things work: from Cloud services to human relationships.',
         tagline: 'Insightful. Precise. Human.',
-        intro1: "I'm addicted to details and obsessed with how things work: from Cloud services to human relationships. Since my first Hello World in RPG Maker, I have come to believe that being an Engineer is much more than coding.",
-        intro2: "I'm currently an Engineering Manager at Mollie, where I focus on helping teams collaborate effectively and deliver impactful solutions.",
-        intro3: "When I'm not fostering great engineering culture, you can find me in Busto Arsizio (near Milan's Malpensa airport) where I'm a proud father of two amazing kids and a funny lovely husband.",
+
+        // Table of Contents
+        tocTitle: 'Quick Navigation',
+        tocBiography: 'Biography',
+        tocExperience: 'Work Experience',
+        tocNow: "What I'm Up To Now",
+
+        // Biography Section
+        biographyTitle: 'Biography',
+        biographyIntro:
+            "I'm addicted to details and obsessed with how things work: from Cloud services to human relationships. Since my first Hello World in RPG Maker, I have come to believe that being an Engineer is much more than coding.",
+        biographyTechAddiction:
+            "As a kid growing up in Italy, I was completely addicted to technology. I spent countless hours creating elaborate RPG worlds in RPG Maker, crafting pixel-perfect sprites and designing complex storylines. It wasn't just gaming for me—it was my first taste of building digital experiences.",
+        biographyPokemon:
+            'Funny enough, Pokémon Yellow became my first English teacher. The Italian copies were always out of stock, so I convinced my parents to get me the English version. I played with a dictionary by my side, translating every dialogue. By the time I caught them all, I had accidentally learned a second language.',
+        biographyJourney:
+            "That curiosity about how things work never left me. Today, whether I'm architecting cloud solutions, optimizing team dynamics, or debugging a complex system, I approach each challenge with the same enthusiasm I had as that kid with RPG Maker.",
+
+        // Work Experience Section
+        // NOTE: This data is automatically extracted by scripts/generate-cv.js to create the downloadable PDF CV
+        experienceTitle: 'Work Experience',
+        experienceDownloadCV: 'Download CV (PDF)',
+        currentPosition: 'Current Position',
+
+        // Mollie
+        mollieTitle: 'Mollie',
+        mollieRole: 'Senior Engineering Manager & Milan Hub Site Lead',
+        molliePeriod: 'December 2023 - Present',
+        mollieDescription:
+            'Leading engineering teams in building scalable payment solutions for European businesses. Managing the Milan Hub site and focusing on team growth, technical excellence, and delivering impactful products.',
+        mollieAchievements: [
+            'Promoted to Senior Engineering Manager (March 2025) leading multiple engineering teams',
+            'Established and managed the Milan Hub Site Lead role (December 2023)',
+            'Built cross-functional engineering teams delivering payment solutions at scale',
+            'Implemented engineering practices focused on team growth and technical excellence',
+            'Mentored engineers across multiple product areas and locations',
+        ],
+
+        // Banca AideXa
+        kpnTitle: 'Banca AideXa',
+        kpnRole: 'Head of Engineering',
+        kpnPeriod: 'October 2020 - December 2023',
+        kpnDescription:
+            'Led engineering teams at a fully digital bank, managing software development across all projects and building innovative financial solutions for Small Businesses.',
+        kpnAchievements: [
+            'Built and led an amazing engineering team from the ground up',
+            'Launched and iterated on Instant Lending product achieving product-market fit in under 48 hours',
+            'Automated KYC processes with SPID recognition, reducing onboarding burden by 23%',
+            'Defined Software Engineering guidelines including Tech Stack and eXtreme Programming techniques',
+            'Managed distributed teams of external and internal developers',
+            'Configured Azure DevOps to support agile delivery process and automated DORA metrics extraction',
+        ],
+
+        // lastminute.com
+        microsoftTitle: 'lastminute.com',
+        microsoftRole: 'Engineering Manager',
+        microsoftPeriod: 'April 2019 - September 2020',
+        microsoftDescription:
+            'Managed engineering teams focusing on emotional intelligence and technical excellence, helping people shine through effective 1-1s and career development.',
+        microsoftAchievements: [
+            'Created real-time buying for luggage in post-sale through My lastminute.com area',
+            'Migrated 300k customers from weg.de (7pass auth system) to lastminute.com with 0 downtime',
+            'Implemented Google One-Tap Login, increasing logged-in users by 230%',
+            'Mentored team members using pair programming and code reviews for skill development',
+            'Built team commitment and efficiency through transparent communication and feedback culture',
+        ],
+
+        // Now Section
+        nowTitle: "What I'm Up To Now",
+        nowSubtitle: 'Last updated: August 2024',
+        nowCurrently:
+            "At Mollie, I'm focused on scaling our engineering organization while maintaining our culture of technical excellence. I'm particularly excited about our upcoming platform initiatives that will enable faster product development.",
+        nowLearning:
+            'Diving deep into system design patterns and organizational psychology. Currently reading "Team Topologies" and experimenting with new ways to structure engineering teams for maximum effectiveness.',
+        nowReading:
+            'Non-fiction: "Team Topologies" by Matthew Skelton & Manuel Pais. Fiction: Re-reading "The Foundation" series by Isaac Asimov—always good for perspective on large-scale systems thinking.',
+        nowSideProjects:
+            'Building this website with Astro 5, writing about engineering management, and experimenting with AI-assisted coding workflows. Also working on a simple VPS monitoring tool.',
+        nowPersonal:
+            'Spending quality time with my two kids in Busto Arsizio, discovering new playgrounds, and trying to perfect my homemade pizza recipe. Recently got into morning runs—turns out I actually enjoy them!',
+
+        // Historical entries toggle
+        showHistory: 'Show Previous Updates',
+        hideHistory: 'Hide Previous Updates',
+
+        // Contact and Social
         stayUpdated: 'Wanna stay updated?',
         followTwitter: 'Follow @_aleromano',
         subscribeRss: 'subscribe to my RSS feed.',
@@ -41,9 +173,91 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         pageDescription:
             'Engineering Manager a Mollie, padre di due bambini fantastici e marito divertente e affettuoso. Ossessionato dai dettagli e da come funzionano le cose: dai servizi Cloud alle relazioni umane.',
         tagline: 'Perspicace. Preciso. Umano.',
-        intro1: 'Sono ossessionato dai dettagli e da come funzionano le cose: dai servizi Cloud alle relazioni umane. Dal mio primo Hello World in RPG Maker, sono arrivato a credere che essere un Ingegnere sia molto più che programmare.',
-        intro2: "Attualmente sono Engineering Manager a Mollie, dove mi concentro sull'aiutare i team a collaborare efficacemente e fornire soluzioni di impatto.",
-        intro3: "Quando non sto promuovendo un'ottima cultura ingegneristica, mi trovi a Busto Arsizio (vicino all'aeroporto di Milano Malpensa) dove sono un orgoglioso padre di due bambini fantastici e un marito divertente e affettuoso.",
+
+        // Table of Contents
+        tocTitle: 'Navigazione Rapida',
+        tocBiography: 'Biografia',
+        tocExperience: 'Esperienza Lavorativa',
+        tocNow: 'Cosa Sto Facendo Ora',
+
+        // Biography Section
+        biographyTitle: 'Biografia',
+        biographyIntro:
+            'Sono ossessionato dai dettagli e da come funzionano le cose: dai servizi Cloud alle relazioni umane. Dal mio primo Hello World in RPG Maker, sono arrivato a credere che essere un Ingegnere sia molto più che programmare.',
+        biographyTechAddiction:
+            'Da bambino, crescendo in Italia, ero completamente dipendente dalla tecnologia. Passavo ore e ore a creare mondi RPG elaborati in RPG Maker, creando sprite pixel-perfect e progettando storyline complesse. Non era solo gaming per me—era il mio primo assaggio di costruire esperienze digitali.',
+        biographyPokemon:
+            'Stranamente, Pokémon Yellow è diventato il mio primo insegnante di inglese. Le copie italiane erano sempre esaurite, così convinsi i miei genitori a comprarmela in inglese. Giocavo con un dizionario a fianco, traducendo ogni dialogo. Quando li ho catturati tutti, avevo accidentalmente imparato una seconda lingua.',
+        biographyJourney:
+            'Quella curiosità su come funzionano le cose non mi ha mai lasciato. Oggi, che io stia progettando soluzioni cloud, ottimizzando dinamiche di team, o facendo debug di un sistema complesso, affronto ogni sfida con lo stesso entusiasmo che avevo da bambino con RPG Maker.',
+
+        // Work Experience Section
+        experienceTitle: 'Esperienza Lavorativa',
+        experienceDownloadCV: 'Scarica CV (PDF)',
+        currentPosition: 'Posizione Attuale',
+
+        // Mollie
+        mollieTitle: 'Mollie',
+        mollieRole: 'Senior Engineering Manager & Milan Hub Site Lead',
+        molliePeriod: 'Dicembre 2023 - Presente',
+        mollieDescription:
+            'Guido team di ingegneria nella costruzione di soluzioni di pagamento scalabili per aziende europee. Gestisco il Milan Hub Site Lead e mi concentro sulla crescita del team, eccellenza tecnica e rilascio di prodotti di impatto.',
+        mollieAchievements: [
+            'Promosso a Senior Engineering Manager (Marzo 2025) guidando multiple team di ingegneria',
+            'Stabilito e gestito il ruolo di Milan Hub Site Lead (Dicembre 2023)',
+            'Costruito team di ingegneria cross-funzionali che rilasciano soluzioni di pagamento su scala',
+            'Implementato pratiche ingegneristiche focalizzate sulla crescita del team ed eccellenza tecnica',
+            'Fatto mentoring a ingegneri attraverso multiple aree di prodotto e location',
+        ],
+
+        // Banca AideXa
+        kpnTitle: 'Banca AideXa',
+        kpnRole: 'Head of Engineering',
+        kpnPeriod: 'Ottobre 2020 - Dicembre 2023',
+        kpnDescription:
+            'Ho guidato team di ingegneria in una banca completamente digitale, gestendo lo sviluppo software attraverso tutti i progetti e costruendo soluzioni finanziarie innovative per le Piccole Imprese.',
+        kpnAchievements: [
+            'Costruito e guidato un fantastico team di ingegneria da zero',
+            'Lanciato e iterato sul prodotto Instant Lending raggiungendo product-market fit in meno di 48 ore',
+            'Automatizzato processi KYC con riconoscimento SPID, riducendo il carico di onboarding del 23%',
+            'Definito linee guida Software Engineering incluso Tech Stack e tecniche eXtreme Programming',
+            'Gestito team distribuiti di sviluppatori esterni e interni',
+            'Configurato Azure DevOps per supportare processi di delivery agile ed estrazione automatica metriche DORA',
+        ],
+
+        // lastminute.com
+        microsoftTitle: 'lastminute.com',
+        microsoftRole: 'Engineering Manager',
+        microsoftPeriod: 'Aprile 2019 - Settembre 2020',
+        microsoftDescription:
+            'Ho gestito team di ingegneria concentrandomi su intelligenza emotiva ed eccellenza tecnica, aiutando le persone a brillare attraverso 1-1 efficaci e sviluppo della carriera.',
+        microsoftAchievements: [
+            'Creato acquisto real-time per bagagli in post-vendita attraverso area My lastminute.com',
+            'Migrato 300k clienti da weg.de (sistema auth 7pass) a lastminute.com con 0 downtime',
+            'Implementato Google One-Tap Login, aumentando utenti loggati del 230%',
+            'Fatto mentoring ai membri del team usando pair programming e code review per sviluppo competenze',
+            'Costruito impegno del team ed efficienza attraverso comunicazione trasparente e cultura del feedback',
+        ],
+
+        // Now Section
+        nowTitle: 'Cosa Sto Facendo Ora',
+        nowSubtitle: 'Ultimo aggiornamento: Agosto 2024',
+        nowCurrently:
+            'A Mollie, mi sto concentrando sul far crescere la nostra organizzazione ingegneristica mantenendo la nostra cultura di eccellenza tecnica. Sono particolarmente entusiasta delle nostre prossime iniziative di piattaforma che permetteranno sviluppo prodotto più veloce.',
+        nowLearning:
+            'Studio approfonditamente pattern di system design e psicologia organizzativa. Attualmente leggo "Team Topologies" e sperimento nuovi modi di strutturare team ingegneristici per massima efficacia.',
+        nowReading:
+            'Saggistica: "Team Topologies" di Matthew Skelton & Manuel Pais. Narrativa: Sto rileggendo la serie "Fondazione" di Isaac Asimov—sempre buona per avere prospettiva sul pensiero sistemico su larga scala.',
+        nowSideProjects:
+            'Costruisco questo sito con Astro 5, scrivo di engineering management, e sperimento con workflow di coding assistiti da AI. Sto anche lavorando su un semplice tool di monitoring VPS.',
+        nowPersonal:
+            'Passo tempo di qualità con i miei due bambini a Busto Arsizio, scoprendo nuovi parchi giochi, e cercando di perfezionare la mia ricetta della pizza fatta in casa. Recentemente ho iniziato a correre la mattina—si scopre che mi piace davvero!',
+
+        // Historical entries toggle
+        showHistory: 'Mostra Aggiornamenti Precedenti',
+        hideHistory: 'Nascondi Aggiornamenti Precedenti',
+
+        // Contact and Social
         stayUpdated: 'Vuoi rimanere aggiornato?',
         followTwitter: 'Segui @_aleromano',
         subscribeRss: 'iscriviti al mio feed RSS.',
@@ -75,43 +289,185 @@ const twitterData = await getTwitterPosts(language);
     {t.tagline}
 </h2>
 
-<div class="intro">
-    <div class="content">
-        <p>
-            {t.intro1}
-        </p>
+<!-- Table of Contents -->
+<nav class="toc">
+    <h3>{t.tocTitle}</h3>
+    <ul>
+        <li><a href="#biography">{t.tocBiography}</a></li>
+        <li><a href="#experience">{t.tocExperience}</a></li>
+        <li><a href="#now">{t.tocNow}</a></li>
+    </ul>
+</nav>
 
-        <p>
-            {t.intro2}
-            <span class="mollie-logo-wrapper">
-                <img src="/Mollie-Logo-Black-2023.svg" class="mollie-logo light-logo" alt="Mollie" />
-                <img src="/Mollie-Logo-White-2023.svg" class="mollie-logo dark-logo" alt="Mollie" />
-            </span>.
-        </p>
-        <p>
-            {t.intro3}
-        </p>
-        <p>
-            {t.stayUpdated}
-            <a href="https://x.com/intent/user?screen_name=_aleromano" target="_blank" rel="noopener noreferrer"
-                >{t.followTwitter}</a
-            > or <a href="/rss.xml">{t.subscribeRss}</a>
-        </p>
-        <p>
-            {t.needHelp}
-            <a href={language === 'it' ? '/it/contact' : '/contact'}>{t.letsTalk}</a>
-        </p>
+<!-- Biography Section -->
+<section id="biography" class="biography">
+    <h3>{t.biographyTitle}</h3>
+    <div class="biography-content">
+        <div class="content">
+            <p>{t.biographyIntro}</p>
+            <p>{t.biographyTechAddiction}</p>
+            <p>{t.biographyPokemon}</p>
+            <p>{t.biographyJourney}</p>
+        </div>
+        <Image
+            src={profilePic}
+            alt={t.profilePicAlt}
+            width={300}
+            priority
+            densities={[1, 2]}
+            quality="max"
+            class="profile-pic"
+        />
     </div>
-    <Image
-        src={profilePic}
-        alt={t.profilePicAlt}
-        width={300}
-        priority
-        densities={[1, 2]}
-        quality="max"
-        class="profile-pic"
-    />
-</div>
+</section>
+
+<!-- Work Experience Section -->
+<section id="experience" class="experience">
+    <h3>{t.experienceTitle}</h3>
+    <div class="cv-download">
+        <a href="/cv-alessandro-romano.pdf" download class="cv-button">
+            {t.experienceDownloadCV}
+        </a>
+    </div>
+
+    <div class="job-entries">
+        <!-- Current Position Badge -->
+        <div class="current-badge">{t.currentPosition}</div>
+
+        <!-- Mollie -->
+        <article class="job-entry current">
+            <div class="job-header">
+                <div class="company-info">
+                    <h4>{t.mollieTitle}</h4>
+                    <span class="mollie-logo-wrapper">
+                        <img src="/Mollie-Logo-Black-2023.svg" class="mollie-logo light-logo" alt="Mollie" />
+                        <img src="/Mollie-Logo-White-2023.svg" class="mollie-logo dark-logo" alt="Mollie" />
+                    </span>
+                </div>
+                <div class="job-meta">
+                    <span class="role">{t.mollieRole}</span>
+                    <span class="period">{t.molliePeriod}</span>
+                </div>
+            </div>
+            <p class="job-description">{t.mollieDescription}</p>
+            <ul class="achievements">
+                {t.mollieAchievements.map((achievement) => <li>{achievement}</li>)}
+            </ul>
+        </article>
+
+        <!-- KPN -->
+        <article class="job-entry">
+            <div class="job-header">
+                <div class="company-info">
+                    <h4>{t.kpnTitle}</h4>
+                </div>
+                <div class="job-meta">
+                    <span class="role">{t.kpnRole}</span>
+                    <span class="period">{t.kpnPeriod}</span>
+                </div>
+            </div>
+            <p class="job-description">{t.kpnDescription}</p>
+            <ul class="achievements">
+                {t.kpnAchievements.map((achievement) => <li>{achievement}</li>)}
+            </ul>
+        </article>
+
+        <!-- Microsoft -->
+        <article class="job-entry">
+            <div class="job-header">
+                <div class="company-info">
+                    <h4>{t.microsoftTitle}</h4>
+                </div>
+                <div class="job-meta">
+                    <span class="role">{t.microsoftRole}</span>
+                    <span class="period">{t.microsoftPeriod}</span>
+                </div>
+            </div>
+            <p class="job-description">{t.microsoftDescription}</p>
+            <ul class="achievements">
+                {t.microsoftAchievements.map((achievement) => <li>{achievement}</li>)}
+            </ul>
+        </article>
+    </div>
+</section>
+
+<!-- Now Section -->
+<section id="now" class="now">
+    <h3>{t.nowTitle}</h3>
+    <p class="now-subtitle">{t.nowSubtitle}</p>
+
+    <div class="now-content">
+        <div class="now-item">
+            <h4>🚀 Work</h4>
+            <p>{t.nowCurrently}</p>
+        </div>
+
+        <div class="now-item">
+            <h4>📚 Learning</h4>
+            <p>{t.nowLearning}</p>
+        </div>
+
+        <div class="now-item">
+            <h4>📖 Reading</h4>
+            <p>{t.nowReading}</p>
+        </div>
+
+        <div class="now-item">
+            <h4>💻 Side Projects</h4>
+            <p>{t.nowSideProjects}</p>
+        </div>
+
+        <div class="now-item">
+            <h4>🏠 Personal</h4>
+            <p>{t.nowPersonal}</p>
+        </div>
+    </div>
+
+    <!-- Collapsible Historical Entries -->
+    <details class="history-toggle">
+        <summary>{t.showHistory}</summary>
+        <div class="historical-entries">
+            <div class="historical-entry">
+                <h5>May 2024</h5>
+                <p>
+                    Launched major platform improvements at Mollie, focused on learning Rust, reading "Staff Engineer"
+                    by Will Larson. Started exploring AI-assisted development workflows.
+                </p>
+            </div>
+            <div class="historical-entry">
+                <h5>February 2024</h5>
+                <p>
+                    Completed Team Topologies workshop, implemented new team structure at Mollie. Deep dive into system
+                    design patterns and organizational psychology.
+                </p>
+            </div>
+            <div class="historical-entry">
+                <h5>November 2023</h5>
+                <p>
+                    Spoke at local tech meetup about engineering management, launched personal blog redesign, focused on
+                    improving work-life balance with new morning routine.
+                </p>
+            </div>
+        </div>
+    </details>
+</section>
+
+<!-- Contact Section -->
+<section class="contact">
+    <p>
+        {t.stayUpdated}
+        <a href="https://x.com/intent/user?screen_name=_aleromano" target="_blank" rel="noopener noreferrer"
+            >{t.followTwitter}</a
+        > or <a href="/rss.xml">{t.subscribeRss}</a>
+    </p>
+    <p>
+        {t.needHelp}
+        <a href={language === 'it' ? '/it/contact' : '/contact'}>{t.letsTalk}</a>
+    </p>
+    <p class="back-to-top">
+        <a href="#top">↑ Back to top</a>
+    </p>
+</section>
 
 <TwitterFeed
     posts={twitterData.posts}
@@ -121,15 +477,169 @@ const twitterData = await getTwitterPosts(language);
 />
 
 <style>
-    .intro {
-        display: flex;
-        align-items: center;
-        gap: var(--space-md);
-        margin: var(--space-lg) 0 0;
+    /* Table of Contents */
+    .toc {
+        background: var(--color-bg-secondary);
+        border-radius: var(--border-radius);
+        padding: var(--space-md);
+        margin: var(--space-lg) 0;
+        border: 1px solid var(--color-border);
     }
 
-    .content {
+    .toc h3 {
+        margin-top: 0;
+        margin-bottom: var(--space-sm);
+        font-size: var(--font-size-md);
+        color: var(--color-text-primary);
+    }
+
+    .toc ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: var(--space-md);
+        flex-wrap: wrap;
+    }
+
+    .toc li {
+        margin: 0;
+    }
+
+    .toc a {
+        color: var(--color-accent);
+        text-decoration: none;
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--border-radius-sm);
+        border: 1px solid var(--color-accent);
+        transition: all 0.2s ease;
+        font-size: var(--font-size-sm);
+    }
+
+    .toc a:hover {
+        background-color: var(--color-accent);
+        color: var(--color-bg);
+    }
+
+    /* Sections */
+    section {
+        margin: var(--space-xl) 0;
+        scroll-margin-top: var(--space-lg);
+    }
+
+    section h3 {
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--space-md);
+        color: var(--color-text-primary);
+        border-bottom: 2px solid var(--color-accent);
+        padding-bottom: var(--space-xs);
+    }
+
+    /* Biography Section */
+    .biography-content {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-lg);
+        margin-top: var(--space-md);
+    }
+
+    .biography-content .content {
         flex: 1;
+    }
+
+    .profile-pic {
+        max-width: 250px;
+        height: auto;
+        border-radius: var(--border-radius);
+        transform: translateY(0);
+        animation: slideDown 1s ease-out 0.2s backwards;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-25%);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    /* Work Experience Section */
+    .cv-download {
+        margin: var(--space-md) 0;
+    }
+
+    .cv-button {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-xs);
+        background-color: var(--color-accent);
+        color: var(--color-bg);
+        padding: var(--space-sm) var(--space-md);
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        border: 2px solid var(--color-accent);
+    }
+
+    .cv-button:hover {
+        background-color: transparent;
+        color: var(--color-accent);
+    }
+
+    .cv-button::before {
+        content: '📄';
+        margin-right: var(--space-xs);
+    }
+
+    .current-badge {
+        background: linear-gradient(45deg, var(--color-accent), #10b981);
+        color: white;
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--border-radius-sm);
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: var(--space-md);
+    }
+
+    .job-entries {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+
+    .job-entry {
+        background: var(--color-bg-secondary);
+        border-radius: var(--border-radius);
+        padding: var(--space-md);
+        border: 1px solid var(--color-border);
+        position: relative;
+    }
+
+    .job-entry.current {
+        border-color: var(--color-accent);
+        background: linear-gradient(145deg, var(--color-bg-secondary), rgba(var(--color-accent-rgb), 0.05));
+    }
+
+    .job-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: var(--space-sm);
+    }
+
+    .company-info {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
+    .company-info h4 {
+        margin: 0;
+        font-size: var(--font-size-lg);
+        color: var(--color-text-primary);
     }
 
     .mollie-logo-wrapper {
@@ -137,7 +647,7 @@ const twitterData = await getTwitterPosts(language);
     }
 
     .mollie-logo {
-        height: 1rem;
+        height: 1.2rem;
     }
 
     /* Show/hide based on theme */
@@ -153,30 +663,222 @@ const twitterData = await getTwitterPosts(language);
         display: none;
     }
 
-    .profile-pic {
-        margin-bottom: calc(-1 * var(--space-lg));
-        max-width: 100%;
-        height: auto;
-        transform: translateY(0);
-        animation: slideDown 1s ease-out 0.2s backwards;
+    .job-meta {
+        text-align: right;
     }
 
-    @keyframes slideDown {
-        from {
-            transform: translateY(-25%);
-        }
-        to {
-            transform: translateY(0);
-        }
+    .role {
+        display: block;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-xs);
     }
 
-    @media (max-width: 636px) {
-        .intro {
+    .period {
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+    }
+
+    .job-description {
+        color: var(--color-text-secondary);
+        margin-bottom: var(--space-sm);
+        font-style: italic;
+    }
+
+    .achievements {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .achievements li {
+        position: relative;
+        padding-left: var(--space-md);
+        margin-bottom: var(--space-xs);
+        color: var(--color-text-primary);
+    }
+
+    .achievements li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--color-accent);
+        font-weight: bold;
+    }
+
+    /* Now Section */
+    .now-subtitle {
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+        font-style: italic;
+        margin-bottom: var(--space-md);
+    }
+
+    .now-content {
+        display: grid;
+        gap: var(--space-md);
+        margin-bottom: var(--space-lg);
+    }
+
+    .now-item {
+        background: var(--color-bg-secondary);
+        border-radius: var(--border-radius);
+        padding: var(--space-md);
+        border: 1px solid var(--color-border);
+    }
+
+    .now-item h4 {
+        margin: 0 0 var(--space-sm) 0;
+        font-size: var(--font-size-md);
+        color: var(--color-text-primary);
+    }
+
+    .now-item p {
+        margin: 0;
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+    }
+
+    /* History Toggle */
+    .history-toggle {
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-bg-secondary);
+        margin-top: var(--space-md);
+    }
+
+    .history-toggle summary {
+        padding: var(--space-sm) var(--space-md);
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        user-select: none;
+        transition: background-color 0.2s ease;
+    }
+
+    .history-toggle summary:hover {
+        background: rgba(var(--color-accent-rgb), 0.1);
+    }
+
+    .history-toggle[open] summary {
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .historical-entries {
+        padding: var(--space-md);
+    }
+
+    .historical-entry {
+        padding: var(--space-sm) 0;
+        border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .historical-entry:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .historical-entry h5 {
+        margin: 0 0 var(--space-xs) 0;
+        font-size: var(--font-size-sm);
+        color: var(--color-accent);
+        font-weight: 600;
+    }
+
+    .historical-entry p {
+        margin: 0;
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+        line-height: 1.5;
+    }
+
+    /* Contact Section */
+    .contact {
+        background: var(--color-bg-secondary);
+        border-radius: var(--border-radius);
+        padding: var(--space-md);
+        border: 1px solid var(--color-border);
+        text-align: center;
+        margin: var(--space-xl) 0;
+    }
+
+    .contact p {
+        margin: var(--space-sm) 0;
+    }
+
+    .contact a {
+        color: var(--color-accent);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .contact a:hover {
+        text-decoration: underline;
+    }
+
+    .back-to-top {
+        margin-top: var(--space-md);
+        font-size: var(--font-size-sm);
+    }
+
+    .back-to-top a {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .back-to-top a:hover {
+        color: var(--color-accent);
+        text-decoration: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .toc ul {
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .biography-content {
             flex-direction: column;
         }
 
         .profile-pic {
-            margin-bottom: -1.2rem;
+            max-width: 200px;
+            align-self: center;
+        }
+
+        .job-header {
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .job-meta {
+            text-align: left;
+        }
+
+        .company-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-xs);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .toc {
+            padding: var(--space-sm);
+        }
+
+        section {
+            margin: var(--space-lg) 0;
+        }
+
+        .job-entry {
+            padding: var(--space-sm);
+        }
+
+        .now-item {
+            padding: var(--space-sm);
         }
     }
 </style>

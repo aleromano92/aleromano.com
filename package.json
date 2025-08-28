@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "build": "npm run generate-cv && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "predocker:build": "npm test",
@@ -14,6 +14,7 @@
     "docker:dev": "npm run docker:clean && docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build",
     "translate": "node scripts/translate.js",
     "translate:missing": "node scripts/translate-missing.js",
+    "generate-cv": "node scripts/generate-cv.js",
     "test": "vitest run",
     "test:watch": "vitest"
   },

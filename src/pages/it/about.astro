@@ -18,8 +18,60 @@ const pageDescription = t.pageDescription;
 const i18nData = {
     currentLang: language,
 };
+
+// Structured data for Person schema (Italian version)
+const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Alessandro Romano',
+    alternateName: 'Ale Romano',
+    description:
+        'Senior Engineering Manager a Mollie, padre di due bambini fantastici e marito divertente e affettuoso. Ossessionato dai dettagli e da come funzionano le cose: dai servizi Cloud alle relazioni umane.',
+    url: 'https://aleromano.com/it',
+    image: 'https://aleromano.com/alepro.png',
+    sameAs: [
+        'https://twitter.com/_aleromano',
+        'https://github.com/aleromano92',
+        'https://linkedin.com/in/alessandroromano92',
+        'https://aleromano.com',
+    ],
+    jobTitle: 'Engineering Manager',
+    worksFor: {
+        '@type': 'Organization',
+        name: 'Mollie',
+        url: 'https://mollie.com',
+    },
+    knowsAbout: [
+        'Ingegneria del Software',
+        'Gestione Engineering',
+        'Architettura Cloud',
+        'Leadership di Team',
+        'TypeScript',
+        'JavaScript',
+        'Azure',
+        'System Design',
+    ],
+    address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Busto Arsizio',
+        addressRegion: 'Lombardia',
+        addressCountry: 'IT',
+    },
+    nationality: 'Italian',
+    speaks: [
+        {
+            '@type': 'Language',
+            name: 'Italiano',
+            alternateName: 'it',
+        },
+        {
+            '@type': 'Language',
+            name: 'Inglese',
+            alternateName: 'en',
+        },
+    ],
+};
 ---
 
-<BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData}>
-    <BaseAbout language={language} />
-</BaseLayout>
+BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData} structuredData={structuredData}>
+<BaseAbout language={language} />

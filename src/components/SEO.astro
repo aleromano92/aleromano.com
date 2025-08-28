@@ -12,6 +12,7 @@ export interface Props {
     imageAlt?: string;
     publishedTime?: Date;
     author?: string;
+    structuredData?: object;
 }
 
 const {
@@ -24,6 +25,7 @@ const {
     imageAlt,
     publishedTime,
     author,
+    structuredData,
 } = Astro.props;
 
 // Generate canonical URL
@@ -82,3 +84,6 @@ const imageUrl = image ? new URL(image.src, 'https://aleromano.com').href : unde
         </>
     )
 }
+
+<!-- Structured Data / JSON-LD -->
+{structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
