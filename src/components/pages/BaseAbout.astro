@@ -331,9 +331,6 @@ const twitterData = await getTwitterPosts(language);
     </div>
 
     <div class="job-entries">
-        <!-- Current Position Badge -->
-        <div class="current-badge">{t.currentPosition}</div>
-
         <!-- Mollie -->
         <article class="job-entry current">
             <div class="job-header">
@@ -344,6 +341,7 @@ const twitterData = await getTwitterPosts(language);
                         <img src="/Mollie-Logo-White-2023.svg" class="mollie-logo dark-logo" alt="Mollie" />
                     </span>
                 </div>
+                <div class="current-badge">{t.currentPosition}</div>
                 <div class="job-meta">
                     <span class="role">{t.mollieRole}</span>
                     <span class="period">{t.molliePeriod}</span>
@@ -577,14 +575,19 @@ const twitterData = await getTwitterPosts(language);
     }
 
     .current-badge {
-        background: linear-gradient(45deg, var(--color-accent), #10b981);
-        color: white;
+        background-color: var(--color-accent);
+        color: var(--color-bg);
         padding: var(--space-xs) var(--space-sm);
         border-radius: var(--border-radius-sm);
-        font-size: var(--font-size-sm);
-        font-weight: 600;
-        display: inline-block;
-        margin-bottom: var(--space-md);
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 2px solid var(--color-accent);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transform: rotate(-2deg);
+        align-self: center;
+        white-space: nowrap;
     }
 
     .job-entries {
