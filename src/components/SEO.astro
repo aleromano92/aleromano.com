@@ -86,4 +86,4 @@ const imageUrl = image ? new URL(image.src, 'https://aleromano.com').href : unde
 }
 
 <!-- Structured Data / JSON-LD -->
-{structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+{structuredData && <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />}

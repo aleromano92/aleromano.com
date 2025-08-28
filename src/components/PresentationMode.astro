@@ -46,7 +46,7 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
                 {
                     slides.map((slideContent) => (
                         <section data-markdown data-separator-notes="^Note:">
-                            <script type="text/template" set:html={slideContent} />
+                            <script is:inline type="text/template" set:html={slideContent} />
                         </section>
                     ))
                 }

@@ -620,7 +620,11 @@ const twitterData = await getTwitterPosts(language);
 
     .job-entry.current {
         border-color: var(--color-accent);
-        background: linear-gradient(145deg, var(--color-bg-secondary), rgba(var(--color-accent-rgb), 0.05));
+        background: linear-gradient(
+            145deg,
+            var(--color-bg-secondary),
+            color-mix(in srgb, var(--color-accent) 5%, transparent)
+        );
     }
 
     .job-header {
@@ -757,7 +761,7 @@ const twitterData = await getTwitterPosts(language);
     }
 
     .history-toggle summary:hover {
-        background: rgba(var(--color-accent-rgb), 0.1);
+        background: color-mix(in srgb, var(--color-accent) 10%, transparent);
     }
 
     .history-toggle[open] summary {

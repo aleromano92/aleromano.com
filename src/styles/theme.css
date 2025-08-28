@@ -8,7 +8,6 @@
     --color-primary: #49337b;
     --color-secondary: #f7eebf;
     --color-accent: #5f38c2;
-    --color-accent-rgb: 95, 56, 194;
     --color-border: var(--color-text);
     --color-border-light: #d1c7e8;
     --color-checkbox-bg: #886fc3;
@@ -62,7 +61,6 @@
     --color-primary: #ffeb89;
     --color-secondary: #6446a9;
     --color-accent: #ffdb29;
-    --color-accent-rgb: 255, 219, 41;
     --color-border: var(--color-text);
     --color-border-light: #7a66b3;
     --color-checkbox-bg: #fff0a3;
