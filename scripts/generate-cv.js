@@ -19,67 +19,63 @@ function extractWorkExperienceFromAstro() {
     const astroFilePath = path.join(__dirname, '..', 'src', 'components', 'pages', 'BaseAbout.astro');
     const content = fs.readFileSync(astroFilePath, 'utf-8');
 
-    // Extract the English translations object
-    const enSectionMatch = content.match(/en:\s*{([\s\S]*?)},\s*it:/);
-    if (!enSectionMatch) {
-        throw new Error('Could not find English translations section in BaseAbout.astro');
+    // Extract the aboutTranslations object
+    const translationsMatch = content.match(/export const aboutTranslations[^=]*=\s*([\s\S]*?);(?=\s*(?:export|const|let|var|function|class|$))/);
+    if (!translationsMatch) {
+        throw new Error('Could not find aboutTranslations object in BaseAbout.astro');
     }
 
-    const enSection = enSectionMatch[1];
+    // Parse the translations object as JavaScript
+    let translationsObject;
+    try {
+        // Create a safe evaluation context
+        const translationsCode = `const aboutTranslations = ${translationsMatch[1]}; aboutTranslations;`;
+        translationsObject = eval(translationsCode);
+    } catch (error) {
+        throw new Error(`Failed to parse aboutTranslations object: ${error.message}`);
+    }
 
-    // Extract job data
+    // Get English translations
+    const en = translationsObject.en;
+    if (!en) {
+        throw new Error('Could not find English translations in aboutTranslations object');
+    }
+
+    // Extract job data using the parsed object
     const jobs = [];
 
     // Extract Mollie data
-    const mollieTitle = extractValue(enSection, 'mollieTitle');
-    const mollieRole = extractValue(enSection, 'mollieRole');
-    const molliePeriod = extractValue(enSection, 'molliePeriod');
-    const mollieDescription = extractValue(enSection, 'mollieDescription');
-    const mollieAchievements = extractArray(enSection, 'mollieAchievements');
-
-    if (mollieTitle && mollieRole && molliePeriod && mollieDescription) {
+    if (en.mollieTitle && en.mollieRole && en.molliePeriod && en.mollieDescription) {
         jobs.push({
-            company: mollieTitle,
-            role: mollieRole,
-            period: molliePeriod,
-            description: mollieDescription,
-            achievements: mollieAchievements,
+            company: en.mollieTitle,
+            role: en.mollieRole,
+            period: en.molliePeriod,
+            description: en.mollieDescription,
+            achievements: en.mollieAchievements || [],
             isCurrent: true
         });
     }
 
-    // Extract Banca AideXa data (stored in kpn variables)
-    const bancaAideXaTitle = extractValue(enSection, 'kpnTitle');
-    const bancaAideXaRole = extractValue(enSection, 'kpnRole');
-    const bancaAideXaPeriod = extractValue(enSection, 'kpnPeriod');
-    const bancaAideXaDescription = extractValue(enSection, 'kpnDescription');
-    const bancaAideXaAchievements = extractArray(enSection, 'kpnAchievements');
-
-    if (bancaAideXaTitle && bancaAideXaRole && bancaAideXaPeriod && bancaAideXaDescription) {
+    // Extract Banca AideXa data
+    if (en.bancaAideXaTitle && en.bancaAideXaRole && en.bancaAideXaPeriod && en.bancaAideXaDescription) {
         jobs.push({
-            company: bancaAideXaTitle,
-            role: bancaAideXaRole,
-            period: bancaAideXaPeriod,
-            description: bancaAideXaDescription,
-            achievements: bancaAideXaAchievements,
+            company: en.bancaAideXaTitle,
+            role: en.bancaAideXaRole,
+            period: en.bancaAideXaPeriod,
+            description: en.bancaAideXaDescription,
+            achievements: en.bancaAideXaAchievements || [],
             isCurrent: false
         });
     }
 
-    // Extract lastminute.com data (stored in microsoft variables)
-    const lastminuteTitle = extractValue(enSection, 'microsoftTitle');
-    const lastminuteRole = extractValue(enSection, 'microsoftRole');
-    const lastminutePeriod = extractValue(enSection, 'microsoftPeriod');
-    const lastminuteDescription = extractValue(enSection, 'microsoftDescription');
-    const lastminuteAchievements = extractArray(enSection, 'microsoftAchievements');
-
-    if (lastminuteTitle && lastminuteRole && lastminutePeriod && lastminuteDescription) {
+    // Extract lastminute.com data
+    if (en.lastminuteTitle && en.lastminuteRole && en.lastminutePeriod && en.lastminuteDescription) {
         jobs.push({
-            company: lastminuteTitle,
-            role: lastminuteRole,
-            period: lastminutePeriod,
-            description: lastminuteDescription,
-            achievements: lastminuteAchievements,
+            company: en.lastminuteTitle,
+            role: en.lastminuteRole,
+            period: en.lastminutePeriod,
+            description: en.lastminuteDescription,
+            achievements: en.lastminuteAchievements || [],
             isCurrent: false
         });
     }
@@ -88,60 +84,6 @@ function extractWorkExperienceFromAstro() {
 }
 
 /**
- * Extract a string value from the translations
- */
-function extractValue(section, key) {
-    // Try different quote patterns
-    const patterns = [
-        new RegExp(`${key}:\\s*'([^']*?)'`, 's'),
-        new RegExp(`${key}:\\s*"([^"]*?)"`, 's'),
-        new RegExp(`${key}:\\s*\`([^\`]*?)\``, 's')
-    ];
-
-    for (const pattern of patterns) {
-        const match = section.match(pattern);
-        if (match) {
-            return match[1].trim();
-        }
-    }
-
-    console.warn(`⚠️  Could not extract value for key: ${key}`);
-    return null;
-}
-
-/**
- * Extract an array value from the translations
- */
-function extractArray(section, key) {
-    const regex = new RegExp(`${key}:\\s*\\[(.*?)\\]`, 's');
-    const match = section.match(regex);
-    if (!match) {
-        console.warn(`⚠️  Could not extract array for key: ${key}`);
-        return [];
-    }
-
-    // Extract individual array items - handle both single and double quotes
-    const arrayContent = match[1];
-    const items = [];
-
-    // First try single quotes
-    const singleQuoteRegex = /'([^']*?)'/g;
-    let itemMatch;
-
-    while ((itemMatch = singleQuoteRegex.exec(arrayContent)) !== null) {
-        items.push(itemMatch[1]);
-    }
-
-    // If no single quotes found, try double quotes
-    if (items.length === 0) {
-        const doubleQuoteRegex = /"([^"]*?)"/g;
-        while ((itemMatch = doubleQuoteRegex.exec(arrayContent)) !== null) {
-            items.push(itemMatch[1]);
-        }
-    }
-
-    return items;
-}/**
  * Escape special characters for PDF
  */
 function escapePdfString(str) {
@@ -225,7 +167,7 @@ BT
 0 -35 Td
 /F1 16 Tf
 (Professional Experience) Tj
-${data.jobs.map((job, index) => {
+${data.jobs.map((job) => {
         const isCurrentText = job.isCurrent ? ' (Current)' : '';
         return `
 0 -25 Td

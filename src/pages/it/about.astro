@@ -1,4 +1,5 @@
 ---
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import BaseAbout, { getAboutTranslations } from '../../components/pages/BaseAbout.astro';
 import type { SupportedLanguage } from '../../types/i18n';
 
@@ -72,5 +73,6 @@ const structuredData = {
 };
 ---
 
-BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData} structuredData={structuredData}>
-<BaseAbout language={language} />
+<BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData} structuredData={structuredData}>
+    <BaseAbout language={language} />
+</BaseLayout>
