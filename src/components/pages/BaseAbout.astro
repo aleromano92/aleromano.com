@@ -56,6 +56,13 @@ export interface AboutTranslations {
     nowSideProjects: string;
     nowPersonal: string;
 
+    // Now Section Labels
+    nowWorkLabel: string;
+    nowLearningLabel: string;
+    nowReadingLabel: string;
+    nowSideProjectsLabel: string;
+    nowPersonalLabel: string;
+
     // Historical entries toggle
     showHistory: string;
     hideHistory: string;
@@ -160,6 +167,13 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         showHistory: 'Show Previous Updates',
         hideHistory: 'Hide Previous Updates',
 
+        // Now Section Labels
+        nowWorkLabel: '🚀 Work',
+        nowLearningLabel: '📚 Learning',
+        nowReadingLabel: '📖 Reading',
+        nowSideProjectsLabel: '💻 Side Projects',
+        nowPersonalLabel: '🏠 Personal',
+
         // Contact and Social
         stayUpdated: 'Wanna stay updated?',
         followTwitter: 'Follow @_aleromano',
@@ -256,6 +270,13 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         // Historical entries toggle
         showHistory: 'Mostra Aggiornamenti Precedenti',
         hideHistory: 'Nascondi Aggiornamenti Precedenti',
+
+        // Now Section Labels
+        nowWorkLabel: '🚀 Lavoro',
+        nowLearningLabel: '📚 Studio',
+        nowReadingLabel: '📖 Letture',
+        nowSideProjectsLabel: '💻 Progetti Personali',
+        nowPersonalLabel: '🏠 Vita Personale',
 
         // Contact and Social
         stayUpdated: 'Vuoi rimanere aggiornato?',
@@ -410,27 +431,27 @@ const twitterData = await getTwitterPosts(language);
 
     <div class="now-content">
         <div class="now-item">
-            <h4>🚀 Work</h4>
+            <h4>{t.nowWorkLabel}</h4>
             <p>{t.nowCurrently}</p>
         </div>
 
         <div class="now-item">
-            <h4>📚 Learning</h4>
+            <h4>{t.nowLearningLabel}</h4>
             <p>{t.nowLearning}</p>
         </div>
 
         <div class="now-item">
-            <h4>📖 Reading</h4>
+            <h4>{t.nowReadingLabel}</h4>
             <p>{t.nowReading}</p>
         </div>
 
         <div class="now-item">
-            <h4>💻 Side Projects</h4>
+            <h4>{t.nowSideProjectsLabel}</h4>
             <p>{t.nowSideProjects}</p>
         </div>
 
         <div class="now-item">
-            <h4>🏠 Personal</h4>
+            <h4>{t.nowPersonalLabel}</h4>
             <p>{t.nowPersonal}</p>
         </div>
     </div>
