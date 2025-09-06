@@ -354,10 +354,17 @@ const twitterData = await getTwitterPosts(language);
         <article class="job-entry current">
             <div class="job-header">
                 <div class="company-info">
-                    <h4>{t.mollieTitle}</h4>
-                    <span class="mollie-logo-wrapper">
-                        <img src="/Mollie-Logo-Black-2023.svg" class="mollie-logo light-logo" alt="Mollie" />
-                        <img src="/Mollie-Logo-White-2023.svg" class="mollie-logo dark-logo" alt="Mollie" />
+                    <span class="company-logo-wrapper">
+                        <img
+                            src="/Mollie-Logo-Black-2023.svg"
+                            class="company-logo mollie-logo light-logo"
+                            alt={t.mollieTitle}
+                        />
+                        <img
+                            src="/Mollie-Logo-White-2023.svg"
+                            class="company-logo mollie-logo dark-logo"
+                            alt={t.mollieTitle}
+                        />
                     </span>
                 </div>
                 <div class="current-badge">{t.currentPosition}</div>
@@ -376,7 +383,18 @@ const twitterData = await getTwitterPosts(language);
         <article class="job-entry">
             <div class="job-header">
                 <div class="company-info">
-                    <h4>{t.bancaAideXaTitle}</h4>
+                    <span class="company-logo-wrapper">
+                        <img
+                            src="/aidexa-black.svg"
+                            class="company-logo aidexa-logo light-logo"
+                            alt={t.bancaAideXaTitle}
+                        />
+                        <img
+                            src="/aidexa-white.svg"
+                            class="company-logo aidexa-logo dark-logo"
+                            alt={t.bancaAideXaTitle}
+                        />
+                    </span>
                 </div>
                 <div class="job-meta">
                     <span class="role">{t.bancaAideXaRole}</span>
@@ -393,7 +411,18 @@ const twitterData = await getTwitterPosts(language);
         <article class="job-entry">
             <div class="job-header">
                 <div class="company-info">
-                    <h4>{t.lastminuteTitle}</h4>
+                    <span class="company-logo-wrapper">
+                        <img
+                            src="/lastminute.svg"
+                            class="company-logo lastminute-logo light-logo"
+                            alt={t.lastminuteTitle}
+                        />
+                        <img
+                            src="/lastminute-white.svg"
+                            class="company-logo lastminute-logo dark-logo"
+                            alt={t.lastminuteTitle}
+                        />
+                    </span>
                 </div>
                 <div class="job-meta">
                     <span class="role">{t.lastminuteRole}</span>
@@ -676,12 +705,24 @@ const twitterData = await getTwitterPosts(language);
         color: var(--color-text-primary);
     }
 
-    .mollie-logo-wrapper {
+    .company-logo-wrapper {
         display: inline-block;
     }
 
-    .mollie-logo {
+    .company-logo {
         height: 1.2rem;
+    }
+
+    .mollie-logo {
+        height: 2rem;
+    }
+
+    .aidexa-logo {
+        height: 1.5rem;
+    }
+
+    .lastminute-logo {
+        height: 2.5rem;
     }
 
     /* Show/hide based on theme */
