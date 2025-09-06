@@ -15,6 +15,10 @@ export interface AboutTranslations {
     tocBiography: string;
     tocExperience: string;
     tocNow: string;
+    tocTwitter: string;
+
+    // Back to top
+    backToTop: string;
 
     // Biography Section
     biographyTitle: string;
@@ -89,6 +93,10 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         tocBiography: 'Biography',
         tocExperience: 'Work Experience',
         tocNow: "What I'm Up To Now",
+        tocTwitter: 'Latest from X',
+
+        // Back to top
+        backToTop: '↑ Back to top',
 
         // Biography Section
         biographyTitle: 'Biography',
@@ -195,6 +203,10 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         tocBiography: 'Biografia',
         tocExperience: 'Esperienza Lavorativa',
         tocNow: 'Cosa Sto Facendo Ora',
+        tocTwitter: 'Ultimi post da X',
+
+        // Back to top
+        backToTop: '↑ Torna su',
 
         // Biography Section
         biographyTitle: 'Biografia',
@@ -320,12 +332,16 @@ const twitterData = await getTwitterPosts(language);
         <li><a href="#biography">{t.tocBiography}</a></li>
         <li><a href="#experience">{t.tocExperience}</a></li>
         <li><a href="#now">{t.tocNow}</a></li>
+        <li><a href="#twitter">{t.tocTwitter}</a></li>
     </ul>
 </nav>
 
 <!-- Biography Section -->
 <section id="biography" class="biography">
-    <h3>{t.biographyTitle}</h3>
+    <h3>
+        {t.biographyTitle}
+        <a href="#top" class="section-back-to-top" aria-label={t.backToTop}>{t.backToTop}</a>
+    </h3>
     <div class="biography-content">
         <div class="content">
             <p>{t.biographyIntro}</p>
@@ -347,7 +363,10 @@ const twitterData = await getTwitterPosts(language);
 
 <!-- Work Experience Section -->
 <section id="experience" class="experience">
-    <h3>{t.experienceTitle}</h3>
+    <h3>
+        {t.experienceTitle}
+        <a href="#top" class="section-back-to-top" aria-label={t.backToTop}>{t.backToTop}</a>
+    </h3>
 
     <div class="job-entries">
         <!-- Mollie -->
@@ -458,7 +477,10 @@ const twitterData = await getTwitterPosts(language);
 
 <!-- Now Section -->
 <section id="now" class="now">
-    <h3>{t.nowTitle}</h3>
+    <h3>
+        {t.nowTitle}
+        <a href="#top" class="section-back-to-top" aria-label={t.backToTop}>{t.backToTop}</a>
+    </h3>
     <p class="now-subtitle">{t.nowSubtitle}</p>
 
     <div class="now-content">
@@ -529,17 +551,22 @@ const twitterData = await getTwitterPosts(language);
         {t.needHelp}
         <a href={language === 'it' ? '/it/contact' : '/contact'}>{t.letsTalk}</a>
     </p>
-    <p class="back-to-top">
-        <a href="#top">↑ Back to top</a>
-    </p>
 </section>
 
-<TwitterFeed
-    posts={twitterData.posts}
-    error={twitterData.error}
-    language={language}
-    freshness={twitterData.freshness}
-/>
+<section id="twitter">
+    <h3>
+        <span class="title-with-icon">
+            {t.tocTwitter}
+        </span>
+        <a href="#top" class="section-back-to-top" aria-label={t.backToTop}>{t.backToTop}</a>
+    </h3>
+    <TwitterFeed
+        posts={twitterData.posts}
+        error={twitterData.error}
+        language={language}
+        freshness={twitterData.freshness}
+    />
+</section>
 
 <style>
     @import '../../styles/buttons.css';
@@ -591,7 +618,7 @@ const twitterData = await getTwitterPosts(language);
     /* Sections */
     section {
         margin: var(--space-xl) 0;
-        scroll-margin-top: var(--space-lg);
+        scroll-margin-top: calc(4rem + var(--space-md)); /* Header height (4rem) + breathing space (1.5rem) = 5.5rem */
     }
 
     section h3 {
@@ -600,6 +627,36 @@ const twitterData = await getTwitterPosts(language);
         color: var(--color-text-primary);
         border-bottom: 2px solid var(--color-accent);
         padding-bottom: var(--space-xs);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Section back-to-top links */
+    .section-back-to-top {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: var(--font-size-sm);
+        font-weight: normal;
+        transition: color 0.2s ease;
+        opacity: 0.7;
+        margin-left: var(--space-sm);
+    }
+
+    .section-back-to-top:hover {
+        color: var(--color-accent);
+        opacity: 1;
+        text-decoration: none;
+    }
+
+    /* Title with icon styling */
+    .title-with-icon {
+        display: flex;
+        align-items: center;
+    }
+
+    .title-with-icon .x-icon {
+        margin-left: var(--space-xs);
     }
 
     /* Biography Section */
@@ -900,6 +957,7 @@ const twitterData = await getTwitterPosts(language);
         color: var(--color-text-secondary);
         text-decoration: none;
         transition: color 0.2s ease;
+        font-size: var(--font-size-sm);
     }
 
     .back-to-top a:hover {

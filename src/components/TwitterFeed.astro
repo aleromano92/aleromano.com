@@ -1,7 +1,6 @@
 ---
 import type { TwitterPost } from '../utils/twitter/twitter';
 import { DataFreshness } from '../utils/twitter/twitter';
-import { ICONS } from './SocialLink.astro';
 import TwitterPostCard from './TwitterPostCard.astro';
 
 interface Props {
@@ -85,8 +84,6 @@ function getFreshnessDisclaimer(freshness: DataFreshness, localizedText: typeof 
 
 <section class="twitter-feed">
     <div class="twitter-header">
-        <h2>{localizedDisclaimerText.title} <span class="x-icon" set:html={ICONS.x} /></h2>
-
         <div class="freshness-container">
             <span class={`live-indicator ${error ? 'live-indicator--error' : getFreshnessClass(freshness)}`}>
                 {error ? localizedDisclaimerText.liveLabel : getFreshnessLabel(freshness, localizedDisclaimerText)}
@@ -122,19 +119,8 @@ function getFreshnessDisclaimer(freshness: DataFreshness, localizedText: typeof 
 
     .twitter-header {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
         margin-bottom: 1rem;
-    }
-
-    .twitter-header h2 {
-        display: flex;
-        margin: 0;
-        font-size: 1.25rem;
-        color: var(--color-text-primary);
-    }
-
-    .twitter-header .x-icon {
-        margin-left: var(--space-xs);
     }
 
     .live-indicator {
