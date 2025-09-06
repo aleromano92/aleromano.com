@@ -29,7 +29,6 @@ export interface AboutTranslations {
 
     // Work Experience Section
     experienceTitle: string;
-    experienceDownloadCV: string;
     experienceSeeMore: string;
     currentPosition: string;
 
@@ -110,9 +109,7 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             "That curiosity about how things work never left me. Today, whether I'm architecting cloud solutions, optimizing team dynamics, or debugging a complex system, I approach each challenge with the same enthusiasm I had as that kid with RPG Maker.",
 
         // Work Experience Section
-        // NOTE: This data is automatically extracted by scripts/generate-cv.js to create the downloadable PDF CV
         experienceTitle: 'Work Experience',
-        experienceDownloadCV: 'Download CV (PDF)',
         experienceSeeMore: 'See more on ',
         currentPosition: 'Current Position',
 
@@ -221,7 +218,6 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 
         // Work Experience Section
         experienceTitle: 'Esperienza Lavorativa',
-        experienceDownloadCV: 'Scarica CV (PDF)',
         experienceSeeMore: 'Vedi di più su ',
         currentPosition: 'Posizione Attuale',
 
@@ -456,9 +452,6 @@ const twitterData = await getTwitterPosts(language);
     </div>
 
     <div class="experience-actions">
-        <a href="/cv-alessandro-romano.pdf" download class="button cv-button">
-            {t.experienceDownloadCV}
-        </a>
         <a
             href="https://www.linkedin.com/in/alessandroromano92"
             target="_blank"
@@ -689,11 +682,6 @@ const twitterData = await getTwitterPosts(language);
     }
 
     /* Work Experience Section */
-    .cv-button::before {
-        content: '📄';
-        margin-right: var(--space-xs);
-    }
-
     .experience-actions {
         margin-top: var(--space-lg);
         display: flex;
