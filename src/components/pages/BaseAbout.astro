@@ -22,10 +22,7 @@ export interface AboutTranslations {
 
     // Biography Section
     biographyTitle: string;
-    biographyIntro: string;
-    biographyTechAddiction: string;
-    biographyPokemon: string;
-    biographyJourney: string;
+    biographyText: string;
 
     // Work Experience Section
     experienceTitle: string;
@@ -90,7 +87,7 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         // Table of Contents
         tocTitle: 'Quick Navigation',
         tocBiography: 'Biography',
-        tocExperience: 'Work Experience',
+        tocExperience: 'Work Experience (most relevant)',
         tocNow: "What I'm Up To Now",
         tocTwitter: 'Latest from X',
 
@@ -99,14 +96,22 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 
         // Biography Section
         biographyTitle: 'Biography',
-        biographyIntro:
-            "I'm addicted to details and obsessed with how things work: from Cloud services to human relationships. Since my first Hello World in RPG Maker, I have come to believe that being an Engineer is much more than coding.",
-        biographyTechAddiction:
-            "As a kid growing up in Italy, I was completely addicted to technology. I spent countless hours creating elaborate RPG worlds in RPG Maker, crafting pixel-perfect sprites and designing complex storylines. It wasn't just gaming for me—it was my first taste of building digital experiences.",
-        biographyPokemon:
-            'Funny enough, Pokémon Yellow became my first English teacher. The Italian copies were always out of stock, so I convinced my parents to get me the English version. I played with a dictionary by my side, translating every dialogue. By the time I caught them all, I had accidentally learned a second language.',
-        biographyJourney:
-            "That curiosity about how things work never left me. Today, whether I'm architecting cloud solutions, optimizing team dynamics, or debugging a complex system, I approach each challenge with the same enthusiasm I had as that kid with RPG Maker.",
+        biographyText: `The first sign that I was very curious comes from the fact that at 5 years old I had learned to read simply because I pestered my parents asking them to read me cartoon titles or the words written on cookie boxes.
+            <br/>I believe I started reading very early precisely to satisfy this <strong>curiosity</strong> of mine as soon as possible without having to always depend on someone else.
+            <br/><br/>As the son of a metalworker and a housewife (following good southern Italian tradition), I didn't receive much encouragement towards technology from my parents, even though technology found me early anyway.
+            After constantly asking for a computer, a friend of my sister managed to assemble an old Pentium II with 128 MB of RAM and Windows 98 for me. I had no idea what an operating system was, but I still remember the excitement of turning it on for the first time.
+            From that moment on, I spent hours and hours tinkering with that computer, learning everything I could as a self-taught enthusiast and getting help from my cousin who was 4 years older from time to time.
+            It was he who introduced me to <strong>RPG Maker</strong>, a software that allowed me to create my first pixel art video games. I spent entire days importing sprites, creating maps with events, and writing complex stories. Even though it was just a game, I was taking my first steps in software engineering.
+            <br/>When in middle school I had my first encounter with LOGO, an educational programming language based on text commands to move a virtual turtle on the screen, I understood that maybe I could make a career in this field and be paid for my passion.
+            <br/><br/>Obviously, besides building video games, I also loved playing them: when I was in elementary school, Pokémon was at the height of its success and I too got my Game Boy Color; but the Italian copies of Pokémon Yellow were sold out, so at 8 years old I found myself with the English version of Pokémon Yellow in my hands.
+            Despite not knowing English (and neither did my parents), by comparing notes with school friends and always having a small dictionary with me, I managed to complete the game in a few months. Years later came the PlayStation and Final Fantasy 7 (never released in Italian): they were my first <strong>English teachers</strong>.
+            <br/><br/>Even though I was always considered a bit "nerdy" by my peers, I never neglected <strong>sports</strong> and being together: I played soccer first and then tennis for many years. Now I limit myself to running and doing some weights at home because life as a father requires spending my time very wisely.
+            Sports helped me always keep my feet on the ground because I admit I fall into <strong>perfectionism</strong> too often: sometimes I have to force myself to complete something and consider it finished even if it's not perfect. This website is a perfect example: I postponed and delayed a lot in creating it because I kept studying how to do it perfectly, but always remained unsatisfied with the result.
+            <br/><br/>Now that I'm happily married and father of 2 wonderful children, I'm noticing that my curiosity also helps me in creating empathy with them and understanding their needs, even though they are still very young.
+            <br/>It may sound a bit strange, but many of the things I do like actively listening and putting myself in their shoes, are skills I learned in my work role as an <strong>Engineering Manager</strong>. Of course the relationship is totally different, but I believe that being kind and listening can take you far in any role in your life.
+            <br/><br/>Finally, the thing that makes me most proud is having managed to build my path while always keeping my <strong>word</strong>. If I promise something to someone, I don't accept not keeping it, even if this has sometimes led me to having to manage anxiety and pressure beyond the limit.
+            <br/><br/>I remain <strong>optimistic</strong> about the future because I believe it's the most pragmatic thing to do: what sense would there be in moving forward if I didn't believe things could get better?
+            `,
 
         // Work Experience Section
         experienceTitle: 'Work Experience',
@@ -198,7 +203,7 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         // Table of Contents
         tocTitle: 'Navigazione Rapida',
         tocBiography: 'Biografia',
-        tocExperience: 'Esperienza Lavorativa',
+        tocExperience: 'Esperienza Lavorativa (più rilevante)',
         tocNow: 'Cosa Sto Facendo Ora',
         tocTwitter: 'Ultimi post da X',
 
@@ -207,14 +212,22 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 
         // Biography Section
         biographyTitle: 'Biografia',
-        biographyIntro:
-            'Sono ossessionato dai dettagli e da come funzionano le cose: dai servizi Cloud alle relazioni umane. Dal mio primo Hello World in RPG Maker, sono arrivato a credere che essere un Ingegnere sia molto più che programmare.',
-        biographyTechAddiction:
-            'Da bambino, crescendo in Italia, ero completamente dipendente dalla tecnologia. Passavo ore e ore a creare mondi RPG elaborati in RPG Maker, creando sprite pixel-perfect e progettando storyline complesse. Non era solo gaming per me—era il mio primo assaggio di costruire esperienze digitali.',
-        biographyPokemon:
-            'Stranamente, Pokémon Yellow è diventato il mio primo insegnante di inglese. Le copie italiane erano sempre esaurite, così convinsi i miei genitori a comprarmela in inglese. Giocavo con un dizionario a fianco, traducendo ogni dialogo. Quando li ho catturati tutti, avevo accidentalmente imparato una seconda lingua.',
-        biographyJourney:
-            'Quella curiosità su come funzionano le cose non mi ha mai lasciato. Oggi, che io stia progettando soluzioni cloud, ottimizzando dinamiche di team, o facendo debug di un sistema complesso, affronto ogni sfida con lo stesso entusiasmo che avevo da bambino con RPG Maker.',
+        biographyText: `Il primo segno che io fossi molto curioso viene dal fatto che a 5 anni avevo imparato a leggere semplicemente perché tartassavo i miei genitori chiedendo loro di leggermi i titoli dei cartoni animati o le cose scritte sulle scatole dei biscotti.
+            <br/>Credo di aver iniziato a leggere molto presto proprio per saziare questa mia <strong>curiosità</strong> quanto prima senza dover dipendere sempre da qualcun altro.
+            <br/><br/>Come figlio di un operaio metalmeccanico e di una casalinga (da buona tradizione del sud Italia) non ho ricevuto molti stimoli nei confronti della tecnologia da parte dei miei genitori, anche se la tecnologia ha comunque trovato presto me. 
+            A furia di chiedere un computer, un amico di mia sorella riuscì ad assemblarmi un vecchio Pentium II con 128 MB di RAM e Windows 98. Non avevo la minima idea di cosa fosse un sistema operativo, ma ricordo ancora l'emozione di accenderlo per la prima volta.
+            Da quel momento in poi, passai ore e ore a smanettare con quel computer, imparando da autodidatta tutto quello che potevo e facendomi aiutare da mio cugino 4 anni più grande di tanto in tanto. 
+            Fu lui ad introdurmi a <strong>RPG Maker</strong>, un software che mi permise di creare i miei primi videogiochi in pixel art. Passavo intere giornate a importare sprite, creare mappe con eventi e scrivere storie complesse. Anche se era solo un gioco stavo muovendo i miei primi passi nell'ingegneria del software.
+            <br/>Quando alle scuole medie ebbi il mio primo incontro con LOGO, un linguaggio di programmazione didattico basato su comandi testuali per muovere una tartaruga virtuale sullo schermo, capii che forse avrei potuto farmi una carriera in questo campo ed essere pagato per la mia passione.
+            <br/><br/>Ovviamente oltre a costruire videogiochi, mi piaceva molto anche giocarci: quando ero alle elementari, Pokèmon era all'apice del successo e anche io ottenni il mio Gameboy Color; però le copie italiane di Pokèmon Giallo erano finite, così a 8 anni mi trovai con in mano la versione inglese di Pokèmon Yellow. 
+            Nonostante non conoscessi l'inglese (e nemmeno i miei genitori) confrontandomi con i compagni di scuola e avendo sempre appresso un dizionarietto, riuscii a completare il gioco in qualche mese. Anni dopo arrivò anche la PlayStation e Final Fantasy 7 (mai uscito in lingua italiana): sono stati loro i miei primi <strong>maestri d'inglese</strong>.
+            <br/><br/>Anche se sono stato sempre ritenuto un po' "nerd" dai miei coetanei, non ho mai trascurato lo <strong>sport</strong> e lo stare insieme: ho giocato prima a calcio e poi a tennis per tanti anni. Ora mi limito ad andare a correre e fare qualche peso a casa perché la vita da padre richiede di spendere molto oculatamente il mio tempo.
+            Lo sport mi ha aiutato a rimanere sempre con i piedi per terra perché ammetto di cadere troppo spesso nel <strong>perfezionismo</strong>: a volte mi devo snaturare per completare qualcosa e considerarlo finito anche se non è perfetto. Quest sito ne è un perfetto esempio: ho rimandato e ritardato moltissimo nel realizzarlo perché continuavo a studiare come farlo perfettamente, rimanendo però sempre insoddisfatto del risultato.
+            <br/><br/>Ora che sono felicemente sposato e papà di 2 splendidi bambini, sto notando che la mia curiosità mi aiuta anche nel creare empatia con loro e nel capire i loro bisogni, anche se sono ancora molto piccoli. 
+            <br/>Suonerà un po' strano, ma molte delle cose che faccio come ascoltare attivamente e mettermi nei loro panni, sono abilità che ho appreso nel mio ruolo lavorativo come <strong>Engineering Manager</strong>. Chiaro che il rapporto è totalmente diverso, ma ritengo che essere gentili ed ascoltare pssano portarti lontano in qualsiasi ruolo della tua vita.
+            <br/><br/>In ultimo, la cosa che mi rende più orgoglioso è l'essere riusciuto a costruirmi il mio percorso mantenendo sempre la mia <strong>parola</strong>. Se prometto qualcosa a qualcuno, non accetto di non mantenerla, anche se questo a volte mi ha portato a dover gestire ansia e pressione oltre il limite.
+            <br/><br/>Resto <strong>ottimista</strong> sul futuro perché credo sia la cosa più pragmatica da fare: che senso avrebbe andare avanti se non credessi che le cose possano migliorare?
+            `,
 
         // Work Experience Section
         experienceTitle: 'Esperienza Lavorativa',
@@ -340,10 +353,7 @@ const twitterData = await getTwitterPosts(language);
     </h3>
     <div class="biography-content">
         <div class="content">
-            <p>{t.biographyIntro}</p>
-            <p>{t.biographyTechAddiction}</p>
-            <p>{t.biographyPokemon}</p>
-            <p>{t.biographyJourney}</p>
+            <p set:html={t.biographyText} />
         </div>
         <Image
             src={profilePic}
