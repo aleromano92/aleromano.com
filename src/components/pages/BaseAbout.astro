@@ -1,7 +1,17 @@
 ---
 import { Image } from 'astro:assets';
 import TwitterFeed from '../TwitterFeed.astro';
+import ImageModal from '../ImageModal.astro';
 import profilePic from '../../assets/alepro.png';
+import rpgImage from '../../assets/rpg.webp';
+import pentiumIIImage from '../../assets/pentium-ii.jpeg';
+import logoProgLangImage from '../../assets/logo-programming-language.jpg';
+import pokeYellowImage from '../../assets/poke-yellow.jpg';
+import finalFantasiesImage from '../../assets/final-fantasies.jpg';
+import runningImage from '../../assets/running.jpg';
+import blackHoleImage from '../../assets/black-hole.jpg';
+import onePieceImage from '../../assets/one-piece.jpg';
+import speakingImage from '../../assets/speaking.jpg';
 import { getTwitterPosts } from '../../utils/twitter/twitter';
 import type { SupportedLanguage } from '../../types/i18n';
 
@@ -22,7 +32,10 @@ export interface AboutTranslations {
 
     // Biography Section
     biographyTitle: string;
-    biographyText: string;
+    biographySection1: string;
+    biographySection2: string;
+    biographySection3: string;
+    biographySection4: string;
 
     // Work Experience Section
     experienceTitle: string;
@@ -96,23 +109,22 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 
         // Biography Section
         biographyTitle: 'Biography',
-        biographyText: `The first sign that I was very curious comes from the fact that at 5 years old I had learned to read simply because I pestered my parents asking them to read me cartoon titles or the words written on cookie boxes.
+        biographySection1: `The first sign that I was very curious comes from the fact that at 5 years old I had learned to read simply because I pestered my parents asking them to read me cartoon titles or the words written on cookie boxes.
             <br/>I believe I started reading very early precisely to satisfy this <strong>curiosity</strong> of mine as soon as possible without having to always depend on someone else.
             <br/><br/>As the son of a metalworker and a housewife (following good southern Italian tradition), I didn't receive much encouragement towards technology from my parents, even though technology found me early anyway.
             After constantly asking for a computer, a friend of my sister managed to assemble an old Pentium II with 128 MB of RAM and Windows 98 for me. I had no idea what an operating system was, but I still remember the excitement of turning it on for the first time.
             From that moment on, I spent hours and hours tinkering with that computer, learning everything I could as a self-taught enthusiast and getting help from my cousin who was 4 years older from time to time.
             It was he who introduced me to <strong>RPG Maker 2000</strong>, a software that allowed me to create my first pixel art video games. I spent entire days importing sprites, creating maps with events, and writing complex stories. Even though it was just a game, I was taking my first steps in software engineering.
-            <br/>When in middle school I had my first encounter with LOGO, an educational programming language based on text commands to move a virtual turtle on the screen, I understood that maybe I could make a career in this field and be paid for my passion.
-            <br/><br/>Obviously, besides building video games, I also loved playing them: when I was in elementary school, Pokémon was at the height of its success and I too got my Game Boy Color; but the Italian copies of Pokémon Yellow were sold out, so at 8 years old I found myself with the English version of Pokémon Yellow in my hands.
-            Despite not knowing English (and neither did my parents), by comparing notes with school friends and always having a small dictionary with me, I managed to complete the game in a few months. Years later came the PlayStation and Final Fantasy 7 (never released in Italian): they were my first <strong>English teachers</strong>.
-            <br/><br/>Even though I was always considered a bit "nerdy" by my peers, I never neglected <strong>sports</strong> and being together: I played soccer first and then tennis for many years. Now I limit myself to running and doing some weights at home because life as a father requires spending my time very wisely.
+            <br/>When in middle school I had my first encounter with LOGO, an educational programming language based on text commands to move a virtual turtle on the screen, I understood that maybe I could make a career in this field and be paid for my passion.`,
+        biographySection2: `Obviously, besides building video games, I also loved playing them: when I was in elementary school, Pokémon was at the height of its success and I too got my Game Boy Color; but the Italian copies of Pokémon Yellow were sold out, so at 8 years old I found myself with the English version of Pokémon Yellow in my hands.
+            Despite not knowing English (and neither did my parents), by comparing notes with school friends and always having a small dictionary with me, I managed to complete the game in a few months. Years later came the PlayStation and Final Fantasy 7 (never released in Italian): they were my first <strong>English teachers</strong>.`,
+        biographySection3: `Even though I was always considered a bit "nerdy" by my peers, I never neglected <strong>sports</strong> and being together: I played soccer first and then tennis for many years. Now I limit myself to running and doing some weights at home because life as a father requires spending my time very wisely.
             Sports helped me always keep my feet on the ground because I admit I fall into <strong>perfectionism</strong> too often: sometimes I have to force myself to complete something and consider it finished even if it's not perfect. This website is a perfect example: I postponed and delayed a lot in creating it because I kept studying how to do it perfectly, but always remained unsatisfied with the result.
-            <br/>Curiosity has also pushed me multiple times towards physics, particularly <strong>astrophysics and quantum physics</strong>. Even though my academic path exposed me limitedly to these subjects, I'm a voracious reader of everything that is popular science, like Brian Greene's books: why does time flow in this direction? What is matter really made of? How did the Universe originate? Even if the answers aren't always definitive, I love getting lost in these questions!
-            <br/><br/>Now that I'm happily married and father of 2 wonderful children, I'm noticing that my curiosity also helps me in creating empathy with them and understanding their needs, even though they are still very young.
+            <br/>Curiosity has also pushed me multiple times towards physics, particularly <strong>astrophysics and quantum physics</strong>. Even though my academic path exposed me limitedly to these subjects, I'm a voracious reader of everything that is popular science, like Brian Greene's books: why does time flow in this direction? What is matter really made of? How did the Universe originate? Even if the answers aren't always definitive, I love getting lost in these questions!`,
+        biographySection4: `Now that I'm happily married and father of 2 wonderful children, I'm noticing that my curiosity also helps me in creating empathy with them and understanding their needs, even though they are still very young.
             <br/>It may sound a bit strange, but many of the things I do like actively listening and putting myself in their shoes, are skills I learned in my work role as an <strong>Engineering Manager</strong>. Of course the relationship is totally different, but I believe that being kind and listening can take you far in any role in your life.
             <br/><br/>Finally, the thing that makes me most proud is having managed to build my path while always keeping my <strong>word</strong>. If I promise something to someone, I don't accept not keeping it, even if this has sometimes led me to having to manage anxiety and pressure beyond the limit.
-            <br/><br/>I remain <strong>optimistic</strong> about the future because I believe it's the most pragmatic thing to do: what sense would there be in moving forward if I didn't believe things could get better?
-            `,
+            <br/><br/>I remain <strong>optimistic</strong> about the future because I believe it's the most pragmatic thing to do: what sense would there be in moving forward if I didn't believe things could get better?`,
 
         // Work Experience Section
         experienceTitle: 'Work Experience',
@@ -213,23 +225,22 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 
         // Biography Section
         biographyTitle: 'Biografia',
-        biographyText: `Il primo segno che io fossi molto curioso viene dal fatto che a 5 anni avevo imparato a leggere semplicemente perché tartassavo i miei genitori chiedendo loro di leggermi i titoli dei cartoni animati o le cose scritte sulle scatole dei biscotti.
+        biographySection1: `Il primo segno che io fossi molto curioso viene dal fatto che a 5 anni avevo imparato a leggere semplicemente perché tartassavo i miei genitori chiedendo loro di leggermi i titoli dei cartoni animati o le cose scritte sulle scatole dei biscotti.
             <br/>Credo di aver iniziato a leggere molto presto proprio per saziare questa mia <strong>curiosità</strong> quanto prima senza dover dipendere sempre da qualcun altro.
             <br/><br/>Come figlio di un operaio metalmeccanico e di una casalinga (da buona tradizione del sud Italia) non ho ricevuto molti stimoli nei confronti della tecnologia da parte dei miei genitori, anche se la tecnologia ha comunque trovato presto me. 
             A furia di chiedere un computer, un amico di mia sorella riuscì ad assemblarmi un vecchio Pentium II con 128 MB di RAM e Windows 98. Non avevo la minima idea di cosa fosse un sistema operativo, ma ricordo ancora l'emozione di accenderlo per la prima volta.
             Da quel momento in poi, passai ore e ore a smanettare con quel computer, imparando da autodidatta tutto quello che potevo e facendomi aiutare da mio cugino 4 anni più grande di tanto in tanto. 
             Fu lui ad introdurmi a <strong>RPG Maker 2000</strong>, un software che mi permise di creare i miei primi videogiochi in pixel art. Passavo intere giornate a importare sprite, creare mappe con eventi e scrivere storie complesse. Anche se era solo un gioco stavo muovendo i miei primi passi nell'ingegneria del software.
-            <br/>Quando alle scuole medie ebbi il mio primo incontro con LOGO, un linguaggio di programmazione didattico basato su comandi testuali per muovere una tartaruga virtuale sullo schermo, capii che forse avrei potuto farmi una carriera in questo campo ed essere pagato per la mia passione.
-            <br/><br/>Ovviamente oltre a costruire videogiochi, mi piaceva molto anche giocarci: quando ero alle elementari, Pokèmon era all'apice del successo e anche io ottenni il mio Gameboy Color; però le copie italiane di Pokèmon Giallo erano finite, così a 8 anni mi trovai con in mano la versione inglese di Pokèmon Yellow. 
-            Nonostante non conoscessi l'inglese (e nemmeno i miei genitori) confrontandomi con i compagni di scuola e avendo sempre appresso un dizionarietto, riuscii a completare il gioco in qualche mese. Anni dopo arrivò anche la PlayStation e Final Fantasy 7 (mai uscito in lingua italiana): sono stati loro i miei primi <strong>maestri d'inglese</strong>.
-            <br/><br/>Anche se sono stato sempre ritenuto un po' "nerd" dai miei coetanei, non ho mai trascurato lo <strong>sport</strong> e lo stare insieme: ho giocato prima a calcio e poi a tennis per tanti anni. Ora mi limito ad andare a correre e fare qualche peso a casa perché la vita da padre richiede di spendere molto oculatamente il mio tempo.
+            <br/>Quando alle scuole medie ebbi il mio primo incontro con LOGO, un linguaggio di programmazione didattico basato su comandi testuali per muovere una tartaruga virtuale sullo schermo, capii che forse avrei potuto farmi una carriera in questo campo ed essere pagato per la mia passione.`,
+        biographySection2: `Ovviamente oltre a costruire videogiochi, mi piaceva molto anche giocarci: quando ero alle elementari, Pokèmon era all'apice del successo e anche io ottenni il mio Gameboy Color; però le copie italiane di Pokèmon Giallo erano finite, così a 8 anni mi trovai con in mano la versione inglese di Pokèmon Yellow. 
+            Nonostante non conoscessi l'inglese (e nemmeno i miei genitori) confrontandomi con i compagni di scuola e avendo sempre appresso un dizionarietto, riuscii a completare il gioco in qualche mese. Anni dopo arrivò anche la PlayStation e Final Fantasy 7 (mai uscito in lingua italiana): sono stati loro i miei primi <strong>maestri d'inglese</strong>.`,
+        biographySection3: `Anche se sono stato sempre ritenuto un po' "nerd" dai miei coetanei, non ho mai trascurato lo <strong>sport</strong> e lo stare insieme: ho giocato prima a calcio e poi a tennis per tanti anni. Ora mi limito ad andare a correre e fare qualche peso a casa perché la vita da padre richiede di spendere molto oculatamente il mio tempo.
             Lo sport mi ha aiutato a rimanere sempre con i piedi per terra perché ammetto di cadere troppo spesso nel <strong>perfezionismo</strong>: a volte mi devo snaturare per completare qualcosa e considerarlo finito anche se non è perfetto. Questo sito ne è un perfetto esempio: ho rimandato e ritardato moltissimo nel realizzarlo perché continuavo a studiare come farlo perfettamente, rimanendo però sempre insoddisfatto del risultato.
-            <br/>La curiosità mi ha spinto più volte anche verso la fisica, in particolare <strong>l'astrofisica e quella quantistica</strong>. Anche se il mio percorso di studi mi ha esposto limitatamente a queste materie, sono un vorace lettore di tutto ciò che è divulgazione, come i libri di Brian Greene: perché il tempo scorre in questa direzione? Di cosa è fatta davvero la materia? Come si è originato l'Universo? Anche se le risposte non sono sempre definitive, mi piace perdermi in queste domande!
-            <br/><br/>Ora che sono felicemente sposato e papà di 2 splendidi bambini, sto notando che la mia curiosità mi aiuta anche nel creare empatia con loro e nel capire i loro bisogni, anche se sono ancora molto piccoli. 
+            <br/>La curiosità mi ha spinto più volte anche verso la fisica, in particolare <strong>l'astrofisica e quella quantistica</strong>. Anche se il mio percorso di studi mi ha esposto limitatamente a queste materie, sono un vorace lettore di tutto ciò che è divulgazione, come i libri di Brian Greene: perché il tempo scorre in questa direzione? Di cosa è fatta davvero la materia? Come si è originato l'Universo? Anche se le risposte non sono sempre definitive, mi piace perdermi in queste domande!`,
+        biographySection4: `Ora che sono felicemente sposato e papà di 2 splendidi bambini, sto notando che la mia curiosità mi aiuta anche nel creare empatia con loro e nel capire i loro bisogni, anche se sono ancora molto piccoli. 
             <br/>Suonerà un po' strano, ma molte delle cose che faccio come ascoltare attivamente e mettermi nei loro panni, sono abilità che ho appreso nel mio ruolo lavorativo come <strong>Engineering Manager</strong>. Chiaro che il rapporto è totalmente diverso, ma ritengo che essere gentili ed ascoltare pssano portarti lontano in qualsiasi ruolo della tua vita.
             <br/><br/>In ultimo, la cosa che mi rende più orgoglioso è l'essere riusciuto a costruirmi il mio percorso mantenendo sempre la mia <strong>parola</strong>. Se prometto qualcosa a qualcuno, non accetto di non mantenerla, anche se questo a volte mi ha portato a dover gestire ansia e pressione oltre il limite.
-            <br/><br/>Resto <strong>ottimista</strong> sul futuro perché credo sia la cosa più pragmatica da fare: che senso avrebbe andare avanti se non credessi che le cose possano migliorare?
-            `,
+            <br/><br/>Resto <strong>ottimista</strong> sul futuro perché credo sia la cosa più pragmatica da fare: che senso avrebbe andare avanti se non credessi che le cose possano migliorare?`,
 
         // Work Experience Section
         experienceTitle: 'Esperienza Lavorativa',
@@ -354,18 +365,127 @@ const twitterData = await getTwitterPosts(language);
         <a href="#top" class="section-back-to-top" aria-label={t.backToTop}>{t.backToTop}</a>
     </h3>
     <div class="biography-content">
-        <div class="content">
-            <p set:html={t.biographyText} />
+        <!-- Section 1: Early curiosity and technology -->
+        <div class="biography-section">
+            <p set:html={t.biographySection1} />
         </div>
-        <Image
-            src={profilePic}
-            alt={t.profilePicAlt}
-            width={300}
-            priority
-            densities={[1, 2]}
-            quality="max"
-            class="profile-pic"
-        />
+
+        <div class="image-gallery">
+            <Image
+                src={rpgImage}
+                alt="RPG Maker 2000 - My first programming tool"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="max"
+                densities={[1, 3]}
+            />
+            <Image
+                src={pentiumIIImage}
+                alt="Pentium II computer - My first computer"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="max"
+                densities={[1, 3]}
+            />
+            <Image
+                src={logoProgLangImage}
+                alt="LOGO programming language"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="max"
+                densities={[1, 3]}
+            />
+        </div>
+
+        <!-- Section 2: Gaming and English learning -->
+        <div class="biography-section">
+            <p set:html={t.biographySection2} />
+        </div>
+
+        <div class="image-gallery-two">
+            <Image
+                src={pokeYellowImage}
+                alt="Pokémon Yellow - Learning English through gaming"
+                width={300}
+                height={200}
+                class="biography-image clickable-image"
+                quality="max"
+                densities={[1, 3]}
+            />
+            <Image
+                src={finalFantasiesImage}
+                alt="Final Fantasy games collection"
+                width={300}
+                height={200}
+                class="biography-image clickable-image"
+                quality="max"
+                densities={[1, 3]}
+            />
+        </div>
+
+        <!-- Section 3: Sports, perfectionism, and physics -->
+        <div class="biography-section">
+            <p set:html={t.biographySection3} />
+        </div>
+
+        <div class="image-gallery">
+            <Image
+                src={runningImage}
+                alt="Running - Sports helped balance my nerdy side"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="max"
+                densities={[1, 3]}
+            />
+            <Image
+                src={blackHoleImage}
+                alt="Black hole - Fascination with astrophysics"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="max"
+                densities={[1, 3]}
+            />
+            <Image
+                src={onePieceImage}
+                alt="One Piece manga - Curiosity and adventure"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="max"
+                densities={[1, 3]}
+            />
+        </div>
+
+        <!-- Section 4: Family and professional life -->
+        <div class="biography-section">
+            <p set:html={t.biographySection4} />
+        </div>
+
+        <div class="image-gallery-two">
+            <Image
+                src={speakingImage}
+                alt="Speaking at events - Sharing knowledge"
+                width={300}
+                height={200}
+                class="biography-image clickable-image"
+                quality="max"
+                densities={[1, 3]}
+            />
+            <Image
+                src={profilePic}
+                alt={t.profilePicAlt}
+                width={300}
+                height={200}
+                class="biography-image clickable-image"
+                quality="max"
+                densities={[1, 3]}
+            />
+        </div>
     </div>
 </section>
 
@@ -573,6 +693,9 @@ const twitterData = await getTwitterPosts(language);
     />
 </section>
 
+<!-- Image Modal -->
+<ImageModal />
+
 <style>
     @import '../../styles/buttons.css';
 
@@ -666,31 +789,54 @@ const twitterData = await getTwitterPosts(language);
 
     /* Biography Section */
     .biography-content {
-        display: flex;
-        align-items: flex-start;
-        gap: var(--space-lg);
         margin-top: var(--space-md);
     }
 
-    .biography-content .content {
-        flex: 1;
+    .biography-section {
+        margin-bottom: var(--space-lg);
     }
 
-    .profile-pic {
-        max-width: 250px;
-        height: auto;
+    .biography-section p {
+        line-height: 1.7;
+        color: var(--color-text-primary);
+    }
+
+    /* Image Galleries */
+    .image-gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-md);
+        margin: var(--space-lg) 0;
+        justify-items: center;
+    }
+
+    .image-gallery-two {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-md);
+        margin: var(--space-lg) 0;
+        justify-items: center;
+    }
+
+    .biography-image {
         border-radius: var(--border-radius);
-        transform: translateY(0);
-        animation: slideDown 1s ease-out 0.2s backwards;
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+        cursor: zoom-in;
+        width: 100%;
+        height: auto;
+        max-width: 250px;
+        object-fit: cover;
     }
 
-    @keyframes slideDown {
-        from {
-            transform: translateY(-25%);
-        }
-        to {
-            transform: translateY(0);
-        }
+    .biography-image:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .clickable-image {
+        cursor: zoom-in;
     }
 
     /* Work Experience Section */
@@ -982,13 +1128,14 @@ const twitterData = await getTwitterPosts(language);
             align-items: center;
         }
 
-        .biography-content {
-            flex-direction: column;
+        .image-gallery {
+            grid-template-columns: 1fr;
+            gap: var(--space-sm);
         }
 
-        .profile-pic {
-            max-width: 200px;
-            align-self: center;
+        .image-gallery-two {
+            grid-template-columns: 1fr;
+            gap: var(--space-sm);
         }
 
         .job-header {
@@ -1022,6 +1169,16 @@ const twitterData = await getTwitterPosts(language);
 
         .now-item {
             padding: var(--space-sm);
+        }
+
+        .biography-image {
+            max-width: 100%;
+        }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .image-gallery {
+            grid-template-columns: repeat(2, 1fr);
         }
     }
 </style>
