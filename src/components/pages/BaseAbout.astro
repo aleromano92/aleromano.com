@@ -12,6 +12,7 @@ import runningImage from '../../assets/running.png';
 import blackHoleImage from '../../assets/black-hole.jpg';
 import onePieceImage from '../../assets/one-piece.jpg';
 import speakingImage from '../../assets/speaking.jpg';
+import familyImage from '../../assets/family.jpg';
 import { getTwitterPosts } from '../../utils/twitter/twitter';
 import type { SupportedLanguage } from '../../types/i18n';
 
@@ -377,7 +378,7 @@ const twitterData = await getTwitterPosts(language);
                 width={250}
                 height={200}
                 class="biography-image clickable-image"
-                quality="max"
+                quality="high"
                 densities={[1, 3]}
             />
             <Image
@@ -386,7 +387,7 @@ const twitterData = await getTwitterPosts(language);
                 width={250}
                 height={200}
                 class="biography-image clickable-image"
-                quality="max"
+                quality="high"
                 densities={[1, 3]}
             />
             <Image
@@ -395,7 +396,7 @@ const twitterData = await getTwitterPosts(language);
                 width={250}
                 height={200}
                 class="biography-image clickable-image"
-                quality="max"
+                quality="high"
                 densities={[1, 3]}
             />
         </div>
@@ -412,7 +413,7 @@ const twitterData = await getTwitterPosts(language);
                 width={300}
                 height={200}
                 class="biography-image clickable-image"
-                quality="max"
+                quality="high"
                 densities={[1, 3]}
             />
             <Image
@@ -421,7 +422,7 @@ const twitterData = await getTwitterPosts(language);
                 width={300}
                 height={200}
                 class="biography-image clickable-image"
-                quality="max"
+                quality="high"
                 densities={[1, 3]}
             />
         </div>
@@ -438,7 +439,7 @@ const twitterData = await getTwitterPosts(language);
                 width={250}
                 height={200}
                 class="biography-image clickable-image"
-                quality="max"
+                quality="high"
                 densities={[1, 3]}
             />
             <Image
@@ -447,7 +448,7 @@ const twitterData = await getTwitterPosts(language);
                 width={250}
                 height={200}
                 class="biography-image clickable-image"
-                quality="max"
+                quality="high"
                 densities={[1, 3]}
             />
             <Image
@@ -456,7 +457,7 @@ const twitterData = await getTwitterPosts(language);
                 width={250}
                 height={200}
                 class="biography-image clickable-image"
-                quality="max"
+                quality="high"
                 densities={[1, 3]}
             />
         </div>
@@ -466,14 +467,23 @@ const twitterData = await getTwitterPosts(language);
             <p set:html={t.biographySection4} />
         </div>
 
-        <div class="image-gallery-two">
+        <div class="image-gallery">
             <Image
                 src={speakingImage}
                 alt="Speaking at events - Sharing knowledge"
                 width={300}
                 height={200}
                 class="biography-image clickable-image"
-                quality="max"
+                quality="high"
+                densities={[1, 3]}
+            />
+            <Image
+                src={familyImage}
+                alt="Family time - Cherishing moments with loved ones"
+                width={300}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
                 densities={[1, 3]}
             />
             <Image
@@ -482,7 +492,7 @@ const twitterData = await getTwitterPosts(language);
                 width={300}
                 height={200}
                 class="biography-image clickable-image"
-                quality="max"
+                quality="high"
                 densities={[1, 3]}
             />
         </div>
