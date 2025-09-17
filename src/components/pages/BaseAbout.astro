@@ -10,9 +10,10 @@ import pokeYellowImage from '../../assets/poke-yellow.jpg';
 import finalFantasiesImage from '../../assets/final-fantasies.jpg';
 import runningImage from '../../assets/running.png';
 import blackHoleImage from '../../assets/black-hole.jpg';
+import tennisImage from '../../assets/tennis.avif';
 import onePieceImage from '../../assets/one-piece.jpg';
-import speakingImage from '../../assets/speaking.jpg';
-import familyImage from '../../assets/family.jpg';
+import speakingImage from '../../assets/speaking.png';
+import familyImage from '../../assets/family.png';
 import { getTwitterPosts } from '../../utils/twitter/twitter';
 import type { SupportedLanguage } from '../../types/i18n';
 
@@ -234,7 +235,8 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             Fu lui ad introdurmi a <strong>RPG Maker 2000</strong>, un software che mi permise di creare i miei primi videogiochi in pixel art. Passavo intere giornate a importare sprite, creare mappe con eventi e scrivere storie complesse. Anche se era solo un gioco stavo muovendo i miei primi passi nell'ingegneria del software.
             <br/>Quando alle scuole medie ebbi il mio primo incontro con LOGO, un linguaggio di programmazione didattico basato su comandi testuali per muovere una tartaruga virtuale sullo schermo, capii che forse avrei potuto farmi una carriera in questo campo ed essere pagato per la mia passione.`,
         biographySection2: `Ovviamente oltre a costruire videogiochi, mi piaceva molto anche giocarci: quando ero alle elementari, Pokèmon era all'apice del successo e anche io ottenni il mio Gameboy Color; però le copie italiane di Pokèmon Giallo erano finite, così a 8 anni mi trovai con in mano la versione inglese di Pokèmon Yellow. 
-            Nonostante non conoscessi l'inglese (e nemmeno i miei genitori) confrontandomi con i compagni di scuola e avendo sempre appresso un dizionarietto, riuscii a completare il gioco in qualche mese. Anni dopo arrivò anche la PlayStation e Final Fantasy 7 (mai uscito in lingua italiana): sono stati loro i miei primi <strong>maestri d'inglese</strong>.`,
+            Nonostante non conoscessi l'inglese (e nemmeno i miei genitori) confrontandomi con i compagni di scuola e avendo sempre appresso un dizionarietto, riuscii a completare il gioco in qualche mese. Anni dopo arrivò anche la PlayStation e Final Fantasy 7 (mai uscito in lingua italiana): sono stati loro i miei primi <strong>maestri d'inglese</strong>.
+            <br/><br/>In quegli anni iniziai a guardare anche <strong>One Piece</strong>, una storia incredibile fatta di ambizione, mistero e libertà che mi appassionò moltissimo e che seguo ancora oggi, a distanza di più di 20 anni. Anche se nasce come Shoenen Manga, quindi per un pubblico giovanissimo, tratta temi molto profondi come l'amicizia (la famiglia che ti scegli), il sacrificio e la determinazione che mi hanno aiutato a crescere come persona.`,
         biographySection3: `Anche se sono stato sempre ritenuto un po' "nerd" dai miei coetanei, non ho mai trascurato lo <strong>sport</strong> e lo stare insieme: ho giocato prima a calcio e poi a tennis per tanti anni. Ora mi limito ad andare a correre e fare qualche peso a casa perché la vita da padre richiede di spendere molto oculatamente il mio tempo.
             Lo sport mi ha aiutato a rimanere sempre con i piedi per terra perché ammetto di cadere troppo spesso nel <strong>perfezionismo</strong>: a volte mi devo snaturare per completare qualcosa e considerarlo finito anche se non è perfetto. Questo sito ne è un perfetto esempio: ho rimandato e ritardato moltissimo nel realizzarlo perché continuavo a studiare come farlo perfettamente, rimanendo però sempre insoddisfatto del risultato.
             <br/>La curiosità mi ha spinto più volte anche verso la fisica, in particolare <strong>l'astrofisica e quella quantistica</strong>. Anche se il mio percorso di studi mi ha esposto limitatamente a queste materie, sono un vorace lettore di tutto ciò che è divulgazione, come i libri di Brian Greene: perché il tempo scorre in questa direzione? Di cosa è fatta davvero la materia? Come si è originato l'Universo? Anche se le risposte non sono sempre definitive, mi piace perdermi in queste domande!`,
@@ -406,11 +408,20 @@ const twitterData = await getTwitterPosts(language);
             <p set:html={t.biographySection2} />
         </div>
 
-        <div class="image-gallery-two">
+        <div class="image-gallery">
             <Image
                 src={pokeYellowImage}
                 alt="Pokémon Yellow - Learning English through gaming"
                 width={300}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+            <Image
+                src={onePieceImage}
+                alt="One Piece manga - Curiosity and adventure"
+                width={250}
                 height={200}
                 class="biography-image clickable-image"
                 quality="high"
@@ -452,8 +463,8 @@ const twitterData = await getTwitterPosts(language);
                 densities={[1, 3]}
             />
             <Image
-                src={onePieceImage}
-                alt="One Piece manga - Curiosity and adventure"
+                src={tennisImage}
+                alt="Tennis - Roger Federer is perfection"
                 width={250}
                 height={200}
                 class="biography-image clickable-image"
