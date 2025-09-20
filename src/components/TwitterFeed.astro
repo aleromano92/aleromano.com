@@ -84,6 +84,7 @@ function getFreshnessDisclaimer(freshness: DataFreshness, localizedText: typeof 
 
 <section class="twitter-feed">
     <div class="twitter-header">
+        <p class="twitter-disclaimer">{localizedDisclaimerText.disclaimer}</p>
         <div class="freshness-container">
             <span class={`live-indicator ${error ? 'live-indicator--error' : getFreshnessClass(freshness)}`}>
                 {error ? localizedDisclaimerText.liveLabel : getFreshnessLabel(freshness, localizedDisclaimerText)}
@@ -91,7 +92,6 @@ function getFreshnessDisclaimer(freshness: DataFreshness, localizedText: typeof 
             {!error && <p class="freshness-disclaimer">{getFreshnessDisclaimer(freshness, localizedDisclaimerText)}</p>}
         </div>
     </div>
-    <p class="twitter-disclaimer">{localizedDisclaimerText.disclaimer}</p>
 
     {
         error ? (

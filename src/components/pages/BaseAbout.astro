@@ -66,14 +66,12 @@ export interface AboutTranslations {
     // Now Section
     nowTitle: string;
     nowSubtitle: string;
-    nowCurrently: string;
-    nowLearning: string;
-    nowReading: string;
-    nowSideProjects: string;
-    nowPersonal: string;
+    nowLearning: string[];
+    nowReading: string[];
+    nowSideProjects: string[];
+    nowPersonal: string[];
 
     // Now Section Labels
-    nowWorkLabel: string;
     nowLearningLabel: string;
     nowReadingLabel: string;
     nowSideProjectsLabel: string;
@@ -81,7 +79,6 @@ export interface AboutTranslations {
 
     // Historical entries toggle
     showHistory: string;
-    hideHistory: string;
 
     // Contact and Social
     stayUpdated: string;
@@ -179,24 +176,30 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 
         // Now Section
         nowTitle: "What I'm Up To Now",
-        nowSubtitle: 'Last updated: August 2024',
-        nowCurrently:
-            "At Mollie, I'm focused on scaling our engineering organization while maintaining our culture of technical excellence. I'm particularly excited about our upcoming platform initiatives that will enable faster product development.",
-        nowLearning:
-            'Diving deep into system design patterns and organizational psychology. Currently reading "Team Topologies" and experimenting with new ways to structure engineering teams for maximum effectiveness.',
-        nowReading:
-            'Non-fiction: "Team Topologies" by Matthew Skelton & Manuel Pais. Fiction: Re-reading "The Foundation" series by Isaac Asimov—always good for perspective on large-scale systems thinking.',
-        nowSideProjects:
-            'Building this website with Astro 5, writing about engineering management, and experimenting with AI-assisted coding workflows. Also working on a simple VPS monitoring tool.',
-        nowPersonal:
-            'Spending quality time with my two kids in Busto Arsizio, discovering new playgrounds, and trying to perfect my homemade pizza recipe. Recently got into morning runs—turns out I actually enjoy them!',
+        nowSubtitle: 'Last updated: September 2025',
+        nowLearning: [
+            'Experimenting with AI Agents to automate boring processes',
+            'Following the <a href="https://www.100school.com/30daysofai">30 days of AI</a> project',
+        ],
+        nowReading: [
+            'Non-fiction: <strong>"Team Topologies"</strong> by Matthew Skelton & Manuel Pais',
+            'Fiction: Re-reading <strong>"The Foundation"</strong> series by Isaac Asimov—always good for perspective on large-scale systems thinking',
+        ],
+        nowSideProjects: [
+            'Building this website with <strong>Astro 5</strong>, writing about engineering management',
+            'Experimenting with AI-assisted coding workflows',
+            'Working on a simple VPS monitoring tool',
+        ],
+        nowPersonal: [
+            'Spending quality time with my two kids in <strong>Busto Arsizio</strong>, discovering new playgrounds',
+            'Trying to perfect my homemade pizza recipe',
+            'Recently got into morning runs—turns out I actually enjoy them!',
+        ],
 
         // Historical entries toggle
-        showHistory: 'Show Previous Updates',
-        hideHistory: 'Hide Previous Updates',
+        showHistory: 'What I Did Before',
 
         // Now Section Labels
-        nowWorkLabel: '🚀 Work',
         nowLearningLabel: '📚 Learning',
         nowReadingLabel: '📖 Reading',
         nowSideProjectsLabel: '💻 Side Projects',
@@ -296,24 +299,30 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 
         // Now Section
         nowTitle: 'Cosa Sto Facendo Ora',
-        nowSubtitle: 'Ultimo aggiornamento: Agosto 2024',
-        nowCurrently:
-            'A Mollie, mi sto concentrando sul far crescere la nostra organizzazione ingegneristica mantenendo la nostra cultura di eccellenza tecnica. Sono particolarmente entusiasta delle nostre prossime iniziative di piattaforma che permetteranno sviluppo prodotto più veloce.',
-        nowLearning:
-            'Studio approfonditamente pattern di system design e psicologia organizzativa. Attualmente leggo "Team Topologies" e sperimento nuovi modi di strutturare team ingegneristici per massima efficacia.',
-        nowReading:
-            'Saggistica: "Team Topologies" di Matthew Skelton & Manuel Pais. Narrativa: Sto rileggendo la serie "Fondazione" di Isaac Asimov—sempre buona per avere prospettiva sul pensiero sistemico su larga scala.',
-        nowSideProjects:
-            'Costruisco questo sito con Astro 5, scrivo di engineering management, e sperimento con workflow di coding assistiti da AI. Sto anche lavorando su un semplice tool di monitoring VPS.',
-        nowPersonal:
-            'Passo tempo di qualità con i miei due bambini a Busto Arsizio, scoprendo nuovi parchi giochi, e cercando di perfezionare la mia ricetta della pizza fatta in casa. Recentemente ho iniziato a correre la mattina—si scopre che mi piace davvero!',
+        nowSubtitle: 'Ultimo aggiornamento: Settembre 2025',
+        nowLearning: [
+            'Sperimentando utilizzo di AI Agents per automatizzare processi noiosi',
+            'Seguendo il progetto <a href="https://www.100school.com/30daysofai">30 days of AI</a>',
+        ],
+        nowReading: [
+            'Saggistica: <strong>"Team Topologies"</strong> di Matthew Skelton & Manuel Pais',
+            'Narrativa: Sto rileggendo la serie <strong>"Fondazione"</strong> di Isaac Asimov—sempre buona per avere prospettiva sul pensiero sistemico su larga scala',
+        ],
+        nowSideProjects: [
+            'Costruisco questo sito con <strong>Astro 5</strong>, scrivo di engineering management',
+            'Sperimento con workflow di coding assistiti da AI',
+            'Sto lavorando su un semplice tool di monitoring VPS',
+        ],
+        nowPersonal: [
+            'Passo tempo di qualità con i miei due bambini a <strong>Busto Arsizio</strong>, scoprendo nuovi parchi giochi',
+            'Cerco di perfezionare la mia ricetta della pizza fatta in casa',
+            'Recentemente ho iniziato a correre la mattina—si scopre che mi piace davvero!',
+        ],
 
         // Historical entries toggle
-        showHistory: 'Mostra Aggiornamenti Precedenti',
-        hideHistory: 'Nascondi Aggiornamenti Precedenti',
+        showHistory: 'Cosa Facevo Prima',
 
         // Now Section Labels
-        nowWorkLabel: '🚀 Lavoro',
         nowLearningLabel: '📚 Studio',
         nowReadingLabel: '📖 Letture',
         nowSideProjectsLabel: '💻 Progetti Personali',
@@ -324,7 +333,7 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         followTwitter: 'Segui @_aleromano',
         subscribeRss: 'iscriviti al mio feed RSS.',
         needHelp:
-            'Hai bisogno di aiuto per lanciare la tua startup, far crescere il tuo team di ingegneria, o crescere come ingegnere del software?',
+            'Hai bisogno di aiuto per lanciare la tua startup, scalare il tuo team di ingegneria, o crescere come ingegnere del software?',
         letsTalk: 'Parliamone.',
         profilePicAlt: 'Foto profilo di Alessandro Romano',
     },
@@ -340,7 +349,6 @@ interface Props {
 
 const { language } = Astro.props;
 
-// Get translations for the current language
 const t = getAboutTranslations(language);
 
 // Fetch Twitter data server-side with built-in error handling
@@ -632,28 +640,31 @@ const twitterData = await getTwitterPosts(language);
 
     <div class="now-content">
         <div class="now-item">
-            <h4>{t.nowWorkLabel}</h4>
-            <p>{t.nowCurrently}</p>
-        </div>
-
-        <div class="now-item">
             <h4>{t.nowLearningLabel}</h4>
-            <p>{t.nowLearning}</p>
+            <ul class="now-list">
+                {t.nowLearning.map((item) => <li set:html={item} />)}
+            </ul>
         </div>
 
         <div class="now-item">
             <h4>{t.nowReadingLabel}</h4>
-            <p>{t.nowReading}</p>
+            <ul class="now-list">
+                {t.nowReading.map((item) => <li set:html={item} />)}
+            </ul>
         </div>
 
         <div class="now-item">
             <h4>{t.nowSideProjectsLabel}</h4>
-            <p>{t.nowSideProjects}</p>
+            <ul class="now-list">
+                {t.nowSideProjects.map((item) => <li set:html={item} />)}
+            </ul>
         </div>
 
         <div class="now-item">
             <h4>{t.nowPersonalLabel}</h4>
-            <p>{t.nowPersonal}</p>
+            <ul class="now-list">
+                {t.nowPersonal.map((item) => <li set:html={item} />)}
+            </ul>
         </div>
     </div>
 
@@ -1037,6 +1048,28 @@ const twitterData = await getTwitterPosts(language);
         margin: 0;
         color: var(--color-text-secondary);
         line-height: 1.6;
+    }
+
+    .now-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .now-list li {
+        position: relative;
+        padding-left: var(--space-md);
+        margin-bottom: var(--space-xs);
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+    }
+
+    .now-list li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--color-accent);
+        font-weight: bold;
     }
 
     /* History Toggle */
