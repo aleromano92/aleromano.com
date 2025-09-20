@@ -671,32 +671,29 @@ const twitterData = await getTwitterPosts(language);
     </div>
 
     <!-- Collapsible Historical Entries -->
-    <details class="history-toggle">
+    <!-- <details class="history-toggle">
         <summary>{t.showHistory}</summary>
         <div class="historical-entries">
             <div class="historical-entry">
                 <h5>May 2024</h5>
                 <p>
-                    Launched major platform improvements at Mollie, focused on learning Rust, reading "Staff Engineer"
-                    by Will Larson. Started exploring AI-assisted development workflows.
+                    Lorem ipsum
                 </p>
             </div>
             <div class="historical-entry">
                 <h5>February 2024</h5>
                 <p>
-                    Completed Team Topologies workshop, implemented new team structure at Mollie. Deep dive into system
-                    design patterns and organizational psychology.
+                    Lorem ipsum
                 </p>
             </div>
             <div class="historical-entry">
                 <h5>November 2023</h5>
                 <p>
-                    Spoke at local tech meetup about engineering management, launched personal blog redesign, focused on
-                    improving work-life balance with new morning routine.
+                    Lorem ipsum
                 </p>
             </div>
         </div>
-    </details>
+    </details> -->
 </section>
 
 <!-- Contact Section -->
@@ -840,14 +837,6 @@ const twitterData = await getTwitterPosts(language);
     .image-gallery {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: var(--space-md);
-        margin: var(--space-lg) 0;
-        justify-items: center;
-    }
-
-    .image-gallery-two {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
         gap: var(--space-md);
         margin: var(--space-lg) 0;
         justify-items: center;
@@ -1129,12 +1118,7 @@ const twitterData = await getTwitterPosts(language);
 
     /* Contact Section */
     .contact {
-        background: var(--color-bg-secondary);
-        border-radius: var(--border-radius);
-        padding: var(--space-md);
-        border: 1px solid var(--color-border);
         text-align: center;
-        margin: var(--space-xl) 0;
     }
 
     .contact p {
@@ -1186,12 +1170,6 @@ const twitterData = await getTwitterPosts(language);
         }
 
         .image-gallery {
-            grid-template-columns: 1fr;
-            gap: var(--space-sm);
-        }
-
-        .image-gallery-two {
-            grid-template-columns: 1fr;
             gap: var(--space-sm);
         }
 
@@ -1230,12 +1208,6 @@ const twitterData = await getTwitterPosts(language);
 
         .biography-image {
             max-width: 100%;
-        }
-    }
-
-    @media (min-width: 769px) and (max-width: 1024px) {
-        .image-gallery {
-            grid-template-columns: repeat(2, 1fr);
         }
     }
 </style>
