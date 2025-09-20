@@ -16,7 +16,6 @@
 @media (max-width: var(--breakpoint-mobile)) {
     :root {
         --container-padding: 0.75rem;
-        --font-size-base: 0.9rem;
     }
 }
 
