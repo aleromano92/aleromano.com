@@ -24,12 +24,12 @@ I told exactly this to my manager when I was a Junior 25 years old engineer.
 
 ---
 
-## Who Am I? 🤔
+## Who Am I? 👋 from 🇮🇹
 
 <img src="/alepro.png" alt="Alessandro Romano" height="200"/>
 
 - Senior Engineering Manager at Mollie 💳 <!-- .element: class="fragment" -->
-- 10+ years in software engineering 🚀 <!-- .element: class="fragment" -->
+- 13+ years in software engineering 🚀 <!-- .element: class="fragment" -->
 - Led teams from startups to scale-ups 📈 <!-- .element: class="fragment" -->
 - Witnessed promotions across different company cultures 🌍 <!-- .element: class="fragment" -->
 
@@ -75,11 +75,10 @@ Don't rely on the career framework document. Ask your manager to translate those
 
 ### Quantify Everything 🔢
 
-- ❌ "I improved performance" <!-- .element: class="fragment" -->
-- ✅ "I reduced response times by 40%, saving €X per year" <!-- .element: class="fragment" -->
-
-- ❌ "I increased system resilience" <!-- .element: class="fragment" -->
-- ✅ "Incidents decreased from 4/month to 1/quarter" <!-- .element: class="fragment" -->
+- "I improved performance" ❌ <!-- .element: class="fragment" -->
+- "I reduced response times by 40%, saving €X per year" ✅  <!-- .element: class="fragment" -->
+- "I increased system resilience" ❌ <!-- .element: class="fragment" -->
+- "Incidents decreased from 4/month to 1/quarter" ✅ <!-- .element: class="fragment" -->
 
 Note:
 Business impact is universal. But you must quantify it. Numbers make your achievements concrete and memorable.
@@ -256,3 +255,10 @@ Don't misunderstand me - technical skills matter. But they're just one piece of 
 
 Note:
 Thank you! I'd love to hear your questions and discuss these topics further. Feel free to reach out on any platform.
+
+---
+
+---
+
+# Thank You! 
+<img src="https://media1.tenor.com/m/ET9__w0C-sgAAAAd/bow-bowing.gif" alt="Bowing GIF" height="300">
