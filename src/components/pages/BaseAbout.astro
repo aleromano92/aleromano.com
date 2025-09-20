@@ -96,7 +96,7 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
     en: {
         pageTitle: 'About',
         pageDescription:
-            'Engineering Manager at Mollie, father of two amazing kids, and funny lovely husband. Addicted to details and obsessed with how things work: from Cloud services to human relationships.',
+            'Senior Engineering Manager at Mollie, father of two amazing kids, and funny lovely husband. Addicted to details and obsessed with how things work: from Cloud services to human relationships.',
         tagline: 'Insightful. Precise. Human.',
 
         // Table of Contents
@@ -165,16 +165,16 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 
         // lastminute.com
         lastminuteTitle: 'lastminute.com',
-        lastminuteRole: 'Engineering Manager',
-        lastminutePeriod: 'April 2019 - September 2020',
-        lastminuteDescription:
-            'Managed engineering teams focusing on emotional intelligence and technical excellence, helping people shine through effective 1-1s and career development.',
+        lastminuteRole: 'Software Engineer → Engineering Manager',
+        lastminutePeriod: 'January 2017 - September 2020',
+        lastminuteDescription: `I joined as a shy, young, and inexperienced Software (front-end) Engineer and left as an Engineering Manager who handled critical situations like refunds associated with the COVID era.
+            <br/>I focused on the Customer Area, aiming to provide the best possible experience to all customers who had a booking with us.`,
         lastminuteAchievements: [
-            'Created real-time buying for luggage in post-sale through My lastminute.com area',
-            'Migrated 300k customers from weg.de (7pass auth system) to lastminute.com with 0 downtime',
-            'Implemented Google One-Tap Login, increasing logged-in users by 230%',
-            'Mentored team members using pair programming and code reviews for skill development',
-            'Built team commitment and efficiency through transparent communication and feedback culture',
+            'Built the Login Widget, a reusable component for authentication across every part of the website',
+            'Migrated 300k customers from weg.de (proprietary auth system) to lastminute.com with 0 downtime',
+            'Implemented Google One-Tap Login, significantly increasing logged-in users',
+            'Led a team for the first time with 5 people (later growing to multiple teams up to 12 people), laying the foundation for my Engineering Manager career',
+            'Struck by lightning on the road to Clean Code and eXtreme Programming, using pair programming and code reviews to grow team skills',
         ],
 
         // Now Section
@@ -282,16 +282,16 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 
         // lastminute.com
         lastminuteTitle: 'lastminute.com',
-        lastminuteRole: 'Engineering Manager',
-        lastminutePeriod: 'Aprile 2019 - Settembre 2020',
-        lastminuteDescription:
-            'Ho gestito team di ingegneria concentrandomi su intelligenza emotiva ed eccellenza tecnica, aiutando le persone a brillare attraverso 1-1 efficaci e sviluppo della carriera.',
+        lastminuteRole: 'Software Engineer → Engineering Manager',
+        lastminutePeriod: 'Gennaio 2017 - Settembre 2020',
+        lastminuteDescription: `Sono entrato come un timido, giovane e inesperto Software (front-end) Engineer e ne sono uscito come Engineering Manager che ha gestito situazioni critiche come i rimborsi associati all'era COVID.
+            <br/>Mi sono occupato di Customer Area, puntando a dare la migliore esperienza possibile a tutti i clienti che avevano una prenotazione con noi.`,
         lastminuteAchievements: [
-            'Creato acquisto real-time per bagagli in post-vendita attraverso area My lastminute.com',
-            'Migrato 300k clienti da weg.de (sistema auth 7pass) a lastminute.com con 0 downtime',
-            'Implementato Google One-Tap Login, aumentando utenti loggati del 230%',
-            'Fatto mentoring ai membri del team usando pair programming e code review per sviluppo competenze',
-            'Costruito impegno del team ed efficienza attraverso comunicazione trasparente e cultura del feedback',
+            `Realizzato il Login Widget, componente riutilizzabile per l'autenticazione in ogni parte del sito`,
+            'Migrato 300k clienti da weg.de (sistema auth proprietario) a lastminute.com con 0 downtime',
+            'Implementato Google One-Tap Login, aumentando considerabilmente gli utenti loggati',
+            'Guidato per la prima volta un team di 5 persone (poi diventati più team fino a 12 persone), gettando le basi per la mia carriera di Engineering Manager',
+            'Fulminato sulla via del Clean Code ed eXtreme Programming, usando il pair programming e le code reviews per far crescere le competenze del team',
         ],
 
         // Now Section
@@ -570,7 +570,7 @@ const twitterData = await getTwitterPosts(language);
                     <span class="period">{t.bancaAideXaPeriod}</span>
                 </div>
             </div>
-            <p class="job-description">{t.bancaAideXaDescription}</p>
+            <p class="job-description" set:html={t.bancaAideXaDescription} />
             <ul class="achievements">
                 {t.bancaAideXaAchievements.map((achievement) => <li>{achievement}</li>)}
             </ul>
@@ -598,7 +598,7 @@ const twitterData = await getTwitterPosts(language);
                     <span class="period">{t.lastminutePeriod}</span>
                 </div>
             </div>
-            <p class="job-description">{t.lastminuteDescription}</p>
+            <p class="job-description" set:html={t.lastminuteDescription} />
             <ul class="achievements">
                 {t.lastminuteAchievements.map((achievement) => <li>{achievement}</li>)}
             </ul>
