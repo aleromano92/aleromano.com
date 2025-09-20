@@ -37,17 +37,34 @@ Ask specific questions:
 This is a common denominator across all companies. Yes, I explained earlier that different companies reward different behaviors, but having the description of business impact in your Promo Case is an evergreen that any manager likes.
 The most important thing you need to do is **quantify it**.
 
-Some examples:
+Some examples of how to transform vague descriptions into measurable impacts:
 
 - don't say "I improved performance," say "I reduced response times by 40%, generating an estimated savings of X euros per year."
 - avoid "I increased system resilience," explain how "after my refactoring, the number of production incidents on that component decreased from 4 per month to 1 every 3 months."
 - rewrite "I released the new feature X that sped up analysis time for Operations people" by citing how "the new feature X allows handling 10% more cases in the same time, allowing us to grow without needing to hire more in the Operations department."
 
+#### Glue Work: Essential but Not Quantifiable
+
+Not everything needs to be measured quantitatively. There's what's called [**glue work**](https://www.noidea.dog/glue): mentorship, unblocking other colleagues, preparing refined tasks, finding cross-team solutions, facilitating communication between departments. It's fundamental for business success but difficult to measure.
+
+For glue work, you need to be good at making your manager aware that you're doing it, and they need to be good at valuing it in a potential promo case. How? Document it in your Brag Journal and ask for peer feedback from the people you consistently help.
+
+#### Tech-for-Tech Projects: Impact Through Execution
+
+Even purely technical projects without direct business impact have value, but you need to highlight the quality of your execution:
+
+- "I migrated 30 services from RabbitMQ to Google Pub/Sub by first creating a pattern/strategy that made migrating the other 29 services 60% faster"
+- "I completed the migration with zero incidents and downtime in production"
+- "I created a library for this migration that was adopted by 5 other teams in the company"
+- "I did continuous mentorship so that this complex migration was delivered by 2 junior developers (deliver through others)"
+
 ### Understand How Your Manager Is Evaluated
 
-It's not just about getting them to delegate parts of their work to you, although that is a way for you to grow and try new challenges. Their objectives become opportunities for you. If their success depends on team retention, propose initiatives to improve employee experience. If they need to accelerate delivery, focus on automation and efficiency.
+It's not just about getting them to delegate parts of their work to you, although that is a way for you to grow and try new challenges. Their objectives become opportunities for you to grow and help them reach their targets.
 
-Besides quickly earning their trust, understanding how your Manager is evaluated helps you think _big_, at a level of impact higher than the one you currently operate at. This is true even if you want to grow as an Individual Contributor without pursuing the Manager path.
+**Actively help your manager pursue their objectives.** If their success depends on team retention, propose and implement initiatives to improve employee experience. If they need to accelerate delivery, focus on automation and efficiency. If they need to reduce operational costs, find ways to optimize infrastructure.
+
+This approach has two advantages: quickly earning their trust and helping you think _big_, at a level of impact higher than the one you currently operate at. This is true even if you want to grow as an Individual Contributor without pursuing the Manager path.
 
 ## 2. "I'm on it": The Power of Responsibility
 

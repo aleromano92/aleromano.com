@@ -25,6 +25,8 @@ const i18nData = {
 // Determine back link text based on language
 const backText = currentLang === 'it' ? 'Torna alla lista' : 'Back to overview';
 
+const writtenByText = currentLang === 'it' ? 'Scritto da' : 'Written by';
+
 // Contact me footer text
 const contactMeFooterText =
   currentLang === 'it'
@@ -136,7 +138,7 @@ const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
     </div>
 
     <footer class="post-footer">
-      <p>Written by {frontmatter.author}</p>
+      <p>{writtenByText} {frontmatter.author}</p>
       <p set:html={contactMeFooterText} />
     </footer>
   </article>

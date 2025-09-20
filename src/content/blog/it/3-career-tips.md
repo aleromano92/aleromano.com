@@ -37,17 +37,34 @@ Poni domande specifiche:
 Questo è un denominatore comune a tutte le aziende. Sì, prima ti ho spiegato che aziende diverse premiano comportamenti diversi, ma avere nel proprio Promo Case la descrizione dell'impatto di business portato è un evergreen che piace a qualsiasi manager.
 La cosa più importante che devi fare è **quantificarlo**. 
 
-Alcuni esempi:
+Alcuni esempi di come trasformare descrizioni vaghe in impatti misurabili:
 
 - non dire "ho migliorato le performance", dì "ho ridotto i tempi di risposta del 40%, generando un risparmio stimato di X euro all'anno".
 - evita "ho aumentato la resilienza del sistema", spiega come "dopo il mio refactoring, il numero di incident in produzione su quel componente si è ridotto da 4 al mese a 1 ogni 3 mesi".
 - riscrivi "ho rilasciato la nuova feature X che ha velocizzato il tempo di analisi da parte delle persone di Operations" citando come "la nuova feature X permette di gestire il 10% in più di casi a parità di tempo, permettendoci di crescere senza necessità di assumere ulteriormente nel reparto Operations".
 
+### Il Glue Work: Fondamentale ma Non Quantificabile
+
+Non tutto deve essere obbligatoriamente misurato in maniera quantitativa. Esiste quello che viene chiamato [**glue work**](https://www.noidea.dog/glue): mentorship, sbloccare altri colleghi, preparare task rifinite, trovare soluzioni cross-team, facilitare comunicazione tra reparti. È fondamentale per il successo aziendale ma difficile da misurare.
+
+Per il glue work devi essere bravo tu a rendere consapevole il tuo manager che lo stai facendo, e bravo lui a valorizzarlo in un eventuale promo case. Come? Documentalo nel tuo [Brag Journal](https://jvns.ca/blog/brag-documents/) e chiedi peer feedback alle persone che aiuti costantemente.
+
+### Progetti Tech-for-Tech: L'Impatto nell'Execution
+
+Anche i progetti puramente tecnici senza impatto di business diretto hanno valore, ma devi evidenziare la **qualità della tua execution**:
+
+- "Ho migrato 30 servizi da RabbitMQ a Google Pub/Sub creando prima un pattern/strategia che ha reso la migrazione degli altri 29 servizi 60% più veloce"
+- "Ho completato la migrazione con zero incident e downtime in produzione"
+- "Ho creato una libreria per questa migrazione che è stata adottata da 5 altri team in azienda"
+- "Ho fatto mentorship continua così che questa migrazione complessa è stata deliverrata da 2 junior developer (deliver through others)"
+
 ### Capisci come viene valutato la tua Manager
 
-Non è solo una questione di farti delegare parti del suo lavoro, nonostante sia un modo per te di crescere e provare sfide nuove. I suoi obiettivi diventano opportunità per te. Se il suo successo dipende dalla retention del team, proponi iniziative per migliorare l'employee experience. Se deve accelerare il delivery, concentrati sull'automazione e l'efficienza.
+Non è solo una questione di farti delegare parti del suo lavoro, nonostante sia un modo per te di crescere e provare sfide nuove. I suoi obiettivi diventano opportunità per te di crescere e fargli raggiungere i suoi target.
 
-Oltre a conquistarti velocemente la sua fiducia, capire come viene valutata la tua Manager ti aiuta pensare in _grande_, ad un livello di impatto superiore a quello in cui operi attualmente. Questo è vero anche se vuoi crescere come Individual Contributor senza inseguire il path da Manager.
+**Aiuta attivamente il tuo manager a perseguire i suoi obiettivi.** Se il suo successo dipende dalla retention del team, proponi e implementa iniziative per migliorare l'employee experience. Se deve accelerare il delivery, concentrati sull'automazione e l'efficienza. Se deve ridurre i costi operativi, trova modi per ottimizzare l'infrastruttura.
+
+Questo approccio ha due vantaggi: conquistarti velocemente la sua fiducia e aiutarti a pensare in _grande_, ad un livello di impatto superiore a quello in cui operi attualmente. Questo è vero anche se vuoi crescere come Individual Contributor senza inseguire il path da Manager.
 
 ## 2. "Me Ne Occupo Io": Il Potere della Responsabilità
 
@@ -115,7 +132,7 @@ Poche cose sono importanti nella tua crescita quanto aiutare altri a farlo. **Fa
 
 ## Conclusioni
 
-Prima che chiudi questa Tab, voglio andare contro a quello che dicevo in apertura: imparare un nuovo linguaggio di programmazione, a volte, è la cosa giusta da fare per crescere. Così come studiare i Deisgn Pattern o i test automatici.
+Prima che chiudi questa Tab, voglio andare contro a quello che dicevo in apertura: imparare un nuovo linguaggio di programmazione, a volte, è la cosa giusta da fare per crescere. Così come studiare i Design Pattern o i test automatici.
 
 Ma credo che Internet sia pieno di persone che promuovono questo come se fosse l'unica cosa che serve nella carriera da Individual Contributor.  
 Non è così o quanto meno ci sono pochissime aziende al mondo che premiano solo questa componente senza tutto il resto che ti ho raccontato.
