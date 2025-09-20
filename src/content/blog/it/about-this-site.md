@@ -13,7 +13,7 @@ image:
 Pochi al mondo sono costantemente alla ricerca della "prossima grande novità" quanto i Software Engineer :smile:
 Che siano framework, SaaS, linguaggi o piattaforme poco importa: la FOMO (Fear Of Missing Out) ci porta a rimanere sempre aggiornati e provare cose nuove, pagando un non indifferente costo in termini di tempo. Mi sono accorto però che, nel tentativo di rimanere al passo con le ultime novità, stavo perdendo di vista le basi che rendono tutto ciò possibile.
 
-Anche nella mia [biografia su questo sito](/about), ho scritto che mi piace capire come funzionino le cose. Man mano però che utilizzavo strumenti di sempre più alto livello, mi sono "spaventato" dal ritrovarmi così lontano da come tutte queste tecnologie funzionano sotto il cofano. Ho iniziato a sentire il bisogno di tornare a un approccio più "manuale" e "primitivo" per capire meglio le fondamenta su cui si basa tutto ciò che facciamo.
+Anche nella mia [biografia su questo sito](/it/about#biography), ho scritto che mi piace capire come funzionino le cose. Man mano però che utilizzavo strumenti di sempre più alto livello, mi sono "spaventato" dal ritrovarmi così lontano da come tutte queste tecnologie funzionano sotto il cofano. Ho iniziato a sentire il bisogno di tornare a un approccio più "manuale" e "primitivo" per capire meglio le fondamenta su cui si basa tutto ciò che facciamo.
 
 ## Ritorno alle Basi con un VPS 🏗️
 

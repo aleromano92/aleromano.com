@@ -13,7 +13,7 @@ image:
 Few people in the world are constantly searching for the "next big thing" as much as Software Engineers :smile:
 Whether it's frameworks, SaaS, languages, or platforms, FOMO (Fear Of Missing Out) drives us to stay updated and try new things, paying a significant cost in terms of time. However, I realized that in trying to keep up with the latest trends, I was losing sight of the basics that make it all possible.
 
-Even in my [bio on this site](/about), I wrote that I like to understand how things work. But as I used increasingly high-level tools, I became "scared" of finding myself so far removed from how these technologies actually work under the hood. I started feeling the need to return to a more "manual" and "primitive" approach to better understand the foundations upon which everything we do is built.
+Even in my [bio on this site](/about#biography), I wrote that I like to understand how things work. But as I used increasingly high-level tools, I became "scared" of finding myself so far removed from how these technologies actually work under the hood. I started feeling the need to return to a more "manual" and "primitive" approach to better understand the foundations upon which everything we do is built.
 
 ## Back to Basics with a VPS 🏗️
 

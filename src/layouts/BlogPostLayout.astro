@@ -253,6 +253,8 @@ const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
 
   .post-content {
     margin-top: var(--space-xl);
+    padding: 0 var(--space-xl);
+    font-size: var(--font-size-md);
   }
 
   .post-content :global(img) {
@@ -325,5 +327,11 @@ const fallbackUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
   .post-content :global(ol) {
     margin: 0 var(--space-md) var(--space-md);
     padding: 0 var(--space-md);
+  }
+
+  @media screen and (max-width: 768px) {
+    .post-content {
+      padding: 0;
+    }
   }
 </style>
