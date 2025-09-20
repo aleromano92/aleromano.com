@@ -105,19 +105,19 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     }
 
-    .reveal {
-        font-family: inherit;
-    }
-
-    .reveal .slides section {
-        text-align: left;
-    }
-
-    .reveal h1,
-    .reveal h2,
-    .reveal h3 {
+    :global(.reveal h1),
+    :global(.reveal h2),
+    :global(.reveal h3) {
         text-align: center;
-        margin-bottom: 2rem;
+        margin: 2rem 0;
+    }
+
+    :global(.reveal .slides .blur) {
+        filter: blur(5px);
+    }
+
+    :global(.reveal .slides .blur.visible) {
+        filter: none;
     }
 
     .back-to-blog-button {

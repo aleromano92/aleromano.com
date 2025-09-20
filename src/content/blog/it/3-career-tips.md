@@ -15,7 +15,7 @@ Quando leggo o sento Software Engineer dire cose come "voglio crescere come Indi
 
 ## 1. Capisci Cosa Premia la Tua Azienda
 
-**La prima regola: ogni azienda ha i suoi criteri di valutazione.**
+**Il primo consiglio: ogni azienda ha i suoi criteri di valutazione.**
 Ci sono aziende che valorizzano le persone che creano feature/prodotti nuovi e ne seguono il ciclo di vita completo, da ideazione a messa a produzione. Un esempio è Google dove soprattutto per certi ruoli sei "obbligato" a lanciare nuovi prodotti per ottenere una nuova promozione. Infatti, è pieno di prodotti che una volta esaurito lo scopo dell'Individual Contributor che spingeva per essi, finisce [abbandaonato e dismesso](https://gcemetery.co/).
 Altre aziende invece premiano chi migliora i processi esistenti, come ad esempio Amazon, dove il focus è sull'efficienza e sull'ottimizzazione continua.
 Altre ancora guardano con ammirazione chi riesce semplicemente a far risparmiare i costi mastodontici del Cloud.
@@ -68,7 +68,7 @@ Questo approccio ha due vantaggi: conquistarti velocemente la sua fiducia e aiut
 
 ## 2. "Me Ne Occupo Io": Il Potere della Responsabilità
 
-**La seconda regola: le promozioni seguono le responsabilità, non le precedono.**
+**Il secondo consiglio: le promozioni seguono le responsabilità, non le precedono.**
 
 Ho visto troppi colleghi aspettare il titolo prima di agire come senior o lead. È l'approccio sbagliato. Prima assumi responsabilità e dimostri impatto, poi arriva il riconoscimento.
 
@@ -100,7 +100,7 @@ Apprezzo molto anche le persone che semplicemente mi dicono: "mi hai chiesto una
 
 ## 3. Chiedi Feedback e Restituisci Valore
 
-**La terza regola: il feedback è un super-potere, se sai usarlo.**
+**Il terzo consiglio: il feedback è un super-potere, se sai usarlo.**
 
 Non tutti i feedback sono utili. Impara a filtrare: chiedi consigli a persone che rispetti e che hanno ottenuto risultati che ammiri. Ma non limitarti agli engineer.
 

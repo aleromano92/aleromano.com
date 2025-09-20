@@ -7,136 +7,252 @@ theme: "black"
 transition: "slide"
 ---
 
-# 3 Career Tips for Software Engineers
-### From 10+ Years in Tech
+# 3 Career Tips Nobody Talks About
+### For Engineers
 
 Note:
-Welcome everyone! Today I want to share three essential career tips that I've learned over my 10+ years in software engineering. These are practical insights that can help accelerate your career growth.
+Welcome! Today I'll share three career tips that most engineers never hear about. These insights come from 10+ years in tech and watching what actually gets people promoted.
+
+---
+
+## The Wrong Approach
+
+> "I want to grow as an Individual Contributor, so I decided to study Rust to aim for a promotion"
+
+Note:
+This is what I hear constantly. Engineers think learning new languages equals promotion. It doesn't work that way.
 
 ---
 
 ## Who Am I?
 
-- Engineering Manager at Mollie
-- 10+ years in software engineering
-- Led teams from startups to scale-ups
-- Passionate about career growth
-- Item 1 <!-- .element: class="fragment" data-fragment-index="2" -->
-- Item 2 <!-- .element: class="fragment" data-fragment-index="1" -->
+![image](../../assets/alepro.png)
+
+- Senior Engineering Manager at Mollie <!-- .element: class="fragment" -->
+- 10+ years in software engineering <!-- .element: class="fragment" -->
+- Led teams from startups to scale-ups <!-- .element: class="fragment" -->
+- Witnessed promotions across different company cultures <!-- .element: class="fragment" -->
 
 Note:
-Let me briefly introduce myself. I'm currently an Engineering Manager at Mollie, a fintech company in Amsterdam. I've been in tech for over 10 years, working across different company sizes from startups to scale-ups. I'm passionate about helping engineers grow their careers because I wish someone had shared these insights with me earlier in my journey.
+I'm Alessandro Romano. Currently EM at Mollie in Amsterdam. I've seen what gets people promoted across different companies and cultures.
 
 ---
 
-## The Rules of the Game
+# The 3 Tips
 
-### Understand what your company rewards
-
-- If there's a career framework, it's just a starting point
-- Ask your manager for practical examples
-- **Evergreen principle**: Business impact matters most
-- Quantify everything you do
+1. Understand what your company rewards <!-- .element: class="" -->
+2. "I'm on it" mentality <!-- .element: class="blur" -->
+3. Ask for feedback and give back <!-- .element: class="blur" -->
 
 Note:
-This is rule number one: understand what your company actually rewards, not just what they say they reward. Many companies have career frameworks, but these are often just starting points. The real key is to ask your manager for specific examples of people who got promoted recently and what they did. Focus on business impact - this is the evergreen principle that works everywhere. Always try to quantify your achievements with numbers and metrics.
+Here are the three tips that actually drive promotions. Let's start with tip number one.
+
+---
+
+## Companies Are Different
+
+- Google: Launch new products <!-- .element: class="fragment" -->
+- Amazon: Improve existing processes <!-- .element: class="fragment" -->
+- Some companies: Just save massive cloud costs <!-- .element: class="fragment" -->
+
+Note:
+Google rewards launching new products - hence the Google graveyard. Amazon focuses on efficiency. Others just want you to optimize their AWS bill.
+
+---
+
+## Career Frameworks Are Just Starting Points
+
+- Often too generic <!-- .element: class="fragment" -->
+- Words like "complexity" and "high impact" <!-- .element: class="fragment" -->
+- Ask your manager for concrete examples <!-- .element: class="fragment" -->
+
+Note:
+Don't rely on the career framework document. Ask your manager to translate those vague principles into real examples.
+
+---
+
+## Business Impact
+
+### Quantify Everything
+
+- ❌ "I improved performance" <!-- .element: class="fragment" -->
+- ✅ "I reduced response times by 40%, saving €X per year" <!-- .element: class="fragment" -->
+
+- ❌ "I increased system resilience" <!-- .element: class="fragment" -->
+- ✅ "Incidents decreased from 4/month to 1/quarter" <!-- .element: class="fragment" -->
+
+Note:
+Business impact is universal. But you must quantify it. Numbers make your achievements concrete and memorable.
+
+---
+
+## Glue Work Matters Too
+
+- Mentorship <!-- .element: class="fragment" -->
+- Unblocking colleagues <!-- .element: class="fragment" -->
+- Cross-team solutions <!-- .element: class="fragment" -->
+- Facilitating communication <!-- .element: class="fragment" -->
+
+### Document it. Get peer feedback. <!-- .element: class="fragment" -->
+
+Note:
+Not everything is quantifiable. Glue work is essential but hard to measure. Document it and get testimonials from people you help.
 
 ---
 
 ## Help Your Manager Succeed
 
-### Understand how your manager is evaluated
-
-- Their success = your success
-- Ask: "What are your main goals this quarter?"
-- Proactively solve their problems
-- Make their job easier
+- Their objectives = your opportunities <!-- .element: class="fragment" -->
+- Ask: "What are your main goals this quarter?" <!-- .element: class="fragment" -->
+- Actively contribute to their targets <!-- .element: class="fragment" -->
+- Build trust by making their job easier <!-- .element: class="fragment" -->
 
 Note:
-This might sound obvious, but many engineers overlook this crucial point. Your manager's success directly correlates with your success. I recommend having a direct conversation: "What are your main goals this quarter?" Then think about how you can contribute to those goals. When you make your manager's job easier, you become indispensable.
+Your manager's success directly impacts yours. Understand their goals and actively help them achieve those goals.
 
 ---
 
-## "I'm On It" Mentality
+# The 3 Tips
 
-### The Power of Accountability
-
-- Show up consistently
-- Take ownership of problems
-- Seek more responsibilities before asking for promotion
-- Always keep your promises
+1. Understand what your company rewards <!-- .element: class="blur" -->
+2. "I'm on it" mentality <!-- .element: class="" -->
+3. Ask for feedback and give back <!-- .element: class="blur" -->
 
 Note:
-Rule number two is developing what I call the "I'm on it" mentality. This is about reliability and accountability. When someone asks you to do something, respond with "I'm on it" and then actually follow through. This builds incredible trust. Seek more responsibilities before asking for promotion - this shows you're ready for the next level.
+Now let's dive into tip number two - the "I'm on it" mentality.
+
+---
+
+## The Power of "I'm On It"
+
+> Have you seen a senior engineer respond "I'm on it" to an incident?
+
+- Builds reputation for reliability <!-- .element: class="fragment" -->
+- Demonstrates proactivity <!-- .element: class="fragment" -->
+- Creates serenity and admiration <!-- .element: class="fragment" -->
+- Makes people want to help you <!-- .element: class="fragment" -->
+
+Note:
+When someone says "I'm on it" during an incident, everyone feels relief. That person becomes indispensable.
 
 ---
 
 ## Make Your Work Visible
 
-### Documentation & Communication
-
-- Write about your achievements
-- Share knowledge through blog posts
-- Present at team meetings
-- Communicate asynchronously
+- Documentation: Decision records, post-mortems, brag journal <!-- .element: class="fragment" -->
+- Presentations: Share project results in team meetings <!-- .element: class="fragment" -->
+- Async communication: Update on progress regularly <!-- .element: class="fragment" -->
+- 1-on-1s: Don't assume your manager knows everything <!-- .element: class="fragment" -->
 
 Note:
-Your work means nothing if nobody knows about it. Document your achievements, write about your learnings, and share knowledge. This isn't about bragging - it's about professional visibility. Present at team meetings, write internal blog posts, communicate asynchronously so there's a record of your contributions.
+The best work is useless if nobody knows about it. Make your contributions visible through multiple channels.
 
 ---
 
-## Ask and Give Back
+## Always Keep Your Promises
 
-### The Feedback Loop
-
-- Ask feedback from people you respect
-- Not all feedback is useful - filter wisely
-- Seek peer feedback (especially from non-engineers)
-- Find external validation through community
-
----
-
-## Mentor Others
-
-### Give Back to the Community
-
-- Teaching solidifies your own knowledge
-- Builds your reputation
-- Creates valuable connections
-- Helps you see problems from different perspectives
-
----
-
-## Own Your Career
-
-### You Care Most About Your Success
-
-- Managers can change
-- Companies can restructure
-- Your career is your responsibility
-- Invest in continuous learning
-
----
-
-## Key Takeaways
-
-1. **Understand the rules** - Know what your company values
-2. **"I'm on it"** - Take accountability and make work visible
-3. **Ask and give back** - Build relationships and help others
+- When you can't deliver, communicate proactively <!-- .element: class="fragment" -->
+- Transparency builds trust <!-- .element: class="fragment" -->
+- Silence destroys it <!-- .element: class="fragment" -->
+- "This is complex, let me think and get back to you by Friday" <!-- .element: class="fragment" -->
 
 Note:
-Let me summarize the three key rules: First, understand what your company actually rewards through concrete examples. Second, develop the "I'm on it" mentality and make your work visible. Third, actively seek feedback and give back to others - this builds a strong professional network.
+Never let someone discover you're late by asking you. Communicate delays as soon as you know about them.
 
 ---
 
-## Questions?
+# The 3 Tips
 
-### Let's discuss!
+1. Understand what your company rewards <!-- .element: class="blur" -->
+2. "I'm on it" mentality <!-- .element: class="blur" -->
+3. Ask for feedback and give back <!-- .element: class="" -->
+
+Note:
+Finally, let's explore tip number three - asking for feedback and giving back.
+
+---
+
+## Filter Feedback Wisely
+
+- Ask people you respect <!-- .element: class="fragment" -->
+- Who have achieved results you admire <!-- .element: class="fragment" -->
+- Don't limit yourself to engineers <!-- .element: class="fragment" -->
+- Thank them and explain your action plan <!-- .element: class="fragment" -->
+
+Note:
+Be selective about whose feedback you seek. And remember, giving feedback requires investment from others.
+
+---
+
+## Non-Technical Feedback Is Gold
+
+- Product managers <!-- .element: class="fragment" -->
+- Designers <!-- .element: class="fragment" -->
+- Customer success <!-- .element: class="fragment" -->
+- Marketing and sales <!-- .element: class="fragment" -->
+
+### They see your blind spots <!-- .element: class="fragment" -->
+
+Note:
+A PM teaching you storytelling is as valuable as a senior engineer suggesting JVM internals. Different perspectives reveal blind spots.
+
+---
+
+## Be a Mentor
+
+- Teaching solidifies your knowledge <!-- .element: class="fragment" -->
+- Builds your reputation <!-- .element: class="fragment" -->
+- Creates valuable connections <!-- .element: class="fragment" -->
+- Think of your first mentor - be that for someone else <!-- .element: class="fragment" -->
+
+Note:
+Few things accelerate your growth like helping others grow. Think about who turned the corner for you in your career.
+
+---
+
+## External Validation
+
+- Meetups and conferences <!-- .element: class="fragment" -->
+- Open source contributions <!-- .element: class="fragment" -->
+- Technical writing <!-- .element: class="fragment" -->
+- Builds internal credibility <!-- .element: class="fragment" -->
+
+Note:
+External recognition gives you internal credibility and creates a portfolio of your skills.
+
+---
+
+# The 3 Tips
+
+1. Understand what your company rewards <!-- .element: class="fragment custom blur" -->
+2. "I'm on it" mentality <!-- .element: class="fragment custom blur" -->
+3. Ask for feedback and give back <!-- .element: class="fragment custom blur" -->
+
+Note:
+Understand the rules - Learn what your company actually rewards
+"I'm on it" - Take responsibility and make work visible
+Ask and give back - Build relationships through feedback and mentoring
+---
+
+## One Last Thing
+
+Learning new languages **can** be the right move...
+
+But if you think it is the **only** thing needed.<!-- .element: class="fragment" -->
+
+**It's not.** <!-- .element: class="fragment" -->
+
+Note:
+Don't misunderstand me - technical skills matter. But they're just one piece of the puzzle, not the whole solution.
+
+---
+
+# Questions?
 
 **Contact me:**
-- Twitter: @_aleromano
-- Blog: aleromano.com
-- LinkedIn: /in/aleromano92
+- **Blog**: aleromano.com
+- **Twitter**: @_aleromano  
+- **LinkedIn**: /in/aleromano92
 
 Note:
-That's all for today! I'd love to hear your questions and discuss these topics further. You can also reach out to me on social media or read more detailed insights on my blog. Thank you for your attention!
+Thank you! I'd love to hear your questions and discuss these topics further. Feel free to reach out on any platform.

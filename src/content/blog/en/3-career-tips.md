@@ -15,7 +15,7 @@ When I read or hear Software Engineers say things like "I want to grow as an Ind
 
 ## 1. Understand What Your Company Rewards
 
-**The first rule: every company has its own evaluation criteria.**
+**The first tip: every company has its own evaluation criteria.**
 There are companies that value people who create new features/products and follow their complete lifecycle, from ideation to production. An example is Google where especially for certain roles you're "forced" to launch new products to get a promotion. In fact, it's full of products that once the Individual Contributor who pushed for them has exhausted their purpose, end up [abandoned and discontinued](https://gcemetery.co/).
 Other companies instead reward those who improve existing processes, like Amazon, where the focus is on efficiency and continuous optimization.
 Still others look with admiration at those who simply manage to save the massive costs of the Cloud.
@@ -68,7 +68,7 @@ This approach has two advantages: quickly earning their trust and helping you th
 
 ## 2. "I'm on it": The Power of Responsibility
 
-**The second rule: promotions follow responsibilities, they don't precede them.**
+**The second tip: promotions follow responsibilities, they don't precede them.**
 
 I've seen too many colleagues wait for the title before acting like a senior or lead. It's the wrong approach. First you take on responsibility and demonstrate impact, then comes the recognition.
 
@@ -100,7 +100,7 @@ I also really appreciate people who simply tell me: "you asked me something comp
 
 ## 3. Ask for Feedback and Return Value
 
-**The third rule: feedback is a super-power, if you know how to use it.**
+**The third tip: feedback is a super-power, if you know how to use it.**
 
 Not all feedback is useful. Learn to filter: ask for advice from people you respect and who have achieved results you admire. But don't limit yourself to engineers.
 
