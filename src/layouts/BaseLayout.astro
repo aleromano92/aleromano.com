@@ -6,6 +6,7 @@ import SEO from '../components/SEO.astro';
 import '../styles/theme.css';
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
+import defaultProfileImage from '../assets/alepro.png';
 
 export interface Props {
   pageTitle: string;
@@ -38,6 +39,12 @@ const {
 
 // Get current language from i18nData or default to 'en'
 const currentLang = i18nData?.currentLang || 'en';
+
+// Set up default image and alt text fallbacks
+const finalImage = image || defaultProfileImage;
+const defaultImageAlt =
+  currentLang === 'it' ? 'Foto profilo di Alessandro Romano' : 'Alessandro Romano profile picture';
+const finalImageAlt = imageAlt || defaultImageAlt;
 ---
 
 <html lang={currentLang}>
@@ -54,8 +61,8 @@ const currentLang = i18nData?.currentLang || 'en';
       currentUrl={Astro.url.href}
       currentLang={currentLang}
       type={type}
-      image={image}
-      imageAlt={imageAlt}
+      image={finalImage}
+      imageAlt={finalImageAlt}
       publishedTime={publishedTime}
       author={author}
       structuredData={structuredData}
