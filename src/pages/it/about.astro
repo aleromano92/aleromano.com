@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BaseAbout, { getAboutTranslations } from '../../components/pages/BaseAbout.astro';
 import type { SupportedLanguage } from '../../types/i18n';
+import profileImage from '../../assets/alepro.png';
 
 const pageTitle = 'Chi Sono';
 
@@ -73,6 +74,13 @@ const structuredData = {
 };
 ---
 
-<BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData} structuredData={structuredData}>
+<BaseLayout 
+    pageTitle={pageTitle} 
+    description={pageDescription} 
+    i18nData={i18nData} 
+    structuredData={structuredData}
+    image={profileImage}
+    imageAlt="Foto profilo di Alessandro Romano"
+>
     <BaseAbout language={language} />
 </BaseLayout>
