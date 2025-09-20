@@ -19,8 +19,61 @@ const pageDescription = t.pageDescription;
 const i18nData = {
   currentLang: language,
 };
+
+// Structured data for Person schema
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Alessandro Romano',
+  alternateName: 'Ale Romano',
+  description:
+    'Senior Engineering Manager at Mollie, father of two amazing kids, and funny lovely husband. Addicted to details and obsessed with how things work: from Cloud services to human relationships.',
+  url: 'https://aleromano.com',
+  image: 'https://aleromano.com/alepro.png',
+  sameAs: [
+    'https://twitter.com/_aleromano',
+    'https://github.com/aleromano92',
+    'https://linkedin.com/in/alessandroromano92',
+    'https://aleromano.com',
+  ],
+  jobTitle: 'Senior Engineering Manager',
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Mollie',
+    url: 'https://mollie.com',
+  },
+  knowsAbout: [
+    'Software Engineering',
+    'Engineering Management',
+    'Cloud Architecture',
+    'Team Leadership',
+    'TypeScript',
+    'JavaScript',
+    'Azure',
+    'System Design',
+  ],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Busto Arsizio',
+    addressRegion: 'Lombardy',
+    addressCountry: 'IT',
+  },
+  nationality: 'Italian',
+  speaks: [
+    {
+      '@type': 'Language',
+      name: 'Italian',
+      alternateName: 'it',
+    },
+    {
+      '@type': 'Language',
+      name: 'English',
+      alternateName: 'en',
+    },
+  ],
+};
 ---
 
-<BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData}>
+<BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData} structuredData={structuredData}>
   <BaseAbout language={language} />
 </BaseLayout>

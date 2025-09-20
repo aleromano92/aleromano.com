@@ -80,7 +80,7 @@ const githubData = await getGitHubCommitsData(language);
         </p>
         <p>
             {t.readMore}
-            <a href={language === 'it' ? '/it/about' : '/about'}>{t.readMoreLink}</a>
+            <a href={language === 'it' ? '/it/about#biography' : '/about#biography'}>{t.readMoreLink}</a>
         </p>
         <p>
             {t.stayUpdated}
@@ -98,8 +98,8 @@ const githubData = await getGitHubCommitsData(language);
         alt={t.profilePicAlt}
         width={300}
         priority
-        densities={[1, 2]}
-        quality="max"
+        densities={[2]}
+        quality="high"
         class="profile-pic"
     />
 </div>

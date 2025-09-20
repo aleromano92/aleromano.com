@@ -23,8 +23,8 @@ export interface TwitterRawDataResponse {
 // Alessandro Romano's Twitter user ID (this never changes)
 const TWITTER_USER_ID = '4266046641';
 
-// 30 minutes TTL (twice the X API rate limit window)
-const CACHE_TTL = 30 * 60 * 1000;
+// 36 hours TTL (significantly reduces API calls due to monthly limit)
+const CACHE_TTL = 36 * 60 * 60 * 1000;
 
 /**
  * Interface for different Twitter data retrieval strategies
@@ -147,7 +147,7 @@ class LiveTwitterStrategy implements TwitterDataStrategy {
       `expansions=author_id,attachments.media_keys&` +
       `user.fields=name,username&` +
       `media.fields=type,url,preview_image_url,alt_text,width,height&` +
-      `max_results=10`;
+      `max_results=6`;
 
     const timelineResponse = await fetch(timelineUrl, { headers });
 

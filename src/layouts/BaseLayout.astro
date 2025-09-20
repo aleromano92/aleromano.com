@@ -20,6 +20,7 @@ export interface Props {
   type?: 'website' | 'article';
   publishedTime?: Date;
   author?: string;
+  structuredData?: object;
 }
 
 const {
@@ -32,6 +33,7 @@ const {
   type = 'website',
   publishedTime,
   author,
+  structuredData,
 } = Astro.props;
 
 // Get current language from i18nData or default to 'en'
@@ -56,12 +58,13 @@ const currentLang = i18nData?.currentLang || 'en';
       imageAlt={imageAlt}
       publishedTime={publishedTime}
       author={author}
+      structuredData={structuredData}
     />
   </head>
   <body>
     <Header i18nData={i18nData} />
     <main class="container">
-      <h1>{pageTitle}</h1>
+      <h1 id="top">{pageTitle}</h1>
       <slot />
     </main>
     <Footer language={currentLang} />

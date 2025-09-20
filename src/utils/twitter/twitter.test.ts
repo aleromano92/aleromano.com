@@ -350,8 +350,8 @@ describe('twitter.ts', () => {
       const response1 = await getTwitterPosts(CURRENT_LANGUAGE);
       expect(response1.freshness).toBe(DataFreshness.LIVE);
       
-      // Fast forward past cache TTL (30 minutes + 1 minute)
-      vi.advanceTimersByTime(31 * 60 * 1000);
+      // Fast forward past cache TTL (36 hours + 1 hour)
+      vi.advanceTimersByTime(37 * 60 * 60 * 1000);
       
       // Second call should fetch fresh data since cache expired
       const response2 = await getTwitterPosts(CURRENT_LANGUAGE);
@@ -379,8 +379,8 @@ describe('twitter.ts', () => {
       const initialResponse = await getTwitterPosts(CURRENT_LANGUAGE);
       expect(initialResponse.freshness).toBe(DataFreshness.LIVE);
       
-      // Fast forward past cache TTL (30 minutes + 1 minute)
-      vi.advanceTimersByTime(31 * 60 * 1000);
+      // Fast forward past cache TTL (36 hours + 1 hour)
+      vi.advanceTimersByTime(37 * 60 * 60 * 1000);
       
       // Second call fails, but should return cached data
       mockFetch.mockRejectedValueOnce(new Error('API down'));

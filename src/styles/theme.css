@@ -1,12 +1,32 @@
 :root {
     /* Colors - Light theme (default) */
     --color-bg: #ffeb89;
+    --color-bg-secondary: #f7eebf;
     --color-text: #49337b;
+    --color-text-primary: #49337b;
+    --color-text-secondary: #6b5ba8;
     --color-primary: #49337b;
     --color-secondary: #f7eebf;
     --color-accent: #5f38c2;
     --color-border: var(--color-text);
+    --color-border-light: #d1c7e8;
     --color-checkbox-bg: #886fc3;
+
+    /* Typography */
+    --font-family: system-ui, sans-serif;
+    --font-size-base: 1rem;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1.125rem;
+    --font-size-lg: 1.5rem;
+    --font-size-xl: 2rem;
+    --line-height-base: 1.5;
+    --font-weight-bold: 600;
+
+    /* Border radius */
+    --border-radius: 0.5rem;
+    --border-radius-sm: 0.25rem;
+    --border-radius-lg: 1rem;
 
     /* Layout */
     --container-max-width: 1080px;
@@ -17,12 +37,6 @@
     --breakpoint-mobile: 480px;
     --breakpoint-tablet: 636px;
     --breakpoint-desktop: 860px;
-
-    /* Typography */
-    --font-family: system-ui, sans-serif;
-    --font-size-base: 1rem;
-    --line-height-base: 1.5;
-    --font-weight-bold: 600;
 
     /* Spacing */
     --space-xs: 0.5rem;
@@ -40,11 +54,15 @@
 
 [data-theme="dark"] {
     --color-bg: #49337b;
+    --color-bg-secondary: #6446a9;
     --color-text: #ffeb89;
+    --color-text-primary: #ffeb89;
+    --color-text-secondary: #d4c89f;
     --color-primary: #ffeb89;
     --color-secondary: #6446a9;
     --color-accent: #ffdb29;
     --color-border: var(--color-text);
+    --color-border-light: #7a66b3;
     --color-checkbox-bg: #fff0a3;
 }
 

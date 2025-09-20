@@ -10,13 +10,27 @@
     const closeBtn = document.querySelector('.close');
 
     if (modal && modalImg && closeBtn) {
-        // Add click handler to all content images
-        document.querySelectorAll('.post-content img').forEach((img) => {
+        // Add click handler to all clickable images (both post content and biography images)
+        document.querySelectorAll('.post-content img, .clickable-image').forEach((img) => {
             if (img instanceof HTMLImageElement) {
                 img.style.cursor = 'zoom-in';
                 img.addEventListener('click', function () {
-                    modal.style.display = 'block';
-                    modalImg.src = img.src;
+                    modal.style.display = 'flex';
+
+                    // Try to get the highest quality source available
+                    let src = img.src;
+
+                    // If it's an Astro optimized image, try to get the original or a larger version
+                    if (img.srcset) {
+                        const srcsetArray = img.srcset.split(',');
+                        const highestQuality = srcsetArray[srcsetArray.length - 1];
+                        if (highestQuality) {
+                            src = highestQuality.trim().split(' ')[0];
+                        }
+                    }
+
+                    modalImg.src = src;
+                    modalImg.alt = img.alt || 'Enlarged image';
                 });
             }
         });
@@ -31,7 +45,7 @@
 
         // Close on escape key
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modal.style.display === 'block') {
+            if (e.key === 'Escape' && modal.style.display === 'flex') {
                 modal.style.display = 'none';
             }
         });
@@ -43,21 +57,26 @@
         display: none;
         position: fixed;
         z-index: 1000;
-        padding: var(--space-xl);
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.9);
         cursor: zoom-out;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-lg);
+        box-sizing: border-box;
     }
 
     .modal-content {
-        margin: auto;
-        display: block;
-        max-width: 100%;
-        max-height: 100%;
+        max-width: 95vw;
+        max-height: 95vh;
+        width: auto;
+        height: auto;
         object-fit: contain;
+        border-radius: var(--border-radius);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
     .close {

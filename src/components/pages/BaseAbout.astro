@@ -1,7 +1,19 @@
 ---
 import { Image } from 'astro:assets';
 import TwitterFeed from '../TwitterFeed.astro';
+import ImageModal from '../ImageModal.astro';
 import profilePic from '../../assets/alepro.png';
+import rpgImage from '../../assets/rpg.webp';
+import pentiumIIImage from '../../assets/pentium-ii.jpeg';
+import logoProgLangImage from '../../assets/logo-programming-language.jpg';
+import pokeYellowImage from '../../assets/poke-yellow.jpg';
+import finalFantasiesImage from '../../assets/final-fantasies.jpg';
+import runningImage from '../../assets/running.png';
+import blackHoleImage from '../../assets/black-hole.jpg';
+import tennisImage from '../../assets/tennis.avif';
+import onePieceImage from '../../assets/one-piece.jpg';
+import speakingImage from '../../assets/speaking.png';
+import familyImage from '../../assets/family.png';
 import { getTwitterPosts } from '../../utils/twitter/twitter';
 import type { SupportedLanguage } from '../../types/i18n';
 
@@ -9,9 +21,66 @@ export interface AboutTranslations {
     pageTitle: string;
     pageDescription: string;
     tagline: string;
-    intro1: string;
-    intro2: string;
-    intro3: string;
+
+    // Table of Contents
+    tocTitle: string;
+    tocBiography: string;
+    tocExperience: string;
+    tocNow: string;
+    tocTwitter: string;
+
+    // Back to top
+    backToTop: string;
+
+    // Biography Section
+    biographyTitle: string;
+    biographySection1: string;
+    biographySection2: string;
+    biographySection3: string;
+    biographySection4: string;
+
+    // Work Experience Section
+    experienceTitle: string;
+    experienceSeeMore: string;
+    currentPosition: string;
+
+    // Job entries
+    mollieTitle: string;
+    mollieRole: string;
+    molliePeriod: string;
+    mollieDescription: string;
+    mollieAchievements: string[];
+
+    bancaAideXaTitle: string;
+    bancaAideXaRole: string;
+    bancaAideXaPeriod: string;
+    bancaAideXaDescription: string;
+    bancaAideXaAchievements: string[];
+
+    lastminuteTitle: string;
+    lastminuteRole: string;
+    lastminutePeriod: string;
+    lastminuteDescription: string;
+    lastminuteAchievements: string[];
+
+    // Now Section
+    nowTitle: string;
+    nowSubtitle: string;
+    nowLearning: string[];
+    nowReading: string[];
+    nowSideProjects: string[];
+    nowPersonal: string[];
+
+    // Now Section Labels
+    nowLearningLabel: string;
+    nowReadingLabel: string;
+    nowSideProjectsLabel: string;
+    nowPersonalLabel: string;
+
+    // Historical entries toggle
+    showHistory: string;
+
+    // Contact and Social
     stayUpdated: string;
     followTwitter: string;
     subscribeRss: string;
@@ -24,11 +93,120 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
     en: {
         pageTitle: 'About',
         pageDescription:
-            'Engineering Manager at Mollie, father of two amazing kids, and funny lovely husband. Addicted to details and obsessed with how things work: from Cloud services to human relationships.',
+            'Senior Engineering Manager at Mollie, father of two amazing kids, and funny lovely husband. Addicted to details and obsessed with how things work: from Cloud services to human relationships.',
         tagline: 'Insightful. Precise. Human.',
-        intro1: "I'm addicted to details and obsessed with how things work: from Cloud services to human relationships. Since my first Hello World in RPG Maker, I have come to believe that being an Engineer is much more than coding.",
-        intro2: "I'm currently an Engineering Manager at Mollie, where I focus on helping teams collaborate effectively and deliver impactful solutions.",
-        intro3: "When I'm not fostering great engineering culture, you can find me in Busto Arsizio (near Milan's Malpensa airport) where I'm a proud father of two amazing kids and a funny lovely husband.",
+
+        // Table of Contents
+        tocTitle: 'Quick Navigation',
+        tocBiography: 'Biography',
+        tocExperience: 'Work Experience (most relevant)',
+        tocNow: "What I'm Up To Now",
+        tocTwitter: 'Latest from X',
+
+        // Back to top
+        backToTop: '↑ Back to top',
+
+        // Biography Section
+        biographyTitle: 'Biography',
+        biographySection1: `The first sign that I was very curious comes from the fact that at 5 years old I had learned to read simply because I pestered my parents asking them to read me cartoon titles or the words written on cookie boxes.
+            <br/>I believe I started reading very early precisely to satisfy this <strong>curiosity</strong> of mine as soon as possible without having to always depend on someone else.
+            <br/><br/>As the son of a metalworker and a housewife (following good southern Italian tradition), I didn't receive much encouragement towards technology from my parents, even though technology found me early anyway.
+            After constantly asking for a computer, a friend of my sister managed to assemble an old Pentium II with 128 MB of RAM and Windows 98 for me. I had no idea what an operating system was, but I still remember the excitement of turning it on for the first time.
+            From that moment on, I spent hours and hours tinkering with that computer, learning everything I could as a self-taught enthusiast and getting help from my cousin who was 4 years older from time to time.
+            It was he who introduced me to <strong>RPG Maker 2000</strong>, a software that allowed me to create my first pixel art video games. I spent entire days importing sprites, creating maps with events, and writing complex stories. Even though it was just a game, I was taking my first steps in software engineering.
+            <br/>When in middle school I had my first encounter with LOGO, an educational programming language based on text commands to move a virtual turtle on the screen, I understood that maybe I could make a career in this field and be paid for my passion.`,
+        biographySection2: `Obviously, besides building video games, I also loved playing them: when I was in elementary school, Pokémon was at the height of its success and I too got my Game Boy Color; but the Italian copies of Pokémon Yellow were sold out, so at 8 years old I found myself with the English version of Pokémon Yellow in my hands.
+            Despite not knowing English (and neither did my parents), by comparing notes with school friends and always having a small dictionary with me, I managed to complete the game in a few months. Years later came the PlayStation and Final Fantasy 7 (never released in Italian): they were my first <strong>English teachers</strong>.
+            <br/><br/>In those years I also started watching <strong>One Piece</strong>, an incredible story full of ambition, mystery, and freedom that fascinated me a lot and that I still follow today, more than 20 years later. Even though it was born as a <i>Shōnen Manga</i>, therefore for a very young audience, it deals with very deep themes such as friendship (the family you choose), sacrifice, and determination that helped me grow as a person.`,
+        biographySection3: `Even though I was always considered a bit "nerdy" by my peers, I never neglected <strong>sports</strong> and being together: I played soccer first and then tennis for many years. Now I limit myself to running and doing some weights at home because life as a father requires spending my time very wisely.
+            Sports helped me always keep my feet on the ground because I admit I fall into <strong>perfectionism</strong> too often: sometimes I have to force myself to complete something and consider it finished even if it's not perfect. This website is a perfect example: I postponed and delayed a lot in creating it because I kept studying how to do it perfectly, but always remained unsatisfied with the result.
+            <br/>Curiosity has also pushed me multiple times towards physics, particularly <strong>astrophysics and quantum physics</strong>. Even though my academic path exposed me limitedly to these subjects, I'm a voracious reader of everything that is popular science, like Brian Greene's books: why does time flow in this direction? What is matter really made of? How did the Universe originate? Even if the answers aren't always definitive, I love getting lost in these questions!`,
+        biographySection4: `Now that I'm happily married and father of 2 wonderful children, I'm noticing that my curiosity also helps me in creating empathy with them and understanding their needs, even though they are still very young.
+            <br/>It may sound a bit strange, but many of the things I do like actively listening and putting myself in their shoes, are skills I learned in my work role as an <strong>Engineering Manager</strong>. Of course the relationship is totally different, but I believe that being kind and listening can take you far in any role in your life.
+            <br/><br/>Finally, the thing that makes me most proud is having managed to build my path while always keeping my <strong>word</strong>. If I promise something to someone, I don't accept not keeping it, even if this has sometimes led me to having to manage anxiety and pressure beyond the limit.
+            <br/><br/>I remain <strong>optimistic</strong> about the future because I believe it's the most pragmatic thing to do: what sense would there be in moving forward if I didn't believe things could get better?`,
+
+        // Work Experience Section
+        experienceTitle: 'Work Experience',
+        experienceSeeMore: 'See more on ',
+        currentPosition: 'Current Position',
+
+        // Mollie
+        mollieTitle: 'Mollie',
+        mollieRole: 'Senior Engineering Manager & Milan Hub Site Lead',
+        molliePeriod: 'December 2023 - Present',
+        mollieDescription: `I am the technical leader in the domain that monitors and prevents financial crimes such as money laundering and terrorism financing. Here my Software Engineers work closely with Data Analysts and Scientists as our detection systems are based on both deterministic queries and, especially, Machine Learning models.
+            <br/>Additionally, as Milan Hub Site Lead, I handle all bureaucratic and operational matters, with the goal of making the Hub experience the best for all employees.`,
+        mollieAchievements: [
+            'Internalized all monitoring and alerting tools related to financial crimes, combining deterministic and Machine Learning approaches',
+            'Defined the technological strategy supporting the Product vision in a highly regulated department',
+            'Built cross-functional engineering teams managing millions of transactions per day',
+            'Implemented engineering practices focused on team growth and technical excellence',
+            'Led the growth of Milan Hub from 8 to 70+ employees in just 1 year, including setting up a new office in downtown Milan',
+        ],
+
+        // Banca AideXa
+        bancaAideXaTitle: 'Banca AideXa',
+        bancaAideXaRole: 'Head of Engineering',
+        bancaAideXaPeriod: 'October 2020 - December 2023',
+        bancaAideXaDescription:
+            'Built from scratch an engineering team (and culture) at a fully digital bank, managing software development to support all projects: from the Instant Lending process for SMEs to internal integrations between HubSpot and Core Banking.',
+        bancaAideXaAchievements: [
+            'Built and led an amazing engineering team from scratch, growing from 0 to 18 people in less than 3 years (including external consultants)',
+            'Launched and iterated on Instant Lending product achieving product-market fit in 6 months, combining Software Engineering and Machine Learning models',
+            'Automated KYC processes using SPID recognition, reducing workload for the Operations team',
+            'Defined Software Engineering guidelines, promoting eXtreme Programming techniques',
+            'Managed a budget of 2+ million euros working closely with COO and CFO',
+            'Implemented Policies and Procedures making extensive use of technology and automation to be compliant without excessive bureaucracy',
+        ],
+
+        // lastminute.com
+        lastminuteTitle: 'lastminute.com',
+        lastminuteRole: 'Software Engineer → Engineering Manager',
+        lastminutePeriod: 'January 2017 - September 2020',
+        lastminuteDescription: `I joined as a shy, young, and inexperienced Software (front-end) Engineer and left as an Engineering Manager who handled critical situations like refunds associated with the COVID era.
+            <br/>I focused on the Customer Area, aiming to provide the best possible experience to all customers who had a booking with us.`,
+        lastminuteAchievements: [
+            'Built the Login Widget, a reusable component for authentication across every part of the website',
+            'Migrated 300k customers from weg.de (proprietary auth system) to lastminute.com with 0 downtime',
+            'Implemented Google One-Tap Login, significantly increasing logged-in users',
+            'Led a team for the first time with 5 people (later growing to multiple teams up to 12 people), laying the foundation for my Engineering Manager career',
+            'Struck by lightning on the road to Clean Code and eXtreme Programming, using pair programming and code reviews to grow team skills',
+        ],
+
+        // Now Section
+        nowTitle: "What I'm Up To Now",
+        nowSubtitle: 'Last updated: September 2025',
+        nowLearning: [
+            'Experimenting with AI Agents to automate "boring" processes',
+            'Following the <a href="https://www.100school.com/30daysofai" target="_blank" rel="noopener noreferrer">30 days of AI</a> project',
+        ],
+        nowReading: [
+            'The Secret of Secrets - Dan Brown',
+            'Thinking Fast and Slow - Daniel Kahneman',
+            'Kingdom - Yasuhisa Hara',
+            'One Piece - Eiichiro Oda',
+        ],
+        nowSideProjects: [
+            'Preparing the talk <a href="/posts/3-career-tips" target="_blank" rel="noopener noreferrer">3 Career Tips Nobody Talks About</a> for DevFest and Codemotion Milan',
+            'Working on the <a href="https://github.com/aleromano92/aleromano.com/tree/main/todo" target="_blank" rel="noopener noreferrer">TODOs</a> of this website',
+        ],
+        nowPersonal: [
+            'Spending quality time with my two kids, discovering new playgrounds',
+            'Planning renovation work for our new house',
+            'Getting back to running at 5:30min/km pace and doing some weights at home',
+        ],
+
+        // Historical entries toggle
+        showHistory: 'What I Did Before',
+
+        // Now Section Labels
+        nowLearningLabel: '📚 Learning',
+        nowReadingLabel: '📖 Reading',
+        nowSideProjectsLabel: '💻 Side Projects',
+        nowPersonalLabel: '🏠 Personal',
+
+        // Contact and Social
         stayUpdated: 'Wanna stay updated?',
         followTwitter: 'Follow @_aleromano',
         subscribeRss: 'subscribe to my RSS feed.',
@@ -39,16 +217,125 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
     it: {
         pageTitle: 'Chi Sono',
         pageDescription:
-            'Engineering Manager a Mollie, padre di due bambini fantastici e marito divertente e affettuoso. Ossessionato dai dettagli e da come funzionano le cose: dai servizi Cloud alle relazioni umane.',
+            'Senior Engineering Manager a Mollie, padre di due bambini fantastici e marito divertente e affettuoso. Ossessionato dai dettagli e da come funzionano le cose: dai servizi Cloud alle relazioni umane.',
         tagline: 'Perspicace. Preciso. Umano.',
-        intro1: 'Sono ossessionato dai dettagli e da come funzionano le cose: dai servizi Cloud alle relazioni umane. Dal mio primo Hello World in RPG Maker, sono arrivato a credere che essere un Ingegnere sia molto più che programmare.',
-        intro2: "Attualmente sono Engineering Manager a Mollie, dove mi concentro sull'aiutare i team a collaborare efficacemente e fornire soluzioni di impatto.",
-        intro3: "Quando non sto promuovendo un'ottima cultura ingegneristica, mi trovi a Busto Arsizio (vicino all'aeroporto di Milano Malpensa) dove sono un orgoglioso padre di due bambini fantastici e un marito divertente e affettuoso.",
+
+        // Table of Contents
+        tocTitle: 'Navigazione Rapida',
+        tocBiography: 'Biografia',
+        tocExperience: 'Esperienza Lavorativa (più rilevante)',
+        tocNow: 'Cosa Sto Facendo Ora',
+        tocTwitter: 'Ultimi post da X',
+
+        // Back to top
+        backToTop: '↑ Torna su',
+
+        // Biography Section
+        biographyTitle: 'Biografia',
+        biographySection1: `Il primo segno che io fossi molto curioso viene dal fatto che a 5 anni avevo imparato a leggere semplicemente perché tartassavo i miei genitori chiedendo loro di leggermi i titoli dei cartoni animati o le cose scritte sulle scatole dei biscotti.
+            <br/>Credo di aver iniziato a leggere molto presto proprio per saziare questa mia <strong>curiosità</strong> quanto prima senza dover dipendere sempre da qualcun altro.
+            <br/><br/>Come figlio di un operaio metalmeccanico e di una casalinga (da buona tradizione del sud Italia) non ho ricevuto molti stimoli nei confronti della tecnologia da parte dei miei genitori, anche se la tecnologia ha comunque trovato presto me. 
+            A furia di chiedere un computer, un amico di mia sorella riuscì ad assemblarmi un vecchio Pentium II con 128 MB di RAM e Windows 98. Non avevo la minima idea di cosa fosse un sistema operativo, ma ricordo ancora l'emozione di accenderlo per la prima volta.
+            Da quel momento in poi, passai ore e ore a smanettare con quel computer, imparando da autodidatta tutto quello che potevo e facendomi aiutare da mio cugino 4 anni più grande di tanto in tanto. 
+            Fu lui ad introdurmi a <strong>RPG Maker 2000</strong>, un software che mi permise di creare i miei primi videogiochi in pixel art. Passavo intere giornate a importare sprite, creare mappe con eventi e scrivere storie complesse. Anche se era solo un gioco stavo muovendo i miei primi passi nell'ingegneria del software.
+            <br/>Quando alle scuole medie ebbi il mio primo incontro con LOGO, un linguaggio di programmazione didattico basato su comandi testuali per muovere una tartaruga virtuale sullo schermo, capii che forse avrei potuto farmi una carriera in questo campo ed essere pagato per la mia passione.`,
+        biographySection2: `Ovviamente oltre a costruire videogiochi, mi piaceva molto anche giocarci: quando ero alle elementari, Pokèmon era all'apice del successo e anche io ottenni il mio Gameboy Color; però le copie italiane di Pokèmon Giallo erano finite, così a 8 anni mi trovai con in mano la versione inglese di Pokèmon Yellow. 
+            Nonostante non conoscessi l'inglese (e nemmeno i miei genitori) confrontandomi con i compagni di scuola e avendo sempre appresso un dizionarietto, riuscii a completare il gioco in qualche mese. Anni dopo arrivò anche la PlayStation e Final Fantasy 7 (mai uscito in lingua italiana): sono stati loro i miei primi <strong>maestri d'inglese</strong>.
+            <br/><br/>In quegli anni iniziai a guardare anche <strong>One Piece</strong>, una storia incredibile fatta di ambizione, mistero e libertà che mi appassionò moltissimo e che seguo ancora oggi, a distanza di più di 20 anni. Anche se nasce come <i>Shōnen Manga</i>, quindi per un pubblico giovanissimo, tratta temi molto profondi come l'amicizia (la famiglia che ti scegli), il sacrificio e la determinazione che mi hanno aiutato a crescere come persona.`,
+        biographySection3: `Anche se sono stato sempre ritenuto un po' "nerd" dai miei coetanei, non ho mai trascurato lo <strong>sport</strong> e lo stare insieme: ho giocato prima a calcio e poi a tennis per tanti anni. Ora mi limito ad andare a correre e fare qualche peso a casa perché la vita da padre richiede di spendere molto oculatamente il mio tempo.
+            Lo sport mi ha aiutato a rimanere sempre con i piedi per terra perché ammetto di cadere troppo spesso nel <strong>perfezionismo</strong>: a volte mi devo snaturare per completare qualcosa e considerarlo finito anche se non è perfetto. Questo sito ne è un perfetto esempio: ho rimandato e ritardato moltissimo nel realizzarlo perché continuavo a studiare come farlo perfettamente, rimanendo però sempre insoddisfatto del risultato.
+            <br/>La curiosità mi ha spinto più volte anche verso la fisica, in particolare <strong>l'astrofisica e quella quantistica</strong>. Anche se il mio percorso di studi mi ha esposto limitatamente a queste materie, sono un vorace lettore di tutto ciò che è divulgazione, come i libri di Brian Greene: perché il tempo scorre in questa direzione? Di cosa è fatta davvero la materia? Come si è originato l'Universo? Anche se le risposte non sono sempre definitive, mi piace perdermi in queste domande!`,
+        biographySection4: `Ora che sono felicemente sposato e papà di 2 splendidi bambini, sto notando che la mia curiosità mi aiuta anche nel creare empatia con loro e nel capire i loro bisogni, anche se sono ancora molto piccoli. 
+            <br/>Suonerà un po' strano, ma molte delle cose che faccio come ascoltare attivamente e mettermi nei loro panni, sono abilità che ho appreso nel mio ruolo lavorativo come <strong>Engineering Manager</strong>. Chiaro che il rapporto è totalmente diverso, ma ritengo che essere gentili ed ascoltare pssano portarti lontano in qualsiasi ruolo della tua vita.
+            <br/><br/>In ultimo, la cosa che mi rende più orgoglioso è l'essere riusciuto a costruirmi il mio percorso mantenendo sempre la mia <strong>parola</strong>. Se prometto qualcosa a qualcuno, non accetto di non mantenerla, anche se questo a volte mi ha portato a dover gestire ansia e pressione oltre il limite.
+            <br/><br/>Resto <strong>ottimista</strong> sul futuro perché credo sia la cosa più pragmatica da fare: che senso avrebbe andare avanti se non credessi che le cose possano migliorare?`,
+
+        // Work Experience Section
+        experienceTitle: 'Esperienza Lavorativa',
+        experienceSeeMore: 'Vedi di più su ',
+        currentPosition: 'Posizione Attuale',
+
+        // Mollie
+        mollieTitle: 'Mollie',
+        mollieRole: 'Senior Engineering Manager & Milan Hub Site Lead',
+        molliePeriod: 'Dicembre 2023 - Presente',
+        mollieDescription: `Sono la guida tecnica nel dominio che si occupa di monitorare e prevenire crimini finanziari come il riciclaggio di denaro e il finanziamento al terrorismo. Qui i miei Software Engineers lavorano a strettissimo contatto con Data Analysts e Scientists in quanto i nostri sistemi di rilevamento si basano sia su query deterministiche ma anche e soprattutto su modelli di Machine Learning.
+            <br/>Inoltre, come Milan Hub Site Lead, mi occupo di tutte le questioni burocratiche e non, con l'obiettivo di rendere l'esperienza presso l'Hub la migliore per tutti i dipendenti.`,
+        mollieAchievements: [
+            'Internalizzato tutti i strumenti di monitoraggio e alerting collegati ai crimini finanziari, combinando approcci deterministici e di Machine Learning',
+            'Definita la strategia tecnologica a supporto della visione di Prodotto in un dipartimento altamente regolamentato',
+            'Costruito team di ingegneria cross-funzionali che gestiscono milioni di transazioni al giorno',
+            'Implementato pratiche ingegneristiche focalizzate sulla crescita del team ed eccellenza tecnica',
+            'Guidato la crescita del Milan Hub da 8 a 70+ dipendenti in solo 1 anno, incluso il setup di un nuovo ufficio in centro a Milano',
+        ],
+
+        // Banca AideXa
+        bancaAideXaTitle: 'Banca AideXa',
+        bancaAideXaRole: 'Head of Engineering',
+        bancaAideXaPeriod: 'Ottobre 2020 - Dicembre 2023',
+        bancaAideXaDescription:
+            'Ho costruito da zero un team (e una cultura) di ingegneria in una banca completamente digitale, gestendo lo sviluppo software a supporto di tutti i progetti: dal processo di Instant Lending per le PMI alle integrazioni interne tra HubSpot e il Core Banking.',
+        bancaAideXaAchievements: [
+            'Costruito e guidato un fantastico team di ingegneria da zero, crescendo da 0 a 18 persone in meno di 3 anni (includendo anche consulenti esterni)',
+            'Lanciato e iterato sul prodotto di Instant Lending raggiungendo il product-market fit in 6 mesi, combinando Software Engineering e modelli di Machine Learning',
+            'Automatizzato i processi KYC usando il riconoscimento con SPID, riducendo il carico di lavoro per il team di Operations',
+            `Definito le linee guida di Software Engineering, promuovendo tecniche di eXtreme Programming`,
+            'Gestito un budget da 2+ milioni di euro lavorando a stretto contatto con COO e CFO',
+            'Implementato Policy e Procedure facendo largo uso di tecnologia e automazioni per essere compliant senza eccedere nella burocrazia',
+        ],
+
+        // lastminute.com
+        lastminuteTitle: 'lastminute.com',
+        lastminuteRole: 'Software Engineer → Engineering Manager',
+        lastminutePeriod: 'Gennaio 2017 - Settembre 2020',
+        lastminuteDescription: `Sono entrato come un timido, giovane e inesperto Software (front-end) Engineer e ne sono uscito come Engineering Manager che ha gestito situazioni critiche come i rimborsi associati all'era COVID.
+            <br/>Mi sono occupato di Customer Area, puntando a dare la migliore esperienza possibile a tutti i clienti che avevano una prenotazione con noi.`,
+        lastminuteAchievements: [
+            `Realizzato il Login Widget, componente riutilizzabile per l'autenticazione in ogni parte del sito`,
+            'Migrato 300k clienti da weg.de (sistema auth proprietario) a lastminute.com con 0 downtime',
+            'Implementato Google One-Tap Login, aumentando considerabilmente gli utenti loggati',
+            'Guidato per la prima volta un team di 5 persone (poi diventati più team fino a 12 persone), gettando le basi per la mia carriera di Engineering Manager',
+            'Fulminato sulla via del Clean Code ed eXtreme Programming, usando il pair programming e le code reviews per far crescere le competenze del team',
+        ],
+
+        // Now Section
+        nowTitle: 'Cosa Sto Facendo Ora',
+        nowSubtitle: 'Ultimo aggiornamento: Settembre 2025',
+        nowLearning: [
+            'Sperimentando utilizzo di AI Agents per automatizzare processi "noiosi"',
+            'Seguendo il progetto <a href="https://www.100school.com/30daysofai" target="_blank" rel="noopener noreferrer">30 days of AI</a>',
+        ],
+        nowReading: [
+            `L'ultimo segreto - Dan Brown`,
+            'Thinking Fast and Slow - Daniel Kahneman',
+            'Kingdom - Yasuhisa Hara',
+            'One Piece - Eiichiro Oda',
+        ],
+        nowSideProjects: [
+            'Preparando il talk <a href="/posts/3-career-tips" target="_blank" rel="noopener noreferrer">3 Career Tips Nobody Talks About</a> per DevFest e Codemotion Milan',
+            'Lavorando ai <a href="https://github.com/aleromano92/aleromano.com/tree/main/todo" target="_blank" rel="noopener noreferrer">TODO</a> di questo sito',
+        ],
+        nowPersonal: [
+            'Passo tempo di qualità con i miei due bambini, scoprendo nuovi parchi giochi',
+            'Definendo i lavori di ristrutturazione per la nostra nuova casa',
+            `Ritornare a correre a 5:30min/km e fare un po' di pesi a casa`,
+        ],
+
+        // Historical entries toggle
+        showHistory: 'Cosa Facevo Prima',
+
+        // Now Section Labels
+        nowLearningLabel: '📚 Studio',
+        nowReadingLabel: '📖 Letture',
+        nowSideProjectsLabel: '💻 Progetti Personali',
+        nowPersonalLabel: '🏠 Vita Personale',
+
+        // Contact and Social
         stayUpdated: 'Vuoi rimanere aggiornato?',
         followTwitter: 'Segui @_aleromano',
         subscribeRss: 'iscriviti al mio feed RSS.',
         needHelp:
-            'Hai bisogno di aiuto per lanciare la tua startup, far crescere il tuo team di ingegneria, o crescere come ingegnere del software?',
+            'Hai bisogno di aiuto per lanciare la tua startup, scalare il tuo team di ingegneria, o crescere come ingegnere del software?',
         letsTalk: 'Parliamone.',
         profilePicAlt: 'Foto profilo di Alessandro Romano',
     },
@@ -64,7 +351,6 @@ interface Props {
 
 const { language } = Astro.props;
 
-// Get translations for the current language
 const t = getAboutTranslations(language);
 
 // Fetch Twitter data server-side with built-in error handling
@@ -75,69 +361,595 @@ const twitterData = await getTwitterPosts(language);
     {t.tagline}
 </h2>
 
-<div class="intro">
-    <div class="content">
-        <p>
-            {t.intro1}
-        </p>
+<!-- Table of Contents -->
+<nav class="toc">
+    <h3>{t.tocTitle}</h3>
+    <ul>
+        <li><a href="#biography">{t.tocBiography}</a></li>
+        <li><a href="#experience">{t.tocExperience}</a></li>
+        <li><a href="#now">{t.tocNow}</a></li>
+        <li><a href="#twitter">{t.tocTwitter}</a></li>
+    </ul>
+</nav>
 
-        <p>
-            {t.intro2}
-            <span class="mollie-logo-wrapper">
-                <img src="/Mollie-Logo-Black-2023.svg" class="mollie-logo light-logo" alt="Mollie" />
-                <img src="/Mollie-Logo-White-2023.svg" class="mollie-logo dark-logo" alt="Mollie" />
-            </span>.
-        </p>
-        <p>
-            {t.intro3}
-        </p>
-        <p>
-            {t.stayUpdated}
-            <a href="https://x.com/intent/user?screen_name=_aleromano" target="_blank" rel="noopener noreferrer"
-                >{t.followTwitter}</a
-            > or <a href="/rss.xml">{t.subscribeRss}</a>
-        </p>
-        <p>
-            {t.needHelp}
-            <a href={language === 'it' ? '/it/contact' : '/contact'}>{t.letsTalk}</a>
-        </p>
+<!-- Biography Section -->
+<section id="biography" class="biography">
+    <h3>
+        {t.biographyTitle}
+        <a href="#top" class="section-back-to-top" aria-label={t.backToTop}>{t.backToTop}</a>
+    </h3>
+    <div class="biography-content">
+        <!-- Section 1: Early curiosity and technology -->
+        <div class="biography-section">
+            <p set:html={t.biographySection1} />
+        </div>
+
+        <div class="image-gallery">
+            <Image
+                src={rpgImage}
+                alt="RPG Maker 2000 - My first programming tool"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+            <Image
+                src={pentiumIIImage}
+                alt="Pentium II computer - My first computer"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+            <Image
+                src={logoProgLangImage}
+                alt="LOGO programming language"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+        </div>
+
+        <!-- Section 2: Gaming and English learning -->
+        <div class="biography-section">
+            <p set:html={t.biographySection2} />
+        </div>
+
+        <div class="image-gallery">
+            <Image
+                src={pokeYellowImage}
+                alt="Pokémon Yellow - Learning English through gaming"
+                width={300}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+            <Image
+                src={onePieceImage}
+                alt="One Piece manga - Curiosity and adventure"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+            <Image
+                src={finalFantasiesImage}
+                alt="Final Fantasy games collection"
+                width={300}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+        </div>
+
+        <!-- Section 3: Sports, perfectionism, and physics -->
+        <div class="biography-section">
+            <p set:html={t.biographySection3} />
+        </div>
+
+        <div class="image-gallery">
+            <Image
+                src={runningImage}
+                alt="Running - Sports helped balance my nerdy side"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+            <Image
+                src={blackHoleImage}
+                alt="Black hole - Fascination with astrophysics"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+            <Image
+                src={tennisImage}
+                alt="Tennis - Roger Federer is perfection"
+                width={250}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+        </div>
+
+        <!-- Section 4: Family and professional life -->
+        <div class="biography-section">
+            <p set:html={t.biographySection4} />
+        </div>
+
+        <div class="image-gallery">
+            <Image
+                src={speakingImage}
+                alt="Speaking at events - Sharing knowledge"
+                width={300}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+            <Image
+                src={familyImage}
+                alt="Family time - Cherishing moments with loved ones"
+                width={300}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+            <Image
+                src={profilePic}
+                alt={t.profilePicAlt}
+                width={300}
+                height={200}
+                class="biography-image clickable-image"
+                quality="high"
+                densities={[1, 3]}
+            />
+        </div>
     </div>
-    <Image
-        src={profilePic}
-        alt={t.profilePicAlt}
-        width={300}
-        priority
-        densities={[1, 2]}
-        quality="max"
-        class="profile-pic"
-    />
-</div>
+</section>
 
-<TwitterFeed
-    posts={twitterData.posts}
-    error={twitterData.error}
-    language={language}
-    freshness={twitterData.freshness}
-/>
+<!-- Work Experience Section -->
+<section id="experience" class="experience">
+    <h3>
+        {t.experienceTitle}
+        <a href="#top" class="section-back-to-top" aria-label={t.backToTop}>{t.backToTop}</a>
+    </h3>
+
+    <div class="job-entries">
+        <!-- Mollie -->
+        <article class="job-entry current">
+            <div class="job-header">
+                <div class="company-info">
+                    <span class="company-logo-wrapper">
+                        <img
+                            src="/Mollie-Logo-Black-2023.svg"
+                            class="company-logo mollie-logo light-logo"
+                            alt={t.mollieTitle}
+                        />
+                        <img
+                            src="/Mollie-Logo-White-2023.svg"
+                            class="company-logo mollie-logo dark-logo"
+                            alt={t.mollieTitle}
+                        />
+                    </span>
+                </div>
+                <div class="current-badge">{t.currentPosition}</div>
+                <div class="job-meta">
+                    <span class="role">{t.mollieRole}</span>
+                    <span class="period">{t.molliePeriod}</span>
+                </div>
+            </div>
+            <p class="job-description" set:html={t.mollieDescription} />
+            <ul class="achievements">
+                {t.mollieAchievements.map((achievement) => <li>{achievement}</li>)}
+            </ul>
+        </article>
+
+        <!-- Banca AideXa -->
+        <article class="job-entry">
+            <div class="job-header">
+                <div class="company-info">
+                    <span class="company-logo-wrapper">
+                        <img
+                            src="/aidexa-black.svg"
+                            class="company-logo aidexa-logo light-logo"
+                            alt={t.bancaAideXaTitle}
+                        />
+                        <img
+                            src="/aidexa-white.svg"
+                            class="company-logo aidexa-logo dark-logo"
+                            alt={t.bancaAideXaTitle}
+                        />
+                    </span>
+                </div>
+                <div class="job-meta">
+                    <span class="role">{t.bancaAideXaRole}</span>
+                    <span class="period">{t.bancaAideXaPeriod}</span>
+                </div>
+            </div>
+            <p class="job-description" set:html={t.bancaAideXaDescription} />
+            <ul class="achievements">
+                {t.bancaAideXaAchievements.map((achievement) => <li>{achievement}</li>)}
+            </ul>
+        </article>
+
+        <!-- lastminute.com -->
+        <article class="job-entry">
+            <div class="job-header">
+                <div class="company-info">
+                    <span class="company-logo-wrapper">
+                        <img
+                            src="/lastminute.svg"
+                            class="company-logo lastminute-logo light-logo"
+                            alt={t.lastminuteTitle}
+                        />
+                        <img
+                            src="/lastminute-white.svg"
+                            class="company-logo lastminute-logo dark-logo"
+                            alt={t.lastminuteTitle}
+                        />
+                    </span>
+                </div>
+                <div class="job-meta">
+                    <span class="role">{t.lastminuteRole}</span>
+                    <span class="period">{t.lastminutePeriod}</span>
+                </div>
+            </div>
+            <p class="job-description" set:html={t.lastminuteDescription} />
+            <ul class="achievements">
+                {t.lastminuteAchievements.map((achievement) => <li>{achievement}</li>)}
+            </ul>
+        </article>
+    </div>
+
+    <div class="experience-actions">
+        <a
+            href="https://www.linkedin.com/in/alessandroromano92"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="button linkedin-button"
+        >
+            {t.experienceSeeMore}
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                ></path>
+            </svg>
+        </a>
+    </div>
+</section>
+
+<!-- Now Section -->
+<section id="now" class="now">
+    <h3>
+        {t.nowTitle}
+        <a href="#top" class="section-back-to-top" aria-label={t.backToTop}>{t.backToTop}</a>
+    </h3>
+    <p class="now-subtitle">{t.nowSubtitle}</p>
+
+    <div class="now-content">
+        <div class="now-item">
+            <h4>{t.nowLearningLabel}</h4>
+            <ul class="now-list">
+                {t.nowLearning.map((item) => <li set:html={item} />)}
+            </ul>
+        </div>
+
+        <div class="now-item">
+            <h4>{t.nowReadingLabel}</h4>
+            <ul class="now-list">
+                {t.nowReading.map((item) => <li set:html={item} />)}
+            </ul>
+        </div>
+
+        <div class="now-item">
+            <h4>{t.nowSideProjectsLabel}</h4>
+            <ul class="now-list">
+                {t.nowSideProjects.map((item) => <li set:html={item} />)}
+            </ul>
+        </div>
+
+        <div class="now-item">
+            <h4>{t.nowPersonalLabel}</h4>
+            <ul class="now-list">
+                {t.nowPersonal.map((item) => <li set:html={item} />)}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Collapsible Historical Entries -->
+    <!-- <details class="history-toggle">
+        <summary>{t.showHistory}</summary>
+        <div class="historical-entries">
+            <div class="historical-entry">
+                <h5>May 2024</h5>
+                <p>
+                    Lorem ipsum
+                </p>
+            </div>
+            <div class="historical-entry">
+                <h5>February 2024</h5>
+                <p>
+                    Lorem ipsum
+                </p>
+            </div>
+            <div class="historical-entry">
+                <h5>November 2023</h5>
+                <p>
+                    Lorem ipsum
+                </p>
+            </div>
+        </div>
+    </details> -->
+</section>
+
+<!-- Contact Section -->
+<section class="contact">
+    <p>
+        {t.stayUpdated}
+        <a href="https://x.com/intent/user?screen_name=_aleromano" target="_blank" rel="noopener noreferrer"
+            >{t.followTwitter}</a
+        > or <a href="/rss.xml">{t.subscribeRss}</a>
+    </p>
+    <p>
+        {t.needHelp}
+        <a href={language === 'it' ? '/it/contact' : '/contact'}>{t.letsTalk}</a>
+    </p>
+</section>
+
+<section id="twitter">
+    <h3>
+        <span class="title-with-icon">
+            {t.tocTwitter}
+        </span>
+        <a href="#top" class="section-back-to-top" aria-label={t.backToTop}>{t.backToTop}</a>
+    </h3>
+    <TwitterFeed
+        posts={twitterData.posts}
+        error={twitterData.error}
+        language={language}
+        freshness={twitterData.freshness}
+    />
+</section>
+
+<!-- Image Modal -->
+<ImageModal />
 
 <style>
-    .intro {
+    @import '../../styles/buttons.css';
+
+    /* Table of Contents */
+    .toc {
+        background: var(--color-bg-secondary);
+        border-radius: var(--border-radius);
+        padding: var(--space-md);
+        margin: var(--space-lg) 0;
+        border: 1px solid var(--color-border);
+    }
+
+    .toc h3 {
+        margin-top: 0;
+        margin-bottom: var(--space-sm);
+        font-size: var(--font-size-md);
+        color: var(--color-text-primary);
+    }
+
+    .toc ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: var(--space-md);
+        flex-wrap: wrap;
+    }
+
+    .toc li {
+        margin: 0;
+    }
+
+    .toc a {
+        color: var(--color-accent);
+        text-decoration: none;
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--border-radius-sm);
+        border: 1px solid var(--color-accent);
+        transition: all 0.2s ease;
+        font-size: var(--font-size-sm);
+    }
+
+    .toc a:hover {
+        background-color: var(--color-accent);
+        color: var(--color-bg);
+    }
+
+    /* Sections */
+    section {
+        margin: var(--space-xl) 0;
+        scroll-margin-top: calc(4rem + var(--space-md)); /* Header height (4rem) + breathing space (1.5rem) = 5.5rem */
+    }
+
+    section h3 {
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--space-md);
+        color: var(--color-text-primary);
+        border-bottom: 2px solid var(--color-accent);
+        padding-bottom: var(--space-xs);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Section back-to-top links */
+    .section-back-to-top {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: var(--font-size-sm);
+        font-weight: normal;
+        transition: color 0.2s ease;
+        opacity: 0.7;
+        margin-left: var(--space-sm);
+    }
+
+    .section-back-to-top:hover {
+        color: var(--color-accent);
+        opacity: 1;
+        text-decoration: none;
+    }
+
+    /* Title with icon styling */
+    .title-with-icon {
         display: flex;
         align-items: center;
+    }
+
+    .title-with-icon .x-icon {
+        margin-left: var(--space-xs);
+    }
+
+    /* Biography Section */
+    .biography-content {
+        margin-top: var(--space-md);
+    }
+
+    .biography-section {
+        margin-bottom: var(--space-lg);
+    }
+
+    .biography-section p {
+        line-height: 1.7;
+        color: var(--color-text-primary);
+    }
+
+    /* Image Galleries */
+    .image-gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         gap: var(--space-md);
-        margin: var(--space-lg) 0 0;
+        margin: var(--space-lg) 0;
+        justify-items: center;
     }
 
-    .content {
-        flex: 1;
+    .biography-image {
+        border-radius: var(--border-radius);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+        cursor: zoom-in;
+        width: 100%;
+        height: auto;
+        max-width: 250px;
+        object-fit: cover;
     }
 
-    .mollie-logo-wrapper {
+    .biography-image:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .clickable-image {
+        cursor: zoom-in;
+    }
+
+    /* Work Experience Section */
+    .experience-actions {
+        margin-top: var(--space-lg);
+        display: flex;
+        gap: var(--space-md);
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .linkedin-button {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-xs);
+    }
+
+    .current-badge {
+        background-color: var(--color-accent);
+        color: var(--color-bg);
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--border-radius-sm);
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 2px solid var(--color-accent);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transform: rotate(-2deg);
+        align-self: center;
+        white-space: nowrap;
+    }
+
+    .job-entries {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+
+    .job-entry {
+        background: var(--color-bg-secondary);
+        border-radius: var(--border-radius);
+        padding: var(--space-md);
+        border: 1px solid var(--color-border);
+        position: relative;
+    }
+
+    .job-entry.current {
+        border-color: var(--color-accent);
+        background: var(--color-bg-secondary);
+    }
+
+    .job-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: var(--space-sm);
+    }
+
+    .company-info {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
+    .company-info h4 {
+        margin: 0;
+        font-size: var(--font-size-lg);
+        color: var(--color-text-primary);
+    }
+
+    .company-logo-wrapper {
         display: inline-block;
     }
 
+    .company-logo {
+        height: 1.2rem;
+    }
+
     .mollie-logo {
-        height: 1rem;
+        height: 2rem;
+    }
+
+    .aidexa-logo {
+        height: 1.5rem;
+    }
+
+    .lastminute-logo {
+        height: 2.5rem;
     }
 
     /* Show/hide based on theme */
@@ -153,30 +965,249 @@ const twitterData = await getTwitterPosts(language);
         display: none;
     }
 
-    .profile-pic {
-        margin-bottom: calc(-1 * var(--space-lg));
-        max-width: 100%;
-        height: auto;
-        transform: translateY(0);
-        animation: slideDown 1s ease-out 0.2s backwards;
+    .job-meta {
+        text-align: right;
     }
 
-    @keyframes slideDown {
-        from {
-            transform: translateY(-25%);
-        }
-        to {
-            transform: translateY(0);
-        }
+    .role {
+        display: block;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-xs);
     }
 
-    @media (max-width: 636px) {
-        .intro {
+    .period {
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+    }
+
+    .job-description {
+        color: var(--color-text-secondary);
+        margin-bottom: var(--space-sm);
+        font-style: italic;
+    }
+
+    .achievements {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .achievements li {
+        position: relative;
+        padding-left: var(--space-md);
+        margin-bottom: var(--space-xs);
+        color: var(--color-text-primary);
+    }
+
+    .achievements li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--color-accent);
+        font-weight: bold;
+    }
+
+    /* Now Section */
+    .now-subtitle {
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+        font-style: italic;
+        margin-bottom: var(--space-md);
+    }
+
+    .now-content {
+        display: grid;
+        gap: var(--space-md);
+        margin-bottom: var(--space-lg);
+    }
+
+    .now-item {
+        background: var(--color-bg-secondary);
+        border-radius: var(--border-radius);
+        padding: var(--space-md);
+        border: 1px solid var(--color-border);
+    }
+
+    .now-item h4 {
+        margin: 0 0 var(--space-sm) 0;
+        font-size: var(--font-size-md);
+        color: var(--color-text-primary);
+    }
+
+    .now-item p {
+        margin: 0;
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+    }
+
+    .now-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .now-list li {
+        position: relative;
+        padding-left: var(--space-md);
+        margin-bottom: var(--space-xs);
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+    }
+
+    .now-list li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--color-accent);
+        font-weight: bold;
+    }
+
+    /* History Toggle */
+    .history-toggle {
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-bg-secondary);
+        margin-top: var(--space-md);
+    }
+
+    .history-toggle summary {
+        padding: var(--space-sm) var(--space-md);
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        user-select: none;
+        transition: background-color 0.2s ease;
+    }
+
+    .history-toggle summary:hover {
+        background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    }
+
+    .history-toggle[open] summary {
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .historical-entries {
+        padding: var(--space-md);
+    }
+
+    .historical-entry {
+        padding: var(--space-sm) 0;
+        border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .historical-entry:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .historical-entry h5 {
+        margin: 0 0 var(--space-xs) 0;
+        font-size: var(--font-size-sm);
+        color: var(--color-accent);
+        font-weight: 600;
+    }
+
+    .historical-entry p {
+        margin: 0;
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+        line-height: 1.5;
+    }
+
+    /* Contact Section */
+    .contact {
+        text-align: center;
+    }
+
+    .contact p {
+        margin: var(--space-sm) 0;
+    }
+
+    .contact a {
+        color: var(--color-accent);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .contact a:hover {
+        text-decoration: underline;
+    }
+
+    .back-to-top {
+        margin-top: var(--space-md);
+        font-size: var(--font-size-sm);
+    }
+
+    .back-to-top a {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+        font-size: var(--font-size-sm);
+    }
+
+    .back-to-top a:hover {
+        color: var(--color-accent);
+        text-decoration: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .toc ul {
             flex-direction: column;
+            gap: var(--space-xs);
         }
 
-        .profile-pic {
-            margin-bottom: -1.2rem;
+        .toc a {
+            display: block;
+            text-align: center;
+        }
+
+        .experience-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .image-gallery {
+            gap: var(--space-sm);
+        }
+
+        .job-header {
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .job-meta {
+            text-align: left;
+        }
+
+        .company-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-xs);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .toc {
+            padding: var(--space-sm);
+        }
+
+        section {
+            margin: var(--space-lg) 0;
+        }
+
+        .job-entry {
+            padding: var(--space-sm);
+        }
+
+        .now-item {
+            padding: var(--space-sm);
+        }
+
+        .biography-image {
+            max-width: 100%;
         }
     }
 </style>
