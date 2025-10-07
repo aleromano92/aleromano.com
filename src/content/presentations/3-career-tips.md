@@ -11,13 +11,13 @@ transition: "slide"
 ### For Software Engineers
 
 Note:
-Welcome! Today I'll share three career tips that most engineers never hear about. These insights come from 10+ years in tech and watching what actually gets people promoted.
+Welcome! Today I'll share three career tips that most engineers never hear about. These insights come from 13+ years in tech and watching what actually gets people promoted.
 
 ---
 
 ## The Wrong Approach ❌
 
-> "I want to grow as an Individual Contributor, so I decided to study Rust to aim for a promotion"
+> "I want to grow as an Individual Contributor, so I decided to study C++ to aim for a promotion"
 
 Note:
 I told exactly this to my manager when I was a Junior 25 years old engineer.
@@ -25,8 +25,12 @@ I told exactly this to my manager when I was a Junior 25 years old engineer.
 ---
 
 ## Who Am I? 👋 from 🇮🇹
-
-<img src="/alepro.png" alt="Alessandro Romano" height="200"/>
+<div class="container" style="display: flex; align-items: center; justify-content: space-around;">
+    <h4 class="left">Alessandro Romano</h4>
+    <div class="right" style="min-width: 300px;">
+        <img src="/alepro.png" alt="Alessandro Romano" height="200" class="right"/>
+    </div>
+</div>
 
 - Senior Engineering Manager at Mollie 💳 <!-- .element: class="fragment" -->
 - 13+ years in software engineering 🚀 <!-- .element: class="fragment" -->
@@ -73,12 +77,12 @@ Don't rely on the career framework document. Ask your manager to translate those
 
 ## Business Impact 📊
 
-### Quantify Everything 🔢
-
 - "I improved performance" ❌ <!-- .element: class="fragment" -->
 - "I reduced response times by 40%, saving €X per year" ✅  <!-- .element: class="fragment" -->
 - "I increased system resilience" ❌ <!-- .element: class="fragment" -->
 - "Incidents decreased from 4/month to 1/quarter" ✅ <!-- .element: class="fragment" -->
+
+### Quantify Everything 🔢<!-- .element: class="fragment" -->
 
 Note:
 Business impact is universal. But you must quantify it. Numbers make your achievements concrete and memorable.
@@ -92,8 +96,6 @@ Business impact is universal. But you must quantify it. Numbers make your achiev
 - Cross-team solutions 🤝 <!-- .element: class="fragment" -->
 - Facilitating communication 💬 <!-- .element: class="fragment" -->
 
-### Document it. Get peer feedback. <!-- .element: class="fragment" -->
-
 Note:
 Ask audience if they know about Glue work. It is essential but hard to measure. Make it visible.
 
@@ -101,12 +103,13 @@ Ask audience if they know about Glue work. It is essential but hard to measure. 
 
 ## Help Your Manager Succeed 🎯
 
-- Their objectives = your opportunities 🚪 <!-- .element: class="fragment" -->
-- Ask: "What are your main goals this quarter?" ❓ <!-- .element: class="fragment" -->
-- Actively contribute to their targets 🏹 <!-- .element: class="fragment" -->
-- Build trust by making their job easier 🤝 <!-- .element: class="fragment" -->
+- <span class="fragment">Their objectives = your opportunities 🚪</span>
+- <span class="fragment">Ask: "What are *your* main goals this quarter?"❓</span>
+- <span class="fragment">Actively contribute to their targets 🏹</span>
+- <span class="fragment">Build trust by making their job easier 🤝</span>
 
 Note:
+Ask the audience: "have you ever asked your manager about how THEY are going to be evaluated?" 
 Your manager's success directly impacts yours. Understand their goals and actively help them achieve those goals.
 
 ---
@@ -136,18 +139,6 @@ When someone says "I'm on it" during an incident, everyone feels relief. That pe
 
 ---
 
-## Make Your Work Visible 👀
-
-- Documentation: Decision records, post-mortems, brag journal 📚 <!-- .element: class="fragment" -->
-- Presentations: Share project results in team meetings 📽️ <!-- .element: class="fragment" -->
-- Async communication: Update on progress regularly 💬 <!-- .element: class="fragment" -->
-- 1-on-1s: Don't assume your manager knows everything 🗣️ <!-- .element: class="fragment" -->
-
-Note:
-The best work is useless if nobody knows about it. Make your contributions visible through multiple channels.
-
----
-
 ## Always Keep Your Promises 🤝
 
 - When you can't deliver, communicate proactively 📢 <!-- .element: class="fragment" -->
@@ -157,6 +148,23 @@ The best work is useless if nobody knows about it. Make your contributions visib
 
 Note:
 Never let someone discover you're late by asking you. Communicate delays as soon as you know about them.
+
+---
+
+## Make Your Work Visible 👀
+
+- Documentation 📚 <!-- .element: class="fragment" -->
+- Presentations 📽️ <!-- .element: class="fragment" -->
+- Async communication 💬 <!-- .element: class="fragment" -->
+- 1-on-1s 🗣️ <!-- .element: class="fragment" -->
+
+
+Note:
+The best work is useless if nobody knows about it. Make your contributions visible through multiple channels.
+Documentation - Decision records, post-mortems, brag journal  
+Presentations - Share project results in team meetings 
+Async communication - Update on progress regularly
+1-on-1s - Don't assume your manager knows everything 
 
 ---
 
@@ -180,19 +188,6 @@ Finally, let's explore tip number three - asking for feedback and giving back.
 
 Note:
 Be selective about whose feedback you seek. And remember, giving feedback requires investment from others.
-
----
-
-## Non-Technical Feedback Is Gold
-
-- Product managers 📋 <!-- .element: class="fragment" -->
-- Designers 🎨 <!-- .element: class="fragment" -->
-- Customer success 📞 <!-- .element: class="fragment" -->
-- Marketing and sales 📈 <!-- .element: class="fragment" -->
-
-### They see your blind spots 👁️ <!-- .element: class="fragment" -->
-
-Note:
 A PM teaching you storytelling is as valuable as a senior engineer suggesting JVM internals. Different perspectives reveal blind spots.
 
 ---
@@ -237,9 +232,9 @@ Ask and give back - Build relationships through feedback and mentoring
 
 Learning new languages **can** be the right move...
 
-But if you think it is the **only** thing needed.<!-- .element: class="fragment" --> ❌
+<span class="fragment">But if you think it is the <b>only</b> thing needed.</span>
 
-**It's not.** <!-- .element: class="fragment" --> ✅
+<span class="fragment"><b>It's not.</b></span>
 
 Note:
 Don't misunderstand me - technical skills matter. But they're just one piece of the puzzle, not the whole solution.
@@ -255,8 +250,6 @@ Don't misunderstand me - technical skills matter. But they're just one piece of 
 
 Note:
 Thank you! I'd love to hear your questions and discuss these topics further. Feel free to reach out on any platform.
-
----
 
 ---
 
