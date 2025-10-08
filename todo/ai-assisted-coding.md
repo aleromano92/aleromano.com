@@ -10,3 +10,5 @@ With Cursor I found joy again:
 I do not believe my thinking is getting less sharp, as I invest time on writing prompts. The feeling I',m getting is I'm writing English instead of Typescript. But I'm still owning the Design of the software
 I do not get stuck because I'm rugged with the syntax. For example, I know I can augment typescript types with .d.ts files or I can create responsive design with CSS gap and clamp and rem , but I'm not doing these things every day so I couldn't remember exact syntax. using Cursor it is relieving me from this burden
 context is everything. It is true for Humans and AIs, so I'm forced to communicate all the relevant pieces of context If I want an high quality job as output
+
+I postponed writing this article for too much and the tools became better and better, still my experience is similar. I am already at the point that if you remove this technology from this life it would be very hard to adapt again. I will probably stop investing in my personal website with the same energy and enthusiasm filling the gaps within my meeting and parenting schedule.
