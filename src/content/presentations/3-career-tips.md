@@ -11,7 +11,7 @@ transition: "slide"
 ### For Software Engineers
 
 Note:
-Welcome! Today I'll share three career tips that most engineers never hear about. These insights come from 13+ years in tech and watching what actually gets people promoted.
+Welcome! Today I'll share three career tips that most engineers never hear about. I hope you exit with a new perspective.
 
 ---
 
@@ -20,7 +20,8 @@ Welcome! Today I'll share three career tips that most engineers never hear about
 > "I want to grow as an Individual Contributor, so I decided to study C++ to aim for a promotion"
 
 Note:
-I told exactly this to my manager when I was a Junior 25 years old engineer.
+You can replace C++ with whatever technology, framework or tool. 
+I have heard this sentence with my own ears more than 10 years ago. It was me.
 
 ---
 
@@ -38,7 +39,7 @@ I told exactly this to my manager when I was a Junior 25 years old engineer.
 - Witnessed promotions across different company cultures 🌍 <!-- .element: class="fragment" -->
 
 Note:
-I'm Alessandro Romano. Currently SEM at Mollie in Milan. I've seen what gets people promoted across different companies and cultures.
+I've seen what gets people promoted across different companies and cultures. Wether promotion was based on Manager's gut feeling or a formal process, people that got promoted shared some traits and exposed similar behviours.
 
 ---
 
@@ -49,7 +50,7 @@ I'm Alessandro Romano. Currently SEM at Mollie in Milan. I've seen what gets peo
 3. Ask for feedback and give back 🤝 <!-- .element: class="blur" -->
 
 Note:
-Here are the three tips that actually drive promotions. Let's start with tip number one.
+Here are the three tips that actually drive growth. Let's start with tip number one.
 
 ---
 
@@ -89,6 +90,19 @@ Business impact is universal. But you must quantify it. Numbers make your achiev
 
 ---
 
+## Business Impact 📊
+
+- "I migrated RabbitMQ to Google PubSub" ❌ <!-- .element: class="fragment" -->
+- "I migrated 1 RabbitMQ to PubSub in a week and the other 23 in 3 days with 0 downtime" ✅  <!-- .element: class="fragment" -->
+
+- "I introduced async messaging" ❌ <!-- .element: class="fragment" -->
+- "I built an async messaging library that was first used in our team and then adopted company-wide" ✅ <!-- .element: class="fragment" -->
+
+Note:
+Tech-for-tech project may not have an immediate business impact. But you can still quantify your contribution in terms of speed, adoption, and efficiency.
+
+---
+
 ## Glue Work Matters Too 🔗
 
 - Mentorship 🧑‍🏫 <!-- .element: class="fragment" -->
@@ -111,6 +125,7 @@ Ask audience if they know about Glue work. It is essential but hard to measure. 
 Note:
 Ask the audience: "have you ever asked your manager about how THEY are going to be evaluated?" 
 Your manager's success directly impacts yours. Understand their goals and actively help them achieve those goals.
+You first expand your scope and act at next level, then you get promoted.
 
 ---
 
@@ -187,8 +202,9 @@ Finally, let's explore tip number three - asking for feedback and giving back.
 - Thank them and explain your action plan 🙏 <!-- .element: class="fragment" -->
 
 Note:
-Be selective about whose feedback you seek. And remember, giving feedback requires investment from others.
+No feedback is created equal.
 A PM teaching you storytelling is as valuable as a senior engineer suggesting JVM internals. Different perspectives reveal blind spots.
+And remember, giving feedback requires investment from others.
 
 ---
 
@@ -213,6 +229,7 @@ Few things accelerate your growth like helping others grow. Think about who turn
 
 Note:
 External recognition gives you internal credibility and creates a portfolio of your skills.
+Imagine getting to know about a new hire and after googling them, finding out they spoke at a major conference or contributed to a well-known open source project.
 
 ---
 
@@ -223,7 +240,7 @@ External recognition gives you internal credibility and creates a portfolio of y
 3. Ask for feedback and give back 🤝 <!-- .element: class="fragment custom blur" -->
 
 Note:
-Understand the rules - Learn what your company actually rewards
+Understand the rules - Learn what your company actually rewards and quantify your business impact
 "I'm on it" - Take responsibility and make work visible
 Ask and give back - Build relationships through feedback and mentoring
 ---
@@ -247,9 +264,6 @@ Don't misunderstand me - technical skills matter. But they're just one piece of 
 - **Blog**: aleromano.com 📝
 - **Twitter**: @_aleromano 🐦 
 - **LinkedIn**: /in/aleromano92 💼
-
-Note:
-Thank you! I'd love to hear your questions and discuss these topics further. Feel free to reach out on any platform.
 
 ---
 
