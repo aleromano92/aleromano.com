@@ -6,6 +6,8 @@ services:
     restart: unless-stopped
     expose:
       - 4321
+    volumes:
+      - app_data:/app/data
 
   nginx:
     image: nginx:alpine
@@ -19,3 +21,4 @@ services:
 volumes:
   nginx_logs:
   nginx_cache:
+  app_data:

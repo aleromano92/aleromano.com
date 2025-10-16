@@ -1,5 +1,6 @@
 import mockTwitterApiResponse from './mock-twitter-api-response-with-media.json';
 import { TwitterViewAdapter, type TwitterPost, type TwitterApiResponse } from './twitter-view-adapter';
+import { cacheManager } from '../database';
 
 export type { TwitterPost } from './twitter-view-adapter';
 
@@ -26,6 +27,9 @@ const TWITTER_USER_ID = '4266046641';
 // 36 hours TTL (significantly reduces API calls due to monthly limit)
 const CACHE_TTL = 36 * 60 * 60 * 1000;
 
+// Cache key for Twitter API responses
+const TWITTER_CACHE_KEY = 'twitter:timeline';
+
 /**
  * Interface for different Twitter data retrieval strategies
  */
@@ -34,38 +38,53 @@ interface TwitterDataStrategy {
 }
 
 /**
- * Simple in-memory cache for Twitter API responses
+ * SQLite-backed cache for Twitter API responses
+ * Replaces the in-memory cache to persist data across container restarts
  */
 class TwitterCache {
-  private cachedData: TwitterApiResponse | null = null;
-  private cacheTimestamp: number = 0;
-
   public set(apiResponse: TwitterApiResponse): void {
-    this.cachedData = apiResponse;
-    this.cacheTimestamp = Date.now();
+    try {
+      cacheManager.set(TWITTER_CACHE_KEY, JSON.stringify(apiResponse), CACHE_TTL);
+    } catch (error) {
+      console.error('Failed to cache Twitter data:', error);
+    }
   }
 
   public get(): TwitterApiResponse | null {
-    if (!this.isValid()) {
+    try {
+      const cached = cacheManager.get(TWITTER_CACHE_KEY);
+      return cached ? JSON.parse(cached) : null;
+    } catch (error) {
+      console.error('Failed to retrieve cached Twitter data:', error);
       return null;
     }
-    return this.cachedData;
   }
 
   public getStale(): TwitterApiResponse | null {
-    return this.cachedData; // Returns cached data even if expired
+    try {
+      const cached = cacheManager.getStale(TWITTER_CACHE_KEY);
+      return cached ? JSON.parse(cached) : null;
+    } catch (error) {
+      console.error('Failed to retrieve stale cached Twitter data:', error);
+      return null;
+    }
   }
 
   public isValid(): boolean {
-    if (!this.cachedData) return false;
-    
-    const timeSinceCache = Date.now() - this.cacheTimestamp;
-    return timeSinceCache < CACHE_TTL;
+    try {
+      return cacheManager.has(TWITTER_CACHE_KEY);
+    } catch (error) {
+      console.error('Failed to check Twitter cache validity:', error);
+      return false;
+    }
   }
 
   public clear(): void {
-    this.cachedData = null;
-    this.cacheTimestamp = 0;
+    try {
+      cacheManager.delete(TWITTER_CACHE_KEY);
+    } catch (error) {
+      console.error('Failed to clear Twitter cache:', error);
+    }
   }
 }
 
@@ -79,14 +98,30 @@ export function clearCache(): void {
 
 /**
  * Strategy for returning mock Twitter data (development/testing only)
+ * In development, it populates the SQLite cache with mock data on first run,
+ * then serves from cache like production would.
  */
 class MockTwitterStrategy implements TwitterDataStrategy {
   constructor() {}
 
   async fetchRawData(): Promise<TwitterRawDataResponse> {
-    console.warn('Using mock Twitter data for development/testing');
+    // Check if cache already has data
+    const cachedApiResponse = twitterCache.get();
+    if (cachedApiResponse) {
+      console.log('Using cached mock Twitter data from SQLite');
+      return {
+        apiResponse: cachedApiResponse,
+        freshness: DataFreshness.CACHE
+      };
+    }
+
+    // First run: populate cache with mock data
+    console.warn('Populating SQLite cache with mock Twitter data for development');
+    const mockData = mockTwitterApiResponse as TwitterApiResponse;
+    twitterCache.set(mockData);
+    
     return {
-      apiResponse: mockTwitterApiResponse as TwitterApiResponse,
+      apiResponse: mockData,
       freshness: DataFreshness.MOCK
     };
   }

@@ -60,7 +60,7 @@
 ### 8. Change Impact Assessment
 **Files to Modify**: 
 - New: `src/utils/database.ts`
-- Modified: twitter files, Dockerfile, docker-compose both dev and prod, package.json
+- Modified: twitter files, Dockerfile, docker-compose both dev and prod, package.json, setup-vps.sh for new volumes folder creation
 - New: Database migration scripts in scripts  
 **Breaking Changes**: None expected - caching is additive  
 **Documentation Updates**: Update README.md with SQLite setup; document caching behavior

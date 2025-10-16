@@ -8,6 +8,7 @@ This is a bilingual (English/Italian) personal blog built with **Astro 5** using
 - **Presentation Mode** with reveal.js integration and speaker notes support
 - **Custom i18n routing** with URL path prefixing (`/it/` for Italian, no prefix for English)
 - **Docker-based deployment** to a Hetzner VPS with nginx reverse proxy
+- **SQLite database** for persistent caching of API responses (Twitter, etc.)
 
 ### 🌐 i18n URL Structure
 - **English (default)**: `/blog`, `/posts/my-post`, `/about`
@@ -153,6 +154,63 @@ The project includes a monitoring solution for the VPS that hosts the website. T
 - Sends alerts via Telegram when issues are detected
 
 For detailed documentation, installation instructions, and configuration options, see the dedicated [Observability README](scripts/observability/README.md).
+
+## 💾 SQLite Database & Caching
+
+The website uses SQLite for persistent caching to reduce API calls and improve performance. The cache survives container restarts and deployments.
+
+### Configuration
+
+The database path is configured via the `DATABASE_PATH` environment variable (**required**).
+
+**Important**: `DATABASE_PATH` must be set - there is no default fallback value.
+
+To configure the database location:
+
+```bash
+# Local development - create .env file
+DATABASE_PATH=./data/main.db
+
+# Or set directly
+DATABASE_PATH=/custom/path/to/database.db npm run dev
+```
+
+In Docker environments, the path is set in `docker-compose.yml`.
+
+### What's Cached
+
+- **Twitter API responses**: Cached for 36 hours to stay within API rate limits
+- The cache automatically handles expiration and provides stale data fallback when APIs are unavailable
+
+### Cache Management
+
+```javascript
+import { cacheManager } from './src/utils/database';
+
+// Get cache statistics
+const stats = cacheManager.getStats();
+console.log('Cache stats:', stats);
+// Output: { total: 10, valid: 8, expired: 2 }
+
+// Clear expired entries manually (happens automatically)
+const deletedCount = cacheManager.clearExpired();
+console.log(`Deleted ${deletedCount} expired entries`);
+
+// Clear all cache entries
+cacheManager.clearAll();
+```
+
+### Database Backup
+
+In production, you can backup the database:
+
+```bash
+# From inside container
+docker exec aleromano-app-1 cp /app/data/main.db /app/data/main.db.backup
+
+# From host
+cp /var/docker/aleromano.com/app/data/main.db /var/docker/aleromano.com/app/data/main.db.backup
+```
 
 ## Troubleshooting
 

@@ -1,4 +1,11 @@
 services:
+  app:
+    environment:
+      - DATABASE_PATH=/app/data/main.db
+      - NODE_ENV=development
+    volumes:
+      - app_data_dev:/app/data
+
   nginx:
     ports:
       - "80:80"
@@ -10,4 +17,6 @@ services:
 
 volumes:
   nginx_cache_dev:
+    driver: local
+  app_data_dev:
     driver: local

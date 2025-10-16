@@ -1,12 +1,29 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { getTwitterPosts, clearCache, DataFreshness } from './twitter';
 import mockTwitterApiResponse from './mock-twitter-api-response-with-media.json';
 
 const CURRENT_LANGUAGE = 'en';
 
+// Mock the database module before importing twitter module
+const mockCacheManager = {
+  set: vi.fn(),
+  get: vi.fn(),
+  getStale: vi.fn(),
+  has: vi.fn(),
+  delete: vi.fn(),
+  clearExpired: vi.fn(),
+  clearAll: vi.fn(),
+};
+
+vi.mock('../database', () => ({
+  cacheManager: mockCacheManager
+}));
+
 // Mock fetch globally
 const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);
+
+// Import after mocks are set up
+const { getTwitterPosts, DataFreshness } = await import('./twitter');
 
 // Mock process.env
 const mockEnv = vi.hoisted(() => ({
@@ -30,8 +47,12 @@ vi.stubGlobal('import', {
 describe('twitter.ts', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Clear the in-memory cache between tests
-    clearCache();
+    
+    // Reset cache manager mocks
+    mockCacheManager.get.mockReturnValue(null);
+    mockCacheManager.getStale.mockReturnValue(null);
+    mockCacheManager.has.mockReturnValue(false);
+    
     // Reset environment to test mode
     mockEnv.NODE_ENV = 'test';
     mockEnv.TWITTER_BEARER_TOKEN = 'a-token';
@@ -51,6 +72,8 @@ describe('twitter.ts', () => {
         json: () => Promise.resolve(mockTwitterApiResponse)
       });
 
+      // First call: cache miss
+      mockCacheManager.get.mockReturnValueOnce(null);
       const response = await getTwitterPosts(CURRENT_LANGUAGE);
       
       expect(response.posts).toBeDefined();
@@ -67,6 +90,11 @@ describe('twitter.ts', () => {
       expect(response.posts![0]).toHaveProperty('public_metrics');
       expect(response.posts![0]).toHaveProperty('url');
 
+      // Capture what was cached
+      const cachedData = mockCacheManager.set.mock.calls[0][1];
+
+      // Second call: cache hit
+      mockCacheManager.get.mockReturnValueOnce(cachedData);
       const response2 = await getTwitterPosts(CURRENT_LANGUAGE);
       
       expect(response2.posts).not.toBeNull();
@@ -243,12 +271,17 @@ describe('twitter.ts', () => {
         json: () => Promise.resolve(mockTwitterApiResponse)
       });
 
-      // First call in English - should fetch from API
+      // First call in English - cache miss, fetches from API
+      mockCacheManager.get.mockReturnValueOnce(null);
       const englishResponse = await getTwitterPosts('en');
       expect(englishResponse.posts).not.toBeNull();
       expect(englishResponse.freshness).toBe(DataFreshness.LIVE);
       
-      // Second call in Italian - should use cached API data but reformat with Italian locale
+      // Capture what was cached
+      const cachedData = mockCacheManager.set.mock.calls[0][1];
+      
+      // Second call in Italian - cache hit, uses cached API data but reformats with Italian locale
+      mockCacheManager.get.mockReturnValueOnce(cachedData);
       const italianResponse = await getTwitterPosts('it');
       expect(italianResponse.posts).not.toBeNull();
       expect(italianResponse.freshness).toBe(DataFreshness.CACHE);
@@ -284,13 +317,29 @@ describe('twitter.ts', () => {
     it('should use mock data in non-production environment', async () => {
       // NODE_ENV is already 'test' from beforeEach
       
-      const response = await getTwitterPosts(CURRENT_LANGUAGE);
+      // First call: cache.get returns null (cache miss)
+      mockCacheManager.get.mockReturnValueOnce(null);
+      const response1 = await getTwitterPosts(CURRENT_LANGUAGE);
       
-      expect(response.freshness).toBe(DataFreshness.MOCK);
-      expect(response.posts).not.toBeNull();
-      expect(response.posts!).toHaveLength(6);
-      expect(response.posts![0].author_username).toBe('_aleromano');
-      expect(response.posts![0]).toHaveProperty('public_metrics');
+      expect(response1.freshness).toBe(DataFreshness.MOCK);
+      expect(response1.posts).not.toBeNull();
+      expect(response1.posts!).toHaveLength(6);
+      expect(response1.posts![0].author_username).toBe('_aleromano');
+      expect(response1.posts![0]).toHaveProperty('public_metrics');
+      expect(mockFetch).not.toHaveBeenCalled();
+      
+      // Verify mock data was stored in cache
+      expect(mockCacheManager.set).toHaveBeenCalledOnce();
+      const cachedData = mockCacheManager.set.mock.calls[0][1];
+      
+      // Second call: cache.get returns the cached data
+      mockCacheManager.get.mockReturnValueOnce(cachedData);
+      const response2 = await getTwitterPosts(CURRENT_LANGUAGE);
+      
+      expect(response2.freshness).toBe(DataFreshness.CACHE);
+      expect(response2.posts).not.toBeNull();
+      expect(response2.posts!).toHaveLength(6);
+      expect(response2.posts).toEqual(response1.posts);
       expect(mockFetch).not.toHaveBeenCalled();
     });
   });
@@ -305,10 +354,16 @@ describe('twitter.ts', () => {
         json: () => Promise.resolve(mockTwitterApiResponse)
       });
 
-      // First call
+      // First call: cache miss, fetches from API
+      mockCacheManager.get.mockReturnValueOnce(null);
       const response1 = await getTwitterPosts(CURRENT_LANGUAGE);
       
-      // Second call should use cache (no additional fetch)
+      // Capture what was cached
+      expect(mockCacheManager.set).toHaveBeenCalledOnce();
+      const cachedData = mockCacheManager.set.mock.calls[0][1];
+      
+      // Second call: cache hit, returns cached data
+      mockCacheManager.get.mockReturnValueOnce(cachedData);
       const response2 = await getTwitterPosts(CURRENT_LANGUAGE);
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
@@ -346,14 +401,16 @@ describe('twitter.ts', () => {
           json: () => Promise.resolve(updatedResponse)
         });
 
-      // First call - should fetch fresh data and cache it
+      // First call - cache miss, should fetch fresh data and cache it
+      mockCacheManager.get.mockReturnValueOnce(null);
       const response1 = await getTwitterPosts(CURRENT_LANGUAGE);
       expect(response1.freshness).toBe(DataFreshness.LIVE);
       
       // Fast forward past cache TTL (36 hours + 1 hour)
       vi.advanceTimersByTime(37 * 60 * 60 * 1000);
       
-      // Second call should fetch fresh data since cache expired
+      // Second call - cache expired (returns null), should fetch fresh data
+      mockCacheManager.get.mockReturnValueOnce(null);
       const response2 = await getTwitterPosts(CURRENT_LANGUAGE);
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
@@ -376,14 +433,22 @@ describe('twitter.ts', () => {
         json: () => Promise.resolve(mockTwitterApiResponse)
       });
 
+      mockCacheManager.get.mockReturnValueOnce(null);
       const initialResponse = await getTwitterPosts(CURRENT_LANGUAGE);
       expect(initialResponse.freshness).toBe(DataFreshness.LIVE);
+      
+      // Capture what was cached
+      const cachedData = mockCacheManager.set.mock.calls[0][1];
       
       // Fast forward past cache TTL (36 hours + 1 hour)
       vi.advanceTimersByTime(37 * 60 * 60 * 1000);
       
-      // Second call fails, but should return cached data
+      // Second call fails, but should return stale cached data
       mockFetch.mockRejectedValueOnce(new Error('API down'));
+      
+      // Cache.get returns null (expired), but getStale returns the stale data
+      mockCacheManager.get.mockReturnValueOnce(null);
+      mockCacheManager.getStale.mockReturnValueOnce(cachedData);
 
       const cachedResponse = await getTwitterPosts(CURRENT_LANGUAGE);
       

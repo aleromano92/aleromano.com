@@ -8,11 +8,14 @@ services:
       - NODE_ENV=production
       - HOST=0.0.0.0
       - PORT=4321
+      - DATABASE_PATH=/app/data/main.db
       - SMTP_HOST=smtp-relay
       - SMTP_PORT=25 # App connects to smtp-relay container on its internal port 25
       - ALE_PERSONAL_EMAIL=${ALE_PERSONAL_EMAIL}
       - TWITTER_BEARER_TOKEN=${TWITTER_BEARER_TOKEN}
       - PERSONAL_GITHUB_TOKEN=${PERSONAL_GITHUB_TOKEN}
+    volumes:
+      - /var/docker/aleromano.com/app/data:/app/data
     depends_on:
       - smtp-relay
 

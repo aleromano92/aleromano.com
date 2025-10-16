@@ -20,6 +20,10 @@ FROM base AS runtime
 RUN addgroup -g 1001 nodejs && \
     adduser -S -u 1001 -G nodejs nodejs
 
+# Create data directory for SQLite database
+RUN mkdir -p /app/data && \
+    chown -R nodejs:nodejs /app/data
+
 # Copy dependencies
 COPY --from=prod-deps /app/node_modules ./node_modules 
 # Copy the built output

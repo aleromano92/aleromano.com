@@ -111,6 +111,7 @@ print_status "Setting up Docker volumes directories..."
 DOCKER_DATA_DIR="/var/docker/aleromano.com"
 mkdir -p "$DOCKER_DATA_DIR/nginx/logs"
 mkdir -p "$DOCKER_DATA_DIR/nginx/cache"
+mkdir -p "$DOCKER_DATA_DIR/app/data"
 
 # Set proper ownership and permissions
 chown -R "$USERNAME:docker" "$DOCKER_DATA_DIR"
