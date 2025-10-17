@@ -13,9 +13,22 @@ export interface CacheDTO {
 }
 
 /**
+ * Interface for cache operations
+ */
+export interface CacheManager {
+  set(key: string, value: string, ttl: number): void;
+  get(key: string): string | null;
+  getStale(key: string): string | null;
+  has(key: string): boolean;
+  delete(key: string): void;
+  clearExpired(): number;
+  clearAll(): number;
+}
+
+/**
  * Cache operations for storing arbitrary data with TTL in SQLite
  */
-export class CacheManager {
+export class DatabaseCacheManager implements CacheManager {
   private db: Database.Database;
   
   constructor() {
@@ -136,12 +149,12 @@ export class CacheManager {
 /**
  * Export a singleton cache manager instance (lazy initialization)
  */
-let cacheManagerInstance: CacheManager | null = null;
+let cacheManagerInstance: DatabaseCacheManager | null = null;
 
 export const cacheManager = {
-  get instance(): CacheManager {
+  get instance(): DatabaseCacheManager {
     if (!cacheManagerInstance) {
-      cacheManagerInstance = new CacheManager();
+      cacheManagerInstance = new DatabaseCacheManager();
     }
     return cacheManagerInstance;
   },

@@ -14,7 +14,7 @@ import tennisImage from '../../assets/tennis.jpg';
 import onePieceImage from '../../assets/one-piece.jpg';
 import speakingImage from '../../assets/speaking.png';
 import familyImage from '../../assets/family.png';
-import { getTwitterPosts } from '../../utils/twitter/twitter';
+import { twitterService } from '../../utils/twitter/twitter';
 import type { SupportedLanguage } from '../../types/i18n';
 
 export interface AboutTranslations {
@@ -354,7 +354,7 @@ const { language } = Astro.props;
 const t = getAboutTranslations(language);
 
 // Fetch Twitter data server-side with built-in error handling
-const twitterData = await getTwitterPosts(language);
+const twitterData = await twitterService.getTwitterPosts(language);
 ---
 
 <h2>

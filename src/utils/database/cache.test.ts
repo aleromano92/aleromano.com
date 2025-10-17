@@ -2,7 +2,7 @@
 process.env.DATABASE_PATH = './data/cache-test.db';
 
 import { describe, it, expect, beforeEach, afterAll } from 'vitest';
-import { CacheManager } from './cache';
+import { DatabaseCacheManager, type CacheManager } from './cache';
 import { closeDatabase } from './connection';
 import { unlinkSync, existsSync } from 'fs';
 import { join } from 'path';
@@ -11,7 +11,7 @@ describe('CacheManager', () => {
   let cacheManager: CacheManager;
   
   beforeEach(() => {
-    cacheManager = new CacheManager();
+    cacheManager = new DatabaseCacheManager();
     cacheManager.clearAll();
   });
   
