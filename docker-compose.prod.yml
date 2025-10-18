@@ -58,3 +58,5 @@ services:
 volumes:
   nginx_cache:
     driver: local
+  app_data:
+    driver: local
