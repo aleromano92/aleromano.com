@@ -1,5 +1,5 @@
 // Set DATABASE_PATH before importing database module
-process.env.DATABASE_PATH = './data/cache-test.db';
+process.env.DATABASE_PATH = './data/main-test.db';
 
 import { describe, it, expect, beforeEach, afterAll } from 'vitest';
 import { DatabaseCacheManager, type CacheManager } from './cache';
@@ -18,7 +18,7 @@ describe('CacheManager', () => {
   afterAll(() => {
     // Clean up test database
     closeDatabase();
-    const testDbPath = join(process.cwd(), 'data', 'cache-test.db');
+    const testDbPath = join(process.cwd(), 'data', 'main-test.db');
     if (existsSync(testDbPath)) {
       try {
         unlinkSync(testDbPath);

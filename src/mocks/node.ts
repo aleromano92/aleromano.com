@@ -24,9 +24,7 @@ if (typeof window === 'undefined') {
   
   // Optionally log when requests are intercepted
   server.events.on('request:start', ({ request }) => {
-    if (request.url.includes('twitter.com')) {
       console.log('[MSW] Intercepting:', request.method, request.url);
-    }
   });
 }
 

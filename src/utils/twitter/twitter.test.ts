@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import mockTwitterApiResponse from './mock-twitter-api-response-with-media.json';
+import mockTwitterApiResponse from '../../mocks/mock-twitter-api-response-with-media.json';
 import { TwitterService, DataFreshness, ProductionTwitterStrategy } from './twitter';
 import { TwitterViewAdapter } from './twitter-view-adapter';
 

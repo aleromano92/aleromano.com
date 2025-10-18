@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { TwitterViewAdapter, type TwitterApiResponse } from './twitter-view-adapter';
-import mockTwitterApiResponse from './mock-twitter-api-response-with-media.json';
+import mockTwitterApiResponse from '../../mocks/mock-twitter-api-response-with-media.json';
 
 describe('TwitterViewAdapter', () => {
   describe('parseApiResponse', () => {

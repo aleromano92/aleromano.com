@@ -1,0 +1,35 @@
+[
+    {
+        "sha": "abc123def456789fullhash",
+        "commit": {
+            "message": "Add new feature\n\nDetailed description here",
+            "author": {
+                "name": "Alessandro Romano",
+                "date": "2024-01-15T10:30:00Z"
+            }
+        },
+        "html_url": "https://github.com/aleromano92/aleromano.com/commit/abc123def456789fullhash"
+    },
+    {
+        "sha": "def456abc123789fullhash",
+        "commit": {
+            "message": "Fix bug in component",
+            "author": {
+                "name": "Alessandro Romano",
+                "date": "2024-01-14T15:20:00Z"
+            }
+        },
+        "html_url": "https://github.com/aleromano92/aleromano.com/commit/def456abc123789fullhash"
+    },
+    {
+        "sha": "xyz789abc123deffullhash",
+        "commit": {
+            "message": "Update documentation",
+            "author": {
+                "name": "Alessandro Romano",
+                "date": "2024-01-13T12:10:00Z"
+            }
+        },
+        "html_url": "https://github.com/aleromano92/aleromano.com/commit/xyz789abc123deffullhash"
+    }
+]

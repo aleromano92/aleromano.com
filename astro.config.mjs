@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import rehypeExternalLinks from 'rehype-external-links';
 
 // Enable MSW for server-side mocking in development
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.DEV || process.env.NODE_ENV === 'development') {
   await import('./src/mocks/node.ts');
 }
 
