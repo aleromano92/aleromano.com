@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { http, HttpResponse } from 'msw';
 import { server } from '../mocks/server';
+import { githubErrorHandlers } from '../mocks/handlers';
 import { getGitHubCommitsData } from './github';
 import type { GitHubCommitsData } from './github';
 
@@ -44,34 +44,7 @@ describe('GitHub Repository Commits API utilities', () => {
 
     it('should filter out merge commits', async () => {
       // Override MSW handler for this test
-      server.use(
-        http.get(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits`, () => {
-          return HttpResponse.json([
-            {
-              sha: 'abc123def456789',
-              commit: {
-                message: 'Merge pull request #123 from feature-branch',
-                author: {
-                  name: 'Alessandro Romano',
-                  date: '2024-01-15T10:30:00Z'
-                }
-              },
-              html_url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/commit/abc123def456789`
-            },
-            {
-              sha: 'def456abc123789',
-              commit: {
-                message: 'Add actual feature',
-                author: {
-                  name: 'Alessandro Romano',
-                  date: '2024-01-15T09:30:00Z'
-                }
-              },
-              html_url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/commit/def456abc123789`
-            }
-          ]);
-        })
-      );
+      server.use(githubErrorHandlers.withMergeCommits);
 
       const result = await getGitHubCommitsData();
 
@@ -81,23 +54,7 @@ describe('GitHub Repository Commits API utilities', () => {
     });
 
     it('should truncate SHA to 7 characters', async () => {
-      server.use(
-        http.get(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits`, () => {
-          return HttpResponse.json([
-            {
-              sha: 'abcdef123456789fullhash',
-              commit: {
-                message: 'Test commit',
-                author: {
-                  name: 'Alessandro Romano',
-                  date: '2024-01-15T10:30:00Z'
-                }
-              },
-              html_url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/commit/abcdef123456789fullhash`
-            }
-          ]);
-        })
-      );
+      server.use(githubErrorHandlers.singleCommitFullSha);
 
       const result = await getGitHubCommitsData();
 
@@ -106,23 +63,7 @@ describe('GitHub Repository Commits API utilities', () => {
     });
 
     it('should use only first line of commit message', async () => {
-      server.use(
-        http.get(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits`, () => {
-          return HttpResponse.json([
-            {
-              sha: 'abc123def456789',
-              commit: {
-                message: 'First line of commit\n\nSecond line\nThird line',
-                author: {
-                  name: 'Alessandro Romano',
-                  date: '2024-01-15T10:30:00Z'
-                }
-              },
-              html_url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/commit/abc123def456789`
-            }
-          ]);
-        })
-      );
+      server.use(githubErrorHandlers.multiLineMessage);
 
       const result = await getGitHubCommitsData();
 
@@ -130,11 +71,7 @@ describe('GitHub Repository Commits API utilities', () => {
     });
 
     it('should handle API errors gracefully', async () => {
-      server.use(
-        http.get(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits`, () => {
-          return new HttpResponse(null, { status: 404 });
-        })
-      );
+      server.use(githubErrorHandlers.notFound);
 
       const result = await getGitHubCommitsData();
 
@@ -144,11 +81,7 @@ describe('GitHub Repository Commits API utilities', () => {
     });
 
     it('should handle network errors gracefully', async () => {
-      server.use(
-        http.get(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits`, () => {
-          return HttpResponse.error();
-        })
-      );
+      server.use(githubErrorHandlers.networkError);
 
       const result = await getGitHubCommitsData();
 
@@ -158,27 +91,11 @@ describe('GitHub Repository Commits API utilities', () => {
     });
 
     it('should include correct repository name and URL format', async () => {
-      server.use(
-        http.get(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits`, () => {
-          return HttpResponse.json([
-            {
-              sha: 'abc123def456789',
-              commit: {
-                message: 'Test commit',
-                author: {
-                  name: 'Alessandro Romano',
-                  date: '2024-01-15T10:30:00Z'
-                }
-              },
-              html_url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/commit/abc123def456789`
-            }
-          ]);
-        })
-      );
+      server.use(githubErrorHandlers.singleCommitFullSha);
 
       const result = await getGitHubCommitsData();
 
-      expect(result.commits[0].url).toBe('https://github.com/aleromano92/aleromano.com/commit/abc123def456789');
+      expect(result.commits[0].url).toBe('https://github.com/aleromano92/aleromano.com/commit/abcdef123456789fullhash');
       expect(result.commits[0].repo).toBe('aleromano92/aleromano.com');
     });
 
@@ -192,34 +109,7 @@ describe('GitHub Repository Commits API utilities', () => {
     });
 
     it('should sort commits by date (newest first)', async () => {
-      server.use(
-        http.get(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits`, () => {
-          return HttpResponse.json([
-            {
-              sha: 'older123',
-              commit: {
-                message: 'Older commit',
-                author: {
-                  name: 'Alessandro Romano',
-                  date: '2024-01-14T10:30:00Z'
-                }
-              },
-              html_url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/commit/older123`
-            },
-            {
-              sha: 'newer456',
-              commit: {
-                message: 'Newer commit',
-                author: {
-                  name: 'Alessandro Romano',
-                  date: '2024-01-15T10:30:00Z'
-                }
-              },
-              html_url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/commit/newer456`
-            }
-          ]);
-        })
-      );
+      server.use(githubErrorHandlers.unsortedCommits);
 
       const result = await getGitHubCommitsData();
 
@@ -228,11 +118,7 @@ describe('GitHub Repository Commits API utilities', () => {
     });
 
     it('should handle empty response gracefully', async () => {
-      server.use(
-        http.get(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits`, () => {
-          return HttpResponse.json([]);
-        })
-      );
+      server.use(githubErrorHandlers.emptyResponse);
 
       const result = await getGitHubCommitsData();
 
@@ -241,23 +127,7 @@ describe('GitHub Repository Commits API utilities', () => {
     });
 
     it('should format dates according to language preference', async () => {
-      server.use(
-        http.get(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits`, () => {
-          return HttpResponse.json([
-            {
-              sha: 'abc123def456789',
-              commit: {
-                message: 'Test commit',
-                author: {
-                  name: 'Alessandro Romano',
-                  date: '2024-01-15T10:30:00Z'
-                }
-              },
-              html_url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/commit/abc123def456789`
-            }
-          ]);
-        })
-      );
+      server.use(githubErrorHandlers.singleCommitFullSha);
 
       const result = await getGitHubCommitsData('en');
 
@@ -270,23 +140,7 @@ describe('GitHub Repository Commits API utilities', () => {
       const fixedNow = new Date('2024-01-15T12:30:00Z');
       vi.setSystemTime(fixedNow);
 
-      server.use(
-        http.get(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits`, () => {
-          return HttpResponse.json([
-            {
-              sha: 'abc123def456789',
-              commit: {
-                message: 'Recent commit',
-                author: {
-                  name: 'Alessandro Romano',
-                  date: '2024-01-15T10:30:00Z' // 2 hours ago
-                }
-              },
-              html_url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/commit/abc123def456789`
-            }
-          ]);
-        })
-      );
+      server.use(githubErrorHandlers.recentCommit);
 
       const result = await getGitHubCommitsData('en');
 
@@ -300,25 +154,7 @@ describe('GitHub Repository Commits API utilities', () => {
     });
 
     it('should truncate long commit messages', async () => {
-      const longMessage = 'A'.repeat(200); // 200 character message
-      
-      server.use(
-        http.get(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits`, () => {
-          return HttpResponse.json([
-            {
-              sha: 'abc123def456789',
-              commit: {
-                message: longMessage,
-                author: {
-                  name: 'Alessandro Romano',
-                  date: '2024-01-15T10:30:00Z'
-                }
-              },
-              html_url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/commit/abc123def456789`
-            }
-          ]);
-        })
-      );
+      server.use(githubErrorHandlers.longMessage);
 
       const result = await getGitHubCommitsData();
 

@@ -1,6 +1,5 @@
 import { TwitterViewAdapter, type TwitterPost, type TwitterApiResponse } from './twitter-view-adapter';
-import { cacheManager } from '../database';
-import type { CacheManager } from '../database/cache';
+import { cacheManager, type CacheManager } from '../database';
 
 export type { TwitterPost } from './twitter-view-adapter';
 
@@ -31,25 +30,57 @@ const CACHE_TTL = 36 * 60 * 60 * 1000;
 const TWITTER_CACHE_KEY = 'twitter:timeline';
 
 /**
- * Interface for different Twitter data retrieval strategies
+ * TwitterService - handles fetching Twitter data with caching and error handling
  */
-interface TwitterDataStrategy {
-  fetchRawData(): Promise<TwitterRawDataResponse>;
-}
+export class TwitterService {
+  private adapter: typeof TwitterViewAdapter;
+  private cache: CacheManager;
 
-/**
- * Strategy for fetching live data from Twitter API with caching
- */
-class LiveTwitterStrategy implements TwitterDataStrategy {
-  private cacheManager: CacheManager;
-
-  constructor(cacheManager: CacheManager) {
-    this.cacheManager = cacheManager;
+  constructor(adapter: typeof TwitterViewAdapter, cache: CacheManager) {
+    this.adapter = adapter;
+    this.cache = cache;
   }
 
-  async fetchRawData(): Promise<TwitterRawDataResponse> {
+  async getTwitterPosts(language: string): Promise<TwitterResponse> {
+    try {
+      const { apiResponse, freshness } = await this.fetchRawData();
+      
+      const posts = this.adapter.parseApiResponse(apiResponse, language);
+      
+      return {
+        posts,
+        freshness
+      };
+    } catch (error) {
+      console.error('Failed to load Twitter feed:', error);
+
+      // Provide more specific error messages based on the error type
+      let errorMessage = 'Unknown error occurred';
+
+      if (error instanceof Error) {
+        if (error.message.includes('Bearer Token not configured')) {
+          errorMessage = 'Twitter API not configured';
+        } else if (error.message.includes('404')) {
+          errorMessage = 'Twitter user not found or API endpoint invalid';
+        } else if (error.message.includes('401')) {
+          errorMessage = 'Twitter API authentication failed';
+        } else if (error.message.includes('429')) {
+          errorMessage = 'Twitter API rate limit exceeded';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        posts: null,
+        error: errorMessage,
+      };
+    }
+  }
+
+  private async fetchRawData(): Promise<TwitterRawDataResponse> {
     // Check cache first
-    const cached = this.cacheManager.get(TWITTER_CACHE_KEY);
+    const cached = this.cache.get(TWITTER_CACHE_KEY);
     if (cached) {
       console.log('Using cached Twitter data');
       return {
@@ -63,14 +94,27 @@ class LiveTwitterStrategy implements TwitterDataStrategy {
       const apiResponse = await this.fetchFromApi();
       
       // Update cache with successful data
-      this.cacheManager.set(TWITTER_CACHE_KEY, JSON.stringify(apiResponse), CACHE_TTL);
+      this.cache.set(TWITTER_CACHE_KEY, JSON.stringify(apiResponse), CACHE_TTL);
       
       return {
         apiResponse,
         freshness: DataFreshness.LIVE
       };
     } catch (error) {
-      throw new Error(`Failed to fetch Twitter data: ${error}`);
+      console.warn('Twitter API error:', error);
+      
+      // Try to use any cached data as fallback (even if stale)
+      const staleCached = this.cache.getStale(TWITTER_CACHE_KEY);
+      if (staleCached) {
+        console.warn('Using stale cached Twitter data due to API error');
+        return {
+          apiResponse: JSON.parse(staleCached),
+          freshness: DataFreshness.CACHE
+        };
+      }
+      
+      // No fallback available, re-throw the error
+      throw error;
     }
   }
 
@@ -108,103 +152,5 @@ class LiveTwitterStrategy implements TwitterDataStrategy {
   }
 }
 
-/**
- * Production strategy that gracefully handles API failures with stale cache fallback
- */
-export class ProductionTwitterStrategy implements TwitterDataStrategy {
-  private cacheManager: CacheManager;
-  private liveStrategy: LiveTwitterStrategy;
-
-  constructor(cacheManager: CacheManager) {
-    this.cacheManager = cacheManager;
-    this.liveStrategy = new LiveTwitterStrategy(cacheManager);
-  }
-
-  async fetchRawData(): Promise<TwitterRawDataResponse> {
-    try {
-      return await this.liveStrategy.fetchRawData();
-    } catch (error) {
-      console.warn('Twitter API error:', error);
-      
-      // Try to use any cached data as fallback (even if stale)
-      const staleCached = this.cacheManager.getStale(TWITTER_CACHE_KEY);
-      if (staleCached) {
-        console.warn('Using stale cached Twitter data due to API error');
-        return {
-          apiResponse: JSON.parse(staleCached),
-          freshness: DataFreshness.CACHE
-        };
-      }
-      
-      // Re-throw the error to be handled by the main function
-      throw error;
-    }
-  }
-}
-
-/**
- * Factory to create the appropriate Twitter data strategy based on environment
- */
-class TwitterStrategyFactory {
-  static create(cacheManager: CacheManager): TwitterDataStrategy {
-    // Always use production strategy (MSW handles mocking in dev/test)
-    return new ProductionTwitterStrategy(cacheManager);
-  }
-}
-
-/**
- * TwitterService class with dependency injection for adapter and strategy
- */
-export class TwitterService {
-  private adapter: typeof TwitterViewAdapter;
-  private strategy: TwitterDataStrategy;
-
-  constructor(adapter: typeof TwitterViewAdapter, strategy: TwitterDataStrategy) {
-    this.adapter = adapter;
-    this.strategy = strategy;
-  }
-
-  async getTwitterPosts(language: string): Promise<TwitterResponse> {
-    try {
-      const { apiResponse, freshness } = await this.strategy.fetchRawData();
-      
-      // Parse the API response with the current language for proper formatting
-      const posts = this.adapter.parseApiResponse(apiResponse, language);
-      
-      return {
-        posts,
-        freshness
-      };
-    } catch (error) {
-      console.error('Failed to load Twitter feed:', error);
-
-      // Provide more specific error messages based on the error type
-      let errorMessage = 'Unknown error occurred';
-
-      if (error instanceof Error) {
-        if (error.message.includes('Bearer Token not configured')) {
-          errorMessage = 'Twitter API not configured';
-        } else if (error.message.includes('404')) {
-          errorMessage = 'Twitter user not found or API endpoint invalid';
-        } else if (error.message.includes('401')) {
-          errorMessage = 'Twitter API authentication failed';
-        } else if (error.message.includes('429')) {
-          errorMessage = 'Twitter API rate limit exceeded';
-        } else {
-          errorMessage = error.message;
-        }
-      }
-
-      return {
-        posts: null,
-        error: errorMessage,
-      };
-    }
-  }
-}
-
-// Export a default instance for convenience (with injected dependencies)
-export const twitterService = new TwitterService(
-  TwitterViewAdapter,
-  TwitterStrategyFactory.create(cacheManager)
-);
+// Export a default instance for convenience
+export const twitterService = new TwitterService(TwitterViewAdapter, cacheManager);

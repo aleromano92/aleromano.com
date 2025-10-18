@@ -2,9 +2,13 @@
  * Vitest Setup File
  * 
  * Configures MSW to intercept all HTTP requests during tests.
+ * Sets up in-memory database for testing.
  */
 import { beforeAll, afterEach, afterAll } from 'vitest';
 import { server } from './src/mocks/server';
+
+// Configure in-memory database for tests
+process.env.DATABASE_PATH = ':memory:';
 
 // Start MSW server before all tests
 beforeAll(() => {
