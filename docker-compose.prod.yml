@@ -15,6 +15,10 @@ services:
       - TWITTER_BEARER_TOKEN=${TWITTER_BEARER_TOKEN}
       - PERSONAL_GITHUB_TOKEN=${PERSONAL_GITHUB_TOKEN}
     volumes:
+      # On your Hetzner VPS, you need to create the folder as being run by user ID 1001 (see Dockerfile)
+      # sudo mkdir -p /var/docker/aleromano.com/app/data
+      # sudo chown -R 1001:1001 /var/docker/aleromano.com/app/data
+      # sudo chmod -R 755 /var/docker/aleromano.com/app/data
       - /var/docker/aleromano.com/app/data:/app/data
     depends_on:
       - smtp-relay
@@ -48,15 +52,7 @@ services:
       - GMAIL_USER=${GOOGLE_APP_USER} # Your Gmail address
       - GMAIL_PASSWORD=${GOOGLE_APP_PASSWORD} # Your Google App Password
       - RELAY_DOMAINS=* # Or specify domains if needed, * allows all
-    # Add healthcheck if desired
-    # healthcheck:
-    #   test: ["CMD", "nc", "-z", "localhost", "25"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
 
 volumes:
   nginx_cache:
-    driver: local
-  app_data:
     driver: local
