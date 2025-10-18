@@ -15,7 +15,7 @@ services:
       - TWITTER_BEARER_TOKEN=${TWITTER_BEARER_TOKEN}
       - PERSONAL_GITHUB_TOKEN=${PERSONAL_GITHUB_TOKEN}
     volumes:
-      - app_data:/app/data
+      - /var/docker/aleromano.com/app/data:/app/data
     depends_on:
       - smtp-relay
 
@@ -57,6 +57,4 @@ services:
 
 volumes:
   nginx_cache:
-    driver: local
-  app_data:
     driver: local
