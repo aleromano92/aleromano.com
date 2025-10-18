@@ -182,24 +182,6 @@ In Docker environments, the path is set in `docker-compose.yml`.
 - **Twitter API responses**: Cached for 36 hours to stay within API rate limits
 - The cache automatically handles expiration and provides stale data fallback when APIs are unavailable
 
-### Cache Management
-
-```javascript
-import { cacheManager } from './src/utils/database';
-
-// Get cache statistics
-const stats = cacheManager.getStats();
-console.log('Cache stats:', stats);
-// Output: { total: 10, valid: 8, expired: 2 }
-
-// Clear expired entries manually (happens automatically)
-const deletedCount = cacheManager.clearExpired();
-console.log(`Deleted ${deletedCount} expired entries`);
-
-// Clear all cache entries
-cacheManager.clearAll();
-```
-
 ### Database Backup
 
 In production, you can backup the database:
