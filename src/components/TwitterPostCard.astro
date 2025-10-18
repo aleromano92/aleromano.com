@@ -5,6 +5,15 @@ interface Props {
     post: TwitterPost;
 }
 
+type MediaItem = {
+    type: 'photo' | 'video' | 'animated_gif';
+    url?: string;
+    preview_image_url?: string;
+    alt_text?: string;
+    width?: number;
+    height?: number;
+};
+
 const { post } = Astro.props;
 ---
 
@@ -25,7 +34,7 @@ const { post } = Astro.props;
             {
                 post.media && post.media.length > 0 && (
                     <div class="tweet-media">
-                        {post.media.map((mediaItem) => (
+                        {post.media.map((mediaItem: MediaItem) => (
                             <div class="media-item">
                                 {mediaItem.type === 'photo' && (
                                     <img

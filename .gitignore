@@ -23,3 +23,6 @@ pnpm-debug.log*
 # IDE setting folder
 .idea/
 .vscode/
+
+# SQLite database files
+data/
