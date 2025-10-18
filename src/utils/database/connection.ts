@@ -47,7 +47,7 @@ let dbInstance: Database.Database | null = null;
 export function getDatabase(): Database.Database {
   if (!dbInstance) {
     const dbPath = getDatabasePath();
-    console.log(`Initializing SQLite database at: ${dbPath}`);
+    console.log(`Connecting to SQLite database at: ${dbPath}`);
     
     try {
       dbInstance = new Database(dbPath, {
@@ -57,10 +57,10 @@ export function getDatabase(): Database.Database {
       dbInstance.pragma('journal_mode = WAL');
       
       initializeSchema(dbInstance);
-      
-      console.log('SQLite database initialized successfully');
+
+      console.log('SQLite database connection established successfully');
     } catch (error) {
-      console.error('Failed to initialize database:', error);
+      console.error('Failed to connect to database:', error);
       throw error;
     }
   }

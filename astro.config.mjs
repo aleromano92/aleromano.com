@@ -3,6 +3,11 @@ import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
 import rehypeExternalLinks from 'rehype-external-links';
 
+// Enable MSW for server-side mocking in development
+if (process.env.NODE_ENV === 'development') {
+  await import('./src/mocks/node.ts');
+}
+
 // https://astro.build/config
 export default defineConfig({
   output: 'server',

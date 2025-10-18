@@ -1,6 +1,4 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
 import mockTwitterApiResponse from './mock-twitter-api-response-with-media.json';
 import { TwitterService, DataFreshness, ProductionTwitterStrategy } from './twitter';
 import { TwitterViewAdapter } from './twitter-view-adapter';
@@ -22,19 +20,11 @@ import { cacheManager } from '../database';
 
 const CURRENT_LANGUAGE = 'en';
 
-// MSW server setup
-const mswServer = setupServer(
-  http.get(`https://api.twitter.com/2/users/4266046641/tweets`, () => {
-    return HttpResponse.json(mockTwitterApiResponse);
-  })
-);
-
 describe('TwitterService', () => {
   let service: TwitterService;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mswServer.listen();
     
     // Reset cache manager mocks
     vi.mocked(cacheManager).get.mockReturnValue(null);
@@ -48,8 +38,6 @@ describe('TwitterService', () => {
   });
 
   afterEach(() => {
-    mswServer.resetHandlers();
-    mswServer.close();
     vi.clearAllTimers();
   });
 
