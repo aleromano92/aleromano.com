@@ -10,7 +10,7 @@ image:
   alt: "Equilibrio tra gestione, famiglia e sviluppo software"
 ---
 
-Oh, è sabato pomeriggio e dopo un bel pranzo a base di spaghetti allo scoglio io e mia moglie mettiamo i bimbi a nanna. Mi aspettano 2 ore ininterrote in cui posso lavorare al mio sito! Peccato che dopo 10 minuti... "Papà, devo fare la cacca!". Fine del mio focus e, fino a qualche anno fa, fine della mia voglia di scrivere codice.
+Oooooh, è sabato pomeriggio e dopo un bel pranzo a base di spaghetti allo scoglio io e mia moglie mettiamo i bimbi a nanna. Mi aspettano 2 ore ininterrote in cui posso lavorare al mio sito! Peccato che dopo 10 minuti... "Papà, devo fare la cacca!". Fine del mio focus e, fino a qualche mese fa, fine della mia voglia di scrivere codice.
 
 A lavoro non vengo interrotto da frasi simili, ma essendo un Engineering Manager di 3 team, la parte di crescita delle persone occupa la maggior parte del mio tempo, con context switch continui e richieste estemporanee via chat.
 
@@ -41,7 +41,7 @@ Con questi strumenti ho avuto un incredibile AHA Moment quando ho inserito i mie
 
 ![image](../../../assets/blog/manager-father-coder-ai/mic.png)
 
-> "Voglio realizzare una sezione del sito in cui elenco i miei post più recenti da X. La chiamata alle API deve avvenire lato server quindi la pagina in cui uso questo componente deve essere Server-side rendered. Dividi le respinsabilità in una funzione che si occupa della chiamata REST, una che applica uno strato di Cache e una che adatta i dati per il rendering in un componente di mera presentazione senza logica. Scrivi unit tests per questi componenti. Fammi domande di chiarimento se ti servono più dettagli."
+> "Voglio realizzare una sezione del sito in cui elenco i miei post più recenti da X. La chiamata alle API deve avvenire lato server quindi la pagina in cui uso questo componente deve essere Server-side rendered. Dividi le respinsabilità in una funzione che si occupa della chiamata REST, una che applica uno strato di Cache e una che adatta i dati per il rendering in un componente di mera presentazione senza logica. Aspettati di ricevere l'API key come secret dall'environemnt. Scrivi unit tests per questi componenti. Fammi domande di chiarimento se ti servono più dettagli."
 
 Questo è un esempio di prompt simile a quelli che uso (anche se recentemente ho aggiunto un template nelle [copilot-instructions.md](https://github.com/aleromano92/aleromano.com/blob/main/.github/copilot-instructions.md)).
 
