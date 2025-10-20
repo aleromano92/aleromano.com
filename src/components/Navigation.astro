@@ -66,8 +66,9 @@ const routeMap = BASE_ROUTES.map((route) => ({
   nav {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: clamp(0.75rem, 3vw, 2rem);
     margin-left: auto;
+    margin-right: auto;
   }
 
   @media (max-width: 636px) {

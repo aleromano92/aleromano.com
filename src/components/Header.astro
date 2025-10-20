@@ -3,14 +3,13 @@ import Hamburger from './Hamburger.astro';
 import Navigation from './Navigation.astro';
 import ThemeSwitcher from './ThemeSwitcher.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
-import BrandLogo from './BrandLogo.astro';
 
 const { i18nData } = Astro.props;
 ---
 
-<header class="container">
+<header class="container header-container">
   <Hamburger />
-  <BrandLogo />
+  <h2>Alessandro Romano</h2>
   <Navigation language={i18nData?.currentLang} />
   <section class="switchers">
     <LanguageSwitcher i18nData={i18nData} />
@@ -56,10 +55,29 @@ const { i18nData } = Astro.props;
     transition: opacity 0.3s ease;
   }
 
+  header h2 {
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* Mobile centering */
+  @media (max-width: 636px) {
+    header h2 {
+      margin-left: var(--space-sm);
+    }
+  }
+
+  /* Tablet centering */
+  @media (min-width: 636px) and (max-width: 860px) {
+    header h2 {
+      width: min-content;
+    }
+  }
+
   .switchers {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: clamp(0.5rem, 0.75rem, 1rem);
     margin-left: auto;
   }
 </style>

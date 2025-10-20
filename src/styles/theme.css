@@ -30,9 +30,9 @@
 
     /* Layout */
     --container-max-width: 1080px;
-    --posts-container-max-width: 65ch;
+    --header-container-max-width: calc(1080px + 4rem);
     --container-padding: clamp(1rem, 5vw, 2rem);
-
+    --header-container-padding: 1.5rem;
     /* Breakpoints */
     --breakpoint-mobile: 480px;
     --breakpoint-tablet: 636px;
