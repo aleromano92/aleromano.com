@@ -1,5 +1,7 @@
 ---
 import { Image } from 'astro:assets';
+import brandLogo from '../../assets/nano-banana-personal-logo-light.png';
+import brandLogoDark from '../../assets/nano-banana-personal-logo-dark.png';
 import TwitterFeed from '../TwitterFeed.astro';
 import ImageModal from '../ImageModal.astro';
 import profilePic from '../../assets/alepro.png';
@@ -371,6 +373,27 @@ const twitterData = await twitterService.getTwitterPosts(language);
         <li><a href="#twitter">{t.tocTwitter}</a></li>
     </ul>
 </nav>
+
+<div class="logo-container">
+    <Image
+        src={brandLogo}
+        alt="Brand Logo"
+        class="logo dark-logo"
+        width={300}
+        height={300}
+        densities={[2]}
+        quality="high"
+    />
+    <Image
+        src={brandLogoDark}
+        alt="Brand Logo"
+        class="logo light-logo"
+        width={300}
+        height={300}
+        densities={[2]}
+        quality="high"
+    />
+</div>
 
 <!-- Biography Section -->
 <section id="biography" class="biography">
@@ -807,6 +830,40 @@ const twitterData = await twitterService.getTwitterPosts(language);
         color: var(--color-accent);
         opacity: 1;
         text-decoration: none;
+    }
+
+    /* Logo Container */
+    .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: clamp(8rem, 15vw, 16rem);
+    }
+
+    .logo {
+        height: 100%;
+        width: auto;
+        border-radius: 50%;
+    }
+
+    /* Show/hide based on theme */
+    .dark-logo {
+        display: none;
+    }
+
+    :global([data-theme='dark']) .dark-logo {
+        display: block;
+    }
+
+    :global([data-theme='dark']) .light-logo {
+        display: none;
+    }
+
+    /* Mobile centering */
+    @media (max-width: 636px) {
+        .logo-container {
+            margin-left: auto;
+        }
     }
 
     /* Title with icon styling */
