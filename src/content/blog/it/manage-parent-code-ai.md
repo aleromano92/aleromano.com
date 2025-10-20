@@ -6,7 +6,7 @@ author: "Alessandro Romano"
 tags: ["AI", "Developer Experience", "Productivity", "aleromano.com"]
 language: "it"
 image:
-  url: ../../../assets/blog/manager-father-coder-ai/featured.png
+  url: ../../../assets/blog/manage-parent-code-ai/featured.png
   alt: "Equilibrio tra gestione, famiglia e sviluppo software"
 ---
 
@@ -22,7 +22,7 @@ Ho visto con i miei occhi quanto sia importante per un Software Engineer avere d
 
 Questo concetto [non è nuovo](https://www.paulgraham.com/makersschedule.html), ma troppo spesso dimenticato soprattutto da chi fissa meeting nel mezzo della mattina o del pomeriggio ([e magari non sono nemmeno efficaci](/posts/it/effective-meetings-agenda)).
 
-![image](../../../assets/blog/manager-father-coder-ai/focus.webp)
+![image](../../../assets/blog/manage-parent-code-ai/focus.webp)
 
 Poi è arrivato lo __sviluppo assistito dall'AI__. 
 
@@ -39,7 +39,7 @@ Quindi, Sonnet & Co. non ha "scritto il sito per me"; mi ha permesso di sviluppa
 
 Con questi strumenti ho avuto un incredibile AHA Moment quando ho inserito i miei prompt con la mia voce grazie all'icona del microfono in VS Code.
 
-![image](../../../assets/blog/manager-father-coder-ai/mic.png)
+![image](../../../assets/blog/manage-parent-code-ai/mic.png)
 
 > "Voglio realizzare una sezione del sito in cui elenco i miei post più recenti da X. La chiamata alle API deve avvenire lato server quindi la pagina in cui uso questo componente deve essere Server-side rendered. Dividi le respinsabilità in una funzione che si occupa della chiamata REST, una che applica uno strato di Cache e una che adatta i dati per il rendering in un componente di mera presentazione senza logica. Aspettati di ricevere l'API key come secret dall'environemnt. Scrivi unit tests per questi componenti. Fammi domande di chiarimento se ti servono più dettagli."
 
@@ -69,11 +69,11 @@ E permetti all'Agent di eseguire il comando di test (tipo `npm test`) senza che 
 
 ## Rischi e Caveat ⚠️
 
-Non credo che __"ho copiato e incollato da StackOverflow"__ sia molto diverso da __"l'AI ha scritto il codice per me"__. La vera differenza sta sempre nel _tuo grado di comprensione_ del codice incollato (o generato).
+Non credo che _"ho copiato e incollato da StackOverflow"_ sia molto diverso da _"l'AI ha scritto il codice per me"_. La vera differenza sta sempre nel __tuo grado di comprensione__ del codice incollato (o generato).
 Se prima con alcune domande in StackOverlflow c'era il rischio di ricevere risposte maleducate, ora puoi davvero sfruttare l'LLM di turno per farti spiegare il perché di ogni scelta. E stai sicuro che ti dirà sempre che è una bella domanda!
 Non era sicuro incollare codice senza capirlo prima, non è sicuro fare vibe-coding ora.
 
-![image](../../../assets/blog/manager-father-coder-ai/great-question.png)
+![image](../../../assets/blog/manage-parent-code-ai/great-question.png)
 
 C'è poi chi dice di essere preoccupato dal fatto che scrivendo meno codice si perda la _memoria muscolare_ in particolare sulla sintassi. 
 Questo è potenzialmente vero, così come è vero che da quando esiste Google Maps le nostre abilità di orientamento sono peggiorate. Ma non per questo smettiamo di usare le mappe digitali, perché il beneficio complessivo supera di gran lunga il costo.
