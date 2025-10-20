@@ -54,17 +54,32 @@ Ovviamente poi NON genero i messaggi di commit con AI, ma scrivo io il *perché*
 
 ## ~~Prompt~~ Context Engineering: è come lavorare con un Junior 🎯
 
+Credo che il termine "prompt engineering" sia fuorviante: non stai "ingegnerizzando" un prompt, stai __fornendo contesto__ a un assistente che deve aiutarti a realizzare un compito complesso.
+E onestamente non è così diverso da quello che fai quando assumi una persona nuova, in particolare se è junior, nel chiedere loro di sviluppare le prime features:
+
+- fornisci quanto più contesto di business per fare in modo che le decisioni da prendere siano allineate agli obiettivi
+- fornisci esempi di attività simili come Merge Requests passate o parti di codice da cui prendere ispirazione
+- chiedi di procedere a piccoli step così da poter correggere la rotta se necessario
+- resti aperto a spiegare ulteriormente o chiarire eventuali dubbi rimasti
+
+La __qualità dell'output__ dipende dalla bravura di chi esegue il task, ma anche da come viene fornito il contesto: come per i modelli di machine learning, _garbage in = garbage out_.
 
 ## Rischi e Caveat ⚠️
 
+Non credo che __"ho copiato e incollato da StackOverflow"__ sia molto diverso da __"l'AI ha scritto il codice per me"__. La vera differenza sta sempre nel _tuo grado di comprensione_ del codice incollato (o generato).
+Se prima con alcune domande in StackOverlflow c'era il rischio di ricevere risposte maleducate, ora puoi davvero sfruttare l'LLM di turno per farti spiegare il perché di ogni scelta. E stai sicuro che ti dirà sempre che è una bella domanda!
+Non era sicuro incollare codice senza capirlo prima, non è sicuro fare vibe-coding ora.
+
+![image](../../../assets/blog/manager-father-coder-ai/great-question.png)
+
+C'è poi chi dice di essere preoccupato dal fatto che scrivendo meno codice si perda la _memoria muscolare_ in particolare sulla sintassi. 
+Questo è potenzialmente vero, così come è vero che da quando esiste Google Maps le nostre abilità di orientamento sono peggiorate. Ma non per questo smettiamo di usare le mappe digitali, perché il beneficio complessivo supera di gran lunga il costo.
+
+E poi diversi studi hanno confermato che [l'apprendimento maggiore si ha scrivendo a mano](https://pmc.ncbi.nlm.nih.gov/articles/PMC11943480/), eppure non vedo (più) nessuno scrivere i programmi sui fogli protocollo come alle superiori! :smiley:
+
+Ovviamente è importante essere consapevoli di quanto siamo già dipendenti da questi strumenti. Io stesso, se venissi privato dell'AI già oggi, avrei difficoltà a essere produttivo come lo sono ora.
 
 ### Se sei un Junior 👶
-
-Non è una panacea. Alcuni rischi reali:
-
-- **Perdita della memoria muscolare sintattica**: meno esposizione diretta può rallentare il giorno in cui devi scrivere tutto a mano
-- **Illusione di competenza**: output corretto ≠ comprensione profonda
-- **Drift architetturale** se approvi patch senza riallineare alle invarianti del progetto
 
 Per chi è all'inizio, l'abuso di AI è un rischio strategico. Se non hai sedimentato i concetti di base (strutture dati, complessità, cicli di vita di una richiesta web, concorrenza, gestione degli errori), l'AI ti farà "andare veloce" su una strada di cui non hai letto i cartelli. A lungo termine rischi:
 
