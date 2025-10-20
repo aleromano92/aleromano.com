@@ -6,17 +6,10 @@
     padding: var(--container-padding);
 }
 
-/* Responsive */
-@media (max-width: var(--breakpoint-tablet)) {
-    :root {
-        --container-padding: 1rem;
-    }
-}
-
-@media (max-width: var(--breakpoint-mobile)) {
-    :root {
-        --container-padding: 0.75rem;
-    }
+/* Layout */
+.header-container {
+    max-width: var(--header-container-max-width);
+    padding: var(--header-container-padding);
 }
 
 /* Content layouts */
