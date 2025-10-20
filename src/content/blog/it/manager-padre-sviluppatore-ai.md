@@ -64,6 +64,9 @@ E onestamente non è così diverso da quello che fai quando assumi una persona n
 
 La __qualità dell'output__ dipende dalla bravura di chi esegue il task, ma anche da come viene fornito il contesto: come per i modelli di machine learning, _garbage in = garbage out_.
 
+Sai un altro modo per migliorare la qualità del codice prodotto? __Scrivi tu gli unit test!__
+E permetti all'Agent di eseguire il comando di test (tipo `npm test`) senza che devi continuamente dargli il permesso finché non passano tutti. Alla fine scrivere i test è un modo estremamente preciso di fornire i requisiti.
+
 ## Rischi e Caveat ⚠️
 
 Non credo che __"ho copiato e incollato da StackOverflow"__ sia molto diverso da __"l'AI ha scritto il codice per me"__. La vera differenza sta sempre nel _tuo grado di comprensione_ del codice incollato (o generato).
@@ -75,25 +78,33 @@ Non era sicuro incollare codice senza capirlo prima, non è sicuro fare vibe-cod
 C'è poi chi dice di essere preoccupato dal fatto che scrivendo meno codice si perda la _memoria muscolare_ in particolare sulla sintassi. 
 Questo è potenzialmente vero, così come è vero che da quando esiste Google Maps le nostre abilità di orientamento sono peggiorate. Ma non per questo smettiamo di usare le mappe digitali, perché il beneficio complessivo supera di gran lunga il costo.
 
-E poi diversi studi hanno confermato che [l'apprendimento maggiore si ha scrivendo a mano](https://pmc.ncbi.nlm.nih.gov/articles/PMC11943480/), eppure non vedo (più) nessuno scrivere i programmi sui fogli protocollo come alle superiori! :smiley:
+E poi diversi studi hanno confermato che [l'apprendimento maggiore si ha scrivendo a mano](https://pmc.ncbi.nlm.nih.gov/articles/PMC11943480/), eppure non vedo (più) nessuno scrivere i programmi sui fogli protocollo come alle superiori! 😁
 
-Ovviamente è importante essere consapevoli di quanto siamo già dipendenti da questi strumenti. Io stesso, se venissi privato dell'AI già oggi, avrei difficoltà a essere produttivo come lo sono ora.
+Ovviamente è importante essere consapevoli di quanto siamo già dipendenti da questi strumenti. Io stesso, se venissi privato dell'AI oggi, avrei già difficoltà a essere produttivo come lo sono ora.
 
 ### Se sei un Junior 👶
 
-Per chi è all'inizio, l'abuso di AI è un rischio strategico. Se non hai sedimentato i concetti di base (strutture dati, complessità, cicli di vita di una richiesta web, concorrenza, gestione degli errori), l'AI ti farà "andare veloce" su una strada di cui non hai letto i cartelli. A lungo termine rischi:
+Se non hai padroneggiato i concetti di base come:
 
-- Difficoltà a debuggare quando l'AI non è attorno
+- strutture dati
+- flusso end to end di una richiesta web
+- design patterns
+- ereditarietà e composizione
+- sistemi di storage come database, cache, buckets
+
+l'AI ti farà andare veloce su una _strada di cui non hai letto i cartelli_. 
+
+A lungo termine rischi:
+
+- Difficoltà a debuggare
 - Mancanza di *taste* architetturale (sapere cosa è troppo complesso)
-- Dipendenza da prompt generici che generano soluzioni mediocri
+- Scarsa leggibilità del tuo codice
+- Incomprensione su come funzionino sistemi complessi (anche non per forza distruibiti)
 
-Suggerimento: alterna blocchi assistiti a blocchi "manuali" dove ricrei a mano piccole funzioni già viste. E leggi il codice generato come materiale di studio, non come magia.
+Ovviamente non sono per vietarla categoricamente, ma devi usarla per imparare, non per andare veloce saltando le basi. L'informatica è una scienza relativamente giovane, sei ancora in tempo per capire come funziona il processore x86 e i suoi registri, passando poia cose di alto livello come Docker.
 
 ## Conclusione 💡
 
-Il vero beneficio è emotivo: anche con agenda piena, posso toccare il mio progetto quasi ogni giorno. Questo crea un senso di continuità che alimenta motivazione e identità tecnica. Senza AI probabilmente avrei ridotto drasticamente l'investimento.
+Mi sono reso conto che lo sviluppo assisito dall'AI ha anche un beneficio emotivo: anche con agenda piena (lavoro e famiglia), posso toccare il mio sito o progetti di lavoro ogni giorno. Questo crea un senso di continuità che alimenta motivazione e appagamento: ho riscoperto la gioia di scrivere codice. 🤗
 
-Lo sviluppo assistito dall'AI mi permette di praticare software design in condizioni sub-ottimali di tempo e concentrazione. **La leva non è scrivere meno pensiero; è proteggere il pensiero dalla frizione meccanica.**
-
-Se hai blocchi di tempo frammentati, prova un approccio intenzionale: micro-obiettivi, prompt ricchi di contesto, revisione critica, commit che comunicano il perché. Ma se sei nelle fasi iniziali della carriera, dosa l'AI: costruire fondamenta solide resta l'asset più difendibile nel lungo periodo.
-
+Nonostante sia un Senior Engineering Manager che gestisce più team inclusi altri Engineering Manager, continuo a credere che sia fondamentale rimanere sul pezzo come sviluppatore per essere ancora più efficace nel mio ruolo.
