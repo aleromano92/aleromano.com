@@ -45,6 +45,9 @@ const finalImage = image || defaultProfileImage;
 const defaultImageAlt =
   currentLang === 'it' ? 'Foto profilo di Alessandro Romano' : 'Alessandro Romano profile picture';
 const finalImageAlt = imageAlt || defaultImageAlt;
+
+const blogPostBackText = currentLang === 'it' ? 'Torna alla lista' : 'Back to overview';
+const blogPostsListUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
 ---
 
 <html lang={currentLang}>
@@ -71,6 +74,27 @@ const finalImageAlt = imageAlt || defaultImageAlt;
   <body>
     <Header i18nData={i18nData} />
     <main class="container">
+      {
+        type === 'article' && (
+          <a href={blogPostsListUrl} class="back-link">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            {blogPostBackText}
+          </a>
+        )
+      }
       <h1 id="top">{pageTitle}</h1>
       <slot />
     </main>
@@ -78,3 +102,25 @@ const finalImageAlt = imageAlt || defaultImageAlt;
     <NotACookieBanner showAutomatically={showNotACookieBannerAutomatically} language={currentLang} />
   </body>
 </html>
+
+<style>
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-text);
+    text-decoration: none;
+    margin-bottom: var(--space-md);
+    transition: all 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+    transform: translateX(-4px);
+  }
+
+  .back-link svg {
+    width: 20px;
+    height: 20px;
+  }
+</style>
