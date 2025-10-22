@@ -41,7 +41,7 @@ Con questi strumenti ho avuto un incredibile AHA Moment quando ho inserito i mie
 
 ![image](../../../assets/blog/manage-parent-code-ai/mic.png)
 
-> "Voglio realizzare una sezione del sito in cui elenco i miei post più recenti da X. La chiamata alle API deve avvenire lato server quindi la pagina in cui uso questo componente deve essere Server-side rendered. Dividi le respinsabilità in una funzione che si occupa della chiamata REST, una che applica uno strato di Cache e una che adatta i dati per il rendering in un componente di mera presentazione senza logica. Aspettati di ricevere l'API key come secret dall'environemnt. Scrivi unit tests per questi componenti. Fammi domande di chiarimento se ti servono più dettagli."
+> "Voglio realizzare una sezione del sito in cui elenco i miei post più recenti da X. La chiamata alle API deve avvenire lato server quindi la pagina in cui uso questo componente deve essere Server-side rendered. Dividi le responsabilità in una funzione che si occupa della chiamata REST, una che applica uno strato di Cache e una che adatta i dati per il rendering in un componente di mera presentazione senza logica. Aspettati di ricevere l'API key come secret dall'environemnt. Scrivi unit tests per questi componenti. Fammi domande di chiarimento se ti servono più dettagli."
 
 Questo è un esempio di prompt simile a quelli che uso (anche se recentemente ho aggiunto un template nelle [copilot-instructions.md](https://github.com/aleromano92/aleromano.com/blob/main/.github/copilot-instructions.md)).
 
