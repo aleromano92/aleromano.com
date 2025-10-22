@@ -76,7 +76,10 @@ And several studies confirmed that [learning improves when writing by hand](http
 
 It's important though to be aware of how dependent we already are. If I were deprived of AI today, I'd struggle to be as productive as I am now.
 
+> Remember to commit often, hallucination is around the corner!
+
 ### If You're a Junior 👶
+
 
 If you haven't mastered fundamentals like:
 

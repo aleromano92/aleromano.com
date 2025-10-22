@@ -82,6 +82,8 @@ E poi diversi studi hanno confermato che [l'apprendimento maggiore si ha scriven
 
 Ovviamente è importante essere consapevoli di quanto siamo già dipendenti da questi strumenti. Io stesso, se venissi privato dell'AI oggi, avrei già difficoltà a essere produttivo come lo sono ora.
 
+> Ricordati di committare spesso, l'allucinazione è dietro l'angolo!
+
 ### Se sei un Junior 👶
 
 Se non hai padroneggiato i concetti di base come:
