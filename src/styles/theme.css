@@ -1,16 +1,19 @@
 :root {
     /* Colors - Light theme (default) */
-    --color-bg: #ffeb89;
-    --color-bg-secondary: #f7eebf;
-    --color-text: #49337b;
-    --color-text-primary: #49337b;
-    --color-text-secondary: #6b5ba8;
-    --color-primary: #49337b;
-    --color-secondary: #f7eebf;
-    --color-accent: #5f38c2;
+    /* Base colors - all other colors derive from these */
+    --color-bg: oklch(0.95 0.09 97.88);
+    --color-primary: oklch(0.38 0.11 294.79);
+
+    /* Derived colors using relative color syntax */
+    --color-bg-secondary: oklch(from var(--color-bg) calc(l + 0.02) calc(c - 0.03) h);
+    --color-text: var(--color-primary);
+    --color-text-primary: var(--color-primary);
+    --color-text-secondary: oklch(from var(--color-primary) calc(l + 0.14) c h);
+    --color-secondary: oklch(from var(--color-bg) calc(l + 0.02) calc(c - 0.03) h);
+    --color-accent: oklch(from var(--color-primary) calc(l + 0.06) calc(c + 0.08) h);
     --color-border: var(--color-text);
-    --color-border-light: #d1c7e8;
-    --color-checkbox-bg: #886fc3;
+    --color-border-light: oklch(from var(--color-primary) calc(l + 0.47) calc(c - 0.05) h);
+    --color-checkbox-bg: oklch(from var(--color-primary) calc(l + 0.23) calc(c + 0.04) h);
 
     /* Typography */
     --font-family: system-ui, sans-serif;
@@ -54,17 +57,20 @@
 }
 
 [data-theme="dark"] {
-    --color-bg: #49337b;
-    --color-bg-secondary: #6446a9;
-    --color-text: #ffeb89;
-    --color-text-primary: #ffeb89;
-    --color-text-secondary: #d4c89f;
-    --color-primary: #ffeb89;
-    --color-secondary: #6446a9;
-    --color-accent: #ffdb29;
+    /* Base colors - all other colors derive from these */
+    --color-bg: oklch(0.27 0.08 294.79);
+    --color-primary: oklch(0.93 0.11 97.88);
+
+    /* Derived colors using relative color syntax */
+    --color-bg-secondary: oklch(from var(--color-bg) calc(l + 0.16) calc(c + 0.04) h);
+    --color-text: var(--color-primary);
+    --color-text-primary: var(--color-primary);
+    --color-text-secondary: oklch(from var(--color-primary) calc(l - 0.11) calc(c - 0.05) h);
+    --color-secondary: oklch(from var(--color-bg) calc(l + 0.16) calc(c + 0.04) h);
+    --color-accent: oklch(from var(--color-primary) calc(l - 0.02) calc(c + 0.04) h);
     --color-border: var(--color-text);
-    --color-border-light: #7a66b3;
-    --color-checkbox-bg: #fff0a3;
+    --color-border-light: oklch(from var(--color-bg) calc(l + 0.26) calc(c + 0.02) h);
+    --color-checkbox-bg: oklch(from var(--color-primary) calc(l + 0.03) calc(c - 0.01) h);
 }
 
 /* Reset & Base Styles */
