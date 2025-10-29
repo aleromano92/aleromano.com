@@ -9,7 +9,7 @@ const { i18nData } = Astro.props;
 
 <header class="container header-container">
   <Hamburger />
-  <h2>Alessandro Romano</h2>
+  <a href="/"><h2>Alessandro Romano</h2></a>
   <Navigation language={i18nData?.currentLang} />
   <section class="switchers">
     <LanguageSwitcher i18nData={i18nData} />
@@ -53,6 +53,11 @@ const { i18nData } = Astro.props;
     background: linear-gradient(to bottom, rgba(var(--black), 5%), rgba(var(--black), 0%));
     z-index: -1;
     transition: opacity 0.3s ease;
+  }
+
+  header a {
+    text-decoration: none;
+    color: inherit;
   }
 
   header h2 {
