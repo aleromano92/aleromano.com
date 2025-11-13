@@ -22,7 +22,7 @@
     "@astrojs/markdown-remark": "^6.0.2",
     "@astrojs/node": "^9.4.1",
     "@astrojs/rss": "^4.0.11",
-    "astro": "^5.14.4",
+    "astro": "^5.15.6",
     "better-sqlite3": "^12.4.1",
     "nodemailer": "^7.0.7",
     "rehype-external-links": "^3.0.0",
