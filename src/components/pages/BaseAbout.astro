@@ -30,6 +30,7 @@ export interface AboutTranslations {
     tocExperience: string;
     tocNow: string;
     tocTwitter: string;
+    viewCv: string;
 
     // Back to top
     backToTop: string;
@@ -104,6 +105,7 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         tocExperience: 'Work Experience (most relevant)',
         tocNow: "What I'm Up To Now",
         tocTwitter: 'Latest from X',
+        viewCv: 'View full CV',
 
         // Back to top
         backToTop: '↑ Back to top',
@@ -228,6 +230,7 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         tocExperience: 'Esperienza Lavorativa (più rilevante)',
         tocNow: 'Cosa Sto Facendo Ora',
         tocTwitter: 'Ultimi post da X',
+        viewCv: 'Vedi CV completo',
 
         // Back to top
         backToTop: '↑ Torna su',
@@ -371,6 +374,7 @@ const twitterData = await twitterService.getTwitterPosts(language);
         <li><a href="#experience">{t.tocExperience}</a></li>
         <li><a href="#now">{t.tocNow}</a></li>
         <li><a href="#twitter">{t.tocTwitter}</a></li>
+        <li><a href="/aleromano-cv">{t.viewCv}</a></li>
     </ul>
 </nav>
 
@@ -639,6 +643,9 @@ const twitterData = await twitterService.getTwitterPosts(language);
     </div>
 
     <div class="experience-actions">
+        <a href="/aleromano-cv" class="button cv-button">
+            {t.viewCv}
+        </a>
         <a
             href="https://www.linkedin.com/in/alessandroromano92"
             target="_blank"

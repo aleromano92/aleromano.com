@@ -12,7 +12,7 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
 <header class="container header-container">
   <Hamburger />
   <a href={homeUrl}><h2>Alessandro Romano</h2></a>
-  <Navigation language={i18nData?.currentLang} />
+  <Navigation language={i18nData?.currentLang || 'en'} />
   <section class="switchers">
     <LanguageSwitcher i18nData={i18nData} />
     <ThemeSwitcher />
