@@ -19,6 +19,23 @@ import familyImage from '../../assets/family.png';
 import { twitterService } from '../../utils/twitter/twitter';
 import type { SupportedLanguage } from '../../types/i18n';
 
+// Types for NOW history entries
+export type NowEntryStatus = 'completed' | 'ongoing' | 'dropped';
+
+export interface NowHistoryEntry {
+    text: string;
+    status: NowEntryStatus;
+    comment?: string;
+}
+
+export interface NowHistoryQuarter {
+    quarter: string;
+    learning: NowHistoryEntry[];
+    reading: NowHistoryEntry[];
+    sideProjects: NowHistoryEntry[];
+    personal: NowHistoryEntry[];
+}
+
 export interface AboutTranslations {
     pageTitle: string;
     pageDescription: string;
@@ -82,6 +99,13 @@ export interface AboutTranslations {
 
     // Historical entries toggle
     showHistory: string;
+    nowHistory: NowHistoryQuarter[];
+    nowHistoryDisclaimer: string;
+
+    // Status labels
+    statusCompleted: string;
+    statusOngoing: string;
+    statusDropped: string;
 
     // Contact and Social
     stayUpdated: string;
@@ -180,29 +204,79 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 
         // Now Section
         nowTitle: "What I'm Up To Now",
-        nowSubtitle: 'Last updated: September 2025',
+        nowSubtitle: 'Last updated: January 2026',
         nowLearning: [
-            'Experimenting with AI Agents to automate "boring" processes',
-            'Following the <a href="https://www.100school.com/30daysofai" target="_blank" rel="noopener noreferrer">30 days of AI</a> project',
+            '<a href="https://www.deeplearning.ai/courses/ai-agentic-design-patterns-with-autogen/" target="_blank" rel="noopener noreferrer">Agentic AI</a> by Andrew Ng',
         ],
         nowReading: [
-            'The Secret of Secrets - Dan Brown',
-            'Thinking Fast and Slow - Daniel Kahneman',
-            'Kingdom - Yasuhisa Hara',
             'One Piece - Eiichiro Oda',
+            'Kingdom - Yasuhisa Hara',
+            'The Boys - Garth Ennis',
+            'Until the End of Time - Brian Greene',
+            "The Software Engineer's Guidebook - Gergely Orosz",
+            'Understanding Distributed Systems - Roberto Vitillo',
         ],
         nowSideProjects: [
-            'Preparing the talk <a href="/posts/3-career-tips" target="_blank" rel="noopener noreferrer">3 Career Tips Nobody Talks About</a> for DevFest and Codemotion Milan',
-            'Working on the <a href="https://github.com/aleromano92/aleromano.com/tree/main/todo" target="_blank" rel="noopener noreferrer">TODOs</a> of this website',
+            'Being more present on <a href="https://www.linkedin.com/in/alessandroromano92" target="_blank" rel="noopener noreferrer">LinkedIn</a>',
         ],
         nowPersonal: [
-            'Spending quality time with my two kids, discovering new playgrounds',
-            'Planning renovation work for our new house',
-            'Getting back to running at 5:30min/km pace and doing some weights at home',
+            'Renovation of our new house - currently working on the basement level',
+            'Light calisthenics workout every morning',
         ],
 
         // Historical entries toggle
         showHistory: 'What I Did Before',
+        nowHistory: [
+            {
+                quarter: 'Q4 2025',
+                learning: [
+                    { text: 'Experimenting with AI Agents to automate "boring" processes', status: 'ongoing' },
+                    {
+                        text: 'Following the 30 days of AI project',
+                        status: 'dropped',
+                        comment: 'Required more than 30 minutes per day',
+                    },
+                ],
+                reading: [
+                    {
+                        text: 'The Secret of Secrets - Dan Brown',
+                        status: 'completed',
+                        comment: 'Not the best Dan Brown book',
+                    },
+                    {
+                        text: 'Thinking Fast and Slow - Daniel Kahneman',
+                        status: 'dropped',
+                        comment: 'Felt repetitive, found more interesting books',
+                    },
+                    { text: 'Kingdom - Yasuhisa Hara', status: 'ongoing' },
+                    { text: 'One Piece - Eiichiro Oda', status: 'ongoing' },
+                ],
+                sideProjects: [
+                    {
+                        text: 'Preparing the talk "3 Career Tips Nobody Talks About" for DevFest and Codemotion Milan',
+                        status: 'completed',
+                        comment: 'Got a 4.8/5 rating at Codemotion!',
+                    },
+                    { text: 'Working on the TODOs of this website', status: 'ongoing' },
+                ],
+                personal: [
+                    { text: 'Spending quality time with my two kids, discovering new playgrounds', status: 'ongoing' },
+                    {
+                        text: 'Planning renovation work for our new house',
+                        status: 'completed',
+                        comment: 'Started the real work!',
+                    },
+                    { text: 'Getting back to running at 5:30min/km pace', status: 'ongoing' },
+                ],
+            },
+        ],
+        nowHistoryDisclaimer:
+            "Status reflects the state when the next NOW section was written. I won't retroactively update past entries.",
+
+        // Status labels
+        statusCompleted: '✓ Completed',
+        statusOngoing: '→ Ongoing',
+        statusDropped: '✗ Dropped',
 
         // Now Section Labels
         nowLearningLabel: '📚 Learning',
@@ -305,29 +379,85 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
 
         // Now Section
         nowTitle: 'Cosa Sto Facendo Ora',
-        nowSubtitle: 'Ultimo aggiornamento: Settembre 2025',
+        nowSubtitle: 'Ultimo aggiornamento: Gennaio 2026',
         nowLearning: [
-            'Sperimentando utilizzo di AI Agents per automatizzare processi "noiosi"',
-            'Seguendo il progetto <a href="https://www.100school.com/30daysofai" target="_blank" rel="noopener noreferrer">30 days of AI</a>',
+            '<a href="https://www.deeplearning.ai/courses/ai-agentic-design-patterns-with-autogen/" target="_blank" rel="noopener noreferrer">Agentic AI</a> di Andrew Ng',
         ],
         nowReading: [
-            `L'ultimo segreto - Dan Brown`,
-            'Thinking Fast and Slow - Daniel Kahneman',
-            'Kingdom - Yasuhisa Hara',
             'One Piece - Eiichiro Oda',
+            'Kingdom - Yasuhisa Hara',
+            'The Boys - Garth Ennis',
+            'Fino alla fine del tempo - Brian Greene',
+            "The Software Engineer's Guidebook - Gergely Orosz",
+            'Understanding Distributed Systems - Roberto Vitillo',
         ],
         nowSideProjects: [
-            'Preparando il talk <a href="/posts/3-career-tips" target="_blank" rel="noopener noreferrer">3 Career Tips Nobody Talks About</a> per DevFest e Codemotion Milan',
-            'Lavorando ai <a href="https://github.com/aleromano92/aleromano.com/tree/main/todo" target="_blank" rel="noopener noreferrer">TODO</a> di questo sito',
+            'Essere più presente su <a href="https://www.linkedin.com/in/alessandroromano92" target="_blank" rel="noopener noreferrer">LinkedIn</a>',
         ],
         nowPersonal: [
-            'Passo tempo di qualità con i miei due bambini, scoprendo nuovi parchi giochi',
-            'Definendo i lavori di ristrutturazione per la nostra nuova casa',
-            `Ritornare a correre a 5:30min/km e fare un po' di pesi a casa`,
+            'Ristrutturazione della nostra nuova casa - attualmente al lavoro sul piano interrato',
+            'Allenamento leggero di calisthenics ogni mattina',
         ],
 
         // Historical entries toggle
         showHistory: 'Cosa Facevo Prima',
+        nowHistory: [
+            {
+                quarter: 'Q4 2025',
+                learning: [
+                    {
+                        text: 'Sperimentando utilizzo di AI Agents per automatizzare processi "noiosi"',
+                        status: 'ongoing',
+                    },
+                    {
+                        text: 'Seguendo il progetto 30 days of AI',
+                        status: 'dropped',
+                        comment: 'Richiedeva più di 30 minuti al giorno',
+                    },
+                ],
+                reading: [
+                    {
+                        text: "L'ultimo segreto - Dan Brown",
+                        status: 'completed',
+                        comment: 'Non il miglior libro di Dan Brown',
+                    },
+                    {
+                        text: 'Thinking Fast and Slow - Daniel Kahneman',
+                        status: 'dropped',
+                        comment: 'Sembrava ripetitivo, ho trovato libri più interessanti',
+                    },
+                    { text: 'Kingdom - Yasuhisa Hara', status: 'ongoing' },
+                    { text: 'One Piece - Eiichiro Oda', status: 'ongoing' },
+                ],
+                sideProjects: [
+                    {
+                        text: 'Preparando il talk "3 Career Tips Nobody Talks About" per DevFest e Codemotion Milan',
+                        status: 'completed',
+                        comment: 'Ho ottenuto un rating di 4.8/5 a Codemotion!',
+                    },
+                    { text: 'Lavorando ai TODO di questo sito', status: 'ongoing' },
+                ],
+                personal: [
+                    {
+                        text: 'Passo tempo di qualità con i miei due bambini, scoprendo nuovi parchi giochi',
+                        status: 'ongoing',
+                    },
+                    {
+                        text: 'Definendo i lavori di ristrutturazione per la nostra nuova casa',
+                        status: 'completed',
+                        comment: 'Iniziati i lavori veri!',
+                    },
+                    { text: 'Ritornare a correre a 5:30min/km', status: 'ongoing' },
+                ],
+            },
+        ],
+        nowHistoryDisclaimer:
+            'Lo stato riflette la situazione al momento della scrittura della sezione NOW successiva. Non aggiornerò retroattivamente le voci passate.',
+
+        // Status labels
+        statusCompleted: '✓ Completato',
+        statusOngoing: '→ In corso',
+        statusDropped: '✗ Abbandonato',
 
         // Now Section Labels
         nowLearningLabel: '📚 Studio',
@@ -701,29 +831,98 @@ const twitterData = await twitterService.getTwitterPosts(language);
     </div>
 
     <!-- Collapsible Historical Entries -->
-    <!-- <details class="history-toggle">
-        <summary>{t.showHistory}</summary>
-        <div class="historical-entries">
-            <div class="historical-entry">
-                <h5>May 2024</h5>
-                <p>
-                    Lorem ipsum
-                </p>
-            </div>
-            <div class="historical-entry">
-                <h5>February 2024</h5>
-                <p>
-                    Lorem ipsum
-                </p>
-            </div>
-            <div class="historical-entry">
-                <h5>November 2023</h5>
-                <p>
-                    Lorem ipsum
-                </p>
-            </div>
-        </div>
-    </details> -->
+    {
+        t.nowHistory.map((quarter) => (
+            <details class="history-toggle">
+                <summary>
+                    {t.showHistory}: {quarter.quarter}
+                </summary>
+                <div class="historical-entries">
+                    {quarter.learning.length > 0 && (
+                        <div class="history-category">
+                            <h5>{t.nowLearningLabel}</h5>
+                            <ul class="history-list">
+                                {quarter.learning.map((entry) => (
+                                    <li class={`history-entry status-${entry.status}`}>
+                                        <span class="status-badge">
+                                            {entry.status === 'completed'
+                                                ? t.statusCompleted
+                                                : entry.status === 'ongoing'
+                                                  ? t.statusOngoing
+                                                  : t.statusDropped}
+                                        </span>
+                                        <span class="entry-text">{entry.text}</span>
+                                        {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    {quarter.reading.length > 0 && (
+                        <div class="history-category">
+                            <h5>{t.nowReadingLabel}</h5>
+                            <ul class="history-list">
+                                {quarter.reading.map((entry) => (
+                                    <li class={`history-entry status-${entry.status}`}>
+                                        <span class="status-badge">
+                                            {entry.status === 'completed'
+                                                ? t.statusCompleted
+                                                : entry.status === 'ongoing'
+                                                  ? t.statusOngoing
+                                                  : t.statusDropped}
+                                        </span>
+                                        <span class="entry-text">{entry.text}</span>
+                                        {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    {quarter.sideProjects.length > 0 && (
+                        <div class="history-category">
+                            <h5>{t.nowSideProjectsLabel}</h5>
+                            <ul class="history-list">
+                                {quarter.sideProjects.map((entry) => (
+                                    <li class={`history-entry status-${entry.status}`}>
+                                        <span class="status-badge">
+                                            {entry.status === 'completed'
+                                                ? t.statusCompleted
+                                                : entry.status === 'ongoing'
+                                                  ? t.statusOngoing
+                                                  : t.statusDropped}
+                                        </span>
+                                        <span class="entry-text">{entry.text}</span>
+                                        {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    {quarter.personal.length > 0 && (
+                        <div class="history-category">
+                            <h5>{t.nowPersonalLabel}</h5>
+                            <ul class="history-list">
+                                {quarter.personal.map((entry) => (
+                                    <li class={`history-entry status-${entry.status}`}>
+                                        <span class="status-badge">
+                                            {entry.status === 'completed'
+                                                ? t.statusCompleted
+                                                : entry.status === 'ongoing'
+                                                  ? t.statusOngoing
+                                                  : t.statusDropped}
+                                        </span>
+                                        <span class="entry-text">{entry.text}</span>
+                                        {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            </details>
+        ))
+    }
+    <p class="history-disclaimer">{t.nowHistoryDisclaimer}</p>
 </section>
 
 <!-- Contact Section -->
@@ -1178,6 +1377,83 @@ const twitterData = await twitterService.getTwitterPosts(language);
         font-size: var(--font-size-sm);
         color: var(--color-text-secondary);
         line-height: 1.5;
+    }
+
+    /* History Categories */
+    .history-category {
+        margin-bottom: var(--space-md);
+    }
+
+    .history-category:last-child {
+        margin-bottom: 0;
+    }
+
+    .history-category h5 {
+        margin: 0 0 var(--space-xs) 0;
+        font-size: var(--font-size-sm);
+        color: var(--color-accent);
+        font-weight: 600;
+    }
+
+    .history-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .history-entry {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--space-xs);
+        padding: var(--space-xs) 0;
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+        line-height: 1.5;
+    }
+
+    .status-badge {
+        font-size: var(--font-size-xs);
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: var(--border-radius-sm);
+        white-space: nowrap;
+    }
+
+    .status-completed .status-badge {
+        background: color-mix(in srgb, #22c55e 20%, transparent);
+        color: #22c55e;
+    }
+
+    .status-ongoing .status-badge {
+        background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+        color: var(--color-accent);
+    }
+
+    .status-dropped .status-badge {
+        background: color-mix(in srgb, var(--color-text-secondary) 20%, transparent);
+        color: var(--color-text-secondary);
+    }
+
+    .entry-text {
+        flex: 1 1 auto;
+    }
+
+    .entry-comment {
+        font-style: italic;
+        color: var(--color-text-secondary);
+        opacity: 0.8;
+        flex-basis: 100%;
+        padding-left: var(--space-md);
+    }
+
+    .history-disclaimer {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-secondary);
+        font-style: italic;
+        text-align: center;
+        margin-top: var(--space-md);
+        opacity: 0.7;
     }
 
     /* Contact Section */
