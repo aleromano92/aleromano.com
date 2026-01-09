@@ -480,6 +480,18 @@ export function getAboutTranslations(language: SupportedLanguage): AboutTranslat
     return aboutTranslations[language];
 }
 
+// Helper function to map status to translated label
+function getStatusLabel(status: NowEntryStatus, t: AboutTranslations): string {
+    switch (status) {
+        case 'completed':
+            return t.statusCompleted;
+        case 'ongoing':
+            return t.statusOngoing;
+        case 'dropped':
+            return t.statusDropped;
+    }
+}
+
 interface Props {
     language: SupportedLanguage;
 }
@@ -845,11 +857,7 @@ const twitterData = await twitterService.getTwitterPosts(language);
                                 {quarter.learning.map((entry) => (
                                     <li class={`history-entry status-${entry.status}`}>
                                         <span class="status-badge">
-                                            {entry.status === 'completed'
-                                                ? t.statusCompleted
-                                                : entry.status === 'ongoing'
-                                                  ? t.statusOngoing
-                                                  : t.statusDropped}
+                                            {getStatusLabel(entry.status, t)}
                                         </span>
                                         <span class="entry-text">{entry.text}</span>
                                         {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
@@ -865,11 +873,7 @@ const twitterData = await twitterService.getTwitterPosts(language);
                                 {quarter.reading.map((entry) => (
                                     <li class={`history-entry status-${entry.status}`}>
                                         <span class="status-badge">
-                                            {entry.status === 'completed'
-                                                ? t.statusCompleted
-                                                : entry.status === 'ongoing'
-                                                  ? t.statusOngoing
-                                                  : t.statusDropped}
+                                            {getStatusLabel(entry.status, t)}
                                         </span>
                                         <span class="entry-text">{entry.text}</span>
                                         {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
@@ -885,11 +889,7 @@ const twitterData = await twitterService.getTwitterPosts(language);
                                 {quarter.sideProjects.map((entry) => (
                                     <li class={`history-entry status-${entry.status}`}>
                                         <span class="status-badge">
-                                            {entry.status === 'completed'
-                                                ? t.statusCompleted
-                                                : entry.status === 'ongoing'
-                                                  ? t.statusOngoing
-                                                  : t.statusDropped}
+                                            {getStatusLabel(entry.status, t)}
                                         </span>
                                         <span class="entry-text">{entry.text}</span>
                                         {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
@@ -905,11 +905,7 @@ const twitterData = await twitterService.getTwitterPosts(language);
                                 {quarter.personal.map((entry) => (
                                     <li class={`history-entry status-${entry.status}`}>
                                         <span class="status-badge">
-                                            {entry.status === 'completed'
-                                                ? t.statusCompleted
-                                                : entry.status === 'ongoing'
-                                                  ? t.statusOngoing
-                                                  : t.statusDropped}
+                                            {getStatusLabel(entry.status, t)}
                                         </span>
                                         <span class="entry-text">{entry.text}</span>
                                         {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
