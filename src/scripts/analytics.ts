@@ -45,7 +45,10 @@ function sendPageView(): void {
  */
 function initClickTracking(): void {
   document.addEventListener('click', (e: MouseEvent) => {
-    const target = (e.target as Element)?.closest('a, button');
+    // Narrow EventTarget to Element before using closest; click targets are non-null in practice
+    if (!(e.target instanceof Element)) return;
+
+    const target = e.target.closest('a, button');
     if (!target) return;
 
     const elementTag = target.tagName.toLowerCase();
