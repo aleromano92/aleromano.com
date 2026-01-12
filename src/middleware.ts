@@ -9,8 +9,19 @@ const ADMIN_PASS = process.env.ADMIN_PASS;
  */
 function isAuthorized(request: Request): boolean {
   if (!ADMIN_PASS) {
-    console.warn('[Middleware] ADMIN_PASS not set - admin routes are unprotected!');
-    return true; // Allow access if no password is configured (dev mode)
+    const isDevelopment = process.env.NODE_ENV === 'development';
+
+    if (isDevelopment) {
+      console.warn(
+        '[Middleware] ADMIN_PASS not set in development - admin routes are unprotected!',
+      );
+      return true; // Allow access only in development when no password is configured
+    }
+
+    console.error(
+      '[Middleware] ADMIN_PASS not set in non-development environment - denying access to admin routes.',
+    );
+    return false; // Fail closed outside development
   }
 
   const authHeader = request.headers.get('Authorization');
