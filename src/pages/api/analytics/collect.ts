@@ -15,7 +15,7 @@ function getClientIP(request: Request): string {
     return forwardedFor.split(',')[0].trim();
   }
 
-  console.warn('[Analytics API] Missing X-Real-IP and X-Forwarded-For headers; using unknown IP for analytics.');
+  console.warn('[Analytics API] Missing X-Real-IP and X-Forwarded-For headers; using fallback IP value "unknown" for analytics.');
   return 'unknown';
 }
 
