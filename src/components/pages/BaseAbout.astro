@@ -267,6 +267,16 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
                         comment: 'Started the real work!',
                     },
                     { text: 'Getting back to running at 5:30min/km pace', status: 'ongoing' },
+                    {
+                        text: 'Played Final Fantasy VI Pixel Remaster',
+                        status: 'completed',
+                        comment: 'An interactive Opera, loved it!',
+                    },
+                    {
+                        text: 'Played Resident Evil 4 Remake',
+                        status: 'completed',
+                        comment: 'Liked some gameplay improvements, but I prefer the original',
+                    },
                 ],
             },
         ],
@@ -448,6 +458,16 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
                         comment: 'Iniziati i lavori veri!',
                     },
                     { text: 'Ritornare a correre a 5:30min/km', status: 'ongoing' },
+                    {
+                        text: 'Giocato Final Fantasy VI Pixel Remaster',
+                        status: 'completed',
+                        comment: "Un'Opera interattiva, mi è piaciuto tantissimo!",
+                    },
+                    {
+                        text: 'Giocato Resident Evil 4 Remake',
+                        status: 'completed',
+                        comment: "Apprezzati alcuni miglioramenti al gameplay, ma preferisco l'originale",
+                    },
                 ],
             },
         ],
@@ -856,9 +876,7 @@ const twitterData = await twitterService.getTwitterPosts(language);
                             <ul class="history-list">
                                 {quarter.learning.map((entry) => (
                                     <li class={`history-entry status-${entry.status}`}>
-                                        <span class="status-badge">
-                                            {getStatusLabel(entry.status, t)}
-                                        </span>
+                                        <span class="status-badge">{getStatusLabel(entry.status, t)}</span>
                                         <span class="entry-text">{entry.text}</span>
                                         {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
                                     </li>
@@ -872,9 +890,7 @@ const twitterData = await twitterService.getTwitterPosts(language);
                             <ul class="history-list">
                                 {quarter.reading.map((entry) => (
                                     <li class={`history-entry status-${entry.status}`}>
-                                        <span class="status-badge">
-                                            {getStatusLabel(entry.status, t)}
-                                        </span>
+                                        <span class="status-badge">{getStatusLabel(entry.status, t)}</span>
                                         <span class="entry-text">{entry.text}</span>
                                         {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
                                     </li>
@@ -888,9 +904,7 @@ const twitterData = await twitterService.getTwitterPosts(language);
                             <ul class="history-list">
                                 {quarter.sideProjects.map((entry) => (
                                     <li class={`history-entry status-${entry.status}`}>
-                                        <span class="status-badge">
-                                            {getStatusLabel(entry.status, t)}
-                                        </span>
+                                        <span class="status-badge">{getStatusLabel(entry.status, t)}</span>
                                         <span class="entry-text">{entry.text}</span>
                                         {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
                                     </li>
@@ -904,9 +918,7 @@ const twitterData = await twitterService.getTwitterPosts(language);
                             <ul class="history-list">
                                 {quarter.personal.map((entry) => (
                                     <li class={`history-entry status-${entry.status}`}>
-                                        <span class="status-badge">
-                                            {getStatusLabel(entry.status, t)}
-                                        </span>
+                                        <span class="status-badge">{getStatusLabel(entry.status, t)}</span>
                                         <span class="entry-text">{entry.text}</span>
                                         {entry.comment && <span class="entry-comment">— {entry.comment}</span>}
                                     </li>
