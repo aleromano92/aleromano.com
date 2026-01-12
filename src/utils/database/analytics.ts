@@ -116,6 +116,21 @@ function flushEventBuffer(): void {
 }
 
 // ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Calculate timestamp for N days ago from current time.
+ * Used for filtering analytics queries by time range.
+ * 
+ * @param days - Number of days to go back from now
+ * @returns Unix timestamp (seconds since epoch) for the cutoff time
+ */
+function getDaysAgoTimestamp(days: number): number {
+  return Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
+}
+
+// ============================================================================
 // Analytics Manager
 // ============================================================================
 
@@ -176,7 +191,7 @@ export const analyticsManager = {
    */
   getDailyStats(days: number = 30): DailyStats[] {
     const db = getDatabase();
-    const cutoff = Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
+    const cutoff = getDaysAgoTimestamp(days);
     
     const visitStats = db.prepare(`
       SELECT 
@@ -213,7 +228,7 @@ export const analyticsManager = {
    */
   getTopPages(limit: number = 20, days: number = 30): TopPage[] {
     const db = getDatabase();
-    const cutoff = Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
+    const cutoff = getDaysAgoTimestamp(days);
     
     const rows = db.prepare(`
       SELECT 
@@ -239,7 +254,7 @@ export const analyticsManager = {
    */
   getTopReferers(limit: number = 20, days: number = 30): TopReferer[] {
     const db = getDatabase();
-    const cutoff = Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
+    const cutoff = getDaysAgoTimestamp(days);
     
     return db.prepare(`
       SELECT 
@@ -258,7 +273,7 @@ export const analyticsManager = {
    */
   getAverageTimeOnPage(days: number = 30): Array<{ path: string; avgDuration: number; samples: number }> {
     const db = getDatabase();
-    const cutoff = Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
+    const cutoff = getDaysAgoTimestamp(days);
     
     const rows = db.prepare(`
       SELECT 
@@ -285,7 +300,7 @@ export const analyticsManager = {
    */
   getSummary(days: number = 30): { totalVisits: number; uniqueVisitors: number; totalEvents: number; avgTimeOnPage: number } {
     const db = getDatabase();
-    const cutoff = Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
+    const cutoff = getDaysAgoTimestamp(days);
     
     const visitSummary = db.prepare(`
       SELECT 
