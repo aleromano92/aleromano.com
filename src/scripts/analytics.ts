@@ -4,7 +4,7 @@
  */
 
 import type { AnalyticsEvent } from '../types/analytics';
-import { ANALYTICS_ELEMENT_TEXT_MAX_LENGTH } from '../utils/constants';
+import { ANALYTICS_ELEMENT_TEXT_MAX_LENGTH, MIN_TIME_ON_PAGE_MS } from '../utils/constants';
 
 const ANALYTICS_ENDPOINT = '/api/analytics/collect';
 
@@ -81,8 +81,8 @@ function initTimeTracking(): void {
 
     const duration = Math.round(performance.now() - startTime);
     
-    // Only send if user spent at least 1 second on the page
-    if (duration < 1000) return;
+    // Only send if user spent meaningful time on the page
+    if (duration < MIN_TIME_ON_PAGE_MS) return;
 
     sendEvent({
       type: 'time_on_page',
