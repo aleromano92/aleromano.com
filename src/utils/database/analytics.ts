@@ -78,7 +78,9 @@ function flushEventBuffer(): void {
   
   try {
     insertMany(eventsToFlush);
-    console.log(`[Analytics] Flushed ${eventsToFlush.length} events to database`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.debug(`[Analytics] Flushed ${eventsToFlush.length} events to database`);
+    }
   } catch (error) {
     console.error('[Analytics] Failed to flush events:', error);
     // Re-add failed events to buffer (optional: could drop them instead)
