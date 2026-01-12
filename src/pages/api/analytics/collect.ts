@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { analyticsManager, generateVisitorHash } from '../../../utils/database';
 import type { AnalyticsEvent } from '../../../types/analytics';
+import { ANALYTICS_ELEMENT_TEXT_MAX_LENGTH } from '../../../utils/constants';
 
 /**
  * Extract client IP from request headers (behind nginx proxy)
@@ -57,7 +58,7 @@ export const POST: APIRoute = async ({ request }) => {
         path: payload.path,
         elementTag: payload.elementTag,
         elementId: payload.elementId,
-        elementText: payload.elementText?.slice(0, 100),
+        elementText: payload.elementText?.slice(0, ANALYTICS_ELEMENT_TEXT_MAX_LENGTH),
         href: payload.href,
         duration: payload.duration,
       });

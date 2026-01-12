@@ -4,6 +4,7 @@
  */
 
 import type { AnalyticsEvent } from '../types/analytics';
+import { ANALYTICS_ELEMENT_TEXT_MAX_LENGTH } from '../utils/constants';
 
 const ANALYTICS_ENDPOINT = '/api/analytics/collect';
 
@@ -49,7 +50,7 @@ function initClickTracking(): void {
 
     const elementTag = target.tagName.toLowerCase();
     const elementId = target.id || undefined;
-    const elementText = (target as HTMLElement).innerText?.trim().slice(0, 50) || undefined;
+    const elementText = (target as HTMLElement).innerText?.trim().slice(0, ANALYTICS_ELEMENT_TEXT_MAX_LENGTH) || undefined;
     const href = (target as HTMLAnchorElement).href || undefined;
 
     sendEvent({
