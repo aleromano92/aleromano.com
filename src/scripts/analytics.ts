@@ -6,6 +6,13 @@
 import type { AnalyticsEvent } from '../types/analytics';
 import { ANALYTICS_ELEMENT_TEXT_MAX_LENGTH, MIN_TIME_ON_PAGE_MS } from '../utils/constants';
 
+// Extend Navigator interface to include Global Privacy Control
+// GPC is a modern privacy signal supported by some browsers
+// See: https://globalprivacycontrol.org/
+interface NavigatorWithGPC extends Navigator {
+  globalPrivacyControl?: boolean;
+}
+
 const ANALYTICS_ENDPOINT = '/api/analytics/collect';
 
 /**
@@ -104,6 +111,32 @@ function initTimeTracking(): void {
 }
 
 /**
+ * Check if the user has enabled privacy preferences that opt out of tracking.
+ * Supports both Do Not Track (DNT) and Global Privacy Control (GPC).
+ * 
+ * DNT is deprecated but still widely used; it can return '1', 'yes', or null across browsers.
+ * GPC is the modern standard for user privacy signals.
+ * 
+ * Exported for testing purposes.
+ */
+export function shouldRespectPrivacy(): boolean {
+  // Check Global Privacy Control (modern standard)
+  const nav = navigator as NavigatorWithGPC;
+  if (nav.globalPrivacyControl === true) {
+    return true;
+  }
+
+  // Check Do Not Track (deprecated but still widely used)
+  // Different browsers return different values: '1', 'yes', or null
+  const dnt = navigator.doNotTrack;
+  if (dnt === '1' || dnt === 'yes') {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Initialize all analytics tracking.
  * Call this from your main layout.
  */
@@ -114,9 +147,9 @@ export function initAnalytics(): void {
     return;
   }
 
-  // Don't track if Do Not Track is enabled (respecting user privacy)
-  if (navigator.doNotTrack === '1') {
-    console.log('[Analytics] Respecting Do Not Track preference');
+  // Don't track if user has enabled privacy preferences
+  if (shouldRespectPrivacy()) {
+    console.log('[Analytics] Respecting user privacy preferences (DNT or GPC)');
     return;
   }
 
