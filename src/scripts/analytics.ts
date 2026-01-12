@@ -53,7 +53,8 @@ function initClickTracking(): void {
 
     const elementTag = target.tagName.toLowerCase();
     const elementId = target.id || undefined;
-    const elementText = (target as HTMLElement).innerText?.trim().slice(0, ANALYTICS_ELEMENT_TEXT_MAX_LENGTH) || undefined;
+    const rawText = (target as HTMLElement).innerText?.trim() || undefined;
+    const elementText = rawText ? rawText.slice(0, ANALYTICS_ELEMENT_TEXT_MAX_LENGTH) : undefined;
     const href = (target as HTMLAnchorElement).href || undefined;
 
     sendEvent({

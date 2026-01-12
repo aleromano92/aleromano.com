@@ -63,6 +63,12 @@ export const POST: APIRoute = async ({ request }) => {
         href: payload.href,
         duration: payload.duration,
       });
+      
+      // Return 202 Accepted since the event is queued but not yet processed
+      return new Response(JSON.stringify({ success: true, queued: true }), {
+        status: 202,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
     return new Response(JSON.stringify({ success: true }), {

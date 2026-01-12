@@ -1,4 +1,5 @@
 import { defineMiddleware } from 'astro:middleware';
+import { timingSafeEqual } from 'crypto';
 
 const ADMIN_USER = process.env.ADMIN_USER;
 const ADMIN_PASS = process.env.ADMIN_PASS;
@@ -32,7 +33,17 @@ function isAuthorized(request: Request): boolean {
       : Buffer.from(base64Credentials, 'base64').toString('utf-8');
   const [user, pass] = credentials.split(':');
 
-  return user === ADMIN_USER && pass === ADMIN_PASS;
+  // Use timing-safe comparison to prevent timing attacks
+  const userMatch = ADMIN_USER
+    ? timingSafeEqual(Buffer.from(user || ''), Buffer.from(ADMIN_USER))
+    : true; // If no ADMIN_USER is set, accept any username (only password is checked)
+  
+  const passMatch = timingSafeEqual(
+    Buffer.from(pass || ''),
+    Buffer.from(ADMIN_PASS)
+  );
+
+  return userMatch && passMatch;
 }
 
 function createUnauthorizedResponse(): Response {
