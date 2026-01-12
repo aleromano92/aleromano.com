@@ -2,6 +2,10 @@
  * Analytics event types shared between client and server
  */
 
+/**
+ * Client-side event sent to the analytics API endpoint.
+ * All event types (page_view, click, time_on_page) use this interface.
+ */
 export interface AnalyticsEvent {
   type: 'page_view' | 'click' | 'time_on_page';
   path: string;
@@ -14,9 +18,13 @@ export interface AnalyticsEvent {
 }
 
 /**
- * Database record types for analytics
+ * Database record types for analytics storage
  */
 
+/**
+ * Database record for page view events.
+ * Page views are stored separately in the visits table with visitor tracking.
+ */
 export interface VisitRecord {
   path: string;
   visitorHash: string;
@@ -25,6 +33,11 @@ export interface VisitRecord {
   country?: string;
 }
 
+/**
+ * Database record for interaction events (clicks and time-on-page).
+ * These are stored in the events table, separate from page views.
+ * Note: does not include 'page_view' type since those use VisitRecord.
+ */
 export interface EventRecord {
   type: 'click' | 'time_on_page';
   path: string;
@@ -35,6 +48,10 @@ export interface EventRecord {
   href?: string;
   duration?: number;
 }
+
+/**
+ * Aggregated statistics types for analytics dashboard
+ */
 
 export interface DailyStats {
   date: string;

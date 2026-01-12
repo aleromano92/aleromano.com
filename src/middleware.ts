@@ -35,8 +35,8 @@ function isAuthorized(request: Request): boolean {
 
   // Use timing-safe comparison to prevent timing attacks
   const userMatch = ADMIN_USER
-    ? timingSafeEqual(Buffer.from(user), Buffer.from(ADMIN_USER))
-    : !user; // If no ADMIN_USER is set, any user is accepted
+    ? timingSafeEqual(Buffer.from(user || ''), Buffer.from(ADMIN_USER))
+    : true; // If no ADMIN_USER is set, accept any username (only password is checked)
   
   const passMatch = timingSafeEqual(
     Buffer.from(pass || ''),
