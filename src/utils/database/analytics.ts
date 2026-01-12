@@ -46,7 +46,15 @@ export interface TopReferer {
 // Visitor Hash Generation (Privacy-preserving daily rotation)
 // ============================================================================
 
-const HASH_SALT = process.env.ANALYTICS_SALT || 'aleromano-analytics-2026';
+const HASH_SALT = (() => {
+  const salt = process.env.ANALYTICS_SALT;
+  if (!salt) {
+    throw new Error(
+      'ANALYTICS_SALT environment variable must be set to a secret value for analytics hashing.'
+    );
+  }
+  return salt;
+})();
 
 /**
  * Generate a privacy-preserving visitor hash that rotates daily.
