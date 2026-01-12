@@ -334,63 +334,65 @@ function formatDuration(seconds: number): string {
                 </div>
             </section>
         </div>
-
-        <script is:inline define:vars={{ chartLabels, chartVisits, chartUnique }}>
-            // Load Chart.js from CDN (to avoid bundling ~60KB)
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
-            script.onload = () => {
-                const ctx = document.getElementById('trafficChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: chartLabels,
-                        datasets: [
-                            {
-                                label: 'Page Views',
-                                data: chartVisits,
-                                borderColor: '#e94560',
-                                backgroundColor: 'rgba(233, 69, 96, 0.1)',
-                                fill: true,
-                                tension: 0.3,
-                            },
-                            {
-                                label: 'Unique Visitors',
-                                data: chartUnique,
-                                borderColor: '#4ade80',
-                                backgroundColor: 'rgba(74, 222, 128, 0.1)',
-                                fill: true,
-                                tension: 0.3,
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            intersect: false,
-                            mode: 'index',
-                        },
-                        scales: {
-                            x: {
-                                grid: { color: 'rgba(255,255,255,0.05)' },
-                                ticks: { color: '#a0a0a0' },
-                            },
-                            y: {
-                                beginAtZero: true,
-                                grid: { color: 'rgba(255,255,255,0.05)' },
-                                ticks: { color: '#a0a0a0' },
-                            },
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: '#eaeaea' },
-                            },
-                        },
-                    },
-                });
-            };
-            document.head.appendChild(script);
-        </script>
     </body>
+
+    <script is:inline define:vars={{ chartLabels, chartVisits, chartUnique }}>
+        import { Chart, registerables } from 'chart.js';
+        
+        // Register Chart.js components
+        Chart.register(...registerables);
+        
+        // Create the chart
+        const ctx = document.getElementById('trafficChart');
+        if (ctx) {
+            new Chart(ctx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: 'Page Views',
+                            data: chartVisits,
+                            borderColor: '#e94560',
+                            backgroundColor: 'rgba(233, 69, 96, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                        },
+                        {
+                            label: 'Unique Visitors',
+                            data: chartUnique,
+                            borderColor: '#4ade80',
+                            backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#a0a0a0' },
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#a0a0a0' },
+                        },
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#eaeaea' },
+                        },
+                    },
+                },
+            });
+        }
+    </script>
 </html>

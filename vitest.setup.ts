@@ -10,6 +10,9 @@ import { server } from './src/mocks/server';
 // Configure in-memory database for tests
 process.env.DATABASE_PATH = ':memory:';
 
+// Set up analytics salt for tests
+process.env.ANALYTICS_SALT = 'test-salt-value';
+
 // Start MSW server before all tests
 beforeAll(() => {
   server.listen({ onUnhandledRequest: 'warn' });
