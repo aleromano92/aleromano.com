@@ -1,12 +1,8 @@
 import { defineMiddleware } from 'astro:middleware';
 
-// Basic Auth credentials from environment
-const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+const ADMIN_USER = process.env.ADMIN_USER;
 const ADMIN_PASS = process.env.ADMIN_PASS;
 
-/**
- * Check if Basic Auth is valid
- */
 function isAuthorized(request: Request): boolean {
   if (!ADMIN_PASS) {
     const isDevelopment = process.env.NODE_ENV === 'development';
@@ -15,13 +11,13 @@ function isAuthorized(request: Request): boolean {
       console.warn(
         '[Middleware] ADMIN_PASS not set in development - admin routes are unprotected!',
       );
-      return true; // Allow access only in development when no password is configured
+      return true;
     }
 
     console.error(
       '[Middleware] ADMIN_PASS not set in non-development environment - denying access to admin routes.',
     );
-    return false; // Fail closed outside development
+    return false;
   }
 
   const authHeader = request.headers.get('Authorization');
@@ -39,9 +35,6 @@ function isAuthorized(request: Request): boolean {
   return user === ADMIN_USER && pass === ADMIN_PASS;
 }
 
-/**
- * Create 401 response requesting Basic Auth
- */
 function createUnauthorizedResponse(): Response {
   return new Response('Unauthorized', {
     status: 401,
