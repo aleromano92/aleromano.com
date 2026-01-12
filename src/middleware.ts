@@ -19,7 +19,10 @@ function isAuthorized(request: Request): boolean {
   }
 
   const base64Credentials = authHeader.slice(6);
-  const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
+  const credentials =
+    typeof globalThis.atob === 'function'
+      ? globalThis.atob(base64Credentials)
+      : Buffer.from(base64Credentials, 'base64').toString('utf-8');
   const [user, pass] = credentials.split(':');
 
   return user === ADMIN_USER && pass === ADMIN_PASS;
