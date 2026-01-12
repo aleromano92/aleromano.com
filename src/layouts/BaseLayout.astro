@@ -100,6 +100,12 @@ const blogPostsListUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
     </main>
     <Footer language={currentLang} />
     <NotACookieBanner showAutomatically={showNotACookieBannerAutomatically} language={currentLang} />
+
+    <!-- Analytics: Client-side tracking for clicks and time-on-page -->
+    <script>
+      import { initAnalytics } from '../scripts/analytics';
+      initAnalytics();
+    </script>
   </body>
 </html>
 

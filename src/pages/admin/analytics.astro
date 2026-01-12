@@ -1,0 +1,396 @@
+---
+import { analyticsManager } from '../../utils/database';
+
+// Fetch analytics data
+const days = 30;
+const summary = analyticsManager.getSummary(days);
+const dailyStats = analyticsManager.getDailyStats(days);
+const topPages = analyticsManager.getTopPages(20, days);
+const topReferers = analyticsManager.getTopReferers(20, days);
+const avgTimeOnPage = analyticsManager.getAverageTimeOnPage(days);
+
+// Prepare chart data (reverse for chronological order)
+const chartLabels = dailyStats.map((d) => d.date).reverse();
+const chartVisits = dailyStats.map((d) => d.visits).reverse();
+const chartUnique = dailyStats.map((d) => d.uniqueVisitors).reverse();
+
+// Format duration helper
+function formatDuration(seconds: number): string {
+    if (seconds < 60) return `${Math.round(seconds)}s`;
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.round(seconds % 60);
+    return `${mins}m ${secs}s`;
+}
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Analytics Dashboard | Alessandro Romano</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <style>
+            :root {
+                --color-bg: #1a1a2e;
+                --color-card: #16213e;
+                --color-border: #0f3460;
+                --color-text: #eaeaea;
+                --color-text-muted: #a0a0a0;
+                --color-accent: #e94560;
+                --color-success: #4ade80;
+                --font-family: system-ui, sans-serif;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: var(--font-family);
+                background: var(--color-bg);
+                color: var(--color-text);
+                line-height: 1.6;
+                padding: 2rem;
+            }
+
+            .dashboard {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid var(--color-border);
+            }
+
+            header h1 {
+                font-size: 1.75rem;
+                font-weight: 600;
+            }
+
+            .period-badge {
+                background: var(--color-border);
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
+                font-size: 0.875rem;
+                color: var(--color-text-muted);
+            }
+
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .stat-card {
+                background: var(--color-card);
+                border: 1px solid var(--color-border);
+                border-radius: 0.75rem;
+                padding: 1.5rem;
+            }
+
+            .stat-card h3 {
+                font-size: 0.875rem;
+                color: var(--color-text-muted);
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+            }
+
+            .stat-card .value {
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--color-accent);
+            }
+
+            .chart-container {
+                background: var(--color-card);
+                border: 1px solid var(--color-border);
+                border-radius: 0.75rem;
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .chart-container h2 {
+                font-size: 1.125rem;
+                margin-bottom: 1rem;
+            }
+
+            .chart-wrapper {
+                height: 300px;
+                position: relative;
+            }
+
+            .tables-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .table-card {
+                background: var(--color-card);
+                border: 1px solid var(--color-border);
+                border-radius: 0.75rem;
+                padding: 1.5rem;
+                overflow: hidden;
+            }
+
+            .table-card h2 {
+                font-size: 1.125rem;
+                margin-bottom: 1rem;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th,
+            td {
+                text-align: left;
+                padding: 0.75rem;
+                border-bottom: 1px solid var(--color-border);
+            }
+
+            th {
+                color: var(--color-text-muted);
+                font-weight: 500;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            td {
+                font-size: 0.875rem;
+            }
+
+            tr:last-child td {
+                border-bottom: none;
+            }
+
+            .path-cell {
+                max-width: 300px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .number-cell {
+                text-align: right;
+                font-variant-numeric: tabular-nums;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 2rem;
+                color: var(--color-text-muted);
+            }
+
+            @media (max-width: 768px) {
+                body {
+                    padding: 1rem;
+                }
+
+                header {
+                    flex-direction: column;
+                    gap: 1rem;
+                    align-items: flex-start;
+                }
+
+                .tables-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="dashboard">
+            <header>
+                <h1>📊 Analytics Dashboard</h1>
+                <span class="period-badge">Last {days} days</span>
+            </header>
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Page Views</h3>
+                    <div class="value">{summary.totalVisits.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Unique Visitors</h3>
+                    <div class="value">{summary.uniqueVisitors.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Events</h3>
+                    <div class="value">{summary.totalEvents.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg. Time on Page</h3>
+                    <div class="value">{formatDuration(summary.avgTimeOnPage)}</div>
+                </div>
+            </section>
+
+            <section class="chart-container">
+                <h2>Daily Traffic</h2>
+                <div class="chart-wrapper">
+                    <canvas id="trafficChart"></canvas>
+                </div>
+            </section>
+
+            <section class="tables-grid">
+                <div class="table-card">
+                    <h2>Top Pages</h2>
+                    {
+                        topPages.length > 0 ? (
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Path</th>
+                                        <th class="number-cell">Views</th>
+                                        <th class="number-cell">Unique</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {topPages.map((page) => (
+                                        <tr>
+                                            <td class="path-cell" title={page.path}>
+                                                {page.path}
+                                            </td>
+                                            <td class="number-cell">{page.visits.toLocaleString()}</td>
+                                            <td class="number-cell">{page.uniqueVisitors.toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div class="empty-state">No data yet</div>
+                        )
+                    }
+                </div>
+
+                <div class="table-card">
+                    <h2>Top Referers</h2>
+                    {
+                        topReferers.length > 0 ? (
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Source</th>
+                                        <th class="number-cell">Visits</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {topReferers.map((ref) => (
+                                        <tr>
+                                            <td class="path-cell" title={ref.referer}>
+                                                {ref.referer}
+                                            </td>
+                                            <td class="number-cell">{ref.visits.toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div class="empty-state">No data yet</div>
+                        )
+                    }
+                </div>
+
+                <div class="table-card">
+                    <h2>Avg. Time on Page (by path)</h2>
+                    {
+                        avgTimeOnPage.length > 0 ? (
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Path</th>
+                                        <th class="number-cell">Avg. Time</th>
+                                        <th class="number-cell">Samples</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {avgTimeOnPage.map((item) => (
+                                        <tr>
+                                            <td class="path-cell" title={item.path}>
+                                                {item.path}
+                                            </td>
+                                            <td class="number-cell">{formatDuration(item.avgDuration)}</td>
+                                            <td class="number-cell">{item.samples}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div class="empty-state">Not enough data yet (min 3 samples per page)</div>
+                        )
+                    }
+                </div>
+            </section>
+        </div>
+
+        <script is:inline define:vars={{ chartLabels, chartVisits, chartUnique }}>
+            // Load Chart.js from CDN (to avoid bundling ~60KB)
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
+            script.onload = () => {
+                const ctx = document.getElementById('trafficChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [
+                            {
+                                label: 'Page Views',
+                                data: chartVisits,
+                                borderColor: '#e94560',
+                                backgroundColor: 'rgba(233, 69, 96, 0.1)',
+                                fill: true,
+                                tension: 0.3,
+                            },
+                            {
+                                label: 'Unique Visitors',
+                                data: chartUnique,
+                                borderColor: '#4ade80',
+                                backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                                fill: true,
+                                tension: 0.3,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index',
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: { color: '#a0a0a0' },
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: { color: '#a0a0a0' },
+                            },
+                        },
+                        plugins: {
+                            legend: {
+                                labels: { color: '#eaeaea' },
+                            },
+                        },
+                    },
+                });
+            };
+            document.head.appendChild(script);
+        </script>
+    </body>
+</html>

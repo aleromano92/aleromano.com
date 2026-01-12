@@ -1,0 +1,313 @@
+import { createHash } from 'crypto';
+import { getDatabase } from './connection';
+
+// ============================================================================
+// Types
+// ============================================================================
+
+export interface VisitRecord {
+  path: string;
+  visitorHash: string;
+  referer?: string;
+  userAgent?: string;
+  country?: string;
+}
+
+export interface EventRecord {
+  type: 'click' | 'time_on_page';
+  path: string;
+  visitorHash?: string;
+  elementTag?: string;
+  elementId?: string;
+  elementText?: string;
+  href?: string;
+  duration?: number;
+}
+
+export interface DailyStats {
+  date: string;
+  visits: number;
+  uniqueVisitors: number;
+  events: number;
+}
+
+export interface TopPage {
+  path: string;
+  visits: number;
+  uniqueVisitors: number;
+}
+
+export interface TopReferer {
+  referer: string;
+  visits: number;
+}
+
+// ============================================================================
+// Visitor Hash Generation (Privacy-preserving daily rotation)
+// ============================================================================
+
+const HASH_SALT = process.env.ANALYTICS_SALT || 'aleromano-analytics-2026';
+
+/**
+ * Generate a privacy-preserving visitor hash that rotates daily.
+ * This allows counting unique visitors per day without long-term tracking.
+ * 
+ * Hash = SHA256(IP + UserAgent + Date + Salt)
+ */
+export function generateVisitorHash(ip: string, userAgent: string): string {
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const input = `${ip}|${userAgent}|${today}|${HASH_SALT}`;
+  return createHash('sha256').update(input).digest('hex').substring(0, 16);
+}
+
+// ============================================================================
+// Event Buffer (In-memory micro-batching for high-frequency events)
+// ============================================================================
+
+const eventBuffer: EventRecord[] = [];
+let flushTimer: ReturnType<typeof setTimeout> | null = null;
+const FLUSH_INTERVAL_MS = 5000; // Flush every 5 seconds
+const FLUSH_THRESHOLD = 50; // Or when buffer reaches 50 items
+
+function scheduleFlush(): void {
+  if (flushTimer) return;
+  
+  flushTimer = setTimeout(() => {
+    flushEventBuffer();
+    flushTimer = null;
+  }, FLUSH_INTERVAL_MS);
+}
+
+function flushEventBuffer(): void {
+  if (eventBuffer.length === 0) return;
+  
+  const db = getDatabase();
+  const stmt = db.prepare(`
+    INSERT INTO analytics_events 
+    (type, path, visitor_hash, element_tag, element_id, element_text, href, duration)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  
+  const insertMany = db.transaction((events: EventRecord[]) => {
+    for (const event of events) {
+      stmt.run(
+        event.type,
+        event.path,
+        event.visitorHash || null,
+        event.elementTag || null,
+        event.elementId || null,
+        event.elementText || null,
+        event.href || null,
+        event.duration || null
+      );
+    }
+  });
+  
+  const eventsToFlush = eventBuffer.splice(0, eventBuffer.length);
+  
+  try {
+    insertMany(eventsToFlush);
+    console.log(`[Analytics] Flushed ${eventsToFlush.length} events to database`);
+  } catch (error) {
+    console.error('[Analytics] Failed to flush events:', error);
+    // Re-add failed events to buffer (optional: could drop them instead)
+    eventBuffer.unshift(...eventsToFlush);
+  }
+}
+
+// ============================================================================
+// Analytics Manager
+// ============================================================================
+
+export const analyticsManager = {
+  /**
+   * Record a page visit (called from middleware, writes directly)
+   */
+  recordVisit(visit: VisitRecord): void {
+    try {
+      const db = getDatabase();
+      const stmt = db.prepare(`
+        INSERT INTO analytics_visits (path, visitor_hash, referer, user_agent, country)
+        VALUES (?, ?, ?, ?, ?)
+      `);
+      
+      stmt.run(
+        visit.path,
+        visit.visitorHash,
+        visit.referer || null,
+        visit.userAgent || null,
+        visit.country || null
+      );
+    } catch (error) {
+      console.error('[Analytics] Failed to record visit:', error);
+    }
+  },
+
+  /**
+   * Queue an event for batched insertion (called from API endpoint)
+   */
+  queueEvent(event: EventRecord): void {
+    eventBuffer.push(event);
+    
+    if (eventBuffer.length >= FLUSH_THRESHOLD) {
+      flushEventBuffer();
+    } else {
+      scheduleFlush();
+    }
+  },
+
+  /**
+   * Force flush any pending events (call on shutdown)
+   */
+  flush(): void {
+    if (flushTimer) {
+      clearTimeout(flushTimer);
+      flushTimer = null;
+    }
+    flushEventBuffer();
+  },
+
+  // ==========================================================================
+  // Query Methods (for dashboard)
+  // ==========================================================================
+
+  /**
+   * Get daily statistics for the last N days
+   */
+  getDailyStats(days: number = 30): DailyStats[] {
+    const db = getDatabase();
+    const cutoff = Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
+    
+    const visitStats = db.prepare(`
+      SELECT 
+        date(created_at, 'unixepoch') as date,
+        COUNT(*) as visits,
+        COUNT(DISTINCT visitor_hash) as unique_visitors
+      FROM analytics_visits
+      WHERE created_at >= ?
+      GROUP BY date(created_at, 'unixepoch')
+      ORDER BY date DESC
+    `).all(cutoff) as Array<{ date: string; visits: number; unique_visitors: number }>;
+    
+    const eventStats = db.prepare(`
+      SELECT 
+        date(created_at, 'unixepoch') as date,
+        COUNT(*) as events
+      FROM analytics_events
+      WHERE created_at >= ?
+      GROUP BY date(created_at, 'unixepoch')
+    `).all(cutoff) as Array<{ date: string; events: number }>;
+    
+    const eventMap = new Map(eventStats.map(e => [e.date, e.events]));
+    
+    return visitStats.map(v => ({
+      date: v.date,
+      visits: v.visits,
+      uniqueVisitors: v.unique_visitors,
+      events: eventMap.get(v.date) || 0
+    }));
+  },
+
+  /**
+   * Get top pages by visit count
+   */
+  getTopPages(limit: number = 20, days: number = 30): TopPage[] {
+    const db = getDatabase();
+    const cutoff = Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
+    
+    const rows = db.prepare(`
+      SELECT 
+        path,
+        COUNT(*) as visits,
+        COUNT(DISTINCT visitor_hash) as unique_visitors
+      FROM analytics_visits
+      WHERE created_at >= ?
+      GROUP BY path
+      ORDER BY visits DESC
+      LIMIT ?
+    `).all(cutoff, limit) as Array<{ path: string; visits: number; unique_visitors: number }>;
+    
+    return rows.map(row => ({
+      path: row.path,
+      visits: row.visits,
+      uniqueVisitors: row.unique_visitors
+    }));
+  },
+
+  /**
+   * Get top referers
+   */
+  getTopReferers(limit: number = 20, days: number = 30): TopReferer[] {
+    const db = getDatabase();
+    const cutoff = Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
+    
+    return db.prepare(`
+      SELECT 
+        referer,
+        COUNT(*) as visits
+      FROM analytics_visits
+      WHERE created_at >= ? AND referer IS NOT NULL AND referer != ''
+      GROUP BY referer
+      ORDER BY visits DESC
+      LIMIT ?
+    `).all(cutoff, limit) as TopReferer[];
+  },
+
+  /**
+   * Get average time on page (from time_on_page events)
+   */
+  getAverageTimeOnPage(days: number = 30): Array<{ path: string; avgDuration: number; samples: number }> {
+    const db = getDatabase();
+    const cutoff = Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
+    
+    const rows = db.prepare(`
+      SELECT 
+        path,
+        ROUND(AVG(duration) / 1000, 1) as avg_duration,
+        COUNT(*) as samples
+      FROM analytics_events
+      WHERE type = 'time_on_page' AND created_at >= ? AND duration IS NOT NULL
+      GROUP BY path
+      HAVING samples >= 3
+      ORDER BY avg_duration DESC
+      LIMIT 20
+    `).all(cutoff) as Array<{ path: string; avg_duration: number; samples: number }>;
+    
+    return rows.map(row => ({
+      path: row.path,
+      avgDuration: row.avg_duration,
+      samples: row.samples
+    }));
+  },
+
+  /**
+   * Get total stats summary
+   */
+  getSummary(days: number = 30): { totalVisits: number; uniqueVisitors: number; totalEvents: number; avgTimeOnPage: number } {
+    const db = getDatabase();
+    const cutoff = Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
+    
+    const visitSummary = db.prepare(`
+      SELECT 
+        COUNT(*) as total_visits,
+        COUNT(DISTINCT visitor_hash) as unique_visitors
+      FROM analytics_visits
+      WHERE created_at >= ?
+    `).get(cutoff) as { total_visits: number; unique_visitors: number };
+    
+    const eventSummary = db.prepare(`
+      SELECT 
+        COUNT(*) as total_events,
+        ROUND(AVG(CASE WHEN type = 'time_on_page' THEN duration END) / 1000, 1) as avg_time
+      FROM analytics_events
+      WHERE created_at >= ?
+    `).get(cutoff) as { total_events: number; avg_time: number | null };
+    
+    return {
+      totalVisits: visitSummary.total_visits,
+      uniqueVisitors: visitSummary.unique_visitors,
+      totalEvents: eventSummary.total_events,
+      avgTimeOnPage: eventSummary.avg_time || 0
+    };
+  }
+};

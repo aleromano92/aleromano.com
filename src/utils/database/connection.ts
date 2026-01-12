@@ -84,6 +84,55 @@ function initializeSchema(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_cache_expires_at 
     ON cache(expires_at)
   `);
+
+  // Analytics: Server-side page views (captured by middleware)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS analytics_visits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      path TEXT NOT NULL,
+      visitor_hash TEXT NOT NULL,
+      referer TEXT,
+      user_agent TEXT,
+      country TEXT,
+      created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+    )
+  `);
+
+  // Indexes for efficient analytics queries
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_analytics_visits_created_at 
+    ON analytics_visits(created_at)
+  `);
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_analytics_visits_path 
+    ON analytics_visits(path)
+  `);
+
+  // Analytics: Client-side events (clicks, time on page)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS analytics_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      type TEXT NOT NULL,
+      path TEXT NOT NULL,
+      visitor_hash TEXT,
+      element_tag TEXT,
+      element_id TEXT,
+      element_text TEXT,
+      href TEXT,
+      duration INTEGER,
+      created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+    )
+  `);
+
+  // Indexes for event queries
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_analytics_events_type 
+    ON analytics_events(type)
+  `);
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_analytics_events_created_at 
+    ON analytics_events(created_at)
+  `);
 }
 
 export function closeDatabase(): void {
