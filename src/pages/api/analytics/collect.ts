@@ -15,7 +15,8 @@ function getClientIP(request: Request): string {
     return forwardedFor.split(',')[0].trim();
   }
 
-  return '0.0.0.0';
+  console.warn('[Analytics API] Missing X-Real-IP and X-Forwarded-For headers; using unknown IP for analytics.');
+  return 'unknown';
 }
 
 export const POST: APIRoute = async ({ request }) => {
