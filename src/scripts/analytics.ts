@@ -6,6 +6,13 @@
 import type { AnalyticsEvent } from '../types/analytics';
 import { ANALYTICS_ELEMENT_TEXT_MAX_LENGTH, MIN_TIME_ON_PAGE_MS } from '../utils/constants';
 
+// Extend Navigator interface to include Global Privacy Control
+// GPC is a modern privacy signal supported by some browsers
+// See: https://globalprivacycontrol.org/
+interface NavigatorWithGPC extends Navigator {
+  globalPrivacyControl?: boolean;
+}
+
 const ANALYTICS_ENDPOINT = '/api/analytics/collect';
 
 /**
@@ -114,7 +121,8 @@ function initTimeTracking(): void {
  */
 export function shouldRespectPrivacy(): boolean {
   // Check Global Privacy Control (modern standard)
-  if ('globalPrivacyControl' in navigator && (navigator as any).globalPrivacyControl === true) {
+  const nav = navigator as NavigatorWithGPC;
+  if (nav.globalPrivacyControl === true) {
     return true;
   }
 
