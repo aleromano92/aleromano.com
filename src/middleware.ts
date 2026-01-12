@@ -34,15 +34,32 @@ function isAuthorized(request: Request): boolean {
   const [user, pass] = credentials.split(':');
 
   // Use timing-safe comparison to prevent timing attacks
-  const userMatch = ADMIN_USER
-    ? timingSafeEqual(Buffer.from(user || ''), Buffer.from(ADMIN_USER))
-    : true; // If no ADMIN_USER is set, accept any username (only password is checked)
-  
-  const passMatch = timingSafeEqual(
-    Buffer.from(pass || ''),
-    Buffer.from(ADMIN_PASS)
-  );
+  const userMatch = (() => {
+    if (!ADMIN_USER) {
+      // If no ADMIN_USER is set, accept any username (only password is checked)
+      return true;
+    }
 
+    const providedUserBuffer = Buffer.from(user || '');
+    const adminUserBuffer = Buffer.from(ADMIN_USER);
+
+    if (providedUserBuffer.length !== adminUserBuffer.length) {
+      return false;
+    }
+
+    return timingSafeEqual(providedUserBuffer, adminUserBuffer);
+  })();
+
+  const passMatch = (() => {
+    const providedPassBuffer = Buffer.from(pass || '');
+    const adminPassBuffer = Buffer.from(ADMIN_PASS);
+
+    if (providedPassBuffer.length !== adminPassBuffer.length) {
+      return false;
+    }
+
+    return timingSafeEqual(providedPassBuffer, adminPassBuffer);
+  })();
   return userMatch && passMatch;
 }
 
