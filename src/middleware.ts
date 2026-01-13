@@ -1,8 +1,8 @@
 import { defineMiddleware } from 'astro:middleware';
 import { timingSafeEqual } from 'crypto';
 
-const ADMIN_USER = process.env.ADMIN_USER;
-const ADMIN_PASS = process.env.ADMIN_PASS;
+const ADMIN_USER = import.meta.env.ADMIN_USER || process.env.ADMIN_USER;
+const ADMIN_PASS = import.meta.env.ADMIN_PASS || process.env.ADMIN_PASS;
 
 function isAuthorized(request: Request): boolean {
   if (!ADMIN_USER || !ADMIN_PASS) {
