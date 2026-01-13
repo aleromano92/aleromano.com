@@ -5,18 +5,18 @@ const ADMIN_USER = process.env.ADMIN_USER;
 const ADMIN_PASS = process.env.ADMIN_PASS;
 
 function isAuthorized(request: Request): boolean {
-  if (!ADMIN_PASS) {
+  if (!ADMIN_USER || !ADMIN_PASS) {
     const isDevelopment = process.env.NODE_ENV === 'development';
 
     if (isDevelopment) {
       console.warn(
-        '[Middleware] ADMIN_PASS not set in development - admin routes are unprotected!',
+        '[Middleware] ADMIN_USER and/or ADMIN_PASS not set in development - admin routes are unprotected!',
       );
       return true;
     }
 
     console.error(
-      '[Middleware] ADMIN_PASS not set in non-development environment - denying access to admin routes.',
+      '[Middleware] ADMIN_USER and ADMIN_PASS must both be set in non-development environment - denying access to admin routes.',
     );
     return false;
   }
@@ -34,32 +34,18 @@ function isAuthorized(request: Request): boolean {
   const [user, pass] = credentials.split(':');
 
   // Use timing-safe comparison to prevent timing attacks
-  const userMatch = (() => {
-    if (!ADMIN_USER) {
-      // If no ADMIN_USER is set, accept any username (only password is checked)
-      return true;
-    }
+  const providedUserBuffer = Buffer.from(user || '');
+  const adminUserBuffer = Buffer.from(ADMIN_USER);
+  const userMatch =
+    providedUserBuffer.length === adminUserBuffer.length &&
+    timingSafeEqual(providedUserBuffer, adminUserBuffer);
 
-    const providedUserBuffer = Buffer.from(user || '');
-    const adminUserBuffer = Buffer.from(ADMIN_USER);
+  const providedPassBuffer = Buffer.from(pass || '');
+  const adminPassBuffer = Buffer.from(ADMIN_PASS);
+  const passMatch =
+    providedPassBuffer.length === adminPassBuffer.length &&
+    timingSafeEqual(providedPassBuffer, adminPassBuffer);
 
-    if (providedUserBuffer.length !== adminUserBuffer.length) {
-      return false;
-    }
-
-    return timingSafeEqual(providedUserBuffer, adminUserBuffer);
-  })();
-
-  const passMatch = (() => {
-    const providedPassBuffer = Buffer.from(pass || '');
-    const adminPassBuffer = Buffer.from(ADMIN_PASS);
-
-    if (providedPassBuffer.length !== adminPassBuffer.length) {
-      return false;
-    }
-
-    return timingSafeEqual(providedPassBuffer, adminPassBuffer);
-  })();
   return userMatch && passMatch;
 }
 

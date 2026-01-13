@@ -4,7 +4,7 @@
  */
 
 import type { AnalyticsEvent } from '../types/analytics';
-import { ANALYTICS_ELEMENT_TEXT_MAX_LENGTH, MIN_TIME_ON_PAGE_MS } from '../utils/constants';
+import { MIN_TIME_ON_PAGE_MS } from '../utils/constants';
 
 // Extend Navigator interface to include Global Privacy Control
 // GPC is a modern privacy signal supported by some browsers
@@ -60,8 +60,7 @@ function initClickTracking(): void {
 
     const elementTag = target.tagName.toLowerCase();
     const elementId = target.id || undefined;
-    const rawText = target.textContent?.trim() || undefined;
-    const elementText = rawText ? rawText.slice(0, ANALYTICS_ELEMENT_TEXT_MAX_LENGTH) : undefined;
+    const elementText = target.textContent?.trim() || undefined;
     const href = (target as HTMLAnchorElement).href || undefined;
 
     sendEvent({
