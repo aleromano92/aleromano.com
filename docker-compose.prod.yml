@@ -14,6 +14,9 @@ services:
       - ALE_PERSONAL_EMAIL=${ALE_PERSONAL_EMAIL}
       - TWITTER_BEARER_TOKEN=${TWITTER_BEARER_TOKEN}
       - PERSONAL_GITHUB_TOKEN=${PERSONAL_GITHUB_TOKEN}
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASS=${ADMIN_PASS}
+      - ANALYTICS_SALT=${ANALYTICS_SALT}
     volumes:
       # On your Hetzner VPS, you need to create the folder as being run by user ID 1001 (see Dockerfile)
       # sudo mkdir -p /var/docker/aleromano.com/app/data

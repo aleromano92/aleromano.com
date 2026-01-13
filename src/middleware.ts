@@ -6,17 +6,8 @@ const ADMIN_PASS = process.env.ADMIN_PASS;
 
 function isAuthorized(request: Request): boolean {
   if (!ADMIN_USER || !ADMIN_PASS) {
-    const isDevelopment = process.env.NODE_ENV === 'development';
-
-    if (isDevelopment) {
-      console.warn(
-        '[Middleware] ADMIN_USER and/or ADMIN_PASS not set in development - admin routes are unprotected!',
-      );
-      return true;
-    }
-
     console.error(
-      '[Middleware] ADMIN_USER and ADMIN_PASS must both be set in non-development environment - denying access to admin routes.',
+      '[Middleware] ADMIN_USER and ADMIN_PASS must both be set - denying access to admin routes.',
     );
     return false;
   }

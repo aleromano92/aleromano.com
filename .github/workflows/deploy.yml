@@ -83,6 +83,18 @@ jobs:
             echo "Error: PERSONAL_GITHUB_TOKEN secret is not set"
             exit 1
           fi
+          if [ -z "${{ secrets['ADMIN_USER'] }}" ]; then
+            echo "Error: ADMIN_USER secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets['ADMIN_PASS'] }}" ]; then
+            echo "Error: ADMIN_PASS secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets['ANALYTICS_SALT'] }}" ]; then
+            echo "Error: ANALYTICS_SALT secret is not set"
+            exit 1
+          fi
 
       - name: Deploy to Hetzner
         uses: appleboy/ssh-action@master
@@ -134,7 +146,7 @@ jobs:
               fi
               echo "✅ Repository cloned successfully"
             fi
-            
+
             # Verify we have the expected files
             if [ ! -f "docker-compose.yml" ] || [ ! -f "docker-compose.prod.yml" ]; then
               echo "❌ Critical files missing after git update"
@@ -142,7 +154,7 @@ jobs:
               ls -la
               exit 1
             fi
-            
+
             echo "✅ Git repository is ready"
 
             # Create .env file for docker-compose
@@ -154,6 +166,9 @@ jobs:
             echo "GOOGLE_APP_PASSWORD=${{ secrets.GOOGLE_APP_PASSWORD }}" >> .env
             echo "TWITTER_BEARER_TOKEN=${{ secrets.TWITTER_BEARER_TOKEN }}" >> .env
             echo "PERSONAL_GITHUB_TOKEN=${{ secrets.PERSONAL_GITHUB_TOKEN }}" >> .env
+            echo "ADMIN_USER=${{ secrets['ADMIN_USER'] }}" >> .env
+            echo "ADMIN_PASS=${{ secrets['ADMIN_PASS'] }}" >> .env
+            echo "ANALYTICS_SALT=${{ secrets['ANALYTICS_SALT'] }}" >> .env
 
             # Login to GitHub Container Registry
             echo "🔑 Logging into GitHub Container Registry..."
