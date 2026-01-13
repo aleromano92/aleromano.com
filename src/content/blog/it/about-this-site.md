@@ -35,9 +35,7 @@ Questo sito è il mio playground: un luogo dove posso sperimentare, imparare e i
 
 Essere un Engineering Manager di tre team e padre di due figli non lascia molto spazio per lunghe sessioni di coding. Il tempo che riesco a dedicarci è in piccoli blocchi, spesso interrotti, senza ore di concentrazione continua.
 
-È qui che lo sviluppo assistito dall'AI ha fatto la differenza. Ho utilizzato [Cursor](https://www.cursor.com/) per accelerare il mio flusso di lavoro, permettendomi di fare progressi significativi anche in blocchi di tempo brevi e frammentati. La capacità di esprimere un'intenzione e avere l'AI che in modalità *Agent* implementa per me ha ridotto il costo, in termini di energia, del context switch continuo.
-
-(Scriverò presto un post dedicato a questa esperienza!)
+È qui che lo sviluppo assistito dall'AI ha fatto la differenza. Ho utilizzato [Cursor](https://www.cursor.com/) per accelerare il mio flusso di lavoro ([ne parlo meglio qui](https://aleromano.com/posts/it/manage-parent-code-ai)), permettendomi di fare progressi significativi anche in blocchi di tempo brevi e frammentati. La capacità di esprimere un'intenzione e avere l'AI che in modalità *Agent* implementa per me ha ridotto il costo, in termini di energia, del context switch continuo.
 
 ## Stack Tecnologico: La Semplicità è Importante 💻
 

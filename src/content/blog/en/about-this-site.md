@@ -35,9 +35,7 @@ This site is my playground: a place where I can experiment, learn, and implement
 
 Being an Engineering Manager for three teams and a father of two doesn't leave much room for long coding sessions. The time I can dedicate is in small, often interrupted blocks, without hours of continuous focus.
 
-This is where AI-assisted development made a difference. I used [Cursor](https://www.cursor.com/) to speed up my workflow, allowing me to make significant progress even in short, fragmented time blocks. The ability to express an intention and have the AI implement it for me in *Agent* mode reduced the energy cost of constant context switching.
-
-(I'll write a dedicated post about this experience soon!)
+This is where AI-assisted development made a difference. I used [Cursor](https://www.cursor.com/) to speed up my workflow ([learn more](https://aleromano.com/posts/en/manage-parent-code-ai)), allowing me to make significant progress even in short, fragmented time blocks. The ability to express an intention and have the AI implement it for me in *Agent* mode reduced the energy cost of constant context switching.
 
 ## Tech Stack: Simplicity Matters 💻
 
