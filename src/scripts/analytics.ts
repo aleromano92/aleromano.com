@@ -61,7 +61,8 @@ function initClickTracking(): void {
     const elementTag = target.tagName.toLowerCase();
     const elementId = target.id || undefined;
     const elementText = target.textContent?.trim() || undefined;
-    const href = (target as HTMLAnchorElement).href || undefined;
+    const href =
+      target instanceof HTMLAnchorElement ? target.href || undefined : undefined;
 
     sendEvent({
       type: 'click',
