@@ -10,7 +10,7 @@ export type { VisitRecord, EventRecord, DailyStats, TopPage, TopReferer };
 // ============================================================================
 
 const HASH_SALT = (() => {
-  const salt = process.env.ANALYTICS_SALT;
+  const salt = import.meta.env.ANALYTICS_SALT || process.env.ANALYTICS_SALT;
   if (!salt) {
     throw new Error(
       'ANALYTICS_SALT environment variable must be set to a secret value for analytics hashing.'
@@ -265,6 +265,57 @@ export const analyticsManager = {
       path: row.path,
       avgDuration: row.avg_duration,
       samples: row.samples
+    }));
+  },
+
+  /**
+   * Get recent events (clicks and time-on-page) for dashboard display
+   */
+  getRecentEvents(limit: number = 50): Array<{
+    type: string;
+    path: string;
+    elementTag: string | null;
+    elementId: string | null;
+    elementText: string | null;
+    href: string | null;
+    duration: number | null;
+    createdAt: number;
+  }> {
+    const db = getDatabase();
+    
+    const rows = db.prepare(`
+      SELECT 
+        type,
+        path,
+        element_tag,
+        element_id,
+        element_text,
+        href,
+        duration,
+        created_at
+      FROM analytics_events
+      ORDER BY created_at DESC
+      LIMIT ?
+    `).all(limit) as Array<{
+      type: string;
+      path: string;
+      element_tag: string | null;
+      element_id: string | null;
+      element_text: string | null;
+      href: string | null;
+      duration: number | null;
+      created_at: number;
+    }>;
+    
+    return rows.map(row => ({
+      type: row.type,
+      path: row.path,
+      elementTag: row.element_tag,
+      elementId: row.element_id,
+      elementText: row.element_text,
+      href: row.href,
+      duration: row.duration,
+      createdAt: row.created_at
     }));
   },
 

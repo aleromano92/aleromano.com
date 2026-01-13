@@ -8,6 +8,7 @@ const dailyStats = analyticsManager.getDailyStats(days);
 const topPages = analyticsManager.getTopPages(20, days);
 const topReferers = analyticsManager.getTopReferers(20, days);
 const avgTimeOnPage = analyticsManager.getAverageTimeOnPage(days);
+const recentEvents = analyticsManager.getRecentEvents(50);
 
 // Prepare chart data (reverse for chronological order)
 const chartLabels = dailyStats.map((d) => d.date).reverse();
@@ -20,6 +21,16 @@ function formatDuration(seconds: number): string {
     const mins = Math.floor(seconds / 60);
     const secs = Math.round(seconds % 60);
     return `${mins}m ${secs}s`;
+}
+
+// Format timestamp helper
+function formatTimestamp(unixSeconds: number): string {
+    return new Date(unixSeconds * 1000).toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
 }
 ---
 
@@ -188,6 +199,59 @@ function formatDuration(seconds: number): string {
                 font-variant-numeric: tabular-nums;
             }
 
+            .table-card.full-width {
+                grid-column: 1 / -1;
+            }
+
+            .event-type {
+                display: inline-block;
+                padding: 0.25rem 0.5rem;
+                border-radius: 0.25rem;
+                font-size: 0.75rem;
+                font-weight: 500;
+            }
+
+            .event-type-click {
+                background: rgba(59, 130, 246, 0.2);
+                color: #60a5fa;
+            }
+
+            .event-type-time_on_page {
+                background: rgba(16, 185, 129, 0.2);
+                color: #34d399;
+            }
+
+            .element-id {
+                color: #f59e0b;
+                font-size: 0.75rem;
+                margin-left: 0.25rem;
+            }
+
+            .element-text {
+                color: var(--color-text-muted);
+                font-size: 0.75rem;
+                margin-left: 0.5rem;
+                max-width: 100px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            .element-href {
+                color: #60a5fa;
+                font-size: 0.75rem;
+                margin-left: 0.5rem;
+            }
+
+            code {
+                background: rgba(255, 255, 255, 0.1);
+                padding: 0.125rem 0.25rem;
+                border-radius: 0.25rem;
+                font-size: 0.75rem;
+            }
+
             .empty-state {
                 text-align: center;
                 padding: 2rem;
@@ -332,17 +396,72 @@ function formatDuration(seconds: number): string {
                         )
                     }
                 </div>
+
+                <div class="table-card full-width">
+                    <h2>Recent Events</h2>
+                    {
+                        recentEvents.length > 0 ? (
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Type</th>
+                                        <th>Path</th>
+                                        <th>Element</th>
+                                        <th class="number-cell">Duration</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {recentEvents.map((event) => (
+                                        <tr>
+                                            <td style="white-space: nowrap;">{formatTimestamp(event.createdAt)}</td>
+                                            <td>
+                                                <span class={`event-type event-type-${event.type}`}>
+                                                    {event.type === 'click' ? '🖱️' : '⏱️'} {event.type}
+                                                </span>
+                                            </td>
+                                            <td class="path-cell" title={event.path}>
+                                                {event.path}
+                                            </td>
+                                            <td class="path-cell" title={event.href || event.elementText || ''}>
+                                                {event.type === 'click' ? (
+                                                    <>
+                                                        {event.elementTag && <code>&lt;{event.elementTag}&gt;</code>}
+                                                        {event.elementId && (
+                                                            <span class="element-id">#{event.elementId}</span>
+                                                        )}
+                                                        {event.elementText && (
+                                                            <span class="element-text">{event.elementText}</span>
+                                                        )}
+                                                        {event.href && <span class="element-href">→ {event.href}</span>}
+                                                    </>
+                                                ) : (
+                                                    '—'
+                                                )}
+                                            </td>
+                                            <td class="number-cell">
+                                                {event.duration ? formatDuration(event.duration / 1000) : '—'}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div class="empty-state">No events recorded yet</div>
+                        )
+                    }
+                </div>
             </section>
         </div>
-        
+
         <script is:inline define:vars={{ chartLabels, chartVisits, chartUnique }}>
             // Set up chart data in global scope
             window.__chartData = { chartLabels, chartVisits, chartUnique };
         </script>
-        
+
         <script>
             import { Chart, registerables } from 'chart.js';
-            
+
             // Type declarations for data passed from server
             declare global {
                 interface Window {
@@ -353,13 +472,13 @@ function formatDuration(seconds: number): string {
                     };
                 }
             }
-            
+
             // Register Chart.js components
             Chart.register(...registerables);
-            
+
             // Get chart data from global scope
             const { chartLabels, chartVisits, chartUnique } = window.__chartData;
-            
+
             // Create the chart
             const canvas = document.getElementById('trafficChart') as HTMLCanvasElement;
             if (canvas) {
