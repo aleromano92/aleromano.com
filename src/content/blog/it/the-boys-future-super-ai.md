@@ -28,11 +28,18 @@ Prima di tornare ad esaminare cosa potremmo fare per evitare che uno scenario si
 *   **Starlight è Claude**: Si accorge dell'enorme problema che i "supereroi" pongono e vuole collaborare con le istituzioni per mettere un freno al loro strapotere. Cerca di fare la cosa giusta dall'interno, spingendo per la sicurezza e l'etica.
 *   **Il Regolatore è Butcher**: Avendo aspettato troppo a prendere delle contromisure, ora rischia di dover ricorrere alla "violenza" (metaforicamente, leggi draconiane o ban totali) e ai metodi più efferati per riportare l'ordine. Se la politica dorme, il risveglio sarà brusco e brutale come Billy Butcher.
 *   **The Deep (Abisso) è OpenAI**: Non me ne voglia OpenAI, ma il recente annuncio di mettere la pubblicità nelle sue risposte mi ha ricordato lo smarrito Abisso. Un tempo parte dei "Grandi", ora sembra cercare disperatamente di rimanere rilevante o profittevole, a volte con mosse che lasciano perplessi.
-*   **Soldatino (Soldier Boy) è Gemini**: Proprio come Soldier Boy era l'eroe numero uno prima di Patriota, Google (con DeepMind, AlphaGo, BERT) era il re indiscusso dell'AI prima che arrivasse l'hype di ChatGPT.
+*   **Soldatino (Soldier Boy) è Gemini**: Proprio come Soldier Boy era l'eroe numero uno prima del Patriota, Google (con DeepMind, AlphaGo, BERT) era il re indiscusso dell'AI prima che arrivasse l'hype di ChatGPT.
 Soldier Boy non ha solo la forza bruta, ha quel raggio pettorale devastante che "brucia" il Composto V agli altri. Google ha una potenza computazionale (TPU, Data Center) e una base dati (YouTube, Search) che potrebbe tecnicamente "spegnere" o rendere obsoleti i competitor se decidesse di rilasciare tutto il suo arsenale senza freni etici.
 
-![image](../../../assets/blog/the-boys-future-super-ai/super-ai.png)
+![I big dell'AI rappresentati come i Super di The Boys](../../../assets/blog/the-boys-future-super-ai/super-ai.png)
 
+## Il vero nemico: La Vought International 🏢
+
+In *The Boys*, il vero cattivo non è un singolo supereroe impazzito, ma la **Vought International**: la corporazione che li crea, li gestisce e ne copre i disastri pur di proteggere il valore delle proprie azioni.
+
+Nel mondo dell'AI, la "dinamica Vought" è la corsa sfrenata al profitto e alla dominance di mercato. Anche le aziende con le migliori intenzioni (le "Starlight") sono costrette a correre sempre più veloce perché il mercato punisce chi rallenta. Se Google non rilascia Gemini subito, OpenAI si prende tutto il mercato.
+
+E noi? Noi siamo i cittadini che applaudono ai comizi del Patriota. Siamo sedotti dalla comodità di farci scrivere le email o il codice dall'AI, ignorando che stiamo affidando le chiavi della nostra società a entità che, come la Vought, rispondono prima agli azionisti e poi alla sicurezza pubblica.
 
 ## Torniamo ai rischi: uno scenario pratico ☣️
 
