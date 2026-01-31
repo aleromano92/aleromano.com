@@ -5,9 +5,9 @@ pubDate: 2026-01-31
 author: "Alessandro Romano"
 tags: ["AI", "Security"]
 language: "it"
-# image:
-#   url: ../../../assets/blog/the-boys-future-super-ai/featured.jpg
-#   alt: "Placeholder per copertina post"
+image:
+  url: ../../../assets/blog/the-boys-future-super-ai/featured.png
+  alt: "I supereroi di The Boys governati dalle AI"
 ---
 
 L'ispirazione per questo post nasce dalla lettura del saggio di Dario Amodei, [The Adolescence of Technology](https://darioamodei.com/essay/the-adolescence-of-technology). La prima sezione del saggio si concentra sull'analizzare in modo fattuale i veri rischi che l'AI può portare. E no, non sono la scomparsa di alcuni lavori, o almeno questi non sono i pericoli più imminenti o catastrofici. I rischi maggiori sono collegati ad eventuali danni biologici che si possono realizzare con la prossima generazione di modelli.
