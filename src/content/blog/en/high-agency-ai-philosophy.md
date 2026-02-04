@@ -3,7 +3,7 @@ title: "High Agency and Philosophy in the Age of Artificial Intelligence"
 description: "In a world where AI turns coding into a commodity, high agency remains the true differentiator between those who dream and those who ship."
 pubDate: 2026-01-12
 author: "Alessandro Romano"
-tags: ["ai", "philosophy", "coding", "productivity"]
+tags: ["AI", "philosophy", "coding", "productivity"]
 language: "en"
 image:
   url: ../../../assets/blog/high-agency-ai-philosophy/featured.png

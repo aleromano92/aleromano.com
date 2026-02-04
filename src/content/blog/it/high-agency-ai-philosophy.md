@@ -3,7 +3,7 @@ title: "High Agency e Filosofia nell'era dell'Intelligenza Artificiale"
 description: "In un mondo dove l'IA rende il coding una commodity, la high agency rimane il vero differenziale tra chi sogna e chi realizza."
 pubDate: 2026-01-12
 author: "Alessandro Romano"
-tags: ["ai", "philosophy", "coding", "productivity"]
+tags: ["AI", "philosophy", "coding", "productivity"]
 language: "it"
 image:
   url: ../../../assets/blog/high-agency-ai-philosophy/featured.png
