@@ -14,8 +14,10 @@
     "docker:dev": "npm run docker:clean && docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build",
     "translate": "node scripts/translate.js",
     "translate:missing": "node scripts/translate-missing.js",
+    "db:seed": "node scripts/seed-analytics.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "postinstall": "node -e \"import('geolite2-redist').then(g => g.downloadDbs())\""
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -25,6 +27,9 @@
     "astro": "^5.16.10",
     "better-sqlite3": "^12.4.1",
     "chart.js": "^4.5.1",
+    "chartjs-chart-geo": "^4.3.6",
+    "geolite2-redist": "^3.1.2",
+    "maxmind": "^5.0.5",
     "nodemailer": "^7.0.11",
     "rehype-external-links": "^3.0.0",
     "reveal.js": "^5.2.1",

@@ -107,6 +107,14 @@ function initializeSchema(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_analytics_visits_path 
     ON analytics_visits(path)
   `);
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_analytics_visits_created_at_path 
+    ON analytics_visits(created_at, path)
+  `);
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_analytics_visits_country 
+    ON analytics_visits(country)
+  `);
 
   // Analytics: Client-side events (clicks, time on page)
   db.exec(`
@@ -132,6 +140,10 @@ function initializeSchema(db: Database.Database): void {
   db.exec(`
     CREATE INDEX IF NOT EXISTS idx_analytics_events_created_at 
     ON analytics_events(created_at)
+  `);
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_analytics_events_type_created_at 
+    ON analytics_events(type, created_at)
   `);
 }
 

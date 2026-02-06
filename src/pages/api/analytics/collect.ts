@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { analyticsManager, generateVisitorHash } from '../../../utils/database';
 import type { AnalyticsEvent } from '../../../types/analytics';
 import { ANALYTICS_ELEMENT_TEXT_MAX_LENGTH } from '../../../utils/constants';
+import { getCountryFromIP } from '../../../utils/geoip';
 
 /**
  * Extract client IP from request headers (behind nginx proxy)
@@ -45,12 +46,14 @@ export const POST: APIRoute = async ({ request }) => {
       const ip = getClientIP(request);
       const userAgent = request.headers.get('User-Agent') || 'unknown';
       const visitorHash = generateVisitorHash(ip, userAgent);
+      const country = await getCountryFromIP(ip);
 
       analyticsManager.recordVisit({
         path: payload.path,
         visitorHash,
         referer: payload.referer,
         userAgent,
+        country: country ?? undefined,
       });
     } else {
       // Queue click/time_on_page events for batched insertion

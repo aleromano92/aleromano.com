@@ -70,6 +70,7 @@ const blogPostsListUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
       author={author}
       structuredData={structuredData}
     />
+    <slot name="head" />
   </head>
   <body>
     <Header i18nData={i18nData} />
