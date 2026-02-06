@@ -7,8 +7,8 @@
  *   npm run db:seed          – seed default database (./data/analytics.db)
  *   node scripts/seed-analytics.mjs path/to/db  – seed a specific database
  *
- * The script reads the SQL fixture from src/test/fixtures/analytics-seed.sql,
- * wraps all INSERTs in a transaction for speed, and prints a summary.
+ * The script reads the SQL fixture from src/test/fixtures/analytics-seed.sql
+ * and executes all INSERTs, printing a summary.
  */
 
 import Database from "better-sqlite3";
@@ -86,7 +86,11 @@ const countBefore = {
     events: db.prepare("SELECT COUNT(*) as c FROM analytics_events").get().c,
 };
 
-db.exec(sql);
+const runSeedTransaction = db.transaction(() => {
+    db.exec(sql);
+});
+
+runSeedTransaction();
 
 const countAfter = {
     visits: db.prepare("SELECT COUNT(*) as c FROM analytics_visits").get().c,
