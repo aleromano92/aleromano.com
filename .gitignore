@@ -25,4 +25,4 @@ pnpm-debug.log*
 .vscode/
 
 # SQLite database files
-data/
+/data/

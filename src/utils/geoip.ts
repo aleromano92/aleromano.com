@@ -36,7 +36,7 @@ function getReader(): Promise<CountryReader> {
  * Resolve an IP address to a 2-letter ISO country code.
  * 
  * Uses a local MaxMind GeoLite2-Country database — no external API calls.
- * Returns null if the IP cannot be resolved (e.g. localhost, private ranges).
+ * Returns null if the IP cannot be resolved (e.g. localhost, 'unknown', or invalid IP).
  * 
  * @param ip - IPv4 or IPv6 address string
  * @returns ISO 3166-1 alpha-2 country code (e.g. "IT", "US") or null
@@ -52,7 +52,7 @@ export async function getCountryFromIP(ip: string): Promise<string | null> {
     const result = reader.get(ip);
     return result?.country?.iso_code ?? null;
   } catch (error) {
-    console.error('[GeoIP] Failed to resolve country for IP:', error);
+    console.error('[GeoIP] Failed to resolve country for IP', ip, error);
     return null;
   }
 }

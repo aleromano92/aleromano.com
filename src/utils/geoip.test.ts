@@ -101,7 +101,8 @@ describe('GeoIP utility', () => {
 
       expect(result).toBeNull();
       expect(consoleSpy).toHaveBeenCalledWith(
-        '[GeoIP] Failed to resolve country for IP:',
+        '[GeoIP] Failed to resolve country for IP',
+        '8.8.8.8',
         expect.any(Error)
       );
       consoleSpy.mockRestore();

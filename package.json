@@ -17,7 +17,7 @@
     "db:seed": "node scripts/seed-analytics.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "postinstall": "node -e \"import('geolite2-redist').then(g => g.downloadDbs())\""
+    "postinstall": "node -e \"if (process.env.CI || process.env.GEOIP_DOWNLOAD === '0') { process.exit(0); } import('geolite2-redist').then(g => g.downloadDbs())\""
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
