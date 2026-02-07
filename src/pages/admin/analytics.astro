@@ -1,19 +1,45 @@
 ---
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { analyticsManager } from '../../utils/database';
 
+// Read time range from query params (default 30 days)
+const daysParam = Astro.url.searchParams.get('days');
+const parsedDays = daysParam !== null ? parseInt(daysParam, 10) : NaN;
+const normalizedDays = Number.isNaN(parsedDays) ? 30 : parsedDays;
+const days = Math.min(Math.max(normalizedDays, 1), 365);
+
 // Fetch analytics data
-const days = 30;
 const summary = analyticsManager.getSummary(days);
 const dailyStats = analyticsManager.getDailyStats(days);
 const topPages = analyticsManager.getTopPages(20, days);
 const topReferers = analyticsManager.getTopReferers(20, days);
 const avgTimeOnPage = analyticsManager.getAverageTimeOnPage(days);
 const recentEvents = analyticsManager.getRecentEvents(50);
+const countryStats = analyticsManager.getVisitorsByCountry(days);
+const eventBreakdown = analyticsManager.getEventBreakdown(days);
 
 // Prepare chart data (reverse for chronological order)
 const chartLabels = dailyStats.map((d) => d.date).reverse();
 const chartVisits = dailyStats.map((d) => d.visits).reverse();
 const chartUnique = dailyStats.map((d) => d.uniqueVisitors).reverse();
+
+// Prepare event breakdown for doughnut chart
+const eventLabels = eventBreakdown.map((e) => {
+    const labels: Record<string, string> = {
+        page_view: 'Page Views',
+        click: 'Clicks',
+        time_on_page: 'Time on Page',
+    };
+    return labels[e.type] || e.type;
+});
+const eventCounts = eventBreakdown.map((e) => e.count);
+
+// Prepare top pages for horizontal bar (top 10)
+const topPagesBarLabels = topPages.slice(0, 10).map((p) => (p.path.length > 30 ? p.path.slice(0, 27) + '...' : p.path));
+const topPagesBarValues = topPages.slice(0, 10).map((p) => p.visits);
+
+// Prepare country data for choropleth
+const countryDataJson = JSON.stringify(countryStats);
 
 // Format duration helper
 function formatDuration(seconds: number): string {
@@ -32,55 +58,104 @@ function formatTimestamp(unixSeconds: number): string {
         minute: '2-digit',
     });
 }
+
+const timeRanges = [
+    { label: '7d', value: 7 },
+    { label: '30d', value: 30 },
+    { label: '90d', value: 90 },
+];
 ---
 
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="robots" content="noindex, nofollow" />
-        <title>Analytics Dashboard | Alessandro Romano</title>
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    </head>
-    <body>
-        <div class="dashboard">
-            <header>
-                <h1>📊 Analytics Dashboard</h1>
-                <span class="period-badge">Last {days} days</span>
-            </header>
+<BaseLayout pageTitle="Analytics Dashboard" description="Site analytics dashboard">
+    <meta slot="head" name="robots" content="noindex, nofollow" />
 
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <h3>Total Page Views</h3>
-                    <div class="value">{summary.totalVisits.toLocaleString()}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Unique Visitors</h3>
-                    <div class="value">{summary.uniqueVisitors.toLocaleString()}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Total Events</h3>
-                    <div class="value">{summary.totalEvents.toLocaleString()}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Avg. Time on Page</h3>
-                    <div class="value">{formatDuration(summary.avgTimeOnPage)}</div>
-                </div>
-            </section>
+    <!-- Time range selector -->
+    <div class="time-range-selector">
+        {
+            timeRanges.map((range) => (
+                <a
+                    href={`/admin/analytics?days=${range.value}`}
+                    class:list={['range-btn', { active: days === range.value }]}
+                >
+                    {range.label}
+                </a>
+            ))
+        }
+    </div>
 
-            <section class="chart-container">
-                <h2>Daily Traffic</h2>
-                <div class="chart-wrapper">
-                    <canvas id="trafficChart"></canvas>
-                </div>
-            </section>
+    <!-- Summary Cards -->
+    <section class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Page Views</h3>
+            <div class="value">{summary.totalVisits.toLocaleString()}</div>
+        </div>
+        <div class="stat-card">
+            <h3>Unique Visitors</h3>
+            <div class="value">{summary.uniqueVisitors.toLocaleString()}</div>
+        </div>
+        <div class="stat-card">
+            <h3>Total Events</h3>
+            <div class="value">{summary.totalEvents.toLocaleString()}</div>
+        </div>
+        <div class="stat-card">
+            <h3>Avg. Time on Page</h3>
+            <div class="value">{formatDuration(summary.avgTimeOnPage)}</div>
+        </div>
+    </section>
 
-            <section class="tables-grid">
-                <div class="table-card">
-                    <h2>Top Pages</h2>
-                    {
-                        topPages.length > 0 ? (
+    <!-- Charts Row 1: Daily Traffic + Event Breakdown -->
+    <section class="charts-row">
+        <div class="chart-card chart-wide">
+            <h2>Daily Traffic</h2>
+            <div class="chart-wrapper">
+                <canvas id="trafficChart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card chart-narrow">
+            <h2>Event Breakdown</h2>
+            <div class="chart-wrapper chart-wrapper-square">
+                {eventCounts.length > 0 ? <canvas id="eventChart" /> : <div class="empty-state">No event data yet</div>}
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Row 2: Country Map + Top Pages Bar -->
+    <section class="charts-row">
+        <div class="chart-card chart-wide">
+            <h2>Visitors by Country</h2>
+            {
+                countryStats.length > 0 ? (
+                    <div class="chart-wrapper">
+                        <canvas id="geoChart" />
+                    </div>
+                ) : (
+                    <div class="empty-state">No country data yet. Geo data is collected from new visits.</div>
+                )
+            }
+        </div>
+        <div class="chart-card chart-narrow">
+            <h2>Top Pages</h2>
+            <div class="chart-wrapper">
+                {
+                    topPagesBarValues.length > 0 ? (
+                        <canvas id="topPagesChart" />
+                    ) : (
+                        <div class="empty-state">No page data yet</div>
+                    )
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Tables -->
+    <section class="tables-section">
+        <h2>Detailed Data</h2>
+        <div class="tables-grid">
+            <div class="table-card">
+                <h3>Top Pages</h3>
+                {
+                    topPages.length > 0 ? (
+                        <div class="table-scroll">
                             <table>
                                 <thead>
                                     <tr>
@@ -101,16 +176,18 @@ function formatTimestamp(unixSeconds: number): string {
                                     ))}
                                 </tbody>
                             </table>
-                        ) : (
-                            <div class="empty-state">No data yet</div>
-                        )
-                    }
-                </div>
+                        </div>
+                    ) : (
+                        <div class="empty-state">No data yet</div>
+                    )
+                }
+            </div>
 
-                <div class="table-card">
-                    <h2>Top Referers</h2>
-                    {
-                        topReferers.length > 0 ? (
+            <div class="table-card">
+                <h3>Top Referers</h3>
+                {
+                    topReferers.length > 0 ? (
+                        <div class="table-scroll">
                             <table>
                                 <thead>
                                     <tr>
@@ -129,16 +206,18 @@ function formatTimestamp(unixSeconds: number): string {
                                     ))}
                                 </tbody>
                             </table>
-                        ) : (
-                            <div class="empty-state">No data yet</div>
-                        )
-                    }
-                </div>
+                        </div>
+                    ) : (
+                        <div class="empty-state">No data yet</div>
+                    )
+                }
+            </div>
 
-                <div class="table-card">
-                    <h2>Avg. Time on Page (by path)</h2>
-                    {
-                        avgTimeOnPage.length > 0 ? (
+            <div class="table-card">
+                <h3>Avg. Time on Page</h3>
+                {
+                    avgTimeOnPage.length > 0 ? (
+                        <div class="table-scroll">
                             <table>
                                 <thead>
                                     <tr>
@@ -159,212 +238,418 @@ function formatTimestamp(unixSeconds: number): string {
                                     ))}
                                 </tbody>
                             </table>
-                        ) : (
-                            <div class="empty-state">Not enough data yet (min 3 samples per page)</div>
-                        )
-                    }
-                </div>
+                        </div>
+                    ) : (
+                        <div class="empty-state">Not enough data yet (min 3 samples per page)</div>
+                    )
+                }
+            </div>
 
-                <div class="table-card full-width">
-                    <h2>Recent Events</h2>
-                    {
-                        recentEvents.length > 0 ? (
+            {
+                countryStats.length > 0 && (
+                    <div class="table-card">
+                        <h3>Visitors by Country</h3>
+                        <div class="table-scroll">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Time</th>
-                                        <th>Type</th>
-                                        <th>Path</th>
-                                        <th>Element</th>
-                                        <th class="number-cell">Duration</th>
+                                        <th>Country</th>
+                                        <th class="number-cell">Views</th>
+                                        <th class="number-cell">Unique</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {recentEvents.map((event) => (
+                                    {countryStats.map((cs) => (
                                         <tr>
-                                            <td style="white-space: nowrap;">{formatTimestamp(event.createdAt)}</td>
-                                            <td>
-                                                <span class={`event-type event-type-${event.type}`}>
-                                                    {event.type === 'click' ? '🖱️' : '⏱️'} {event.type}
-                                                </span>
-                                            </td>
-                                            <td class="path-cell" title={event.path}>
-                                                {event.path}
-                                            </td>
-                                            <td class="path-cell" title={event.href || event.elementText || ''}>
-                                                {event.type === 'click' ? (
-                                                    <>
-                                                        {event.elementTag && <code>&lt;{event.elementTag}&gt;</code>}
-                                                        {event.elementId && (
-                                                            <span class="element-id">#{event.elementId}</span>
-                                                        )}
-                                                        {event.elementText && (
-                                                            <span class="element-text">{event.elementText}</span>
-                                                        )}
-                                                        {event.href && <span class="element-href">→ {event.href}</span>}
-                                                    </>
-                                                ) : (
-                                                    '—'
-                                                )}
-                                            </td>
-                                            <td class="number-cell">
-                                                {event.duration ? formatDuration(event.duration / 1000) : '—'}
-                                            </td>
+                                            <td>{cs.country}</td>
+                                            <td class="number-cell">{cs.visits.toLocaleString()}</td>
+                                            <td class="number-cell">{cs.uniqueVisitors.toLocaleString()}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
-                        ) : (
-                            <div class="empty-state">No events recorded yet</div>
-                        )
-                    }
-                </div>
-            </section>
+                        </div>
+                    </div>
+                )
+            }
         </div>
 
-        <script is:inline define:vars={{ chartLabels, chartVisits, chartUnique }}>
-            // Set up chart data in global scope
-            window.__chartData = { chartLabels, chartVisits, chartUnique };
-        </script>
-
-        <script>
-            import { Chart, registerables } from 'chart.js';
-
-            // Type declarations for data passed from server
-            declare global {
-                interface Window {
-                    __chartData: {
-                        chartLabels: string[];
-                        chartVisits: number[];
-                        chartUnique: number[];
-                    };
-                }
+        <!-- Recent Events (full width) -->
+        <div class="table-card table-card-full">
+            <h3>Recent Events</h3>
+            {
+                recentEvents.length > 0 ? (
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Type</th>
+                                    <th>Path</th>
+                                    <th>Element</th>
+                                    <th class="number-cell">Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {recentEvents.map((event) => (
+                                    <tr>
+                                        <td class="nowrap">{formatTimestamp(event.createdAt)}</td>
+                                        <td>
+                                            <span class={`event-badge event-badge-${event.type}`}>
+                                                {event.type === 'click' ? '🖱️' : '⏱️'} {event.type}
+                                            </span>
+                                        </td>
+                                        <td class="path-cell" title={event.path}>
+                                            {event.path}
+                                        </td>
+                                        <td class="path-cell" title={event.href || event.elementText || ''}>
+                                            {event.type === 'click' ? (
+                                                <>
+                                                    {event.elementTag && <code>&lt;{event.elementTag}&gt;</code>}
+                                                    {event.elementId && <span class="el-id">#{event.elementId}</span>}
+                                                    {event.elementText && (
+                                                        <span class="el-text">{event.elementText}</span>
+                                                    )}
+                                                    {event.href && <span class="el-href">→ {event.href}</span>}
+                                                </>
+                                            ) : (
+                                                '—'
+                                            )}
+                                        </td>
+                                        <td class="number-cell">
+                                            {event.duration ? formatDuration(event.duration / 1000) : '—'}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <div class="empty-state">No events recorded yet</div>
+                )
             }
+        </div>
+    </section>
 
-            // Register Chart.js components
-            Chart.register(...registerables);
+    <!-- Pass data to client-side scripts -->
+    <script
+        is:inline
+        define:vars={{
+            chartLabels,
+            chartVisits,
+            chartUnique,
+            eventLabels,
+            eventCounts,
+            topPagesBarLabels,
+            topPagesBarValues,
+            countryDataJson,
+        }}
+    >
+        window.__analyticsData = {
+            chartLabels,
+            chartVisits,
+            chartUnique,
+            eventLabels,
+            eventCounts,
+            topPagesBarLabels,
+            topPagesBarValues,
+            countryDataJson,
+        };
+    </script>
 
-            // Get chart data from global scope
-            const { chartLabels, chartVisits, chartUnique } = window.__chartData;
+    <script>
+        import { Chart, registerables } from 'chart.js';
 
-            // Create the chart
-            const canvas = document.getElementById('trafficChart') as HTMLCanvasElement;
-            if (canvas) {
-                const ctx = canvas.getContext('2d');
-                if (ctx) {
-                    new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: chartLabels,
-                            datasets: [
-                                {
-                                    label: 'Page Views',
-                                    data: chartVisits,
-                                    borderColor: '#e94560',
-                                    backgroundColor: 'rgba(233, 69, 96, 0.1)',
-                                    fill: true,
-                                    tension: 0.3,
-                                },
-                                {
-                                    label: 'Unique Visitors',
-                                    data: chartUnique,
-                                    borderColor: '#4ade80',
-                                    backgroundColor: 'rgba(74, 222, 128, 0.1)',
-                                    fill: true,
-                                    tension: 0.3,
-                                },
-                            ],
+        declare global {
+            interface Window {
+                __analyticsData: {
+                    chartLabels: string[];
+                    chartVisits: number[];
+                    chartUnique: number[];
+                    eventLabels: string[];
+                    eventCounts: number[];
+                    topPagesBarLabels: string[];
+                    topPagesBarValues: number[];
+                    countryDataJson: string;
+                };
+            }
+        }
+
+        Chart.register(...registerables);
+
+        const {
+            chartLabels,
+            chartVisits,
+            chartUnique,
+            eventLabels,
+            eventCounts,
+            topPagesBarLabels,
+            topPagesBarValues,
+            countryDataJson,
+        } = window.__analyticsData;
+
+        // Detect theme for chart colors
+        function getChartColors() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+            // Try to use the primary color from CSS variables, with a safe fallback
+            const rootStyles = getComputedStyle(document.documentElement);
+            const cssPrimary = rootStyles.getPropertyValue('--color-primary').trim();
+            const primary = cssPrimary || '#e94560';
+
+            return {
+                text: isDark ? '#e8dcc8' : '#493572',
+                grid: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+                primary,
+            };
+        }
+
+        const colors = getChartColors();
+
+        // --- Daily Traffic Line Chart ---
+        const trafficCanvas = document.getElementById('trafficChart') as HTMLCanvasElement | null;
+        if (trafficCanvas) {
+            new Chart(trafficCanvas, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: 'Page Views',
+                            data: chartVisits,
+                            borderColor: '#e94560',
+                            backgroundColor: 'rgba(233, 69, 96, 0.1)',
+                            fill: true,
+                            tension: 0.3,
                         },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            interaction: {
-                                intersect: false,
-                                mode: 'index',
-                            },
-                            scales: {
-                                x: {
-                                    grid: { color: 'rgba(255,255,255,0.05)' },
-                                    ticks: { color: '#a0a0a0' },
-                                },
-                                y: {
-                                    beginAtZero: true,
-                                    grid: { color: 'rgba(255,255,255,0.05)' },
-                                    ticks: { color: '#a0a0a0' },
-                                },
-                            },
-                            plugins: {
-                                legend: {
-                                    labels: { color: '#eaeaea' },
-                                },
-                            },
+                        {
+                            label: 'Unique Visitors',
+                            data: chartUnique,
+                            borderColor: '#4ade80',
+                            backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                            fill: true,
+                            tension: 0.3,
                         },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    scales: {
+                        x: {
+                            grid: { color: colors.grid },
+                            ticks: { color: colors.text, maxTicksLimit: 10 },
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: colors.grid },
+                            ticks: { color: colors.text },
+                        },
+                    },
+                    plugins: { legend: { labels: { color: colors.text } } },
+                },
+            });
+        }
+
+        // --- Event Breakdown Doughnut ---
+        const eventCanvas = document.getElementById('eventChart') as HTMLCanvasElement | null;
+        if (eventCanvas && eventCounts.length > 0) {
+            new Chart(eventCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: eventLabels,
+                    datasets: [
+                        {
+                            data: eventCounts,
+                            backgroundColor: ['#e94560', '#3b82f6', '#4ade80'],
+                            borderWidth: 0,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: colors.text, padding: 16 },
+                        },
+                    },
+                },
+            });
+        }
+
+        // --- Top Pages Horizontal Bar ---
+        const topPagesCanvas = document.getElementById('topPagesChart') as HTMLCanvasElement | null;
+        if (topPagesCanvas && topPagesBarValues.length > 0) {
+            new Chart(topPagesCanvas, {
+                type: 'bar',
+                data: {
+                    labels: topPagesBarLabels,
+                    datasets: [
+                        {
+                            label: 'Views',
+                            data: topPagesBarValues,
+                            backgroundColor: '#e94560',
+                            borderRadius: 4,
+                        },
+                    ],
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { color: colors.grid },
+                            ticks: { color: colors.text },
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { color: colors.text, font: { size: 11 } },
+                        },
+                    },
+                    plugins: { legend: { display: false } },
+                },
+            });
+        }
+
+        // --- Bubble Map ---
+        const geoCanvas = document.getElementById('geoChart') as HTMLCanvasElement | null;
+        if (geoCanvas && countryDataJson) {
+            type CountryVisit = { country: string; visits: number };
+            const parsedCountryData: CountryVisit[] = JSON.parse(countryDataJson);
+
+            if (parsedCountryData.length > 0) {
+                Promise.all([
+                    import('chartjs-chart-geo'),
+                    fetch('/data/countries-110m.json').then((r) => r.json()),
+                    fetch('/data/country-centroids.json').then((r) => r.json()),
+                ])
+                    .then(([geo, topoData, countryCentroids]) => {
+                        const { BubbleMapController, GeoFeature, ProjectionScale, SizeScale } = geo;
+                        Chart.register(BubbleMapController, GeoFeature, ProjectionScale, SizeScale);
+
+                        const topojson = geo.topojson;
+                        const countriesGeo = (topojson.feature as any)(topoData, topoData.objects.countries).features;
+
+                        // Build bubble data points from our country stats
+                        const bubbleData = parsedCountryData
+                            .filter((d) => countryCentroids[d.country])
+                            .map((d) => ({
+                                latitude: countryCentroids[d.country][0],
+                                longitude: countryCentroids[d.country][1],
+                                value: d.visits,
+                            }));
+
+                        const bubbleLabels = parsedCountryData
+                            .filter((d) => countryCentroids[d.country])
+                            .map((d) => d.country);
+
+                        new Chart(geoCanvas, {
+                            type: 'bubbleMap' as const,
+                            data: {
+                                labels: bubbleLabels,
+                                datasets: [
+                                    {
+                                        label: 'Visitors',
+                                        outline: countriesGeo,
+                                        data: bubbleData,
+                                        backgroundColor: colors.primary + '99',
+                                        borderColor: colors.primary,
+                                        borderWidth: 1,
+                                    },
+                                ],
+                            },
+                            options: {
+                                showOutline: true,
+                                showGraticule: false,
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: (ctx: any) => {
+                                                const label = ctx.chart.data.labels?.[ctx.dataIndex] || '';
+                                                const val = ctx.raw?.value ?? 0;
+                                                return `${label}: ${val} visits`;
+                                            },
+                                        },
+                                    },
+                                },
+                                scales: {
+                                    projection: {
+                                        axis: 'x' as const,
+                                        projection: 'equalEarth',
+                                    },
+                                    size: {
+                                        axis: 'x' as const,
+                                        size: [4, 30],
+                                        legend: {
+                                            position: 'bottom-right' as const,
+                                            align: 'bottom' as const,
+                                        },
+                                    },
+                                },
+                            },
+                        } as any);
+                    })
+                    .catch((err: unknown) => {
+                        console.warn('[Analytics] Could not load geo chart:', err);
                     });
-                }
             }
-        </script>
-    </body>
-</html>
+        }
+    </script>
+</BaseLayout>
 
 <style>
-    @import '../../styles/theme.css';
-
-    /* Dashboard-specific color overrides for dark admin theme */
-    :root {
-        --admin-bg: oklch(0.15 0.03 260);
-        --admin-card: oklch(0.18 0.04 260);
-        --admin-border: oklch(0.25 0.05 260);
-        --admin-accent: oklch(0.65 0.25 15);
-        --admin-success: oklch(0.75 0.2 145);
-        --admin-info: oklch(0.7 0.15 250);
-        --admin-warning: oklch(0.75 0.18 85);
-    }
-
-    body {
-        font-family: var(--font-family);
-        background: var(--admin-bg);
-        color: var(--color-text);
-        line-height: var(--line-height-base);
-        padding: var(--space-lg);
-    }
-
-    .dashboard {
+    /* Override container width for dashboard — needs more room */
+    :global(.container) {
         max-width: 1400px;
-        margin: 0 auto;
     }
 
-    header {
+    /* Time range selector */
+    .time-range-selector {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        gap: var(--space-xs);
         margin-bottom: var(--space-lg);
-        padding-bottom: var(--space-sm);
-        border-bottom: 1px solid var(--admin-border);
     }
 
-    header h1 {
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-bold);
-    }
-
-    .period-badge {
-        background: var(--admin-border);
+    .range-btn {
         padding: var(--space-xs) var(--space-sm);
+        border: 1px solid var(--color-border-light);
         border-radius: var(--border-radius);
-        font-size: var(--font-size-sm);
+        text-decoration: none;
         color: var(--color-text-secondary);
+        font-size: var(--font-size-sm);
+        transition: all 0.2s ease;
     }
 
+    .range-btn:hover {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        transform: none;
+        text-shadow: none;
+    }
+
+    .range-btn.active {
+        background: var(--color-accent);
+        color: var(--color-bg);
+        border-color: var(--color-accent);
+    }
+
+    /* Summary Cards */
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: var(--space-md);
         margin-bottom: var(--space-lg);
     }
 
     .stat-card {
-        background: var(--admin-card);
-        border: 1px solid var(--admin-border);
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border-light);
         border-radius: var(--border-radius-lg);
         padding: var(--space-md);
     }
@@ -373,26 +658,33 @@ function formatTimestamp(unixSeconds: number): string {
         font-size: var(--font-size-sm);
         color: var(--color-text-secondary);
         font-weight: 500;
-        margin-bottom: var(--space-xs);
+        margin: 0 0 var(--space-xs);
     }
 
     .stat-card .value {
         font-size: var(--font-size-xl);
         font-weight: 700;
-        color: var(--admin-accent);
+        color: var(--color-accent);
     }
 
-    .chart-container {
-        background: var(--admin-card);
-        border: 1px solid var(--admin-border);
-        border-radius: var(--border-radius-lg);
-        padding: var(--space-md);
+    /* Chart layout */
+    .charts-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: var(--space-md);
         margin-bottom: var(--space-lg);
     }
 
-    .chart-container h2 {
+    .chart-card {
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border-light);
+        border-radius: var(--border-radius-lg);
+        padding: var(--space-md);
+    }
+
+    .chart-card h2 {
         font-size: var(--font-size-md);
-        margin-bottom: var(--space-sm);
+        margin: 0 0 var(--space-sm);
     }
 
     .chart-wrapper {
@@ -400,23 +692,44 @@ function formatTimestamp(unixSeconds: number): string {
         position: relative;
     }
 
+    .chart-wrapper-square {
+        height: 260px;
+    }
+
+    /* Tables section */
+    .tables-section {
+        margin-top: var(--space-lg);
+    }
+
+    .tables-section > h2 {
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--space-md);
+    }
+
     .tables-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: var(--space-md);
     }
 
     .table-card {
-        background: var(--admin-card);
-        border: 1px solid var(--admin-border);
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border-light);
         border-radius: var(--border-radius-lg);
         padding: var(--space-md);
-        overflow: hidden;
     }
 
-    .table-card h2 {
+    .table-card h3 {
         font-size: var(--font-size-md);
-        margin-bottom: var(--space-sm);
+        margin: 0 0 var(--space-sm);
+    }
+
+    .table-card-full {
+        margin-top: var(--space-md);
+    }
+
+    .table-scroll {
+        overflow-x: auto;
     }
 
     table {
@@ -427,8 +740,8 @@ function formatTimestamp(unixSeconds: number): string {
     th,
     td {
         text-align: left;
-        padding: 0.75rem;
-        border-bottom: 1px solid var(--admin-border);
+        padding: 0.625rem 0.75rem;
+        border-bottom: 1px solid var(--color-border-light);
     }
 
     th {
@@ -448,65 +761,58 @@ function formatTimestamp(unixSeconds: number): string {
     }
 
     .path-cell {
-        max-width: 300px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        word-break: break-all;
     }
 
     .number-cell {
         text-align: right;
         font-variant-numeric: tabular-nums;
+        white-space: nowrap;
     }
 
-    .table-card.full-width {
-        grid-column: 1 / -1;
+    .nowrap {
+        white-space: nowrap;
     }
 
-    .event-type {
+    /* Event badges */
+    .event-badge {
         display: inline-block;
-        padding: var(--space-xs) var(--space-xs);
+        padding: 0.125rem var(--space-xs);
         border-radius: var(--border-radius-sm);
         font-size: var(--font-size-xs);
         font-weight: 500;
     }
 
-    .event-type-click {
-        background: oklch(from var(--admin-info) l c h / 0.2);
-        color: var(--admin-info);
+    .event-badge-click {
+        background: oklch(0.6 0.15 250 / 0.2);
+        color: oklch(0.6 0.15 250);
     }
 
-    .event-type-time_on_page {
-        background: oklch(from var(--admin-success) l c h / 0.2);
-        color: var(--admin-success);
+    .event-badge-time_on_page {
+        background: oklch(0.7 0.2 145 / 0.2);
+        color: oklch(0.7 0.2 145);
     }
 
-    .element-id {
-        color: var(--admin-warning);
+    .el-id {
+        color: oklch(0.75 0.18 85);
         font-size: var(--font-size-xs);
         margin-left: var(--space-xs);
     }
 
-    .element-text {
+    .el-text {
         color: var(--color-text-secondary);
         font-size: var(--font-size-xs);
         margin-left: var(--space-xs);
-        max-width: 100px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        display: inline-block;
-        vertical-align: middle;
     }
 
-    .element-href {
-        color: var(--admin-info);
+    .el-href {
+        color: var(--color-accent);
         font-size: var(--font-size-xs);
         margin-left: var(--space-xs);
     }
 
     code {
-        background: oklch(1 0 0 / 0.1);
+        background: var(--color-bg);
         padding: 0.125rem var(--space-xs);
         border-radius: var(--border-radius-sm);
         font-size: var(--font-size-xs);
@@ -518,19 +824,18 @@ function formatTimestamp(unixSeconds: number): string {
         color: var(--color-text-secondary);
     }
 
+    /* Responsive */
     @media (max-width: 768px) {
-        body {
-            padding: var(--space-sm);
-        }
-
-        header {
-            flex-direction: column;
-            gap: var(--space-sm);
-            align-items: flex-start;
+        .charts-row {
+            grid-template-columns: 1fr;
         }
 
         .tables-grid {
             grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
         }
     }
 </style>

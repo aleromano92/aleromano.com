@@ -1,9 +1,9 @@
 import { createHash } from 'crypto';
 import { getDatabase } from './connection';
-import type { VisitRecord, EventRecord, DailyStats, TopPage, TopReferer } from '../../types/analytics';
+import type { VisitRecord, EventRecord, DailyStats, TopPage, TopReferer, CountryStats, EventTypeBreakdown } from '../../types/analytics';
 
 // Re-export types for compatibility with existing imports
-export type { VisitRecord, EventRecord, DailyStats, TopPage, TopReferer };
+export type { VisitRecord, EventRecord, DailyStats, TopPage, TopReferer, CountryStats, EventTypeBreakdown };
 
 // ============================================================================
 // Visitor Hash Generation (Privacy-preserving daily rotation)
@@ -314,6 +314,57 @@ export const analyticsManager = {
       duration: row.duration,
       createdAt: row.created_at
     }));
+  },
+
+  /**
+   * Get visitor counts grouped by country code
+   */
+  getVisitorsByCountry(days: number = 30): CountryStats[] {
+    const db = getDatabase();
+    const cutoff = getDaysAgoTimestamp(days);
+    
+    const rows = db.prepare(`
+      SELECT 
+        country,
+        COUNT(*) as visits,
+        COUNT(DISTINCT visitor_hash) as unique_visitors
+      FROM analytics_visits
+      WHERE created_at >= ? AND country IS NOT NULL AND country != ''
+      GROUP BY country
+      ORDER BY visits DESC
+    `).all(cutoff) as Array<{ country: string; visits: number; unique_visitors: number }>;
+    
+    return rows.map(row => ({
+      country: row.country,
+      visits: row.visits,
+      uniqueVisitors: row.unique_visitors
+    }));
+  },
+
+  /**
+   * Get event counts broken down by type (page_view from visits, click/time_on_page from events)
+   */
+  getEventBreakdown(days: number = 30): EventTypeBreakdown[] {
+    const db = getDatabase();
+    const cutoff = getDaysAgoTimestamp(days);
+    
+    const visitCount = db.prepare(`
+      SELECT COUNT(*) as count FROM analytics_visits WHERE created_at >= ?
+    `).get(cutoff) as { count: number };
+    
+    const eventCounts = db.prepare(`
+      SELECT type, COUNT(*) as count
+      FROM analytics_events
+      WHERE created_at >= ?
+      GROUP BY type
+    `).all(cutoff) as Array<{ type: string; count: number }>;
+    
+    const breakdown: EventTypeBreakdown[] = [
+      { type: 'page_view', count: visitCount.count },
+      ...eventCounts
+    ];
+    
+    return breakdown.filter(e => e.count > 0);
   },
 
   /**

@@ -70,3 +70,14 @@ export interface TopReferer {
   referer: string;
   visits: number;
 }
+
+export interface CountryStats {
+  country: string;
+  visits: number;
+  uniqueVisitors: number;
+}
+
+export interface EventTypeBreakdown {
+  type: string;
+  count: number;
+}

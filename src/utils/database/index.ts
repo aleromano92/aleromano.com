@@ -7,5 +7,7 @@ export {
   type EventRecord,
   type DailyStats,
   type TopPage,
-  type TopReferer
+  type TopReferer,
+  type CountryStats,
+  type EventTypeBreakdown
 } from './analytics';
