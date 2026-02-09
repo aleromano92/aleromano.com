@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import profilePic from '../assets/alepro.png';
 import '../styles/theme.css';
 import '../styles/global.css';
+import '../styles/buttons.css';
 
 const { frontmatter } = Astro.props;
 const pageTitle = frontmatter.title || 'Alessandro Romano - CV';
@@ -45,6 +46,11 @@ const description = frontmatter.description || 'Curriculum Vitae of Alessandro R
 
             .cv-section {
                 margin-bottom: 3rem;
+            }
+
+            .cv-actions {
+                margin: 1.5rem 0 2rem;
+                clear: both;
             }
 
             /* Markdown Content Styling - targeting elements inside the slot */
@@ -159,6 +165,10 @@ const description = frontmatter.description || 'Curriculum Vitae of Alessandro R
                 a {
                     text-decoration: none;
                     color: black;
+                }
+
+                .cv-actions {
+                    display: none;
                 }
             }
         </style>

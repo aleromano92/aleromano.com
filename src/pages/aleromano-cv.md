@@ -12,10 +12,26 @@ description: Curriculum Vitae of Alessandro Romano
 *   **LinkedIn:** [linkedin.com/in/alessandroromano92](https://linkedin.com/in/alessandroromano92)
 *   **Website:** [aleromano.com](https://aleromano.com)
 
+<div class="cv-actions">
+	<button class="button" type="button" onclick="window.print()">Download PDF</button>
+</div>
+
 ## Summary
 I love to help people collaborate better.
 I'm addicted to details and obsessed with how things work: from Cloud services to human relationships. Since my first Hello World in RPG Maker, I have come to believe that being an Engineer is much more than coding.
 I strongly believe people come before processes and tools and I think great Team Work wins over individual contribution.
+
+## Key Skills
+*   Engineering leadership & people management (multi-team growth, hiring)
+*   Financial crime, risk, fraud & dispute management
+*   ML/AI in production (monitoring, decisioning, anomaly detection)
+*   Systems design & scalability (real-time monitoring, low-latency)
+*   Product delivery & roadmap execution (MVP to scale)
+*   Cross-functional stakeholder management (Legal, Compliance, Product)
+*   Data & observability (ETL pipelines, monitoring, SLIs/SLOs)
+*   Cost optimization & vendor strategy (build vs buy, savings)
+*   API strategy & platform thinking
+*   Change management & org scaling
 
 ## Work Experience
 
