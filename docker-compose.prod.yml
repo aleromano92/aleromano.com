@@ -56,6 +56,57 @@ services:
       - GMAIL_PASSWORD=${GOOGLE_APP_PASSWORD} # Your Google App Password
       - RELAY_DOMAINS=* # Or specify domains if needed, * allows all
 
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    restart: unless-stopped
+    expose:
+      - 9090
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+
+  node_exporter:
+    image: prom/node-exporter:v1.8.1
+    restart: unless-stopped
+    expose:
+      - 9100
+    command:
+      - "--path.rootfs=/host"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)"
+    volumes:
+      - /:/host:ro,rslave
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    restart: unless-stopped
+    expose:
+      - 8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+
+  grafana:
+    image: grafana/grafana:10.4.5
+    restart: unless-stopped
+    expose:
+      - 3000
+    environment:
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s/admin/obs
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASS}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+
 volumes:
   nginx_cache:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
     driver: local

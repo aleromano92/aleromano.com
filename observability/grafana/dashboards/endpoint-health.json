@@ -1,0 +1,70 @@
+{
+    "id": null,
+    "uid": "endpoint-health",
+    "title": "Endpoint Health",
+    "timezone": "browser",
+    "schemaVersion": 39,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+        {
+            "type": "stat",
+            "title": "Scrape Targets Up",
+            "datasource": "Prometheus",
+            "targets": [
+                {
+                    "expr": "up",
+                    "legendFormat": "{{job}}"
+                }
+            ],
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "orientation": "horizontal",
+                "textMode": "value_and_name"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "mappings": [
+                        {
+                            "type": "value",
+                            "options": {
+                                "0": {
+                                    "text": "Down"
+                                },
+                                "1": {
+                                    "text": "Up"
+                                }
+                            }
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "green",
+                                "value": 1
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            }
+        }
+    ]
+}
