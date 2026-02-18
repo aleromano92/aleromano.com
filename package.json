@@ -12,6 +12,7 @@
     "docker:build": "docker build -t aleromano.com .",
     "docker:clean": "docker compose down --remove-orphans",
     "docker:dev": "npm run docker:clean && docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build",
+    "docker:dev:obs": "npm run docker:clean && docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile observability up --build",
     "translate": "node scripts/translate.js",
     "translate:missing": "node scripts/translate-missing.js",
     "db:seed": "node scripts/seed-analytics.mjs",
