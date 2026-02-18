@@ -61,9 +61,21 @@ services:
     restart: unless-stopped
     expose:
       - 9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=7d'
+      - '--storage.tsdb.retention.size=1GB'
     volumes:
       - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
+    depends_on:
+      - node_exporter
+      - cadvisor
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   node_exporter:
     image: prom/node-exporter:v1.8.1
@@ -75,6 +87,10 @@ services:
       - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)"
     volumes:
       - /:/host:ro,rslave
+    deploy:
+      resources:
+        limits:
+          memory: 128M
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.1
@@ -87,6 +103,10 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   grafana:
     image: grafana/grafana:10.4.5
@@ -94,7 +114,7 @@ services:
     expose:
       - 3000
     environment:
-      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s/admin/obs
+      - GF_SERVER_ROOT_URL=https://aleromano.com/admin/obs
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASS}
@@ -102,6 +122,12 @@ services:
       - grafana_data:/var/lib/grafana
       - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
 volumes:
   nginx_cache:
