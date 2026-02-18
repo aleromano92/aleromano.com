@@ -6,6 +6,7 @@ import { TwitterViewAdapter } from './twitter-view-adapter';
 import type { CacheManager } from '../database';
 
 const CURRENT_LANGUAGE = 'en';
+const DEFAULT_TWITTER_CACHE_TTL_MS = 72 * 60 * 60 * 1000;
 
 // Create a mock cache manager to avoid real SQLite calls
 const createMockCache = (): CacheManager => ({
@@ -195,7 +196,7 @@ describe('TwitterService', () => {
       expect(mockCache.set).toHaveBeenCalledWith(
         'twitter:timeline',
         expect.any(String),
-        36 * 60 * 60 * 1000
+        DEFAULT_TWITTER_CACHE_TTL_MS
       );
       
       // Capture what was cached
@@ -218,7 +219,7 @@ describe('TwitterService', () => {
       expect(mockCache.set).toHaveBeenCalledWith(
         'twitter:timeline',
         expect.any(String),
-        36 * 60 * 60 * 1000 // 36 hours TTL
+        DEFAULT_TWITTER_CACHE_TTL_MS
       );
       
       // Second call: simulate cache expired (returns null again)

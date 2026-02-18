@@ -23,8 +23,8 @@ export interface TwitterRawDataResponse {
 // Alessandro Romano's Twitter user ID (this never changes)
 const TWITTER_USER_ID = '4266046641';
 
-// 36 hours TTL (significantly reduces API calls due to monthly limit)
-const CACHE_TTL = 36 * 60 * 60 * 1000;
+// 72 hours TTL (reduces API calls while keeping content reasonably fresh)
+const CACHE_TTL = 72 * 60 * 60 * 1000;
 
 // Cache key for Twitter API responses
 const TWITTER_CACHE_KEY = 'twitter:timeline';
