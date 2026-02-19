@@ -7,8 +7,8 @@ contactPoints:
       - uid: telegram-disk-alerts
         type: telegram
         settings:
-          bottoken: !!str $__env{TELEGRAM_BOT_TOKEN}
-          chatid: !!str $__env{TELEGRAM_CHAT_ID}
+          bottoken: "${TELEGRAM_BOT_TOKEN}"
+          chatid: "${TELEGRAM_CHAT_ID}"
           parse_mode: HTML
 
 policies:
