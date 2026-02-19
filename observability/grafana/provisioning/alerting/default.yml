@@ -23,7 +23,7 @@ policies:
 
 muteTimes: []
 templates: []
-rules:
+groups:
   - orgId: 1
     name: vps-disk-usage-alerts
     folder: Infrastructure
