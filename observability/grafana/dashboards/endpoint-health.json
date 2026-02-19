@@ -10,10 +10,7 @@
         {
             "type": "stat",
             "title": "Targets Up",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "sum(up)",
@@ -60,10 +57,7 @@
         {
             "type": "stat",
             "title": "Total Targets",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "count(up)",
@@ -97,10 +91,7 @@
         {
             "type": "stat",
             "title": "Prometheus",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "up{job=\"prometheus\"}",
@@ -159,10 +150,7 @@
         {
             "type": "stat",
             "title": "Node Exporter",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "up{job=\"node_exporter\"}",
@@ -221,10 +209,7 @@
         {
             "type": "stat",
             "title": "cAdvisor",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "up{job=\"cadvisor\"}",
@@ -283,10 +268,7 @@
         {
             "type": "timeseries",
             "title": "Target Uptime (% over last 6h)",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "100 * avg_over_time(up[6h])",
@@ -312,10 +294,7 @@
         {
             "type": "timeseries",
             "title": "Scrape Duration (95th percentile)",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "quantile by (job) (0.95, scrape_duration_seconds)",

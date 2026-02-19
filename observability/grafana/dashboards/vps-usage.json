@@ -10,10 +10,7 @@
         {
             "type": "stat",
             "title": "CPU Used",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
@@ -65,10 +62,7 @@
         {
             "type": "stat",
             "title": "Memory Used",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))",
@@ -120,10 +114,7 @@
         {
             "type": "stat",
             "title": "Disk Used (/)",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "100 * (1 - (node_filesystem_avail_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"} / node_filesystem_size_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"}))",
@@ -175,10 +166,7 @@
         {
             "type": "stat",
             "title": "Network TX",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "sum(rate(node_network_transmit_bytes_total{device!=\"lo\"}[5m]))",
@@ -213,10 +201,7 @@
         {
             "type": "timeseries",
             "title": "CPU Usage Trend (5m)",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
@@ -242,10 +227,7 @@
         {
             "type": "timeseries",
             "title": "Memory Usage Trend",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))",
@@ -271,10 +253,7 @@
         {
             "type": "timeseries",
             "title": "Disk Usage Trend (/) ",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "100 * (1 - (node_filesystem_avail_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"} / node_filesystem_size_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"}))",
@@ -300,10 +279,7 @@
         {
             "type": "timeseries",
             "title": "Network Throughput (RX/TX)",
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
+            "datasource": "Prometheus",
             "targets": [
                 {
                     "expr": "sum by (instance) (rate(node_network_receive_bytes_total{device!=\"lo\"}[5m]))",
