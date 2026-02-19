@@ -95,6 +95,14 @@ jobs:
             echo "Error: ANALYTICS_SALT secret is not set"
             exit 1
           fi
+          if [ -z "${{ secrets.TELEGRAM_BOT_TOKEN }}" ]; then
+            echo "Error: TELEGRAM_BOT_TOKEN secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.TELEGRAM_CHAT_ID }}" ]; then
+            echo "Error: TELEGRAM_CHAT_ID secret is not set"
+            exit 1
+          fi
 
       - name: Deploy to Hetzner
         uses: appleboy/ssh-action@master
@@ -169,6 +177,8 @@ jobs:
             echo "ADMIN_USER=${{ secrets['ADMIN_USER'] }}" >> .env
             echo "ADMIN_PASS=${{ secrets['ADMIN_PASS'] }}" >> .env
             echo "ANALYTICS_SALT=${{ secrets['ANALYTICS_SALT'] }}" >> .env
+            echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
+            echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
 
             # Login to GitHub Container Registry
             echo "🔑 Logging into GitHub Container Registry..."
