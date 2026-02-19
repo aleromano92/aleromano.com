@@ -4,17 +4,20 @@
     "title": "Endpoint Health",
     "timezone": "browser",
     "schemaVersion": 39,
-    "version": 1,
+    "version": 2,
     "refresh": "30s",
     "panels": [
         {
             "type": "stat",
-            "title": "Scrape Targets Up",
-            "datasource": "Prometheus",
+            "title": "Targets Up",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "targets": [
                 {
-                    "expr": "up",
-                    "legendFormat": "{{job}}"
+                    "expr": "sum(up)",
+                    "refId": "A"
                 }
             ],
             "options": {
@@ -25,7 +28,94 @@
                     "fields": "",
                     "values": false
                 },
-                "orientation": "horizontal",
+                "orientation": "auto",
+                "textMode": "value"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "green",
+                                "value": 1
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 6,
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "type": "stat",
+            "title": "Total Targets",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "count(up)",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "orientation": "auto",
+                "textMode": "value"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 0
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 6,
+                "x": 6,
+                "y": 0
+            }
+        },
+        {
+            "type": "stat",
+            "title": "Prometheus",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "up{job=\"prometheus\"}",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "orientation": "auto",
                 "textMode": "value_and_name"
             },
             "fieldConfig": {
@@ -60,10 +150,190 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 8,
-                "w": 24,
-                "x": 0,
+                "h": 5,
+                "w": 4,
+                "x": 12,
                 "y": 0
+            }
+        },
+        {
+            "type": "stat",
+            "title": "Node Exporter",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "up{job=\"node_exporter\"}",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "orientation": "auto",
+                "textMode": "value_and_name"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "mappings": [
+                        {
+                            "type": "value",
+                            "options": {
+                                "0": {
+                                    "text": "Down"
+                                },
+                                "1": {
+                                    "text": "Up"
+                                }
+                            }
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "green",
+                                "value": 1
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 4,
+                "x": 16,
+                "y": 0
+            }
+        },
+        {
+            "type": "stat",
+            "title": "cAdvisor",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "up{job=\"cadvisor\"}",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "orientation": "auto",
+                "textMode": "value_and_name"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "mappings": [
+                        {
+                            "type": "value",
+                            "options": {
+                                "0": {
+                                    "text": "Down"
+                                },
+                                "1": {
+                                    "text": "Up"
+                                }
+                            }
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "green",
+                                "value": 1
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 4,
+                "x": 20,
+                "y": 0
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "Target Uptime (% over last 6h)",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "100 * avg_over_time(up[6h])",
+                    "legendFormat": "{{job}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "min": 0,
+                    "max": 100
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 5
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "Scrape Duration (95th percentile)",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "quantile by (job) (0.95, scrape_duration_seconds)",
+                    "legendFormat": "{{job}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "s"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 5
             }
         }
     ]

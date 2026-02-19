@@ -4,79 +4,329 @@
     "title": "VPS Usage",
     "timezone": "browser",
     "schemaVersion": 39,
-    "version": 1,
+    "version": 2,
     "refresh": "30s",
     "panels": [
         {
-            "type": "timeseries",
-            "title": "CPU Usage (%)",
-            "datasource": "Prometheus",
+            "type": "stat",
+            "title": "CPU Used",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "targets": [
                 {
-                    "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
-                    "legendFormat": "{{instance}}"
+                    "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+                    "refId": "A"
                 }
             ],
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "orientation": "auto",
+                "textMode": "value"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "decimals": 1,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 70
+                            },
+                            {
+                                "color": "red",
+                                "value": 90
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
             "gridPos": {
-                "h": 8,
-                "w": 12,
+                "h": 5,
+                "w": 6,
                 "x": 0,
                 "y": 0
             }
         },
         {
-            "type": "timeseries",
-            "title": "Memory Usage (%)",
-            "datasource": "Prometheus",
+            "type": "stat",
+            "title": "Memory Used",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "targets": [
                 {
                     "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))",
-                    "legendFormat": "{{instance}}"
+                    "refId": "A"
                 }
             ],
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "orientation": "auto",
+                "textMode": "value"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "decimals": 1,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 75
+                            },
+                            {
+                                "color": "red",
+                                "value": 90
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
             "gridPos": {
-                "h": 8,
-                "w": 12,
+                "h": 5,
+                "w": 6,
+                "x": 6,
+                "y": 0
+            }
+        },
+        {
+            "type": "stat",
+            "title": "Disk Used (/)",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "100 * (1 - (node_filesystem_avail_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"} / node_filesystem_size_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"}))",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "orientation": "auto",
+                "textMode": "value"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "decimals": 1,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 80
+                            },
+                            {
+                                "color": "red",
+                                "value": 90
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 6,
                 "x": 12,
                 "y": 0
             }
         },
         {
-            "type": "timeseries",
-            "title": "Disk Usage (%)",
-            "datasource": "Prometheus",
+            "type": "stat",
+            "title": "Network TX",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "targets": [
                 {
-                    "expr": "100 * (1 - (node_filesystem_avail_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"} / node_filesystem_size_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"}))",
-                    "legendFormat": "{{instance}}"
+                    "expr": "sum(rate(node_network_transmit_bytes_total{device!=\"lo\"}[5m]))",
+                    "refId": "A"
                 }
             ],
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "orientation": "auto",
+                "textMode": "value"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "Bps",
+                    "decimals": 2
+                },
+                "overrides": []
+            },
             "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 0,
-                "y": 8
+                "h": 5,
+                "w": 6,
+                "x": 18,
+                "y": 0
             }
         },
         {
             "type": "timeseries",
-            "title": "Network Throughput (bytes/s)",
-            "datasource": "Prometheus",
+            "title": "CPU Usage Trend (5m)",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "targets": [
                 {
-                    "expr": "sum by (instance) (rate(node_network_receive_bytes_total{device!=\"lo\"}[5m]))",
-                    "legendFormat": "rx {{instance}}"
-                },
-                {
-                    "expr": "sum by (instance) (rate(node_network_transmit_bytes_total{device!=\"lo\"}[5m]))",
-                    "legendFormat": "tx {{instance}}"
+                    "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+                    "legendFormat": "{{instance}}",
+                    "refId": "A"
                 }
             ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "min": 0,
+                    "max": 100
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 5
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "Memory Usage Trend",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))",
+                    "legendFormat": "{{instance}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "min": 0,
+                    "max": 100
+                },
+                "overrides": []
+            },
             "gridPos": {
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 8
+                "y": 5
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "Disk Usage Trend (/) ",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "100 * (1 - (node_filesystem_avail_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"} / node_filesystem_size_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"}))",
+                    "legendFormat": "{{instance}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "min": 0,
+                    "max": 100
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 13
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "Network Throughput (RX/TX)",
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "targets": [
+                {
+                    "expr": "sum by (instance) (rate(node_network_receive_bytes_total{device!=\"lo\"}[5m]))",
+                    "legendFormat": "RX {{instance}}",
+                    "refId": "A"
+                },
+                {
+                    "expr": "sum by (instance) (rate(node_network_transmit_bytes_total{device!=\"lo\"}[5m]))",
+                    "legendFormat": "TX {{instance}}",
+                    "refId": "B"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "Bps"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 13
             }
         }
     ]
