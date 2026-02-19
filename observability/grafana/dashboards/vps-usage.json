@@ -1,0 +1,83 @@
+{
+    "id": null,
+    "uid": "vps-usage",
+    "title": "VPS Usage",
+    "timezone": "browser",
+    "schemaVersion": 39,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+        {
+            "type": "timeseries",
+            "title": "CPU Usage (%)",
+            "datasource": "Prometheus",
+            "targets": [
+                {
+                    "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+                    "legendFormat": "{{instance}}"
+                }
+            ],
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "Memory Usage (%)",
+            "datasource": "Prometheus",
+            "targets": [
+                {
+                    "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))",
+                    "legendFormat": "{{instance}}"
+                }
+            ],
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 0
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "Disk Usage (%)",
+            "datasource": "Prometheus",
+            "targets": [
+                {
+                    "expr": "100 * (1 - (node_filesystem_avail_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"} / node_filesystem_size_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"}))",
+                    "legendFormat": "{{instance}}"
+                }
+            ],
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 8
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "Network Throughput (bytes/s)",
+            "datasource": "Prometheus",
+            "targets": [
+                {
+                    "expr": "sum by (instance) (rate(node_network_receive_bytes_total{device!=\"lo\"}[5m]))",
+                    "legendFormat": "rx {{instance}}"
+                },
+                {
+                    "expr": "sum by (instance) (rate(node_network_transmit_bytes_total{device!=\"lo\"}[5m]))",
+                    "legendFormat": "tx {{instance}}"
+                }
+            ],
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 8
+            }
+        }
+    ]
+}

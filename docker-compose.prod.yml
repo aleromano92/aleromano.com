@@ -56,6 +56,83 @@ services:
       - GMAIL_PASSWORD=${GOOGLE_APP_PASSWORD} # Your Google App Password
       - RELAY_DOMAINS=* # Or specify domains if needed, * allows all
 
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    restart: unless-stopped
+    expose:
+      - 9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=7d'
+      - '--storage.tsdb.retention.size=1GB'
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      - node_exporter
+      - cadvisor
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  node_exporter:
+    image: prom/node-exporter:v1.8.1
+    restart: unless-stopped
+    expose:
+      - 9100
+    command:
+      - "--path.rootfs=/host"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)"
+    volumes:
+      - /:/host:ro,rslave
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    restart: unless-stopped
+    expose:
+      - 8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  grafana:
+    image: grafana/grafana:10.4.5
+    restart: unless-stopped
+    expose:
+      - 3000
+    environment:
+      - GF_SERVER_ROOT_URL=https://aleromano.com/admin/obs
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASS}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
 volumes:
   nginx_cache:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
     driver: local
