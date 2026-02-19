@@ -62,10 +62,10 @@ services:
     expose:
       - 9090
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=7d'
-      - '--storage.tsdb.retention.size=1GB'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=7d"
+      - "--storage.tsdb.retention.size=1GB"
     volumes:
       - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -114,7 +114,7 @@ services:
     expose:
       - 3000
     environment:
-      - GF_SERVER_ROOT_URL=https://aleromano.com/admin/obs
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s/admin/obs/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASS}
