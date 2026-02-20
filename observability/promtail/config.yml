@@ -47,3 +47,4 @@ scrape_configs:
       - source_labels: ["__path__"]
         regex: '.*/(access|error)\.log'
         target_label: log_type
+        replacement: "$1"
