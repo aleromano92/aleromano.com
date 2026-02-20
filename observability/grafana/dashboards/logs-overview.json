@@ -1,0 +1,124 @@
+{
+    "id": null,
+    "uid": "logs-overview",
+    "title": "Logs Overview",
+    "timezone": "browser",
+    "schemaVersion": 39,
+    "version": 2,
+    "refresh": "30s",
+    "panels": [
+        {
+            "type": "timeseries",
+            "title": "App Error Lines (5m)",
+            "datasource": "Loki",
+            "targets": [
+                {
+                    "expr": "sum(count_over_time({job=\"docker\",service=\"app\"} |~ \"(?i)error\" [5m]))",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "short",
+                    "decimals": 0
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "Nginx 5xx Lines (5m)",
+            "datasource": "Loki",
+            "targets": [
+                {
+                    "expr": "sum(count_over_time({job=\"nginx\"} |~ \"HTTP/[0-9.]+\\\" 5[0-9]{2} \" [5m]))",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "short",
+                    "decimals": 0
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 0
+            }
+        },
+        {
+            "type": "logs",
+            "title": "App Logs",
+            "datasource": "Loki",
+            "targets": [
+                {
+                    "expr": "{job=\"docker\",service=\"app\"}",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "showLabels": true,
+                "showTime": true,
+                "wrapLogMessage": true,
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "sortOrder": "Descending"
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 12,
+                "x": 0,
+                "y": 8
+            }
+        },
+        {
+            "type": "logs",
+            "title": "Nginx Logs",
+            "datasource": "Loki",
+            "targets": [
+                {
+                    "expr": "{job=\"nginx\"}",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "showLabels": true,
+                "showTime": true,
+                "wrapLogMessage": true,
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "sortOrder": "Descending"
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 12,
+                "x": 12,
+                "y": 8
+            }
+        }
+    ],
+    "templating": {
+        "list": []
+    },
+    "time": {
+        "from": "now-6h",
+        "to": "now"
+    },
+    "annotations": {
+        "list": []
+    },
+    "editable": true,
+    "graphTooltip": 0,
+    "links": []
+}
