@@ -17,6 +17,10 @@ services:
       - ADMIN_USER=${ADMIN_USER}
       - ADMIN_PASS=${ADMIN_PASS}
       - ANALYTICS_SALT=${ANALYTICS_SALT}
+      - OTEL_SERVICE_NAME=aleromano-web
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=production
+      - NODE_OPTIONS=--import=./observability/otel/node-register.mjs
     volumes:
       # On your Hetzner VPS, you need to create the folder as being run by user ID 1001 (see Dockerfile)
       # sudo mkdir -p /var/docker/aleromano.com/app/data
@@ -127,6 +131,7 @@ services:
     depends_on:
       - prometheus
       - loki
+      - tempo
     deploy:
       resources:
         limits:
@@ -165,6 +170,39 @@ services:
         limits:
           memory: 256M
 
+  tempo:
+    image: grafana/tempo:2.5.0
+    restart: unless-stopped
+    expose:
+      - 3200
+      - 4317
+    command:
+      - "-config.file=/etc/tempo/config.yml"
+    volumes:
+      - ./observability/tempo/config.yml:/etc/tempo/config.yml:ro
+      - tempo_data:/var/tempo
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.102.1
+    restart: unless-stopped
+    expose:
+      - 4317
+      - 4318
+    command:
+      - "--config=/etc/otel-collector/config.yml"
+    volumes:
+      - ./observability/otel/collector.yml:/etc/otel-collector/config.yml:ro
+    depends_on:
+      - tempo
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
 volumes:
   nginx_cache:
     driver: local
@@ -175,4 +213,6 @@ volumes:
   loki_data:
     driver: local
   promtail_data:
+    driver: local
+  tempo_data:
     driver: local
