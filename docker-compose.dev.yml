@@ -3,6 +3,10 @@ services:
     environment:
       - DATABASE_PATH=/app/data/main.db
       - NODE_ENV=development
+      - OTEL_SERVICE_NAME=aleromano-web
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=development
+      - NODE_OPTIONS=--import=./observability/otel/node-register.mjs
     volumes:
       - app_data_dev:/app/data
 
@@ -78,6 +82,7 @@ services:
     depends_on:
       - prometheus
       - loki
+      - tempo
 
   loki:
     image: grafana/loki:3.0.0
@@ -108,6 +113,35 @@ services:
     depends_on:
       - loki
 
+  tempo:
+    image: grafana/tempo:2.5.0
+    restart: unless-stopped
+    profiles:
+      - observability
+    expose:
+      - 3200
+      - 4317
+    command:
+      - "-config.file=/etc/tempo/config.yml"
+    volumes:
+      - ./observability/tempo/config.yml:/etc/tempo/config.yml:ro
+      - tempo_data_dev:/var/tempo
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.102.1
+    restart: unless-stopped
+    profiles:
+      - observability
+    expose:
+      - 4317
+      - 4318
+    command:
+      - "--config=/etc/otel-collector/config.yml"
+    volumes:
+      - ./observability/otel/collector.yml:/etc/otel-collector/config.yml:ro
+    depends_on:
+      - tempo
+
 volumes:
   nginx_cache_dev:
     driver: local
@@ -122,4 +156,6 @@ volumes:
   loki_data_dev:
     driver: local
   promtail_data_dev:
+    driver: local
+  tempo_data_dev:
     driver: local

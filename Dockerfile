@@ -28,6 +28,7 @@ RUN mkdir -p /app/data && \
 COPY --from=prod-deps /app/node_modules ./node_modules 
 # Copy the built output
 COPY --from=build /app/dist ./dist 
+COPY --from=build /app/observability/otel/node-register.mjs ./observability/otel/node-register.mjs
 
 # Set proper ownership
 RUN chown -R nodejs:nodejs /app
@@ -43,4 +44,4 @@ ENV PORT=4321
 EXPOSE 4321
 
 # Start the app
-CMD node ./dist/server/entry.mjs
+CMD ["node", "--import=./observability/otel/node-register.mjs", "./dist/server/entry.mjs"]
