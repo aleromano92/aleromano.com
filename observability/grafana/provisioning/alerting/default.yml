@@ -166,3 +166,51 @@ groups:
         annotations:
           summary: VPS disk usage critical (>93%)
           description: Disk usage on / is above 93%.
+
+  - orgId: 1
+    name: nginx-log-alerts
+    folder: Infrastructure
+    interval: 1m
+    rules:
+      - uid: nginx-5xx-sustained
+        title: Nginx 5xx sustained (logs)
+        condition: C
+        data:
+          - refId: A
+            datasourceUid: loki
+            relativeTimeRange:
+              from: 300
+              to: 0
+            model:
+              expr: sum(count_over_time({job="nginx"} |~ "HTTP/[0-9.]+\\\" 5[0-9]{2} " [5m]))
+              queryType: range
+              refId: A
+          - refId: B
+            datasourceUid: __expr__
+            relativeTimeRange:
+              from: 0
+              to: 0
+            model:
+              expression: A
+              reducer: last
+              type: reduce
+              refId: B
+          - refId: C
+            datasourceUid: __expr__
+            relativeTimeRange:
+              from: 0
+              to: 0
+            model:
+              expression: $B > 10
+              type: math
+              refId: C
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        labels:
+          severity: warning
+          team: infra
+          source: logs
+        annotations:
+          summary: Nginx is returning sustained 5xx responses
+          description: Nginx produced more than 10 HTTP 5xx log lines over 5 minutes.
