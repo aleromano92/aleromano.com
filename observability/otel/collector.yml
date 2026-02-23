@@ -12,6 +12,10 @@ processors:
 exporters:
   otlp/tempo:
     endpoint: tempo:4317
+    # TLS is intentionally disabled because communication happens only over the
+    # internal Docker network between the OTEL Collector and Tempo.
+    # If this setup is ever extended to cross-host or non-internal traffic,
+    # TLS must be enabled and properly configured here.
     tls:
       insecure: true
 
