@@ -6,6 +6,8 @@ receivers:
 
 processors:
   batch:
+    timeout: 5s
+    send_batch_size: 100
 
 exporters:
   otlp/tempo:
