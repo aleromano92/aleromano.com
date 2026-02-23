@@ -34,16 +34,24 @@ if (!endpointBase) {
         instrumentations: [getNodeAutoInstrumentations()],
     });
 
-    sdk.start();
+    let sdkStarted = false;
+    try {
+        sdk.start();
+        sdkStarted = true;
+    } catch (error) {
+        console.error('[otel] SDK start error, tracing disabled:', error);
+    }
 
-    const shutdown = async () => {
-        try {
-            await sdk.shutdown();
-        } catch (error) {
-            console.error('[otel] shutdown error:', error);
-        }
-    };
+    if (sdkStarted) {
+        const shutdown = async () => {
+            try {
+                await sdk.shutdown();
+            } catch (error) {
+                console.error('[otel] shutdown error:', error);
+            }
+        };
 
-    process.on('SIGTERM', shutdown);
-    process.on('SIGINT', shutdown);
+        process.on('SIGTERM', shutdown);
+        process.on('SIGINT', shutdown);
+    }
 }
