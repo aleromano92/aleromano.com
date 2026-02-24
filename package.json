@@ -23,7 +23,7 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/markdown-remark": "^6.0.2",
-    "@astrojs/node": "^9.4.1",
+    "@astrojs/node": "^9.5.4",
     "@astrojs/rss": "^4.0.11",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/auto-instrumentations-node": "^0.70.0",
