@@ -10,7 +10,7 @@ image:
   alt: "A manager and engineering team collaborating with AI tools"
 ---
 
-> DISCLAIMER: I don't see my engineers as the image depicted above. But I loved how Nano Banana portrayed me so I decided to keep it anyway 😁
+> DISCLAIMER: I don't see my engineers the way they're depicted in the image above. But I loved how Nano Banana portrayed me so I decided to keep it anyway 😁
 
 "You have to try it. No, seriously. Starting next week, everyone uses AI-assisted coding by default. That's it."
 
