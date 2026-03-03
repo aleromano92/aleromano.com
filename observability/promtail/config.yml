@@ -35,6 +35,9 @@ scrape_configs:
         replacement: nginx
     pipeline_stages:
       - docker: {}
+      - multiline:
+          firstline: '^\S'
+          max_wait_time: 3s
 
   - job_name: nginx-host-logs
     static_configs:
