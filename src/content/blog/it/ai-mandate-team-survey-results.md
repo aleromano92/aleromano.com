@@ -87,7 +87,7 @@ Due task in cima a pari merito: **generare unit test** e **comprendere codice no
 
 Il risultato sugli unit test non mi sorprende. È qui che l'AI brilla costantemente perché i test sono ben delimitati, hanno criteri di successo chiari e liberano il tempo degli sviluppatori per le decisioni più difficili. L'ho [scritto anche prima](/posts/it/manage-parent-code-ai): chiedere all'AI di scrivere i test e poi validarli è uno dei migliori utilizzi dello strumento.
 
-Il risultato sulla "comprensione del codice non familiare" è quello che mi entusiasma di più. Lavoriamo su un monorepo Java con anni di contesto accumulato. I nuovi arrivati ora usando l'AI come navigatore della codebase. Un assistente paziente e sempre disponibile. Un partecipante ha notato:
+Il risultato sulla "comprensione del codice non familiare" è quello che mi entusiasma di più. Lavoriamo su un monorepo Java con anni di contesto accumulato. I nuovi arrivati ora usano l'AI come navigatore della codebase. Un assistente paziente e sempre disponibile. Un partecipante ha notato:
 
 > "Ha fatto controlli di coerenza su 4 repository e ha rifattorizzato del codice in modo ottimale."
 
