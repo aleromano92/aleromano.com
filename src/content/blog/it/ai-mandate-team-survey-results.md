@@ -49,7 +49,7 @@ Di nuovo: non ho dati oggettivi che provano questa affermazione, ma per il mio s
 
 ## 🤨 Qualità del Codice: Tiene, con Sfumature
 
-Il risultato sulla velocità sarebbe intule se la qualità fosse crollata. Ecco cosa ha riportato il team:
+Il risultato sulla velocità sarebbe inutile se la qualità fosse crollata. Ecco cosa ha riportato il team:
 
 ![Risultati del sondaggio sulla qualità del codice](../../../assets/blog/ai-mandate-team-survey-results/chart-code-quality.png)
 
