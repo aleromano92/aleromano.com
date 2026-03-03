@@ -52,7 +52,7 @@ The velocity result would be pointless if quality had collapsed. Here's what the
 
 ![Code quality survey results](../../../assets/blog/ai-mandate-team-survey-results/chart-code-quality.png)
 
-Two thirds see no quality regression. A sixth even report improvements. One sixth report lower quality, which tells me the tool is not uniformly good in all contexts, or that some team members haven't yet found the prompting approach that works for them.
+Two thirds see no quality regression. A sixth even reports improvements. One sixth report lower quality, which tells me the tool is not uniformly good in all contexts, or that some team members haven't yet found the prompting approach that works for them.
 
 This maps to something I said in my post on [context engineering](/posts/manage-parent-code-ai): the quality of the output depends heavily on how well context is provided. One of the open-ended responses from the survey said it directly:
 
