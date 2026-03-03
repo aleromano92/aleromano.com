@@ -45,7 +45,7 @@ Dodici ingegneri hanno completato il sondaggio dopo un mese. Ecco cosa hanno det
 
 Non mi aspettavo l'unanimità. Mi aspettavo una distribuzione sana, magari qualche scettico che sentiva che il carico di revisione annullasse la velocità di generazione. Invece: tutti, senza eccezioni, si sono sentiti più veloci.
 
-DI nuovo: non ho dati oggettivi che provano questa affermazione, ma per il mio scopo mi bastava avere un impatto sulla *percezione* delle persone.
+Di nuovo: non ho dati oggettivi che provano questa affermazione, ma per il mio scopo mi bastava avere un impatto sulla *percezione* delle persone.
 
 ## 🤨 Qualità del Codice: Tiene, con Sfumature
 
