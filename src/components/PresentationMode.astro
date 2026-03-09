@@ -5,6 +5,7 @@ import { parseSlides } from '../utils/presentations';
 
 import 'reveal.js/dist/reveal.css';
 import 'reveal.js/dist/theme/night.css';
+import 'reveal.js/plugin/highlight/monokai.css';
 
 declare global {
     interface Window {
@@ -59,13 +60,14 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
         <script>
             import Reveal from 'reveal.js';
             import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
+            import Highlight from 'reveal.js/plugin/highlight/highlight.esm.js';
             import Notes from 'reveal.js/plugin/notes/notes.esm.js';
             import Zoom from 'reveal.js/plugin/zoom/zoom.esm.js';
 
             // Initialize Reveal.js when DOM is ready
             document.addEventListener('DOMContentLoaded', function () {
                 const deck = new Reveal({
-                    plugins: [Markdown, Notes, Zoom],
+                    plugins: [Markdown, Highlight, Notes, Zoom],
                     hash: true,
                     transition: 'slide',
                     controls: true,
