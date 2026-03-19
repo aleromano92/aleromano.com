@@ -1,5 +1,5 @@
 ---
-title: "Back to the Metal"
+title: "DIY in the AI era: farewell Vercel"
 description: "How AI-assisted development helped me abandon PaaS abstractions and go back to basics"
 blogPostSlug: "about-this-site"
 language: "en"
@@ -7,14 +7,10 @@ theme: "black"
 transition: "slide"
 ---
 
-## Back to the Metal
-
-### AI-assisted dev and the return to basics
-
-**Alessandro Romano** · Web Day Milano 2025
+# DIY in the AI era: farewell Vercel
 
 Note:
-Welcome. Today I want to talk about the growing gap between what we build and what we actually understand. Let's start with an honest question.
+Vercel = PaaS
 
 ---
 
@@ -33,23 +29,12 @@ Raise your hand. Most engineers today have never configured a server. That's not
 
 ---
 
-## The PaaS Revolution 🚀
-
-- Vercel · Netlify · Heroku <!-- .element: class="fragment" -->
-- Railway · Render · Fly.io <!-- .element: class="fragment" -->
-- Push to `main`. Done. <!-- .element: class="fragment" -->
-
-Note:
-These platforms are genuinely incredible. They removed so much friction. A developer can go from idea to production in minutes. That's real value — and I don't want to dismiss it.
-
----
-
 ## What PaaS gave us ✅
 
 - Zero server configuration <!-- .element: class="fragment" -->
 - Instant SSL, CDN, previews <!-- .element: class="fragment" -->
 - Focus on product, not infrastructure <!-- .element: class="fragment" -->
-- Lower barrier to shipping <!-- .element: class="fragment" -->
+- Push to `main`. Done. <!-- .element: class="fragment" -->
 
 Note:
 This is real. PaaS platforms democratized software deployment. They allowed smaller teams to ship production-quality software without a dedicated ops team.
@@ -69,7 +54,7 @@ An iceberg. We see the deploy button. Underneath? Nginx, Docker, SSL termination
 
 ## What we stopped seeing
 
-- How nginx routes traffic <!-- .element: class="fragment" -->
+- How an HTTP server routes traffic <!-- .element: class="fragment" -->
 - How SSL certificates are renewed <!-- .element: class="fragment" -->
 - How processes restart after a crash <!-- .element: class="fragment" -->
 - How logs are collected and stored <!-- .element: class="fragment" -->
@@ -87,7 +72,7 @@ These aren't obscure topics. They're the foundations of how the internet works. 
 <img src="/presentations/about-this-site/tunnel.jpg" alt="Dark tunnel" style="height: 300px; border-radius: 8px;" />
 
 Note:
-This is the real cost. When something breaks at 3am and you don't know what's underneath, you're stuck. The platform is a black box. You file a support ticket and hope.
+It is human to fear what you understand. And the (ab)use of PaaS will keep you distant fromt hese topics not allowing you to gain knowledge. It's a vitious cycle.
 
 ---
 
@@ -100,8 +85,8 @@ This is the real cost. When something breaks at 3am and you don't know what's un
     </div>
 </div>
 
-- Engineering Manager at Mollie 💳 <!-- .element: class="fragment" -->
-- Father of 2 (coding time is fragmented ⏱️) <!-- .element: class="fragment" -->
+- Senior Engineering Manager at Mollie 💳 <!-- .element: class="fragment" -->
+- Father of 2 <!-- .element: class="fragment" -->
 - "I like to understand how things work" 🔧 <!-- .element: class="fragment" -->
 
 Note:
@@ -116,7 +101,7 @@ Quick intro. Engineering Manager at Mollie, father of two. I don't have long uni
 AI-assisted development made it possible to **experiment faster** than ever.
 
 Note:
-If I can try something in an afternoon instead of a weekend, I can afford to go lower level. The cost of learning dropped dramatically. AI is the enabler.
+If I can try something, without being an expert, in an afternoon instead of a weekend, I can afford to go lower level. The cost of learning dropped dramatically. AI is the enabler.
 
 ---
 
@@ -126,28 +111,75 @@ If I can try something in an afternoon instead of a weekend, I can afford to go 
 
 *Lower activation energy for learning new things.* <!-- .element: class="fragment" -->
 
+*Explore and deep dive.* <!-- .element: class="fragment" -->
+
 Note:
-I could try things I'd been avoiding because the failure cost felt too high. "I don't know Docker well enough" — now you can learn Docker in an afternoon with AI alongside you. Let me show you three experiments.
+I could try things I'd been avoiding because the failure cost felt too high. "I don't know Docker well enough" — now you can learn Docker in an afternoon with AI alongside you. Let me take you on a quick trip.
 
 ---
 
-## My playground: aleromano.com
+## I've been here before.
+
+*2006. A PHP site. A dream.*
+
+<img src="/presentations/about-this-site/php-code.jpg" alt="LAMP Stack" style="height: 380px; border-radius: 8px;" />
+
+```php
+<?php echo "Hello, World!"; ?>
+```
+
+Note:
+Before PaaS existed, we did all of this ourselves. Not because we were brave — because there was no other way. PHP was the web. If you wanted a dynamic site in 2000's, you wrote PHP. No frameworks, no npm, no build step. A text editor, an FTP client, and a dream. I built forums, guestbooks, countdown timers. Everything felt possible.
+
+---
+
+<img src="/presentations/about-this-site/vintage-computer.jpg" alt="Vintage computer" style="height: 380px; border-radius: 8px;" />
+
+## FileZilla 
+
+*Drag & Drop* <!-- .element: class="fragment" -->
+
+*Pray 🙏* <!-- .element: class="fragment" -->
+
+Note:
+Deploying meant opening FileZilla, connecting to your host via FTP, and dragging files from the left panel to the right. You'd watch the progress bar and pray you didn't overwrite the wrong file. No rollbacks. No previews. No CI. Just vibes. And it worked.
+
+---
+
+<img src="/presentations/about-this-site/old-computers.jpg" alt="Old computers" style="height: 350px; border-radius: 8px;" />
+
+## My tower PC* 
+
+*<img src="/presentations/about-this-site/dyndns.svg" alt="DynDNS logo" style="height: 40px; margin: 0;" /> DynDNS* <!-- .element: class="fragment" -->
+
+*From Home 🏠* <!-- .element: class="fragment" -->
+
+Note:
+For a while, I hosted my site from my own bedroom. My ISP gave me a dynamic IP, so I used DynDNS to keep a domain pointed at it. Apache was the web server. My tower PC was the server. It went down every time there was a power cut. But I knew exactly how it worked — because I had built every piece of it myself.
+
+---
+
+## My new playground: <a href="https://aleromano.com" target="_blank">aleromano.com</a>
 
 <br>
 
-**€4/month Hetzner VPS** · Docker · No PaaS.
+*1 month paternity leave*
+
+*€4/month Hetzner VPS* <!-- .element: class="fragment" -->
+
+*No PaaS* <!-- .element: class="fragment" -->
 
 Note:
-I rebuilt my personal site on a Hetzner CX22 VPS. 2 vCPUs, 4GB RAM, 40GB SSD. €4 per month. Not because Vercel is bad — it's great. Because I wanted to remember how the internet actually works.
+I rebuilt my personal site on a Hetzner CX22 VPS. 2 vCPUs, 4GB RAM, 40GB SSD. €4 per month. I had 1 month of Paternity leave as my second child was born. Let me show you my 4 pillars of DIY.
 
 ---
 
-## 4 experiments
+## 4 pillars
 
-1. **Observability** — systemd + bash + Telegram 🔔
-2. **Analytics** — SQLite + vanilla JS 📊
-3. **Deploy** — GitHub Actions + Docker + VPS 🐳
-4. **Security** — nginx rules, no Cloudflare 🛡️
+1. **Observability** <!-- .element: class="fragment" --> 
+2. **Analytics** <!-- .element: class="fragment" -->
+3. **Deploy** <!-- .element: class="fragment" -->
+4. **Security** <!-- .element: class="fragment" -->
 
 Note:
 Four areas where I replaced PaaS/SaaS/vendor tools with simple self-built solutions. In each case, AI helped me build it fast. In each case, I came out understanding something I didn't before.
@@ -155,6 +187,8 @@ Four areas where I replaced PaaS/SaaS/vendor tools with simple self-built soluti
 ---
 
 ## 1 / Observability
+
+### systemd + bash + Telegram 🔔 
 
 Note:
 How do you know when your app crashes at 3am?
@@ -243,6 +277,8 @@ Three services. One docker-compose file. AI can generate the prometheus.yml scra
 
 ## 2 / Analytics
 
+### SQLite + vanilla JS 📊
+
 Note:
 How many people visited your site today? What pages do they read?
 
@@ -285,6 +321,8 @@ SQL is the dashboard. You know exactly what data you have, where it lives, and h
 
 ## 3 / Deploy
 
+### GitHub Actions + Docker 🐳 
+
 Note:
 Every commit to main should trigger a deployment. How?
 
@@ -323,6 +361,8 @@ These are things you never learn when Vercel handles deployment for you. Not bec
 ---
 
 ## 4 / Security
+
+### nginx rules, no Cloudflare 🛡️
 
 Note:
 One more experiment. This one started by accident — I just opened my access logs.
