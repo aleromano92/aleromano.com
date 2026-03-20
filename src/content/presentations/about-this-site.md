@@ -138,7 +138,7 @@ I could try things I'd been avoiding because the failure cost felt too high. "I 
 
 *2006. A PHP site. A dream.*
 
-<img src="/presentations/about-this-site/php-code.jpg" alt="LAMP Stack" style="height: 380px; border-radius: 8px;" />
+<img src="/presentations/about-this-site/php-code.jpg" alt="LAMP Stack" style="height: 280px; border-radius: 8px;" />
 
 <pre><code data-trim data-line-numbers="1" class="php">
 &lt;?php echo "Hello, World!"; ?&gt;
@@ -149,7 +149,7 @@ Before PaaS existed, we did all of this ourselves. Not because we were brave —
 
 ---
 
-<img src="/presentations/about-this-site/vintage-computer.jpg" alt="Vintage computer" style="height: 380px; border-radius: 8px;" />
+<img src="/presentations/about-this-site/vintage-computer.jpg" alt="Vintage computer" style="height: 300px; border-radius: 8px;" />
 
 ## FileZilla 
 
@@ -651,17 +651,6 @@ AI + fundamentals = **more work, not less.**
 
 Note:
 The engineers who will thrive are not the ones who only know how to prompt. They're the ones who use AI as a force multiplier on top of real understanding. The fundamentals are more valuable than ever — because AI can write the code, but you still need to know if it's right.
-
----
-
-## Go break something.
-
-*On a €4 VPS.* <!-- .element: class="fragment" -->
-
-*With AI alongside you.* <!-- .element: class="fragment" -->
-
-Note:
-That's the call to action. Spin up a cheap VPS. Try to deploy something. Break it. Fix it. You'll understand more in a weekend than in years of using platforms. And now you have AI to help you through the hard parts.
 
 ---
 
