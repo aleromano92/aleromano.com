@@ -400,7 +400,7 @@ Note:
 
 ## The Dockerfile
 
-<pre><code data-trim data-line-numbers="1-2|4-6|8-9|11-12|14-16|18-19" class="dockerfile">
+<pre><code data-trim data-line-numbers="1-2|4-6|7-10|12-14|16-18|20-22" class="dockerfile">
 FROM node:20-alpine AS base
 WORKDIR /app
 
@@ -409,6 +409,8 @@ COPY package.json package-lock.json ./
 
 FROM base AS build-deps
 RUN npm install
+FROM base AS prod-deps
+RUN npm install --omit=dev
 
 FROM build-deps AS build
 COPY . .
@@ -464,7 +466,7 @@ Every push to main triggers CI. GitHub Actions builds the Docker image and pushe
 
 ---
 
-## Step 2: SSH into Hetzner &amp; deploy
+## Step 3: SSH into Hetzner &amp; deploy
 
 <pre><code data-trim data-line-numbers="1-5|7-8|9|10-13|14" class="yaml">
 - name: Deploy to Hetzner
