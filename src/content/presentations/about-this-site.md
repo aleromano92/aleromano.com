@@ -124,9 +124,9 @@ I could try things I'd been avoiding because the failure cost felt too high. "I 
 
 <img src="/presentations/about-this-site/php-code.jpg" alt="LAMP Stack" style="height: 380px; border-radius: 8px;" />
 
-```php
-<?php echo "Hello, World!"; ?>
-```
+<pre><code data-trim data-line-numbers="1" class="php">
+&lt;?php echo "Hello, World!"; ?&gt;
+</code></pre>
 
 Note:
 Before PaaS existed, we did all of this ourselves. Not because we were brave — because there was no other way. PHP was the web. If you wanted a dynamic site in 2000's, you wrote PHP. No frameworks, no npm, no build step. A text editor, an FTP client, and a dream. I built forums, guestbooks, countdown timers. Everything felt possible.
@@ -188,55 +188,81 @@ Four areas where I replaced PaaS/SaaS/vendor tools with simple self-built soluti
 
 ## 1 / Observability
 
-### systemd + bash + Telegram 🔔 
+### systemd + Node.js + Telegram 🔔
 
 Note:
-How do you know when your app crashes at 3am?
+How do you know when your app crashes at 3am? I wrote a Node.js daemon. Here's how it works.
 
 ---
 
-## The baseline: 42 lines of bash
+## What it monitors
 
-```bash
-#!/bin/bash
-SERVICE="myapp"
+<pre><code data-trim data-line-numbers="2-4|6-7|8-11" class="javascript">
+const CONFIG = {
+  containerCheckInterval: 60000,  // every 1 min
+  logCheckInterval:       300000, // every 5 min
+  websiteCheckInterval:   180000, // every 3 min
 
-while true; do
-  journalctl -u $SERVICE --since "1 minute ago" \
-    | grep -Ei "error|fatal|exception" \
-    | while IFS= read -r line; do
-        MSG="🚨 $(hostname): $line"
-        curl -s "$TG_API/sendMessage" \
-          -d "chat_id=$CHAT_ID" \
-          --data-urlencode "text=$MSG" > /dev/null
-      done
-  sleep 60
-done
-```
+  website: { url: 'https://aleromano.com' },
+  containers: ['app-app-1', 'app-nginx-1', 'app-smtp-relay-1'],
+  telegram: {
+    botToken: process.env.TELEGRAM_BOT_TOKEN,
+    chatId:   process.env.TELEGRAM_CHAT_ID,
+  },
+};
+</code></pre>
 
 Note:
-That's it. A while loop that reads systemd logs, greps for errors, and sends me a Telegram message. Built with AI in one session. It's been running for months with zero maintenance. I understand every single line.
+Three independent checks on independent intervals: Docker container health, Docker log errors, and website availability. All configured in one place. The Telegram credentials come from environment variables — never hardcoded.
+
+---
+
+## Docker logs → Telegram
+
+<pre><code data-trim data-line-numbers="1-3|5-9" class="javascript">
+const since = Math.floor((Date.now() - CONFIG.logCheckInterval) / 1000);
+const cmd = `docker logs --since ${since} ${containerName} 2>&1 \
+  | grep -i "error|exception|fatal" | tail -n 10`;
+
+exec(cmd, (_, stdout) => {
+  if (stdout.trim())
+    sendTelegramNotification(
+      `📋 &lt;b&gt;Errors in ${containerName}&lt;/b&gt;\n\n&lt;pre&gt;${stdout}&lt;/pre&gt;`
+    );
+});
+</code></pre>
+
+Note:
+Every 5 minutes it asks Docker for recent logs from each container, pipes them through grep, and if anything matches — it sends a formatted Telegram message with the error lines. No log aggregation service. No agent to install. Just Node.js calling docker.
+
+---
+
+<img src="/presentations/about-this-site/telegram-o11y.png" alt="Screenshot from my Telegram bot" style="height: 650px; border-radius: 8px;" />
 
 ---
 
 ## The systemd unit
 
-```ini
+<pre><code data-trim data-line-numbers="1-4|6-10|11-12|13-14|15" class="ini">
 [Unit]
-Description=Error monitor for myapp
-After=myapp.service
+Description=VPS Observability Daemon
+After=network.target docker.service
+Requires=docker.service
 
 [Service]
-ExecStart=/opt/scripts/monitor.sh
+Type=simple
+User=deploy
+Group=docker
+ExecStart=/usr/bin/node /opt/scripts/monitor.js
 Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-```
+RestartSec=10
+Environment=TELEGRAM_BOT_TOKEN=...
+Environment=TELEGRAM_CHAT_ID=...
+StandardOutput=append:/var/log/observability.log
+</code></pre>
 
 Note:
-Register it as a systemd service and it starts on boot, restarts on crash, and logs its own output to journalctl. This is the Linux process model. Things you never learn behind a PaaS.
+The install.sh generates this unit and runs systemctl enable + start. The daemon starts on boot, requires Docker to be up first, restarts automatically on crash with a 10-second delay, and appends its own output to a log file. Everything in one config file — no platform, no agent, no subscription.
 
 ---
 
@@ -255,7 +281,7 @@ The bash script is great for "tell me when something breaks." But what if you wa
 
 ## Grafana stack in docker-compose
 
-```yaml
+<pre><code data-trim data-line-numbers="2-5|7-9|11-12" class="yaml">
 services:
   grafana:
     image: grafana/grafana:latest
@@ -268,7 +294,7 @@ services:
 
   loki:
     image: grafana/loki:latest
-```
+</code></pre>
 
 Note:
 Three services. One docker-compose file. AI can generate the prometheus.yml scrape config and the Loki datasource config in minutes. You can have this running on your VPS in an afternoon. And once you've set it up — you understand what Datadog is actually doing for you.
@@ -277,45 +303,59 @@ Three services. One docker-compose file. AI can generate the prometheus.yml scra
 
 ## 2 / Analytics
 
-### SQLite + vanilla JS 📊
+### TypeScript + SQLite + no cookies 📊
 
 Note:
-How many people visited your site today? What pages do they read?
+How many people visited your site today? What pages do they read? No Google Analytics. No consent banners. Here's what I built instead.
 
 ---
 
-## The solution: SQLite
+## Client side: fire and forget
 
-```js
-// Client-side: fire and forget
-fetch('/api/event', {
-  method: 'POST',
-  body: JSON.stringify({ type: 'pageview', page: location.pathname })
-})
+<pre><code data-trim data-line-numbers="2-7|6|7|10-15" class="typescript">
+function sendEvent(event: AnalyticsEvent): void {
+  fetch('/api/analytics/collect', {
+    method: 'POST',
+    body: JSON.stringify(event),
+    headers: { 'Content-Type': 'application/json' },
+    keepalive: true, // survives tab close
+  }).catch(() => {}); // never break the UX
+}
 
-// Server-side: one insert
-db.run('INSERT INTO events VALUES (?, ?, datetime("now"))',
-  ['pageview', req.body.page])
-```
+// Respects DNT and Global Privacy Control
+if (!shouldRespectPrivacy()) {
+  sendPageView();
+  initClickTracking();
+  initTimeTracking();
+}
+</code></pre>
 
 Note:
-No Google Analytics. No Plausible. No privacy consent banners. A small JS snippet fires a POST on page load. The server inserts a row into SQLite. I query it with SQL when I'm curious. Total code: ~40 lines.
+Three event types: page_view, click, time_on_page. The keepalive flag ensures the request completes even if the user closes the tab. And before sending anything, it checks for Do Not Track and Global Privacy Control — if the user has opted out, nothing is sent. No consent banner needed.
 
 ---
 
-## When you need more
+## Server side: privacy by design
 
-```sql
-SELECT page, COUNT(*) as views,
-       COUNT(DISTINCT ip) as uniques
-FROM events
-WHERE ts > datetime('now', '-30 days')
-GROUP BY page
-ORDER BY views DESC;
-```
+<pre><code data-trim data-line-numbers="3|4|5|6" class="typescript">
+// Hash = SHA256(IP + UserAgent + Date + Salt)
+// Rotates daily — no cross-day tracking, no cookies
+function generateVisitorHash(ip: string, userAgent: string): string {
+  const today = new Date().toISOString().split('T')[0];
+  const input = `${ip}|${userAgent}|${today}|${HASH_SALT}`;
+  return createHash('sha256').update(input).digest('hex').substring(0, 16);
+}
+</code></pre>
 
 Note:
-SQL is the dashboard. You know exactly what data you have, where it lives, and how to query it. No vendor lock-in. No pricing tiers. No data leaving your server.
+No IP addresses stored. No cookies. The visitor hash is a SHA256 of IP + UserAgent + date + a secret salt. It resets every day, so you can count unique visitors per day without tracking anyone across sessions. This is privacy by design, not privacy by policy.
+
+---
+
+<img src="/presentations/about-this-site/admin-analytics.png" alt="Screenshot from my Telegram bot" style="height: 650px; border-radius: 8px;" />
+
+Note:
+The database is two tables: analytics_visits and analytics_events. I added a simple admin page at /admin/analytics to see the results.
 
 ---
 
@@ -328,23 +368,64 @@ Every commit to main should trigger a deployment. How?
 
 ---
 
-## GitHub Actions → Docker → VPS
+## Step 1: checkout &amp; authenticate
 
-```yaml
-- name: Deploy to VPS
-  run: |
-    docker build -t myapp:${{ github.sha }} .
-    docker save myapp:${{ github.sha }} | \
-      ssh user@vps "docker load"
-    ssh user@vps "
-      docker stop myapp || true
-      docker run -d --name myapp \
-        -p 3000:3000 myapp:${{ github.sha }}
-    "
-```
+<pre><code data-trim data-line-numbers="1-2|4-9" class="yaml">
+- name: Checkout repository
+  uses: actions/checkout@v4
+
+- name: Log in to GitHub Container Registry
+  uses: docker/login-action@v3
+  with:
+    registry: ghcr.io
+    username: ${{ github.actor }}
+    password: ${{ secrets.GITHUB_TOKEN }}
+</code></pre>
 
 Note:
-On every push to main: build the image locally in CI, ship it to the VPS via SSH, restart the container. I can read every line. I know exactly what's happening. No magic. No platform-specific lock-in.
+The workflow starts by fetching the repo at the current commit SHA, then authenticating to GHCR using the built-in GITHUB_TOKEN — no extra secret needed for the registry login.
+
+---
+
+## Step 2: build &amp; push to GHCR
+
+<pre><code data-trim data-line-numbers="1-6|7-8" class="yaml">
+- name: Build and push Docker image
+  uses: docker/build-push-action@v5
+  with:
+    context: .
+    push: true
+    tags: ghcr.io/${{ github.repository }}:latest
+    cache-from: type=gha
+    cache-to: type=gha,mode=max
+</code></pre>
+
+Note:
+Every push to main triggers CI. GitHub Actions builds the Docker image and pushes it to the GitHub Container Registry. GHA cache means rebuilds are fast — only changed layers get rebuilt.
+
+---
+
+## Step 2: SSH into Hetzner &amp; deploy
+
+<pre><code data-trim data-line-numbers="1-5|7-8|9|10-13|14" class="yaml">
+- name: Deploy to Hetzner
+  uses: appleboy/ssh-action@master
+  with:
+    host: ${{ secrets.HETZNER_HOST }}
+    key: ${{ secrets.HETZNER_SSH_KEY }}
+    script: |
+      cd ~/app
+      git reset --hard origin/main
+      docker pull ghcr.io/${{ github.repository }}:latest
+      docker-compose -f docker-compose.yml \
+        -f docker-compose.prod.yml down
+      docker-compose -f docker-compose.yml \
+        -f docker-compose.prod.yml up -d
+      docker image prune -f
+</code></pre>
+
+Note:
+The deploy job SSHes into the Hetzner VPS, pulls the freshly built image from GHCR, and restarts with docker-compose. No magic platform button — just a script I can read line by line. Rollback is `git reset` + redeploy.
 
 ---
 
@@ -371,12 +452,12 @@ One more experiment. This one started by accident — I just opened my access lo
 
 ## Open your access logs.
 
-```
+<pre><code data-trim data-line-numbers="1|2|3|4" class="plaintext">
 188.245.236.17 "GET /wp-admin/setup-config.php" 444
 45.33.32.156   "GET /phpmyadmin/index.php" 444
 91.212.166.22  "GET /.env" 444
 185.220.101.4  "GET /?id=1 UNION SELECT username,password FROM users" 444
-```
+</code></pre>
 
 *Your site runs Astro. They're looking for WordPress.* <!-- .element: class="fragment" -->
 
@@ -403,7 +484,7 @@ This is actually fascinating. When you run your own server, you see the raw inte
 
 ## 444 — the silent drop
 
-```nginx
+<pre><code data-trim data-line-numbers="1-7|9-12|14-17" class="nginx">
 # Requests via IP (not domain) → connection closed, no response
 server {
     listen 80 default_server;
@@ -421,7 +502,7 @@ location ~* /(wp-admin|phpmyadmin|cpanel) {
 location ~* \.(php|asp|jsp|cgi)$ {
     return 444;
 }
-```
+</code></pre>
 
 Note:
 HTTP 444 is nginx-specific: close the connection without sending a response. No 404, no error page. Silence. Bots get nothing — they don't even know the server exists. These three blocks eliminate 99% of the noise.
@@ -430,11 +511,11 @@ HTTP 444 is nginx-specific: close the connection without sending a response. No 
 
 ## SQL injection on a static blog 😂
 
-```nginx
+<pre><code data-trim data-line-numbers="1|2" class="nginx">
 location ~* \?(.*)(select|union|insert|drop|delete)(.*)$ {
     return 444;
 }
-```
+</code></pre>
 
 <br>
 
@@ -447,7 +528,7 @@ This is my favorite. SQL injection against a site with no SQL endpoint exposed i
 
 ## Rate limiting without a WAF
 
-```nginx
+<pre><code data-trim data-line-numbers="1-2|4-7" class="nginx">
 # 5 requests/minute per IP on /admin
 limit_req_zone $binary_remote_addr zone=ADMIN:1m rate=5r/m;
 
@@ -455,7 +536,7 @@ location /admin {
     limit_req zone=ADMIN burst=2 nodelay;
     limit_req_status 429;
 }
-```
+</code></pre>
 
 *Enough for you. Nothing for a brute force attack.* <!-- .element: class="fragment" -->
 
