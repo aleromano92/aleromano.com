@@ -7,10 +7,44 @@ theme: "black"
 transition: "slide"
 ---
 
-# DIY in the AI era: farewell Vercel
+<!-- .slide: data-background-image="/presentations/about-this-site/cover.png" data-background-size="contain" data-background-color="#000000" -->
 
 Note:
-Vercel = PaaS
+Don't introduce yourself yet. Don't tell a joke. Let the cover slide sit for a moment, then move straight to the promise.
+
+---
+
+## By the end of this talk...
+
+You will know **how to build** — from scratch:
+
+- 🔔 Observability: crash alerts without Datadog <!-- .element: class="fragment" -->
+- 📊 Analytics: visitor tracking without Google <!-- .element: class="fragment" -->
+- 🚀 Deploy: CI/CD without Vercel <!-- .element: class="fragment" -->
+- 🛡️ Security: bot blocking without Cloudflare <!-- .element: class="fragment" -->
+
+*On a €4 VPS. With AI as your pair programmer.* <!-- .element: class="fragment" -->
+
+Note:
+This is the empowerment promise. Say it clearly and slowly. Pause on each item. Make them believe they will actually leave with something concrete — not just inspiration. The last fragment is the thesis: AI makes going back to basics accessible to everyone, regardless of ops experience. [Hold the final slide for 3 seconds before advancing.]
+
+---
+
+## Who Am I? 👋
+
+<div class="container" style="display: flex; align-items: center; justify-content: space-around;">
+    <h4 class="left">Alessandro Romano</h4>
+    <div class="right" style="min-width: 300px;">
+        <img src="/alepro.png" alt="Alessandro Romano" height="200" class="right"/>
+    </div>
+</div>
+
+- Senior Engineering Manager at Mollie 💳 <!-- .element: class="fragment" -->
+- Father of 2 <!-- .element: class="fragment" -->
+- "I like to understand how things work" 🔧 <!-- .element: class="fragment" -->
+
+Note:
+Credentials come AFTER the promise, not before. The audience already knows why they should listen — now they learn who's talking. Keep this short: 30 seconds. Name, company, the one trait that makes this talk credible ("I like to understand how things work"). That's all. The paternity leave story comes later when it has more impact.
 
 ---
 
@@ -72,25 +106,7 @@ These aren't obscure topics. They're the foundations of how the internet works. 
 <img src="/presentations/about-this-site/tunnel.jpg" alt="Dark tunnel" style="height: 300px; border-radius: 8px;" />
 
 Note:
-It is human to fear what you understand. And the (ab)use of PaaS will keep you distant fromt hese topics not allowing you to gain knowledge. It's a vitious cycle.
-
----
-
-## Who Am I? 👋
-
-<div class="container" style="display: flex; align-items: center; justify-content: space-around;">
-    <h4 class="left">Alessandro Romano</h4>
-    <div class="right" style="min-width: 300px;">
-        <img src="/alepro.png" alt="Alessandro Romano" height="200" class="right"/>
-    </div>
-</div>
-
-- Senior Engineering Manager at Mollie 💳 <!-- .element: class="fragment" -->
-- Father of 2 <!-- .element: class="fragment" -->
-- "I like to understand how things work" 🔧 <!-- .element: class="fragment" -->
-
-Note:
-Quick intro. Engineering Manager at Mollie, father of two. I don't have long uninterrupted coding sessions. But I still love getting into the details. That's the mindset that led me to an experiment.
+It is human to fear what you don't understand. The more PaaS abstracts away, the wider the gap grows — and the harder it becomes to close it. It's a vicious cycle. [Pause here. Let the image sit. Then:] "The rules changed."
 
 ---
 
@@ -176,13 +192,13 @@ I rebuilt my personal site on a Hetzner CX22 VPS. 2 vCPUs, 4GB RAM, 40GB SSD. �
 
 ## 4 pillars
 
-1. **Observability** <!-- .element: class="fragment" --> 
+1. **Observability** <!-- .element: class="fragment" -->
 2. **Analytics** <!-- .element: class="fragment" -->
 3. **Deploy** <!-- .element: class="fragment" -->
 4. **Security** <!-- .element: class="fragment" -->
 
 Note:
-Four areas where I replaced PaaS/SaaS/vendor tools with simple self-built solutions. In each case, AI helped me build it fast. In each case, I came out understanding something I didn't before.
+[Verbal punctuation] We've set up the problem. Now the evidence. Four areas where I replaced SaaS tools with self-built solutions — each one in a few afternoons, with AI as my pair programmer. In each case I came out understanding something I never would have learned behind a deploy button. Let's go.
 
 ---
 
@@ -191,7 +207,7 @@ Four areas where I replaced PaaS/SaaS/vendor tools with simple self-built soluti
 ### systemd + Node.js + Telegram 🔔
 
 Note:
-How do you know when your app crashes at 3am? I wrote a Node.js daemon. Here's how it works.
+[Verbal punctuation] Pillar one of four. How do you know when your app crashes at 3am? With Vercel or Datadog, an alert just appears. Let me show you what's actually behind it.
 
 ---
 
@@ -217,7 +233,7 @@ Three independent checks on independent intervals: Docker container health, Dock
 
 ---
 
-## Docker logs → Telegram
+## Alerts → Telegram
 
 <pre><code data-trim data-line-numbers="1-3|5-9" class="javascript">
 const since = Math.floor((Date.now() - CONFIG.logCheckInterval) / 1000);
@@ -241,9 +257,23 @@ Every 5 minutes it asks Docker for recent logs from each container, pipes them t
 
 ---
 
-## The systemd unit
+## What is systemd?
 
-<pre><code data-trim data-line-numbers="1-4|6-10|11-12|13-14|15" class="ini">
+The init system that Linux runs **first** on boot.
+
+- Starts and stops services <!-- .element: class="fragment" -->
+- Restarts them on crash <!-- .element: class="fragment" -->
+- Manages dependencies between services <!-- .element: class="fragment" -->
+- Replaces cron, nohup, screen, forever, pm2 <!-- .element: class="fragment" -->
+
+Note: 
+systemd is PID 1 — the very first process Linux starts. Everything else is its child. It reads "unit files" — INI config files that describe how to run a service. If you've ever used pm2 or forever to keep a Node.js app alive, systemd does the same thing — but at the OS level, before anything else starts, and it's already installed on every Linux server.
+
+---
+
+## The systemd unit file
+
+<pre><code data-trim data-line-numbers="1-4|6-7|8-10|11-12|13-14|15" class="ini">
 [Unit]
 Description=VPS Observability Daemon
 After=network.target docker.service
@@ -262,7 +292,7 @@ StandardOutput=append:/var/log/observability.log
 </code></pre>
 
 Note:
-The install.sh generates this unit and runs systemctl enable + start. The daemon starts on boot, requires Docker to be up first, restarts automatically on crash with a 10-second delay, and appends its own output to a log file. Everything in one config file — no platform, no agent, no subscription.
+Step by step: [Unit] declares dependencies — start only after network and Docker are up, and if Docker isn't running, don't even try. Type=simple means the process itself IS the service (no forking). User=deploy + Group=docker means it runs as a non-root user that has permission to talk to the Docker socket — principle of least privilege. ExecStart is just the command you'd run manually. Restart=always + RestartSec=10 means if the process dies for any reason, wait 10 seconds and try again — forever. Environment injects secrets without hardcoding them. StandardOutput=append writes logs to a file, so you can tail -f or ship them to Loki. One file. systemctl enable + start. Done.
 
 ---
 
@@ -306,7 +336,7 @@ Three services. One docker-compose file. AI can generate the prometheus.yml scra
 ### TypeScript + SQLite + no cookies 📊
 
 Note:
-How many people visited your site today? What pages do they read? No Google Analytics. No consent banners. Here's what I built instead.
+[Verbal punctuation] That's pillar one done — crash alerts without a vendor. Now pillar two: analytics. How many people visited your site today? What pages do they read? No Google Analytics. No consent banners. Here's what I built instead.
 
 ---
 
@@ -361,10 +391,39 @@ The database is two tables: analytics_visits and analytics_events. I added a sim
 
 ## 3 / Deploy
 
-### GitHub Actions + Docker 🐳 
+### GitHub Actions + Docker 🐳
 
 Note:
-Every commit to main should trigger a deployment. How?
+[Verbal punctuation] Pillar one: observability — done. Pillar two: analytics — done. Now the one that sounds most intimidating: deployment. With Vercel, it's one click. Let me show you what that one click actually does — and how to own it yourself.
+
+---
+
+## The Dockerfile
+
+<pre><code data-trim data-line-numbers="1-2|4-6|8-9|11-12|14-16|18-19" class="dockerfile">
+FROM node:20-alpine AS base
+WORKDIR /app
+
+# Copy only package files first → cache layer
+COPY package.json package-lock.json ./
+
+FROM base AS build-deps
+RUN npm install
+
+FROM build-deps AS build
+COPY . .
+RUN npm run build
+
+FROM base AS runtime
+COPY --from=prod-deps /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+
+ENV HOST=0.0.0.0 PORT=4321
+CMD ["node", "./dist/server/entry.mjs"]
+</code></pre>
+
+Note:
+Multi-stage build. The base stage installs nothing — just sets the working directory. Build-deps and build stages compile the Astro project. The final runtime stage copies only what's needed: no source code, no devDependencies. The image is lean. Layer caching means if package.json didn't change, npm install is skipped entirely.
 
 ---
 
@@ -429,24 +488,12 @@ The deploy job SSHes into the Hetzner VPS, pulls the freshly built image from GH
 
 ---
 
-## What you learn by doing this
-
-- What Docker actually does in production <!-- .element: class="fragment" -->
-- How SSH keys work for automation <!-- .element: class="fragment" -->
-- What a container restart policy means <!-- .element: class="fragment" -->
-- How rollbacks work without a UI <!-- .element: class="fragment" -->
-
-Note:
-These are things you never learn when Vercel handles deployment for you. Not because Vercel is bad — but because it abstracts them away. Doing it yourself once means you understand the abstraction forever.
-
----
-
 ## 4 / Security
 
 ### nginx rules, no Cloudflare 🛡️
 
 Note:
-One more experiment. This one started by accident — I just opened my access logs.
+[Verbal punctuation] Three pillars down. One to go. This last one I didn't plan — it started by accident. I just opened my access logs.
 
 ---
 
@@ -459,6 +506,8 @@ One more experiment. This one started by accident — I just opened my access lo
 185.220.101.4  "GET /?id=1 UNION SELECT username,password FROM users" 444
 </code></pre>
 
+<br>
+
 *Your site runs Astro. They're looking for WordPress.* <!-- .element: class="fragment" -->
 
 Note:
@@ -468,9 +517,9 @@ Within days of going live, the logs filled up with this. Bots scanning the entir
 
 ## The internet is mostly bots. 🤖
 
+- `.env` hunters looking for leaked secrets <!-- .element: class="fragment" -->
 - WordPress scanners (your site runs Astro) <!-- .element: class="fragment" -->
 - SQL injection on a static blog <!-- .element: class="fragment" -->
-- `.env` hunters looking for leaked secrets <!-- .element: class="fragment" -->
 - Vulnerability scanners probing every port <!-- .element: class="fragment" -->
 
 *Cloudflare hides this from you.* <!-- .element: class="fragment" -->
@@ -511,7 +560,7 @@ HTTP 444 is nginx-specific: close the connection without sending a response. No 
 
 ## SQL injection on a static blog 😂
 
-<pre><code data-trim data-line-numbers="1|2" class="nginx">
+<pre><code data-trim class="nginx">
 location ~* \?(.*)(select|union|insert|drop|delete)(.*)$ {
     return 444;
 }
@@ -538,6 +587,8 @@ location /admin {
 }
 </code></pre>
 
+<br>
+
 *Enough for you. Nothing for a brute force attack.* <!-- .element: class="fragment" -->
 
 Note:
@@ -554,6 +605,7 @@ One directive to define the zone, one to apply it. Brute force needs thousands o
 - Zero vendor dependency <!-- .element: class="fragment" -->
 
 *Not better than Cloudflare.* <!-- .element: class="fragment" -->
+
 *But you built it. You understand it.* <!-- .element: class="fragment" -->
 
 Note:
@@ -561,7 +613,24 @@ Cloudflare's DDoS protection and global CDN are world-class. Use them for produc
 
 ---
 
+## What we just built together
+
+- 🔔 **Observability** — Node.js daemon + systemd + Telegram <!-- .element: class="fragment" -->
+- 📊 **Analytics** — TypeScript + SQLite + SHA256 hashing <!-- .element: class="fragment" -->
+- 🚀 **Deploy** — Dockerfile + GitHub Actions + Hetzner VPS <!-- .element: class="fragment" -->
+- 🛡️ **Security** — nginx 444 + rate limiting, no WAF <!-- .element: class="fragment" -->
+
+*Paternity leave. AI as pair programmer. €4/month.* <!-- .element: class="fragment" -->
+
+Note:
+[Cycle of three — this is the second time they hear the full list.] We promised four things at the start. Here they are. Each one took an afternoon. Each one taught me something I never learned using Vercel. Say it out loud: observability, analytics, deploy, security. All of it. Without a single SaaS subscription for these features. Now let me tell you what this actually means.
+
+---
+
 ## Less magic.
+
+<br>
+<br>
 
 ## More understanding.
 
@@ -594,13 +663,21 @@ That's the call to action. Spin up a cheap VPS. Try to deploy something. Break i
 
 ---
 
-## Questions ❓
+## What you can go build tomorrow
 
-- **Blog**: aleromano.com
-- **X**: @_aleromano
-- **LinkedIn**: /in/aleromano92
+- 🔔 **0-noise alerts**
+- 📊 **Privacy-first analytics**
+- 🚀 **Full CI/CD pipeline**
+- 🛡️ **Bot & brute-force protection**
+
+<br>
+<br>
+
+**Blog**: <a href="https://aleromano.com" target="_blank">aleromano.com</a> | **X**: <a href="https://x.com/_aleromano" target="_blank">@_aleromano</a> | **LinkedIn**: <a href="https://linkedin.com/in/alessandroromano92" target="_blank">/in/alessandroromano92</a>
+
+Note:
+[Contribution slide — leave this on screen during the entire Q&A.] Don't say "thank you". Don't say "any questions?". Just stop. Let this slide speak. Then salute: "It's been a pleasure sharing this with you. I'm happy to go deeper on any of these — come find me after the talk or reach out online." [Step back from the mic. Let the audience lead.]
 
 ---
 
-## Thank You!
-<img src="https://media1.tenor.com/m/ET9__w0C-sgAAAAd/bow-bowing.gif" alt="Bowing GIF" height="300">
+<!-- .slide: data-background-image="/presentations/about-this-site/kudos.png" data-background-size="contain" data-background-color="#000000" -->
