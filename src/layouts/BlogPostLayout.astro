@@ -19,7 +19,7 @@ const presentationInfo = await findPresentationByBlogPost(Astro.url.pathname, cu
 // Pass language info to BaseLayout
 const i18nData = {
   currentLang,
-  originalPost: originalPost ? `/posts/${originalPost.slug.split('/').slice(1).join('/')}` : frontmatter.originalLink,
+  originalPost: originalPost ? `/posts/${originalPost.id.split('/').slice(1).join('/')}` : frontmatter.originalLink,
 };
 
 // Contact me footer text

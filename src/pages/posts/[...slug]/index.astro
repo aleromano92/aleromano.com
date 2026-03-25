@@ -1,19 +1,19 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BlogPostLayout from '../../../layouts/BlogPostLayout.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
 
   return posts.map((post) => {
-    const [lang, ...slugParts] = post.slug.split('/');
+    const [lang, ...slugParts] = post.id.split('/');
     const slug = slugParts.join('/');
 
     // Find the original post if this is a translation
     let originalPost;
     if (post.data.originalLink) {
       originalPost = posts.find((p) => {
-        const [pLang, ...pSlugParts] = p.slug.split('/');
+        const [pLang, ...pSlugParts] = p.id.split('/');
         return pLang === 'en' && pSlugParts.join('/') === slug;
       });
     }
@@ -31,10 +31,10 @@ export async function getStaticPaths() {
 }
 
 const { post, originalPost } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 export const prerender = true;
 // Get the current language from URL for the language switcher
-const currentLang = post.slug.split('/')[0];
+const currentLang = post.id.split('/')[0];
 ---
 
 <BlogPostLayout frontmatter={post.data} currentLang={currentLang} originalPost={originalPost}>

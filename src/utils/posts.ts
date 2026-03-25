@@ -2,7 +2,7 @@ import type { CollectionEntry } from 'astro:content';
 import { DEFAULT_LANGUAGE, type SupportedLanguage } from '../types/i18n';
 
 export function getLocalizedPostUrl(post: CollectionEntry<'blog'>): string {
-  const [lang, ...slugParts] = post.slug.split('/');
+  const [lang, ...slugParts] = post.id.split('/');
   const postSlug = slugParts.join('/');
 
   // For English posts (default language), don't include language prefix
@@ -47,7 +47,7 @@ export function findPostBySlug(
   const cleanSlug = slug.replace(/^(en|it)\//, '');
 
   return posts.find((post) => {
-    const [lang, ...slugParts] = post.slug.split('/');
+    const [lang, ...slugParts] = post.id.split('/');
     return lang === targetLang && slugParts.join('/') === cleanSlug;
   });
 }

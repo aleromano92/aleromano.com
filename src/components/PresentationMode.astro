@@ -23,7 +23,7 @@ interface Props {
 const { presentation, language, blogPostSlug } = Astro.props;
 
 // Parse slides on the server side for better performance and reliability
-const slides = parseSlides(presentation.body);
+const slides = parseSlides(presentation.body ?? '');
 
 // Generate back to blog post URL
 const backUrl = language === 'en' ? `/posts/${blogPostSlug}` : `/it/posts/${blogPostSlug}`;
