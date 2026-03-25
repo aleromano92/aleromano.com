@@ -18,7 +18,7 @@ const pageDescription = t.pageDescription;
 
 // Get all posts and filter by language
 const allPosts = await getCollection('blog');
-const localizedPosts = allPosts.filter((post) => post.slug.startsWith(language + '/'));
+const localizedPosts = allPosts.filter((post) => post.id.startsWith(language + '/'));
 const tags = [...new Set(localizedPosts.map((post) => post.data.tags).flat())] as string[];
 tags.sort();
 

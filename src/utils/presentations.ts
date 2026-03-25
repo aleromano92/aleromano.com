@@ -52,7 +52,7 @@ export async function findPresentationByBlogPost(
     
     // Found a matching presentation
     return {
-      slug: presentation.slug,
+      slug: presentation.id,
       title: presentation.data.title,
       description: presentation.data.description,
       language: presentation.data.language as SupportedLanguage,

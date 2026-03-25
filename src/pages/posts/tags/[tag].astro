@@ -16,7 +16,7 @@ if (!tagString) {
 // Get all posts and filter by tag
 const allPosts = await getCollection('blog');
 const posts = allPosts
-  .filter((post) => post.slug.startsWith('en/') && post.data.tags.includes(tagString))
+  .filter((post) => post.id.startsWith('en/') && post.data.tags.includes(tagString))
   .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 
 // If no posts found for this tag, return 404

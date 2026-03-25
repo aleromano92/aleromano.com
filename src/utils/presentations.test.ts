@@ -22,11 +22,9 @@ describe('presentations utils', () => {
     // Setup default mock data
     mockGetCollection.mockResolvedValue([
       {
-        id: '3-career-tips.md',
-        slug: '3-career-tips',
+        id: '3-career-tips',
         body: 'Slide 1\n\n---\n\nSlide 2\n\n---\n\nSlide 3',
         collection: 'presentations',
-        render: vi.fn(),
         data: {
           title: '3 Career Tips for Software Engineers',
           description: 'A presentation about career tips',
@@ -37,11 +35,9 @@ describe('presentations utils', () => {
         }
       },
       {
-        id: '3-career-tips-it.md',
-        slug: '3-career-tips-it',
+        id: '3-career-tips-it',
         body: 'Diapositiva 1\n\n---\n\nDiapositiva 2',
         collection: 'presentations',
-        render: vi.fn(),
         data: {
           title: '3 Consigli di Carriera',
           description: 'Una presentazione sui consigli di carriera',
@@ -191,11 +187,9 @@ describe('presentations utils', () => {
       // Mock only English presentation
       mockGetCollection.mockResolvedValue([
         {
-          id: 'english-only.md',
-          slug: 'english-only',
+          id: 'english-only',
           body: 'English only content...',
           collection: 'presentations',
-          render: vi.fn(),
           data: {
             title: 'English Only Presentation',
             blogPostSlug: 'english-only-post',
@@ -211,11 +205,9 @@ describe('presentations utils', () => {
     it('should handle presentations without optional fields', async () => {
       mockGetCollection.mockResolvedValue([
         {
-          id: 'minimal.md',
-          slug: 'minimal',
+          id: 'minimal',
           body: 'Minimal content...',
           collection: 'presentations',
-          render: vi.fn(),
           data: {
             title: 'Minimal Presentation',
             blogPostSlug: 'minimal-post',
