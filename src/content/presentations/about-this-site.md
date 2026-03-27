@@ -505,6 +505,73 @@ Multi-stage build. The base stage installs nothing — just sets the working dir
 
 ---
 
+## docker-compose: wiring it all together
+
+<ul>
+  <li class="fragment">One file defines every service — app, nginx, SMTP relay</li>
+  <li class="fragment">Handles networking, volumes, and restart policies</li>
+  <li class="fragment">Two files: <code>docker-compose.yml</code> (base) + <code>docker-compose.prod.yml</code> (overrides)</li>
+  <li class="fragment">A single command brings the whole stack up or down</li>
+</ul>
+
+Note:
+The Dockerfile describes how to build one image. docker-compose describes how to run multiple containers together as a system. You get one network where services talk to each other by name, shared volumes, and restart policies — all in one file. The split between base and prod compose files means you can override just what's different in production without duplicating everything.
+
+---
+
+## The docker-compose.yml
+
+<pre><code data-trim data-line-numbers="1-6|8-16|18-22" class="yaml">
+services:
+  app:
+    image: ghcr.io/aleromano92/aleromano.com:latest
+    restart: unless-stopped
+    volumes:
+      - analytics-data:/app/data
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - letsencrypt:/etc/letsencrypt:ro
+
+  smtp-relay:
+    image: namshi/smtp
+    restart: unless-stopped
+    environment:
+      - MAILNAME=${MAILNAME}
+
+volumes:
+  analytics-data:
+  letsencrypt:
+</code></pre>
+
+Note:
+Three services. App pulls the image built by CI — never built on the VPS itself. nginx sits in front, handles SSL termination and static caching, and forwards requests to the app by container name. The smtp-relay lets the app send emails without managing an SMTP server. Volumes persist the SQLite database and the Let's Encrypt certificates across restarts. The whole stack starts with docker-compose up -d.
+
+---
+
+## GitHub Actions: CI/CD in 3 steps
+
+*Triggered on every push to* <code>main</code>
+
+<ul>
+  <li class="fragment">1️⃣ Checkout code &amp; authenticate to GHCR</li>
+  <li class="fragment">2️⃣ Build Docker image &amp; push to registry</li>
+  <li class="fragment">3️⃣ SSH into Hetzner &amp; restart the stack</li>
+</ul>
+
+*Free for public repos.* <!-- .element: class="fragment" -->
+
+Note:
+GitHub Actions runs on GitHub's infrastructure — you write a YAML file, push to main, and a runner picks it up. For public repos it's completely free. The workflow has exactly three jobs: authenticate, build and push the image, then SSH into the VPS and bring the new container up. Let's walk through each one.
+
+---
+
 ## Step 1: checkout &amp; authenticate
 
 <pre><code data-trim data-line-numbers="1-2|4-9" class="yaml">
