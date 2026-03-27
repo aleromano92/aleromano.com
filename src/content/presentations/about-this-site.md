@@ -65,10 +65,12 @@ Raise your hand. Most engineers today have never configured a server. That's not
 
 ## What PaaS gave us ✅
 
-- Zero server configuration <!-- .element: class="fragment" -->
-- Instant SSL, CDN, previews <!-- .element: class="fragment" -->
-- Focus on product, not infrastructure <!-- .element: class="fragment" -->
-- Push to `main`. Done. <!-- .element: class="fragment" -->
+<ul>
+  <li class="fragment">Zero server configuration</li>
+  <li class="fragment">Instant SSL, CDN, previews</li>
+  <li class="fragment">Focus on product, not infrastructure</li>
+  <li class="fragment">Push to <code>main</code>. Done.</li>
+</ul>
 
 Note:
 This is real. PaaS platforms democratized software deployment. They allowed smaller teams to ship production-quality software without a dedicated ops team.
@@ -393,10 +395,12 @@ No IP addresses stored. No cookies. The visitor hash is a SHA256 of IP + UserAge
 
 ## SQLite: the database you already have
 
-- A **file** on disk — zero config, zero server <!-- .element: class="fragment" -->
-- Add it to Node.js with `better-sqlite3` <!-- .element: class="fragment" -->
-- Fast enough for millions of rows <!-- .element: class="fragment" -->
-- Full SQL: joins, aggregations, indexes <!-- .element: class="fragment" -->
+<ul>
+  <li class="fragment">A <strong>file</strong> on disk — zero config, zero server</li>
+  <li class="fragment">Add it to Node.js with <code>better-sqlite3</code></li>
+  <li class="fragment">Fast enough for millions of rows</li>
+  <li class="fragment">Full SQL: joins, aggregations, indexes</li>
+</ul>
 
 *The right tool for a personal site.* <!-- .element: class="fragment" -->
 
@@ -591,10 +595,12 @@ Within days of going live, the logs filled up with this. Bots scanning the entir
 
 ## The internet is mostly bots. 🤖
 
-- `.env` hunters looking for leaked secrets <!-- .element: class="fragment" -->
-- WordPress scanners (your site runs Astro) <!-- .element: class="fragment" -->
-- SQL injection on a static blog <!-- .element: class="fragment" -->
-- Vulnerability scanners probing every port <!-- .element: class="fragment" -->
+<ul>
+  <li class="fragment"><code>.env</code> hunters looking for leaked secrets</li>
+  <li class="fragment">WordPress scanners (your site runs Astro)</li>
+  <li class="fragment">SQL injection on a static blog</li>
+  <li class="fragment">Vulnerability scanners probing every port</li>
+</ul>
 
 *Cloudflare hides this from you.* <!-- .element: class="fragment" -->
 
@@ -672,10 +678,12 @@ One directive to define the zone, one to apply it. Brute force needs thousands o
 
 ## Let's Encrypt: free SSL for everyone
 
-- A non-profit Certificate Authority — trusted by all browsers <!-- .element: class="fragment" -->
-- Issues certificates in **seconds**, for free <!-- .element: class="fragment" -->
-- Valid 90 days — designed for automation <!-- .element: class="fragment" -->
-- Powers ~350 million active certificates <!-- .element: class="fragment" -->
+<ul>
+  <li class="fragment">A non-profit Certificate Authority — trusted by all browsers</li>
+  <li class="fragment">Issues certificates in <strong>seconds</strong>, for free</li>
+  <li class="fragment">Valid 90 days — designed for automation</li>
+  <li class="fragment">Powers ~350 million active certificates</li>
+</ul>
 
 *Before 2015: SSL cost €50–200/year per domain.* <!-- .element: class="fragment" -->
 
@@ -688,9 +696,9 @@ Let's Encrypt launched in 2015 and killed the SSL certificate market overnight. 
 
 ---
 
-## certbot: one command, then forget it
+## certbot
 
-<pre><code data-trim data-line-numbers="1|3-6|8-9" class="bash">
+<pre><code data-trim data-line-numbers="1-2|3-6|8-9" class="bash">
 # Get a certificate and auto-configure nginx
 certbot --nginx -d aleromano.com -d www.aleromano.com
 
@@ -726,12 +734,12 @@ Cloudflare's DDoS protection and global CDN are world-class. Use them for produc
 
 ## What we just built together
 
-- 🔔 **Observability** — Node.js daemon + systemd + Telegram <!-- .element: class="fragment" -->
-- 📊 **Analytics** — TypeScript + SQLite + SHA256 hashing <!-- .element: class="fragment" -->
-- 🚀 **Deploy** — Dockerfile + GitHub Actions + Hetzner VPS <!-- .element: class="fragment" -->
-- 🛡️ **Security** — nginx 444 + rate limiting, no WAF <!-- .element: class="fragment" -->
-
-*Paternity leave. AI as pair programmer. €4/month.* <!-- .element: class="fragment" -->
+<ul>
+  <li class="fragment">🔔 <strong>Observability</strong> — Node.js daemon + systemd + Telegram</li>
+  <li class="fragment">📊 <strong>Analytics</strong> — TypeScript + SQLite + SHA256 hashing</li>
+  <li class="fragment">🚀 <strong>Deploy</strong> — Dockerfile + GitHub Actions + Hetzner VPS</li>
+  <li class="fragment">🛡️ <strong>Security</strong> — nginx 444 + rate limiting, no WAF</li>
+</ul>
 
 Note:
 [Cycle of three — this is the second time they hear the full list.] We promised four things at the start. Here they are. Each one took an afternoon. Each one taught me something I never learned using Vercel. Say it out loud: observability, analytics, deploy, security. All of it. Without a single SaaS subscription for these features. Now let me tell you what this actually means.
