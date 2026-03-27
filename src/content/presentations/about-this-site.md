@@ -183,7 +183,7 @@ For a while, I hosted my site from my own bedroom. My ISP gave me a dynamic IP, 
 
 *€4/month Hetzner VPS* <!-- .element: class="fragment" -->
 
-*No PaaS* <!-- .element: class="fragment" -->
+*No PaaS & No SaaS* <!-- .element: class="fragment" -->
 
 Note:
 I rebuilt my personal site on a Hetzner CX22 VPS. 2 vCPUs, 4GB RAM, 40GB SSD. €4 per month. I had 1 month of Paternity leave as my second child was born. Let me show you my 4 pillars of DIY.
@@ -329,6 +329,15 @@ services:
 Note:
 Three services. One docker-compose file. AI can generate the prometheus.yml scrape config and the Loki datasource config in minutes. You can have this running on your VPS in an afternoon. And once you've set it up — you understand what Datadog is actually doing for you.
 
+
+---
+
+<img src="/presentations/about-this-site/grafana-1.png" alt="Screenshot from my Grafana logs" style="border-radius: 8px;" />
+
+---
+
+<img src="/presentations/about-this-site/grafana-2.png" alt="Screenshot from my Grafana VPS usage" style="border-radius: 8px;" />
+
 ---
 
 ## 2 / Analytics
@@ -379,6 +388,69 @@ function generateVisitorHash(ip: string, userAgent: string): string {
 
 Note:
 No IP addresses stored. No cookies. The visitor hash is a SHA256 of IP + UserAgent + date + a secret salt. It resets every day, so you can count unique visitors per day without tracking anyone across sessions. This is privacy by design, not privacy by policy.
+
+---
+
+## SQLite: the database you already have
+
+- A **file** on disk — zero config, zero server <!-- .element: class="fragment" -->
+- Add it to Node.js with `better-sqlite3` <!-- .element: class="fragment" -->
+- Fast enough for millions of rows <!-- .element: class="fragment" -->
+- Full SQL: joins, aggregations, indexes <!-- .element: class="fragment" -->
+
+*The right tool for a personal site.* <!-- .element: class="fragment" -->
+
+Note:
+SQLite isn't a toy. It's the most deployed database engine in the world — it's in your phone, your browser, your TV. For a personal site with thousands of daily events, it's not just good enough. It's perfect. No Docker container for Postgres. No connection pool. No migration framework. Just a file.
+
+---
+
+## The schema
+
+<pre><code data-trim data-line-numbers="1-7|9-10|12-16" class="sql">
+CREATE TABLE analytics_visits (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  visitor_hash  TEXT    NOT NULL,
+  path          TEXT    NOT NULL,
+  referrer      TEXT,
+  timestamp     INTEGER NOT NULL
+);
+
+CREATE INDEX idx_visits_path      ON analytics_visits(path);
+CREATE INDEX idx_visits_timestamp ON analytics_visits(timestamp);
+
+CREATE TABLE analytics_events (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  visitor_hash TEXT    NOT NULL,
+  event_type   TEXT    NOT NULL,
+  payload      TEXT,
+  timestamp    INTEGER NOT NULL
+);
+</code></pre>
+
+Note:
+Two tables. Visits and events. The indexes on path and timestamp are the two columns you'll always filter on: "how many views did /blog get?" and "how many visitors today?". Without them, SQLite scans every row. With them, it jumps straight to the answer.
+
+---
+
+## Querying: top pages & unique visitors
+
+<pre><code data-trim data-line-numbers="1-6|8-12" class="sql">
+-- Top pages in the last 7 days
+SELECT path, COUNT(*) AS views
+FROM analytics_visits
+WHERE timestamp > strftime('%s', 'now', '-7 days')
+GROUP BY path
+ORDER BY views DESC;
+
+-- Unique visitors today
+SELECT COUNT(DISTINCT visitor_hash) AS visitors
+FROM analytics_visits
+WHERE timestamp > strftime('%s', 'now', 'start of day');
+</code></pre>
+
+Note:
+This is the SQL you'd write on day one. No ORM. No query builder. Just SQL — the language that's been answering questions about data since 1974. The indexes make both queries fast, even with millions of rows. And you can run these directly in the terminal with the sqlite3 CLI.
 
 ---
 
@@ -595,6 +667,43 @@ location /admin {
 
 Note:
 One directive to define the zone, one to apply it. Brute force needs thousands of requests per minute. You need five. No WAF subscription. No vendor. Just config.
+
+---
+
+## Let's Encrypt: free SSL for everyone
+
+- A non-profit Certificate Authority — trusted by all browsers <!-- .element: class="fragment" -->
+- Issues certificates in **seconds**, for free <!-- .element: class="fragment" -->
+- Valid 90 days — designed for automation <!-- .element: class="fragment" -->
+- Powers ~350 million active certificates <!-- .element: class="fragment" -->
+
+*Before 2015: SSL cost €50–200/year per domain.* <!-- .element: class="fragment" -->
+
+Note:
+Let's Encrypt launched in 2015 and killed the SSL certificate market overnight. Before it existed, you had to buy a certificate from a CA, wait for validation, and manually install it. Now it's a one-liner. The 90-day validity isn't a limitation — it's a forcing function for automation. If you have to renew manually every 90 days, you will automate it.
+
+---
+
+<img src="/presentations/about-this-site/certificate.png" alt="Screenshot from my Telegram bot" style="border-radius: 8px;" />
+
+---
+
+## certbot: one command, then forget it
+
+<pre><code data-trim data-line-numbers="1|3-6|8-9" class="bash">
+# Get a certificate and auto-configure nginx
+certbot --nginx -d aleromano.com -d www.aleromano.com
+
+# certbot writes this into your nginx config:
+# ssl_certificate     /etc/letsencrypt/live/aleromano.com/fullchain.pem;
+# ssl_certificate_key /etc/letsencrypt/live/aleromano.com/privkey.pem;
+
+# Auto-renewal runs via a systemd timer — already active after install
+systemctl status certbot.timer
+</code></pre>
+
+Note:
+One command. certbot talks to Let's Encrypt, proves you own the domain via an HTTP challenge, downloads the certificate, and edits your nginx config automatically. The renewal timer is installed alongside certbot and runs twice a day. If a certificate is within 30 days of expiry, it renews — then reloads nginx. You set it up once and never think about it again. SSL just works.
 
 ---
 
