@@ -4,6 +4,8 @@ import { Image } from 'astro:assets';
 import Tags from '../components/posts/Tags.astro';
 import { getReadingTime } from '../utils/reading-time';
 import ImageModal from '../components/ImageModal.astro';
+import BuiltInAICallout from '../components/posts/BuiltInAICallout.astro';
+import BuiltInAIBottomSheet from '../components/BuiltInAIBottomSheet.astro';
 import { findPresentationByBlogPost } from '../utils/presentations';
 
 const { frontmatter, currentLang, originalPost } = Astro.props;
@@ -109,6 +111,8 @@ const contactMeFooterText =
       )
     }
 
+    <BuiltInAICallout lang={currentLang} postLang={frontmatter.language} />
+
     <div class="post-content">
       <slot />
     </div>
@@ -120,6 +124,7 @@ const contactMeFooterText =
 </BaseLayout>
 
 <ImageModal />
+<BuiltInAIBottomSheet />
 
 <style>
   @import '../styles/buttons.css';

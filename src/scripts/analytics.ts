@@ -137,6 +137,16 @@ export function shouldRespectPrivacy(): boolean {
 }
 
 /**
+ * Send a single analytics event, respecting dev mode and privacy settings.
+ * Use this for custom events outside the standard page view / click tracking.
+ */
+export function trackEvent(event: AnalyticsEvent): void {
+  if (import.meta.env.DEV) return;
+  if (shouldRespectPrivacy()) return;
+  sendEvent(event);
+}
+
+/**
  * Initialize all analytics tracking.
  * Call this from your main layout.
  */

@@ -10,6 +10,7 @@ const days = Math.min(Math.max(normalizedDays, 1), 365);
 
 // Fetch analytics data
 const summary = analyticsManager.getSummary(days);
+const aiStats = analyticsManager.getAIFeatureStats(days);
 const dailyStats = analyticsManager.getDailyStats(days);
 const topPages = analyticsManager.getTopPages(20, days);
 const topReferers = analyticsManager.getTopReferers(20, days);
@@ -145,6 +146,70 @@ const timeRanges = [
                 }
             </div>
         </div>
+    </section>
+
+    <!-- Built-in AI Features -->
+    <section class="ai-section">
+        <h2>✦ Built-in AI Features</h2>
+        <div class="stats-grid ai-stats-grid">
+            <div class="stat-card">
+                <h3>Pages w/ AI Available</h3>
+                <div class="value">{aiStats.detected.toLocaleString()}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Features Clicked</h3>
+                <div class="value">{aiStats.clicked.reduce((s, r) => s + r.count, 0).toLocaleString()}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Features Completed</h3>
+                <div class="value">{aiStats.completed.reduce((s, r) => s + r.count, 0).toLocaleString()}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Completion Rate</h3>
+                <div class="value">{aiStats.completionRate}%</div>
+            </div>
+        </div>
+
+        {(aiStats.clicked.length > 0 || aiStats.completed.length > 0) && (
+            <div class="tables-grid" style="margin-top: var(--space-md)">
+                <div class="table-card">
+                    <h3>Clicked by Feature</h3>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Feature</th><th class="number-cell">Clicks</th></tr></thead>
+                            <tbody>
+                                {aiStats.clicked.map(r => (
+                                    <tr>
+                                        <td><code>{r.feature}</code></td>
+                                        <td class="number-cell">{r.count}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="table-card">
+                    <h3>Completed by Feature</h3>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Feature</th><th class="number-cell">Completions</th></tr></thead>
+                            <tbody>
+                                {aiStats.completed.map(r => (
+                                    <tr>
+                                        <td><code>{r.feature}</code></td>
+                                        <td class="number-cell">{r.count}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {aiStats.clicked.length === 0 && (
+            <div class="empty-state">No AI feature interactions recorded yet in this period.</div>
+        )}
     </section>
 
     <!-- Data Tables -->
@@ -296,7 +361,7 @@ const timeRanges = [
                                         <td class="nowrap">{formatTimestamp(event.createdAt)}</td>
                                         <td>
                                             <span class={`event-badge event-badge-${event.type}`}>
-                                                {event.type === 'click' ? '🖱️' : '⏱️'} {event.type}
+                                                {event.type === 'click' ? '🖱️' : event.type === 'ai_feature' ? '✦' : '⏱️'} {event.type}
                                             </span>
                                         </td>
                                         <td class="path-cell" title={event.path}>
@@ -791,6 +856,25 @@ const timeRanges = [
     .event-badge-time_on_page {
         background: oklch(0.7 0.2 145 / 0.2);
         color: oklch(0.7 0.2 145);
+    }
+
+    .event-badge-ai_feature {
+        background: oklch(0.7 0.18 300 / 0.2);
+        color: oklch(0.7 0.18 300);
+    }
+
+    .ai-section {
+        margin: var(--space-lg) 0;
+    }
+
+    .ai-section > h2 {
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--space-md);
+        color: var(--color-accent);
+    }
+
+    .ai-stats-grid {
+        margin-bottom: 0;
     }
 
     .el-id {
