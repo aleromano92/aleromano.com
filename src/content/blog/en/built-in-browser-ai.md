@@ -12,6 +12,8 @@ image:
 
 If you're reading this on Chrome with the right settings, you may have noticed a small "✦ AI Features — experimental" banner at the top of this post. Click it and you'll find buttons to get a *TL;DR*, extract *key points*, or *translate* the post into your language, all without a single byte leaving your browser.
 
+![The AI Features callout at the top of a blog post, showing TL;DR and Key Points buttons](../../../assets/blog/built-in-browser-ai/ai-features-1.png)
+
 No API key nor costs. No server round-trip. No privacy trade-off.
 
 This is Chrome's **Built-in AI APIs**: small on-device models shipped with the browser, exposed through a native JavaScript API. I spent my evening integrating them into this blog after being inspired by [this talk](https://www.webdayconf.it/e/sessione/5092/AI-nel-browser-costruire-feature-con-le-Built-in-AI-API) at WebDay by [Valerio Como](https://www.linkedin.com/in/valeriocomo/).
@@ -68,6 +70,8 @@ const summarizer = await Summarizer.create({
 const stream = summarizer.summarizeStreaming(text);
 ```
 
+![The bottom sheet panel opening with loading dots while the TL;DR is being generated](../../../assets/blog/built-in-browser-ai/ai-features-2.png)
+
 One gotcha I hit: the `type` value is **`'tldr'`** (no semicolon, no dash). Early documentation used `'tl;dr'` but that throws a TypeError in Chrome 146. The enum changed. Always check the current [Summarizer API docs](https://developer.chrome.com/docs/ai/summarizer-api).
 
 For key points, I use `format: 'markdown'` since the output is a bulleted list — rendering it as plain text loses the structure. For TL;DR, plain text is fine.
@@ -100,6 +104,8 @@ This is where I got burned. The two APIs have different streaming semantics — 
 - **Summarizer** used to emit the *full accumulated text* on each chunk (replace mode)
 - **Translator** emits *sentence deltas* (append mode)
 
+![The bottom sheet streaming the first words of the TL;DR summary in real time](../../../assets/blog/built-in-browser-ai/ai-features-3.png)
+
 But in my testing with Chrome 146, the Summarizer also switched to emitting deltas. So I ended up using **append mode** for both: accumulate each chunk and re-render:
 
 ```javascript
@@ -111,6 +117,8 @@ for await (const chunk of stream) {
 ```
 
 If you see only the last sentence in your output, you're probably replacing when you should be appending.
+
+![The completed TL;DR summary rendered in the bottom sheet](../../../assets/blog/built-in-browser-ai/ai-features-4.png)
 
 ## The UI: Bottom Sheet + Callout
 
@@ -125,6 +133,8 @@ A subtle CSS bug I hit: the loading animation used `display: flex`, which overri
 ```css
 .loading[hidden] { display: none; }
 ```
+
+![The Key Points output rendered as a bulleted list in the bottom sheet](../../../assets/blog/built-in-browser-ai/ai-features-5.png)
 
 ## Privacy
 

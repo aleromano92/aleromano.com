@@ -10,9 +10,19 @@
     <div class="sheet-header">
       <h2 id="ai-sheet-title" class="sheet-title"></h2>
       <button class="sheet-close" id="ai-sheet-close" aria-label="Close">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
     </div>
@@ -26,7 +36,9 @@
     </div>
     <div class="sheet-footer">
       <small>
-        Powered by <a href="https://developer.chrome.com/docs/ai" target="_blank" rel="noopener noreferrer">Chrome Built-in AI</a> — runs on your device
+        Powered by <a href="https://developer.chrome.com/docs/ai/built-in" target="_blank" rel="noopener noreferrer"
+          >Chrome Built-in AI</a
+        > — runs on your device
       </small>
     </div>
   </div>
@@ -113,7 +125,9 @@
     border-radius: 4px;
     display: flex;
     align-items: center;
-    transition: color 0.2s, background 0.2s;
+    transition:
+      color 0.2s,
+      background 0.2s;
   }
 
   .sheet-close:hover {
@@ -148,12 +162,24 @@
     animation: bounce 1.2s ease-in-out infinite;
   }
 
-  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
-  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  .loading-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .loading-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
 
   @keyframes bounce {
-    0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
-    40% { transform: scale(1); opacity: 1; }
+    0%,
+    80%,
+    100% {
+      transform: scale(0.6);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   .sheet-text {
@@ -275,7 +301,12 @@
       }
 
       if (accumulated) {
-        trackEvent({ type: 'ai_feature', path: window.location.pathname, elementId: 'ai-feature-completed', elementText: feature });
+        trackEvent({
+          type: 'ai_feature',
+          path: window.location.pathname,
+          elementId: 'ai-feature-completed',
+          elementText: feature,
+        });
       }
     } catch (err: any) {
       if (err?.name !== 'AbortError') {

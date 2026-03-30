@@ -12,6 +12,8 @@ image:
 
 Se stai leggendo questo su Chrome con le impostazioni giuste, potresti aver notato il banner "✦ Funzionalità AI — sperimentale" in cima a questo articolo. Cliccalo e troverai i pulsanti per ottenere un *TL;DR*, estrarre i *punti chiave*, o *tradurre* il post nella tua lingua — tutto senza che un singolo byte lasci il tuo browser.
 
+![Il callout "Funzionalità AI" in cima a un articolo del blog, con i pulsanti TL;DR e Punti Chiave](../../../assets/blog/built-in-browser-ai/ai-features-1.png)
+
 Nessuna API key né costi. Nessun round-trip verso un server. Nessun compromesso sulla privacy.
 
 Queste sono le **Built-in AI APIs** di Chrome: piccoli modelli on-device distribuiti insieme al browser ed esposti tramite una API JavaScript nativa. Ho passato una sera ad integrarle in questo blog dopo essere stato ispirato da [questo talk](https://www.webdayconf.it/e/sessione/5092/AI-nel-browser-costruire-feature-con-le-Built-in-AI-API) al WebDay di [Valerio Como](https://www.linkedin.com/in/valeriocomo/).
@@ -68,6 +70,8 @@ const summarizer = await Summarizer.create({
 const stream = summarizer.summarizeStreaming(text);
 ```
 
+![Il pannello bottom sheet che si apre con i punti di caricamento animati mentre il TL;DR viene generato](../../../assets/blog/built-in-browser-ai/ai-features-2.png)
+
 Una cosa che mi ha sorpreso: il valore di `type` è **`'tldr'`** (senza punto e virgola né trattino). La documentazione iniziale usava `'tl;dr'`, ma quello lancia un TypeError in Chrome 146. L'enum è cambiato. Meglio controllare sempre la [documentazione aggiornata della Summarizer API](https://developer.chrome.com/docs/ai/summarizer-api).
 
 Per i punti chiave uso `format: 'markdown'` perché l'output è una lista puntata — renderizzarla come testo semplice ne perde la struttura. Per il TL;DR, il testo semplice va bene.
@@ -100,6 +104,8 @@ Qui ho perso un po' di tempo. Le due API hanno semantiche di streaming diverse �
 - Il **Summarizer** emetteva in origine il *testo completo accumulato* ad ogni chunk (modalità replace)
 - Il **Translator** emette *delta di frasi* (modalità append)
 
+![Il bottom sheet che trasmette in streaming le prime parole del riassunto TL;DR in tempo reale](../../../assets/blog/built-in-browser-ai/ai-features-3.png)
+
 Ma testando con Chrome 146, anche il Summarizer è passato ad emettere delta. Quindi ho finito per usare la **modalità append** per entrambi: accumulo ogni chunk e ri-renderizzo:
 
 ```javascript
@@ -109,6 +115,8 @@ for await (const chunk of stream) {
   renderMarkdown(accumulated);
 }
 ```
+
+![Il riassunto TL;DR completato visualizzato nel bottom sheet](../../../assets/blog/built-in-browser-ai/ai-features-4.png)
 
 Se vedi solo l'ultima frase nell'output, probabilmente stai sostituendo quando dovresti accumulare.
 
@@ -125,6 +133,8 @@ Un bug CSS sottile che ho trovato: l'animazione di caricamento usava `display: f
 ```css
 .loading[hidden] { display: none; }
 ```
+
+![I Punti Chiave estratti e visualizzati come lista puntata nel bottom sheet](../../../assets/blog/built-in-browser-ai/ai-features-5.png)
 
 ## Privacy
 
