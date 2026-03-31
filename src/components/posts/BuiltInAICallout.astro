@@ -2,9 +2,10 @@
 interface Props {
   lang: 'en' | 'it';
   postLang: string; // the language of the post content (used as translation source)
+  postText: string; // the plain-text content of the post, passed from BlogPostLayout
 }
 
-const { lang, postLang } = Astro.props;
+const { lang, postLang, postText } = Astro.props;
 
 const t = {
   en: {
@@ -37,11 +38,10 @@ const t = {
 
 const labels = t[lang] ?? t.en;
 
-// Placeholder — will link to the blog post once written
 const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/built-in-browser-ai';
 ---
 
-<details class="ai-callout" id="ai-callout" data-post-lang={postLang} data-ui-lang={lang}>
+<details class="ai-callout" id="ai-callout" data-post-lang={postLang} data-ui-lang={lang} data-post-text={postText}>
   <summary class="ai-callout-summary">
     <span class="ai-icon" aria-hidden="true">✦</span>
     {labels.title}
@@ -193,10 +193,11 @@ const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/b
   import { trackEvent } from '../../scripts/analytics';
 
   const callout = document.getElementById('ai-callout') as HTMLDetailsElement;
-  if (!callout) throw new Error('AI callout element not found');
+  if (!callout) return;
 
   const postLang = callout.dataset.postLang ?? 'en';
   const uiLang = callout.dataset.uiLang ?? 'en';
+  const postText = callout.dataset.postText ?? '';
   const path = window.location.pathname;
 
   const tldrBtn = document.getElementById('ai-btn-tldr') as HTMLButtonElement;
@@ -211,9 +212,9 @@ const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/b
 
   async function init() {
     const features = await detectFeatures(postLang);
-    const anyFeature = features.summarize || features.translate;
+    const isAnyFeatureAvailable = Boolean(features.summarize || features.translate);
 
-    if (!anyFeature) {
+    if (!isAnyFeatureAvailable) {
       callout.hidden = true;
       return;
     }
@@ -240,18 +241,13 @@ const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/b
     }
   }
 
-  function getPostText(): string {
-    const postContent = document.querySelector('.post-content');
-    return (postContent as HTMLElement)?.innerText ?? document.body.innerText;
-  }
-
   async function handleSummarize(type: 'tldr' | 'key-points') {
     const btn = type === 'tldr' ? tldrBtn : keyPointsBtn;
     const title = type === 'tldr' ? titles.tldr : titles.keyPoints;
     btn.disabled = true;
     trackEvent({ type: 'ai_feature', path, elementId: 'ai-feature-clicked', elementText: type });
     try {
-      const stream = await summarize(getPostText(), type, postLang);
+      const stream = await summarize(postText, type, postLang);
       await (window as any).openAIBottomSheet({ title, stream, mode: 'append', feature: type });
     } catch (err) {
       console.error('Summarization failed:', err);
@@ -268,7 +264,7 @@ const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/b
     translateBtn.disabled = true;
     trackEvent({ type: 'ai_feature', path, elementId: 'ai-feature-clicked', elementText: `translate:${targetLang}` });
     try {
-      const stream = await translate(getPostText(), postLang, targetLang);
+      const stream = await translate(postText, postLang, targetLang);
       await (window as any).openAIBottomSheet({ title: titles.translate, stream, mode: 'append', feature: `translate:${targetLang}` });
     } catch (err) {
       console.error('Translation failed:', err);

@@ -5,6 +5,8 @@
 // API access: global `Summarizer` and `Translator` objects (Chrome 138+)
 // Feature detection: `'Summarizer' in self` / `'Translator' in self`
 
+import { LANGUAGES } from '../types/i18n';
+
 export type SummaryType = 'tldr' | 'key-points';
 
 export interface BuiltInAIFeatures {
@@ -15,7 +17,7 @@ export interface BuiltInAIFeatures {
 }
 
 // Languages the site already supports natively — no translation offered
-const NATIVE_LANGUAGES = ['en', 'it'];
+const NATIVE_LANGUAGES = Object.keys(LANGUAGES);
 
 function getBrowserLangBase(): string {
   return (navigator.language || 'en').split('-')[0].toLowerCase();

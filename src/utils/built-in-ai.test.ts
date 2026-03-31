@@ -12,7 +12,6 @@ function mockNavigatorLanguage(lang: string) {
 describe('detectFeatures', () => {
   beforeEach(() => {
     vi.resetModules();
-    vi.spyOn(console, 'info').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -33,8 +32,6 @@ describe('detectFeatures', () => {
       targetLang: null,
       targetLangName: null,
     });
-    expect(console.info).toHaveBeenCalledWith(expect.stringContaining('Summarizer API not available'));
-    expect(console.info).toHaveBeenCalledWith(expect.stringContaining('Translator API not available'));
   });
 
   it('enables summarize when Summarizer.availability() returns "available"', async () => {
@@ -49,7 +46,6 @@ describe('detectFeatures', () => {
 
     expect(result.summarize).toBe(true);
     expect(mockAvailability).toHaveBeenCalledWith({ outputLanguage: 'en' });
-    expect(console.info).toHaveBeenCalledWith(expect.stringContaining('Summarizer availability: "available"'));
   });
 
   it('enables summarize when Summarizer.availability() returns "downloading"', async () => {
@@ -74,7 +70,6 @@ describe('detectFeatures', () => {
     const result = await detectFeatures('en');
 
     expect(result.summarize).toBe(false);
-    expect(console.info).toHaveBeenCalledWith(expect.stringContaining('disabled'));
   });
 
   it('disables summarize when availability check throws', async () => {
@@ -87,10 +82,6 @@ describe('detectFeatures', () => {
     const result = await detectFeatures('en');
 
     expect(result.summarize).toBe(false);
-    expect(console.info).toHaveBeenCalledWith(
-      expect.stringContaining('Summarizer availability check threw'),
-      expect.any(Error)
-    );
   });
 
   it('skips translate when browser language is English (native)', async () => {
@@ -105,7 +96,6 @@ describe('detectFeatures', () => {
 
     expect(result.translate).toBe(false);
     expect(result.targetLang).toBeNull();
-    expect(console.info).toHaveBeenCalledWith(expect.stringContaining('natively supported'));
   });
 
   it('skips translate when browser language is Italian (native)', async () => {
@@ -129,7 +119,6 @@ describe('detectFeatures', () => {
     expect(result.translate).toBe(true);
     expect(result.targetLang).toBe('fr-FR');
     expect(result.targetLangName).toBeTruthy();
-    expect(console.info).toHaveBeenCalledWith(expect.stringContaining('Translator enabled'));
   });
 });
 

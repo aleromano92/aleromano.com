@@ -2,7 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import { Image } from 'astro:assets';
 import Tags from '../components/posts/Tags.astro';
-import { getReadingTime } from '../utils/reading-time';
+import { getReadingTime, stripHtmlToPlainText } from '../utils/reading-time';
 import ImageModal from '../components/ImageModal.astro';
 import BuiltInAICallout from '../components/posts/BuiltInAICallout.astro';
 import BuiltInAIBottomSheet from '../components/BuiltInAIBottomSheet.astro';
@@ -14,6 +14,7 @@ const pageTitle = frontmatter.title;
 // Get the content as a string for reading time calculation
 const content = await Astro.slots.render('default');
 const readingTime = getReadingTime(content);
+const postPlainText = stripHtmlToPlainText(content);
 
 // Check if a presentation exists for this blog post
 const presentationInfo = await findPresentationByBlogPost(Astro.url.pathname, currentLang);
@@ -111,7 +112,7 @@ const contactMeFooterText =
       )
     }
 
-    <BuiltInAICallout lang={currentLang} postLang={frontmatter.language} />
+    <BuiltInAICallout lang={currentLang} postLang={frontmatter.language} postText={postPlainText} />
 
     <div class="post-content">
       <slot />
