@@ -242,6 +242,15 @@
   import { marked } from 'marked';
   import { trackEvent } from '../scripts/analytics';
 
+  // Prevent raw HTML passthrough to mitigate XSS from model output
+  marked.use({
+    renderer: {
+      html() {
+        return '';
+      },
+    },
+  });
+
   const sheet = document.getElementById('ai-bottom-sheet') as HTMLElement;
   const backdrop = document.getElementById('ai-sheet-backdrop') as HTMLElement;
   const closeBtn = document.getElementById('ai-sheet-close') as HTMLButtonElement;
@@ -251,36 +260,46 @@
   const loadingEl = document.getElementById('ai-sheet-loading') as HTMLElement;
 
   let currentController: AbortController | null = null;
+  let currentReader: ReadableStreamDefaultReader<string> | null = null;
+  let lastFocusedElement: HTMLElement | null = null;
 
   function renderMarkdown(text: string) {
     contentEl.innerHTML = marked.parse(text) as string;
     sheetContent.scrollTop = sheetContent.scrollHeight;
   }
 
+  function getFocusableElements(): HTMLElement[] {
+    return Array.from(
+      sheet.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    );
+  }
+
   function openSheet(title: string) {
+    lastFocusedElement = document.activeElement as HTMLElement;
     titleEl.textContent = title;
     contentEl.innerHTML = '';
     loadingEl.hidden = false;
     sheet.hidden = false;
-
-    requestAnimationFrame(() => {
-      sheet.classList.add('open');
-    });
-
     closeBtn.focus();
   }
 
   function closeSheet() {
     sheet.hidden = true;
-    sheet.classList.remove('open');
     currentController?.abort();
     currentController = null;
+    currentReader?.cancel();
+    currentReader = null;
+    lastFocusedElement?.focus();
+    lastFocusedElement = null;
   }
 
   async function streamContent(stream: ReadableStream<string>, mode: 'replace' | 'append', feature: string) {
     contentEl.innerHTML = '';
 
     const reader = stream.getReader();
+    currentReader = reader;
     currentController = new AbortController();
     let accumulated = '';
 
@@ -314,6 +333,7 @@
       }
     } finally {
       reader.releaseLock();
+      currentReader = null;
     }
   }
 
@@ -328,10 +348,40 @@
     await streamContent(options.stream, options.mode, options.feature);
   };
 
+  // Public API — called from BuiltInAICallout when the API call fails before a stream is returned
+  (window as any).openAIBottomSheetError = (title: string) => {
+    openSheet(title);
+    loadingEl.hidden = true;
+    contentEl.textContent = 'Something went wrong. The AI model may not be ready yet. Please try again.';
+  };
+
   // Close triggers
   closeBtn.addEventListener('click', closeSheet);
   backdrop.addEventListener('click', closeSheet);
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !sheet.hidden) closeSheet();
+    if (sheet.hidden) return;
+
+    if (e.key === 'Escape') {
+      closeSheet();
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      const focusable = getFocusableElements();
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
   });
 </script>

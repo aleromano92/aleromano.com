@@ -225,4 +225,102 @@ describe('analyticsManager query methods', () => {
       expect(result.totalEvents).toBe(5); // 2 clicks + 3 time_on_page
     });
   });
+
+  describe('getAIFeatureStats', () => {
+    function seedAIEvents() {
+      const db = getDatabase();
+      const now = Math.floor(Date.now() / 1000);
+
+      const insertEvent = db.prepare(`
+        INSERT INTO analytics_events (type, path, visitor_hash, element_tag, element_id, element_text, href, duration, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+
+      // 3 detected events (different feature combos)
+      insertEvent.run('ai_feature', '/posts/test', 'hash1', null, 'ai-features-detected', 'summarize,translate:de', null, null, now - 100);
+      insertEvent.run('ai_feature', '/posts/test', 'hash2', null, 'ai-features-detected', 'summarize', null, null, now - 200);
+      insertEvent.run('ai_feature', '/posts/test', 'hash3', null, 'ai-features-detected', 'summarize', null, null, now - 300);
+
+      // 4 clicked events
+      insertEvent.run('ai_feature', '/posts/test', 'hash1', null, 'ai-feature-clicked', 'tldr', null, null, now - 110);
+      insertEvent.run('ai_feature', '/posts/test', 'hash1', null, 'ai-feature-clicked', 'key-points', null, null, now - 120);
+      insertEvent.run('ai_feature', '/posts/test', 'hash2', null, 'ai-feature-clicked', 'tldr', null, null, now - 210);
+      insertEvent.run('ai_feature', '/posts/test', 'hash3', null, 'ai-feature-clicked', 'translate:de', null, null, now - 310);
+
+      // 3 completed events (one click didn't complete)
+      insertEvent.run('ai_feature', '/posts/test', 'hash1', null, 'ai-feature-completed', 'tldr', null, null, now - 115);
+      insertEvent.run('ai_feature', '/posts/test', 'hash1', null, 'ai-feature-completed', 'key-points', null, null, now - 125);
+      insertEvent.run('ai_feature', '/posts/test', 'hash2', null, 'ai-feature-completed', 'tldr', null, null, now - 215);
+    }
+
+    beforeEach(() => {
+      const db = getDatabase();
+      db.exec("DELETE FROM analytics_events WHERE type = 'ai_feature'");
+      seedAIEvents();
+    });
+
+    it('should return correct detected count', () => {
+      const result = analyticsManager.getAIFeatureStats(30);
+      expect(result.detected).toBe(3);
+    });
+
+    it('should return clicked counts grouped by feature', () => {
+      const result = analyticsManager.getAIFeatureStats(30);
+      expect(result.clicked).toHaveLength(3);
+
+      const tldr = result.clicked.find(r => r.feature === 'tldr');
+      expect(tldr).toBeDefined();
+      expect(tldr!.count).toBe(2);
+
+      const keyPoints = result.clicked.find(r => r.feature === 'key-points');
+      expect(keyPoints).toBeDefined();
+      expect(keyPoints!.count).toBe(1);
+
+      const translate = result.clicked.find(r => r.feature === 'translate:de');
+      expect(translate).toBeDefined();
+      expect(translate!.count).toBe(1);
+    });
+
+    it('should return completed counts grouped by feature', () => {
+      const result = analyticsManager.getAIFeatureStats(30);
+      expect(result.completed).toHaveLength(2);
+
+      const tldr = result.completed.find(r => r.feature === 'tldr');
+      expect(tldr).toBeDefined();
+      expect(tldr!.count).toBe(2);
+
+      const keyPoints = result.completed.find(r => r.feature === 'key-points');
+      expect(keyPoints).toBeDefined();
+      expect(keyPoints!.count).toBe(1);
+    });
+
+    it('should calculate completion rate correctly', () => {
+      const result = analyticsManager.getAIFeatureStats(30);
+      // 3 completed out of 4 clicked = 75%
+      expect(result.completionRate).toBe(75);
+    });
+
+    it('should return 0 completion rate when nothing was clicked', () => {
+      const db = getDatabase();
+      db.exec("DELETE FROM analytics_events WHERE type = 'ai_feature'");
+      const result = analyticsManager.getAIFeatureStats(30);
+      expect(result.completionRate).toBe(0);
+      expect(result.detected).toBe(0);
+      expect(result.clicked).toHaveLength(0);
+      expect(result.completed).toHaveLength(0);
+    });
+
+    it('should respect the days parameter and exclude older events', () => {
+      const db = getDatabase();
+      const oldTimestamp = Math.floor(Date.now() / 1000) - (40 * 24 * 60 * 60); // 40 days ago
+      db.prepare(`
+        INSERT INTO analytics_events (type, path, visitor_hash, element_tag, element_id, element_text, href, duration, created_at)
+        VALUES ('ai_feature', '/posts/test', 'hash9', null, 'ai-features-detected', 'summarize', null, null, ?)
+      `).run(oldTimestamp);
+
+      const result30 = analyticsManager.getAIFeatureStats(30);
+      const result60 = analyticsManager.getAIFeatureStats(60);
+      expect(result60.detected).toBe(result30.detected + 1);
+    });
+  });
 });

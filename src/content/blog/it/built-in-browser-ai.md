@@ -7,7 +7,7 @@ tags: ["AI", "Chrome", "Privacy"]
 language: "it"
 image:
   url: ../../../assets/blog/built-in-browser-ai/featured.jpg
-  alt: "Un LLM embeeded nel mio sito"
+  alt: "Un LLM embedded nel mio sito"
 ---
 
 Se stai leggendo questo su Chrome con le impostazioni giuste, potresti aver notato il banner "✦ Funzionalità AI — sperimentale" in cima a questo articolo. Cliccalo e troverai i pulsanti per ottenere un *TL;DR*, estrarre i *punti chiave*, o *tradurre* il post nella tua lingua — tutto senza che un singolo byte lasci il tuo browser.

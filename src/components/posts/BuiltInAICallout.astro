@@ -38,7 +38,7 @@ const t = {
 const labels = t[lang] ?? t.en;
 
 // Placeholder — will link to the blog post once written
-const learnMoreUrl = '/posts/built-in-browser-ai';
+const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/built-in-browser-ai';
 ---
 
 <details class="ai-callout" id="ai-callout" data-post-lang={postLang} data-ui-lang={lang}>
@@ -247,14 +247,15 @@ const learnMoreUrl = '/posts/built-in-browser-ai';
 
   async function handleSummarize(type: 'tldr' | 'key-points') {
     const btn = type === 'tldr' ? tldrBtn : keyPointsBtn;
+    const title = type === 'tldr' ? titles.tldr : titles.keyPoints;
     btn.disabled = true;
     trackEvent({ type: 'ai_feature', path, elementId: 'ai-feature-clicked', elementText: type });
     try {
       const stream = await summarize(getPostText(), type, postLang);
-      const title = type === 'tldr' ? titles.tldr : titles.keyPoints;
       await (window as any).openAIBottomSheet({ title, stream, mode: 'append', feature: type });
     } catch (err) {
       console.error('Summarization failed:', err);
+      (window as any).openAIBottomSheetError?.(title);
     } finally {
       btn.disabled = false;
     }
@@ -271,6 +272,7 @@ const learnMoreUrl = '/posts/built-in-browser-ai';
       await (window as any).openAIBottomSheet({ title: titles.translate, stream, mode: 'append', feature: `translate:${targetLang}` });
     } catch (err) {
       console.error('Translation failed:', err);
+      (window as any).openAIBottomSheetError?.(titles.translate);
     } finally {
       translateBtn.disabled = false;
     }

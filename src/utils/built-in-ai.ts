@@ -87,8 +87,11 @@ export async function translate(
 ): Promise<ReadableStream<string>> {
   if (!('Translator' in self)) throw new Error('Translator API not available');
 
-  const isTranslationModelAvailable = await (self as any).Translator.availability({ sourceLanguage: sourceLang, targetLanguage: targetLang });
-  if (!isTranslationModelAvailable) {
+  const translationModelStatus = await (self as any).Translator.availability({
+    sourceLanguage: sourceLang,
+    targetLanguage: targetLang,
+  });
+  if (translationModelStatus === 'unavailable') {
     throw new Error(`Translation from ${sourceLang} to ${targetLang} is not supported on this device.`);
   }
 
