@@ -7,7 +7,7 @@
  * All event types (page_view, click, time_on_page) use this interface.
  */
 export interface AnalyticsEvent {
-  type: 'page_view' | 'click' | 'time_on_page';
+  type: 'page_view' | 'click' | 'time_on_page' | 'ai_feature';
   path: string;
   referer?: string;
   elementTag?: string;
@@ -39,7 +39,7 @@ export interface VisitRecord {
  * Note: does not include 'page_view' type since those use VisitRecord.
  */
 export interface EventRecord {
-  type: 'click' | 'time_on_page';
+  type: 'click' | 'time_on_page' | 'ai_feature';
   path: string;
   visitorHash?: string;
   elementTag?: string;

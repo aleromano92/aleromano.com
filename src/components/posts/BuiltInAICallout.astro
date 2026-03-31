@@ -1,0 +1,282 @@
+---
+interface Props {
+  lang: 'en' | 'it';
+  postLang: string; // the language of the post content (used as translation source)
+  postText: string; // the plain-text content of the post, passed from BlogPostLayout
+}
+
+const { lang, postLang, postText } = Astro.props;
+
+const t = {
+  en: {
+    summary: 'summary',
+    title: 'AI Features — experimental',
+    description: 'Summarize or translate this post using AI running entirely on your device. No data leaves your browser.',
+    tldr: 'TL;DR',
+    keyPoints: 'Key Points',
+    translate: 'Translate', // followed by "to {lang}" in JS
+    learnMore: 'Learn more about Built-in AI APIs',
+    unsupported: 'Requires Chrome with Built-in AI APIs enabled.',
+    tldrSheetTitle: 'TL;DR',
+    keyPointsSheetTitle: 'Key Points',
+    translateSheetTitle: 'Translation',
+  },
+  it: {
+    summary: 'sommario',
+    title: 'Funzionalità AI — sperimentale',
+    description: 'Riassumi o traduci questo articolo con AI che gira interamente sul tuo dispositivo. Nessun dato lascia il tuo browser.',
+    tldr: 'In breve',
+    keyPoints: 'Punti chiave',
+    translate: 'Traduci',
+    learnMore: 'Scopri le Built-in AI APIs',
+    unsupported: 'Richiede Chrome con le Built-in AI APIs abilitate.',
+    tldrSheetTitle: 'In breve',
+    keyPointsSheetTitle: 'Punti chiave',
+    translateSheetTitle: 'Traduzione',
+  },
+} as const;
+
+const labels = t[lang] ?? t.en;
+
+const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/built-in-browser-ai';
+---
+
+<details class="ai-callout" id="ai-callout" data-post-lang={postLang} data-ui-lang={lang} data-post-text={postText}>
+  <summary class="ai-callout-summary">
+    <span class="ai-icon" aria-hidden="true">✦</span>
+    {labels.title}
+  </summary>
+  <div class="ai-callout-body">
+    <p class="ai-callout-desc">{labels.description}</p>
+
+    <div class="ai-callout-actions">
+      <button class="ai-btn" id="ai-btn-tldr" data-action="tldr" hidden>
+        {labels.tldr}
+      </button>
+      <button class="ai-btn" id="ai-btn-keypoints" data-action="key-points" hidden>
+        {labels.keyPoints}
+      </button>
+      <button class="ai-btn ai-btn-translate" id="ai-btn-translate" data-action="translate" hidden>
+        {labels.translate}<!-- target lang injected by JS -->
+      </button>
+    </div>
+
+    <p class="ai-callout-unsupported" id="ai-callout-unsupported" hidden>
+      {labels.unsupported}
+    </p>
+
+    <p class="ai-callout-learn-more">
+      <a href={learnMoreUrl}>{labels.learnMore} →</a>
+    </p>
+  </div>
+</details>
+
+<style>
+  .ai-callout {
+    margin: var(--space-md) 0;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg-secondary);
+    overflow: hidden;
+  }
+
+  .ai-callout-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    cursor: pointer;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    list-style: none;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .ai-callout-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ai-callout-summary::after {
+    content: '›';
+    margin-left: auto;
+    font-size: 1.2em;
+    transition: transform 0.2s;
+    color: var(--color-text-secondary);
+  }
+
+  details[open] .ai-callout-summary::after {
+    transform: rotate(90deg);
+  }
+
+  .ai-callout-summary:hover {
+    background: var(--color-secondary);
+  }
+
+  .ai-icon {
+    color: var(--color-accent);
+    font-size: 0.9em;
+  }
+
+  .ai-callout-body {
+    padding: var(--space-sm) var(--space-md) var(--space-md);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .ai-callout-desc {
+    margin: 0 0 var(--space-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+  }
+
+  .ai-callout-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+  }
+
+  .ai-btn {
+    padding: 6px var(--space-sm);
+    border-radius: 6px;
+    border: 1px solid var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-bg);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    font-family: inherit;
+  }
+
+  .ai-btn:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+  }
+
+  .ai-btn:active {
+    transform: translateY(0);
+  }
+
+  .ai-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .ai-btn-translate {
+    background: transparent;
+    color: var(--color-accent);
+  }
+
+  .ai-callout-unsupported {
+    margin: 0 0 var(--space-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+
+  .ai-callout-learn-more {
+    margin: 0;
+    font-size: var(--font-size-sm);
+  }
+
+  .ai-callout-learn-more a {
+    color: var(--color-text-secondary);
+    text-underline-offset: 3px;
+  }
+</style>
+
+<script>
+  import { detectFeatures, summarize, translate } from '../../utils/built-in-ai';
+  import { trackEvent } from '../../scripts/analytics';
+
+  const callout = document.getElementById('ai-callout') as HTMLDetailsElement;
+  if (!callout) return;
+
+  const postLang = callout.dataset.postLang ?? 'en';
+  const uiLang = callout.dataset.uiLang ?? 'en';
+  const postText = callout.dataset.postText ?? '';
+  const path = window.location.pathname;
+
+  const tldrBtn = document.getElementById('ai-btn-tldr') as HTMLButtonElement;
+  const keyPointsBtn = document.getElementById('ai-btn-keypoints') as HTMLButtonElement;
+  const translateBtn = document.getElementById('ai-btn-translate') as HTMLButtonElement;
+
+  const sheetTitles = {
+    en: { tldr: 'TL;DR', keyPoints: 'Key Points', translate: 'Translation' },
+    it: { tldr: 'In breve', keyPoints: 'Punti chiave', translate: 'Traduzione' },
+  } as const;
+  const titles = sheetTitles[uiLang as 'en' | 'it'] ?? sheetTitles.en;
+
+  async function init() {
+    const features = await detectFeatures(postLang);
+    const isAnyFeatureAvailable = Boolean(features.summarize || features.translate);
+
+    if (!isAnyFeatureAvailable) {
+      callout.hidden = true;
+      return;
+    }
+
+    // Track which features are available
+    const enabledFeatures = [
+      features.summarize ? 'summarize' : null,
+      features.translate ? `translate:${features.targetLang}` : null,
+    ].filter(Boolean).join(',');
+    trackEvent({ type: 'ai_feature', path, elementId: 'ai-features-detected', elementText: enabledFeatures });
+
+    if (features.summarize) {
+      tldrBtn.hidden = false;
+      keyPointsBtn.hidden = false;
+    }
+
+    if (features.translate && features.targetLang) {
+      const langName = features.targetLangName ?? features.targetLang;
+      translateBtn.textContent = uiLang === 'it'
+        ? `Traduci in ${langName}`
+        : `Translate to ${langName}`;
+      translateBtn.hidden = false;
+      translateBtn.dataset.targetLang = features.targetLang;
+    }
+  }
+
+  async function handleSummarize(type: 'tldr' | 'key-points') {
+    const btn = type === 'tldr' ? tldrBtn : keyPointsBtn;
+    const title = type === 'tldr' ? titles.tldr : titles.keyPoints;
+    btn.disabled = true;
+    trackEvent({ type: 'ai_feature', path, elementId: 'ai-feature-clicked', elementText: type });
+    try {
+      const stream = await summarize(postText, type, postLang);
+      await (window as any).openAIBottomSheet({ title, stream, mode: 'append', feature: type });
+    } catch (err) {
+      console.error('Summarization failed:', err);
+      (window as any).openAIBottomSheetError?.(title);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async function handleTranslate() {
+    const targetLang = translateBtn.dataset.targetLang;
+    if (!targetLang) return;
+
+    translateBtn.disabled = true;
+    trackEvent({ type: 'ai_feature', path, elementId: 'ai-feature-clicked', elementText: `translate:${targetLang}` });
+    try {
+      const stream = await translate(postText, postLang, targetLang);
+      await (window as any).openAIBottomSheet({ title: titles.translate, stream, mode: 'append', feature: `translate:${targetLang}` });
+    } catch (err) {
+      console.error('Translation failed:', err);
+      (window as any).openAIBottomSheetError?.(titles.translate);
+    } finally {
+      translateBtn.disabled = false;
+    }
+  }
+
+  tldrBtn.addEventListener('click', () => handleSummarize('tldr'));
+  keyPointsBtn.addEventListener('click', () => handleSummarize('key-points'));
+  translateBtn.addEventListener('click', handleTranslate);
+
+  init();
+</script>

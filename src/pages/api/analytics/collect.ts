@@ -33,7 +33,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Validate event type
-    const validTypes = ['page_view', 'click', 'time_on_page'];
+    const validTypes = ['page_view', 'click', 'time_on_page', 'ai_feature'];
     if (!validTypes.includes(payload.type)) {
       return new Response(JSON.stringify({ error: 'Invalid event type' }), {
         status: 400,

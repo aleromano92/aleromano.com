@@ -368,6 +368,46 @@ export const analyticsManager = {
   },
 
   /**
+   * Get AI feature usage stats (detected, clicked, completed) by feature name
+   */
+  getAIFeatureStats(days: number = 30): {
+    detected: number;
+    clicked: Array<{ feature: string; count: number }>;
+    completed: Array<{ feature: string; count: number }>;
+    completionRate: number;
+  } {
+    const db = getDatabase();
+    const cutoff = getDaysAgoTimestamp(days);
+
+    const detected = (db.prepare(`
+      SELECT COUNT(*) as count FROM analytics_events
+      WHERE type = 'ai_feature' AND element_id = 'ai-features-detected' AND created_at >= ?
+    `).get(cutoff) as { count: number }).count;
+
+    const clicked = db.prepare(`
+      SELECT element_text as feature, COUNT(*) as count
+      FROM analytics_events
+      WHERE type = 'ai_feature' AND element_id = 'ai-feature-clicked' AND created_at >= ?
+      GROUP BY element_text
+      ORDER BY count DESC
+    `).all(cutoff) as Array<{ feature: string; count: number }>;
+
+    const completed = db.prepare(`
+      SELECT element_text as feature, COUNT(*) as count
+      FROM analytics_events
+      WHERE type = 'ai_feature' AND element_id = 'ai-feature-completed' AND created_at >= ?
+      GROUP BY element_text
+      ORDER BY count DESC
+    `).all(cutoff) as Array<{ feature: string; count: number }>;
+
+    const totalClicked = clicked.reduce((s, r) => s + r.count, 0);
+    const totalCompleted = completed.reduce((s, r) => s + r.count, 0);
+    const completionRate = totalClicked > 0 ? Math.round((totalCompleted / totalClicked) * 100) : 0;
+
+    return { detected, clicked, completed, completionRate };
+  },
+
+  /**
    * Get total stats summary
    */
   getSummary(days: number = 30): { totalVisits: number; uniqueVisitors: number; totalEvents: number; avgTimeOnPage: number } {
