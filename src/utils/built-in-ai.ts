@@ -73,7 +73,7 @@ export async function summarize(
   text: string,
   type: SummaryType,
   outputLanguage: string,
-  onDownloadStart?: () => void,
+  onDownloadProgress?: (loaded: number, total: number) => void,
 ): Promise<ReadableStream<string>> {
   if (!('Summarizer' in self)) throw new Error('Summarizer API not available');
 
@@ -83,7 +83,7 @@ export async function summarize(
     length: 'medium',
     outputLanguage,
     monitor(m: EventTarget) {
-      m.addEventListener('downloadprogress', () => onDownloadStart?.(), { once: true });
+      m.addEventListener('downloadprogress', (e: any) => onDownloadProgress?.(e.loaded, e.total));
     },
   });
 
@@ -94,7 +94,7 @@ export async function translate(
   text: string,
   sourceLang: string,
   targetLang: string,
-  onDownloadStart?: () => void,
+  onDownloadProgress?: (loaded: number, total: number) => void,
 ): Promise<ReadableStream<string>> {
   if (!('Translator' in self)) throw new Error('Translator API not available');
 
@@ -110,7 +110,7 @@ export async function translate(
     sourceLanguage: sourceLang,
     targetLanguage: targetLang,
     monitor(m: EventTarget) {
-      m.addEventListener('downloadprogress', () => onDownloadStart?.(), { once: true });
+      m.addEventListener('downloadprogress', (e: any) => onDownloadProgress?.(e.loaded, e.total));
     },
   });
 

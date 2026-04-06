@@ -252,8 +252,9 @@ const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/b
       it: 'Download del modello AI in corso…',
     };
 
-    function showDownloading() {
-      statusText.textContent = downloadingMsg[uiLang] ?? downloadingMsg.en;
+    function showDownloading(loaded: number, total: number) {
+      const pct = total > 0 ? ` ${Math.round((loaded / total) * 100)}%` : '';
+      statusText.textContent = `${downloadingMsg[uiLang] ?? downloadingMsg.en}${pct}`;
       statusEl.hidden = false;
     }
 
@@ -304,7 +305,7 @@ const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/b
       btn.disabled = true;
       trackEvent({ type: 'ai_feature', path, elementId: 'ai-feature-clicked', elementText: type });
       try {
-        const stream = await summarize(postText, type, postLang, showDownloading);
+        const stream = await summarize(postText, type, postLang, (loaded, total) => showDownloading(loaded, total));
         hideStatus();
         await (window as any).openAIBottomSheet({ title, stream, mode: 'append', feature: type });
       } catch (err) {
@@ -323,7 +324,7 @@ const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/b
       translateBtn.disabled = true;
       trackEvent({ type: 'ai_feature', path, elementId: 'ai-feature-clicked', elementText: `translate:${targetLang}` });
       try {
-        const stream = await translate(postText, postLang, targetLang, showDownloading);
+        const stream = await translate(postText, postLang, targetLang, (loaded, total) => showDownloading(loaded, total));
         hideStatus();
         await (window as any).openAIBottomSheet({ title: titles.translate, stream, mode: 'append', feature: `translate:${targetLang}` });
       } catch (err) {
