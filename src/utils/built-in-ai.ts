@@ -69,7 +69,12 @@ export async function detectFeatures(postLanguage = 'en'): Promise<BuiltInAIFeat
   return { summarize, translate, targetLang, targetLangName };
 }
 
-export async function summarize(text: string, type: SummaryType, outputLanguage: string): Promise<ReadableStream<string>> {
+export async function summarize(
+  text: string,
+  type: SummaryType,
+  outputLanguage: string,
+  onDownloadStart?: () => void,
+): Promise<ReadableStream<string>> {
   if (!('Summarizer' in self)) throw new Error('Summarizer API not available');
 
   const summarizer = await (self as any).Summarizer.create({
@@ -77,6 +82,9 @@ export async function summarize(text: string, type: SummaryType, outputLanguage:
     format: type === 'key-points' ? 'markdown' : 'plain-text',  // teaser → plain-text, key-points → markdown
     length: 'medium',
     outputLanguage,
+    monitor(m: EventTarget) {
+      m.addEventListener('downloadprogress', () => onDownloadStart?.(), { once: true });
+    },
   });
 
   return summarizer.summarizeStreaming(text);
@@ -85,7 +93,8 @@ export async function summarize(text: string, type: SummaryType, outputLanguage:
 export async function translate(
   text: string,
   sourceLang: string,
-  targetLang: string
+  targetLang: string,
+  onDownloadStart?: () => void,
 ): Promise<ReadableStream<string>> {
   if (!('Translator' in self)) throw new Error('Translator API not available');
 
@@ -100,6 +109,9 @@ export async function translate(
   const translator = await (self as any).Translator.create({
     sourceLanguage: sourceLang,
     targetLanguage: targetLang,
+    monitor(m: EventTarget) {
+      m.addEventListener('downloadprogress', () => onDownloadStart?.(), { once: true });
+    },
   });
 
   return translator.translateStreaming(text);
