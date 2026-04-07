@@ -1,3 +1,5 @@
+import { cacheManager, type CacheManager } from './database';
+
 export interface GitHubCommit {
   sha: string;
   message: string;
@@ -18,6 +20,10 @@ const GITHUB_USERNAME = 'aleromano92';
 const GITHUB_REPO = 'aleromano.com';
 const PERSONAL_GITHUB_TOKEN = import.meta.env.PERSONAL_GITHUB_TOKEN || process.env.PERSONAL_GITHUB_TOKEN;
 
+// 1 hour TTL — commits update frequently enough that shorter cache is appropriate
+const CACHE_TTL = 60 * 60 * 1000;
+const GITHUB_CACHE_KEY = 'github:commits';
+
 function formatDate(dateString: string, lang: string = 'en'): string {
   const date = new Date(dateString);
   const options: Intl.DateTimeFormatOptions = {
@@ -36,14 +42,14 @@ function getRelativeTime(dateString: string, language: string = 'en'): string {
   const now = new Date();
   const commitDate = new Date(dateString);
   const diffInMs = now.getTime() - commitDate.getTime();
-  
+
   const minute = 60 * 1000;
   const hour = minute * 60;
   const day = hour * 24;
   const week = day * 7;
   const month = day * 30;
   const year = day * 365;
-  
+
   // Translation map for relative time strings
   const translations = {
     en: {
@@ -77,32 +83,32 @@ function getRelativeTime(dateString: string, language: string = 'en'): string {
   switch (true) {
     case diffInMs < minute:
       return t.now;
-    
+
     case diffInMs < hour:
       timeUnit = 'minute';
       value = Math.floor(diffInMs / minute);
       break;
-    
+
     case diffInMs < day:
       timeUnit = 'hour';
       value = Math.floor(diffInMs / hour);
       break;
-    
+
     case diffInMs < week:
       timeUnit = 'day';
       value = Math.floor(diffInMs / day);
       break;
-    
+
     case diffInMs < month:
       timeUnit = 'week';
       value = Math.floor(diffInMs / week);
       break;
-    
+
     case diffInMs < year:
       timeUnit = 'month';
       value = Math.floor(diffInMs / month);
       break;
-    
+
     default:
       timeUnit = 'year';
       value = Math.floor(diffInMs / year);
@@ -130,29 +136,24 @@ async function fetchRepositoryCommits(): Promise<any[]> {
     headers['Authorization'] = `token ${PERSONAL_GITHUB_TOKEN}`;
   }
 
-  try {
-    const response = await fetch(url, { headers });
-    
-    if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching GitHub commits:', error);
-    throw error;
+  const response = await fetch(url, { headers });
+
+  if (!response.ok) {
+    throw new Error(`GitHub API error: ${response.status}`);
   }
+
+  return await response.json();
 }
 
 function extractCommitsFromRepositoryData(commits: any[], language: string = 'en'): GitHubCommit[] {
   const gitHubCommits: GitHubCommit[] = [];
-  
+
   for (const commit of commits) {
     // Skip merge commits
     if (!commit.commit.message.startsWith('Merge')) {
       const message = commit.commit.message.split('\n')[0]; // First line only
       const date = commit.commit.author.date;
-      
+
       gitHubCommits.push({
         sha: commit.sha.substring(0, 7), // Short SHA
         message,
@@ -165,26 +166,58 @@ function extractCommitsFromRepositoryData(commits: any[], language: string = 'en
       });
     }
   }
-  
+
   // Sort by date descending
   return gitHubCommits
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
-export async function getGitHubCommitsData(language: string = 'en'): Promise<GitHubCommitsData> {
-  try {
-    const commits = await fetchRepositoryCommits();
-    const gitHubCommits = extractCommitsFromRepositoryData(commits, language);
-    
-    return {
-      commits: gitHubCommits
-    };
-  } catch (error) {
-    console.error('Failed to fetch GitHub commits:', error);
-    
-    return {
-      commits: [],
-      error: 'Failed to load recent commits'
-    };
+export class GitHubService {
+  constructor(private cache: CacheManager) {}
+
+  async getCommitsData(language: string = 'en'): Promise<GitHubCommitsData> {
+    try {
+      const rawCommits = await this.fetchRawCommits();
+      return {
+        commits: extractCommitsFromRepositoryData(rawCommits, language)
+      };
+    } catch (error) {
+      console.error('Failed to fetch GitHub commits:', error);
+      return {
+        commits: [],
+        error: 'Failed to load recent commits'
+      };
+    }
   }
+
+  private async fetchRawCommits(): Promise<any[]> {
+    const cached = this.cache.get(GITHUB_CACHE_KEY);
+    if (cached) {
+      console.log('Using cached GitHub data');
+      return JSON.parse(cached);
+    }
+
+    try {
+      const commits = await fetchRepositoryCommits();
+      this.cache.set(GITHUB_CACHE_KEY, JSON.stringify(commits), CACHE_TTL);
+      return commits;
+    } catch (error) {
+      console.error('Error fetching GitHub commits:', error);
+
+      // Fallback to stale cache when API is unreachable
+      const staleCached = this.cache.getStale(GITHUB_CACHE_KEY);
+      if (staleCached) {
+        console.warn('Using stale cached GitHub data due to API error');
+        return JSON.parse(staleCached);
+      }
+
+      throw error;
+    }
+  }
+}
+
+export const gitHubService = new GitHubService(cacheManager);
+
+export async function getGitHubCommitsData(language: string = 'en'): Promise<GitHubCommitsData> {
+  return gitHubService.getCommitsData(language);
 }

@@ -77,15 +77,18 @@ export async function summarize(
 ): Promise<ReadableStream<string>> {
   if (!('Summarizer' in self)) throw new Error('Summarizer API not available');
 
-  const summarizer = await (self as any).Summarizer.create({
+  const options: Record<string, unknown> = {
     type,
-    format: type === 'key-points' ? 'markdown' : 'plain-text',  // teaser → plain-text, key-points → markdown
+    format: type === 'key-points' ? 'markdown' : 'plain-text',
     length: 'medium',
     outputLanguage,
-    monitor(m: EventTarget) {
-      m.addEventListener('downloadprogress', (e: any) => onDownloadProgress?.(e.loaded, e.total));
-    },
-  });
+  };
+  if (onDownloadProgress) {
+    options.monitor = (m: EventTarget) => {
+      m.addEventListener('downloadprogress', (e: any) => onDownloadProgress(e.loaded, e.total));
+    };
+  }
+  const summarizer = await (self as any).Summarizer.create(options);
 
   return summarizer.summarizeStreaming(text);
 }
@@ -106,13 +109,16 @@ export async function translate(
     throw new Error(`Translation from ${sourceLang} to ${targetLang} is not supported on this device.`);
   }
 
-  const translator = await (self as any).Translator.create({
+  const translatorOptions: Record<string, unknown> = {
     sourceLanguage: sourceLang,
     targetLanguage: targetLang,
-    monitor(m: EventTarget) {
-      m.addEventListener('downloadprogress', (e: any) => onDownloadProgress?.(e.loaded, e.total));
-    },
-  });
+  };
+  if (onDownloadProgress) {
+    translatorOptions.monitor = (m: EventTarget) => {
+      m.addEventListener('downloadprogress', (e: any) => onDownloadProgress(e.loaded, e.total));
+    };
+  }
+  const translator = await (self as any).Translator.create(translatorOptions);
 
   return translator.translateStreaming(text);
 }
