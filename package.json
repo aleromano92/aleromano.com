@@ -37,7 +37,7 @@
     "geolite2-redist": "^3.1.2",
     "marked": "^17.0.5",
     "maxmind": "^5.0.5",
-    "nodemailer": "^8.0.4",
+    "nodemailer": "^8.0.5",
     "rehype-external-links": "^3.0.0",
     "reveal.js": "^5.2.1",
     "shiki": "^1.1.7",
