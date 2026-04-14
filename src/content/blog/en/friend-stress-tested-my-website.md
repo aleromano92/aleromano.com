@@ -5,6 +5,9 @@ pubDate: 2026-04-14
 author: "Alessandro Romano"
 tags: ["aleromano.com", "Best Practices", "DevOps", "Node.js", "Observability", "VPS"]
 language: "en"
+image:
+  url: ../../../assets/blog/friend-stress-tested-my-website/featured.png
+  alt: "Terminal output showing a load test running against aleromano.com"
 ---
 
 I was doing my usual check of my analytics dashboard when I noticed something strange.
@@ -21,11 +24,11 @@ He confirmed he wasnt trying to DDoS me, just experimenting with `k6`. He later 
 
 ## What He Did
 
-Anatoli ran a `k6` load test that ramped from 20 to 100 virtual users over about three and a half minutes, each hitting my analytics collect endpoint with a custom path. The `/anatoli-was-here<3` marker was his way of signing his work.
+Anatoli ran a `k6` load test that ramped from 20 to 100 virtual users over about three and a half minutes, each hitting my analytics collect endpoint with a custom path. The `/anatoli-was-here<3` marker was his way of signing his work. The analytics system is something I built myself — if you're curious how it works, I covered it in detail in [this slide of my DIY in the AI era talk](/posts/about-this-site/present#/27).
 
-The result? My site handled it. The VPS didn't buckle. The response times stayed within acceptable bounds. But I had never actually *verified* any of that myself. I had deployed my site, tuned it a bit, added observability, and then just assumed it would hold up under pressure.
+The result? Two things, actually. The good news: my site handled it. The VPS didn't buckle, the response times stayed within acceptable bounds. But I had never actually *verified* any of that myself. I had deployed my site, tuned it a bit, added observability, and then just assumed it would hold up under pressure. Anatoli's unannounced stress test was the first real proof I had that it would.
 
-Anatoli's unannounced stress test was the first real proof I had that it would.
+The bad news: the analytics endpoint accepted whatever data Anatoli threw at it, no questions asked. Any path, any payload. That's how `/anatoli-was-here<3` ended up as my most visited page of the week. The server held up fine; the data integrity did not.
 
 ## Why Load Testing a Personal Site Still Matters
 
