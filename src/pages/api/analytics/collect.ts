@@ -20,7 +20,17 @@ function getClientIP(request: Request): string {
   return 'unknown';
 }
 
+const ALLOWED_ORIGIN = 'https://aleromano.com';
+
 export const POST: APIRoute = async ({ request }) => {
+  const origin = request.headers.get('Origin');
+  if (origin !== ALLOWED_ORIGIN) {
+    return new Response(JSON.stringify({ error: 'Forbidden' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   try {
     const payload = await request.json() as AnalyticsEvent;
 
