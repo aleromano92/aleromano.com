@@ -59,17 +59,20 @@ function summarise(results) {
   console.log(" Summary");
   console.log(`${"═".repeat(60)}`);
 
+  // Pass/fail is based on transport errors and timeouts only.
+  // 4xx responses (e.g. intentional 400 from /api/contact probe) and 3xx
+  // redirects are expected and must not count as failures.
   const allPassed = results.every(
-    (r) => r["2xx"] > 0 && r.errors === 0 && r.timeouts === 0
+    (r) => r.errors === 0 && r.timeouts === 0
   );
 
   results.forEach((r) => {
     const rps = r.requests.average.toFixed(0);
-    const p95 = r.latency.p97_5.toFixed(1);
+    const p97_5 = r.latency.p97_5.toFixed(1);
     const errors = r.errors + r.timeouts;
     const status = errors === 0 ? "✓" : "✗";
     console.log(
-      `  ${status} ${r.title.padEnd(30)} ${rps.padStart(6)} req/s   p97.5=${p95}ms   errors=${errors}`
+      `  ${status} ${r.title.padEnd(30)} ${rps.padStart(6)} req/s   p97.5=${p97_5}ms   errors=${errors}`
     );
   });
 
@@ -114,7 +117,7 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`\nautocanon load test — mode: ${mode}`);
+  console.log(`\nautocannon load test — mode: ${mode}`);
   console.log(`Target: ${BASE_URL}`);
   console.log(`Endpoints under test:`);
   REQUESTS.forEach((r) => console.log(`  ${r.method} ${r.path}`));

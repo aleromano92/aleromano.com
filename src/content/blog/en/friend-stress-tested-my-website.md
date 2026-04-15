@@ -20,7 +20,7 @@ I stared at this for a good thirty seconds before my brain connected the dots.
 
 Then I sent a message to [Anatoli Nicolae](https://anatolinicolae.com/). One of those colleagues you genuinely go to the office just to see, the kind of person who makes a random Tuesday feel worth the commute. Sharp, funny, endlessly curious, and apparently running `k6` load tests against my website at full tilt without mentioning it first.
 
-He confirmed he wasnt trying to DDoS me, just experimenting with `k6`. He later sent me his script with the cheerful energy of someone who had just done me a massive favour. Which, honestly, he had.
+He confirmed he wasn't trying to DDoS me, just experimenting with `k6`. He later sent me his script with the cheerful energy of someone who had just done me a massive favour. Which, honestly, he had.
 
 ## What He Did
 
