@@ -14,6 +14,9 @@
     "docker:dev": "npm run docker:clean && docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build",
     "docker:dev:obs": "npm run docker:clean && docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile observability up --build",
     "db:seed": "node scripts/seed-analytics.mjs",
+    "load:smoke": "node scripts/load-test.mjs smoke",
+    "load:test": "node scripts/load-test.mjs load",
+    "load:stress": "node scripts/load-test.mjs stress",
     "test": "vitest run",
     "test:watch": "vitest",
     "postinstall": "node -e \"if (process.env.CI || process.env.GEOIP_DOWNLOAD === '0') { process.exit(0); } import('geolite2-redist').then(g => g.downloadDbs())\""
@@ -52,6 +55,7 @@
     "@types/reveal.js": "^5.2.0",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
+    "autocannon": "^8.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-astro": "^0.31.4",
     "msw": "^2.11.5",
