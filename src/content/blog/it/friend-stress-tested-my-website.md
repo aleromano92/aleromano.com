@@ -7,7 +7,7 @@ tags: ["aleromano.com", "Best Practices", "DevOps", "Node.js", "Observability", 
 language: "it"
 image:
   url: ../../../assets/blog/friend-stress-tested-my-website/featured.png
-  alt: "Output del terminale con un load test in esecuzione su aleromano.com"
+  alt: "Anatoli che spara me e il mio sito con una mitraglia laser"
 ---
 
 Stavo facendo il solito controllo della mia dashboard di Analytics quando ho notato qualcosa di strano.
@@ -18,19 +18,41 @@ Ho fissato lo schermo per una buona trentina di secondi prima che il cervello co
 
 ![Dashboard di analytics con 11.604 visualizzazioni su /anatoli-was-here<3](../../../assets/blog/friend-stress-tested-my-website/analytics-screenshot.png)
 
-Poi ho mandato un messaggio a [Anatoli Nicolae](https://anatolinicolae.com/). Uno di quei colleghi per cui vai in ufficio solo per incontrarlo, il tipo di persona che rende un martedì qualunque degno del pendolarismo. Brillante, divertente, curiosissimo, e a quanto pare capace di lanciare load test con `k6` contro il mio sito a pieno regime senza dirmi niente.
+Poi ho mandato un messaggio a [Anatoli Nicolae](https://anatolinicolae.com/). Uno di quei colleghi per cui vai in ufficio solo per incontrarlo, il tipo di persona che rende un martedì qualunque degno del pendolarismo. Brillante, divertente, curiosissimo, e a quanto pare capace di lanciare load test con `k6` contro il mio sito a pieno regime senza dirmi niente. 😅
 
-Mi ha confermato che non stava cercando di farmi un DDoS, stava solo sperimentando con `k6`. Mi ha poi mandato il suo script con l'aura di chi ti ha appena fatto un enorme favore. Il che, onestamente, è vero.
+Mi ha confermato che non stava cercando di farmi un DDoS, stava solo sperimentando con `k6`. Mi ha poi mandato il suo script con l'aura di chi ti ha appena fatto un enorme favore. Cosa che, effettivamente, ha fatto.
 
-## Cosa Ha Fatto
+## Cosa Ha Fatto 🧪
 
 Anatoli ha eseguito un load test con `k6`, salendo da 20 a 100 utenti virtuali nell'arco di circa tre minuti e mezzo, colpendo il mio endpoint di raccolta analytics con un percorso personalizzato. Il marker `/anatoli-was-here<3` era il suo modo di firmare il lavoro. Il sistema di analytics è qualcosa che ho costruito io stesso; se sei curioso di sapere come funziona, l'ho spiegato in dettaglio in [queste slides del mio talk "DIY in the AI era"](/posts/about-this-site/present#/25).
 
-Il risultato? Duplice, in realtà. La buona notizia: il sito ha retto. Il VPS non si è saturato, i tempi di risposta sono rimasti entro limiti accettabili. Ma non l'avevo mai *verificato* davvero. Avevo messo online il sito, ottimizzato un po', aggiunto l'observability, e poi avevo semplicemente dato per scontato che avrebbe retto sotto pressione. Lo stress test non annunciato di Anatoli è stata la prima prova concreta che ce la faceva.
+Il risultato? Duplice, in realtà. La buona notizia ✅: il sito ha retto. Il VPS non si è saturato, i tempi di risposta sono rimasti entro limiti accettabili. Ma non l'avevo mai *verificato* davvero. Avevo messo online il sito, ottimizzato un po', aggiunto l'observability, e poi avevo semplicemente dato per scontato che avrebbe retto sotto pressione. Lo stress test non annunciato di Anatoli è stata la prima prova concreta che ce la faceva.
 
-La cattiva notizia: l'endpoint di analytics accettava qualsiasi dato Anatoli volesse inviargli, senza fare domande. Qualsiasi percorso, qualsiasi payload. Ed è così che `/anatoli-was-here<3` è diventata la mia pagina più visitata della settimana. 
+La cattiva notizia ❌: l'endpoint di analytics accettava qualsiasi dato Anatoli volesse inviargli, senza fare domande. Qualsiasi percorso, qualsiasi payload. Ed è così che `/anatoli-was-here<3` è diventata la mia pagina più visitata della settimana.
 
-## Perché il Load Testing Conta Anche per un Sito Personale
+Ho detto "accettava" perché ora ho risolto il problema in `nginx`. L'endpoint di raccolta analytics ora ha una propria zona di rate limiting 🔒:
+
+```nginx
+limit_req_zone $binary_remote_addr zone=ANALYTICS:10m rate=30r/m;
+
+location = /api/analytics/collect {
+    limit_req zone=ANALYTICS burst=20 nodelay;
+    limit_req_status 429;
+    # ... proxy to app
+}
+```
+
+La parte `rate=30r/m` è il limite a regime: al massimo 30 richieste al minuto per IP. Equivale a una richiesta ogni due secondi in media. Una persona reale che naviga il sito (apre un post, torna alla home, legge un altro articolo) manda forse una manciata di ping analytics al minuto. 30 è abbondante.
+
+C'è però un problema con un limite rigido al secondo: il traffico legittimo è a raffiche. Apri una tab, il browser fa tre richieste quasi simultaneamente. Clicchi su più link in rapida successione. Se nginx applicasse esattamente una richiesta ogni due secondi senza tolleranza, quelle raffiche genererebbero falsi positivi e bloccherebbero utenti reali.
+
+Ecco a cosa serve `burst=20`. Immaginalo come una pila di gettoni: nginx dà a ogni IP la pila con 20 gettoni. Ogni richiesta ne consuma uno. I gettoni si ricaricano al ritmo configurato (30 al minuto, uno ogni due secondi). Se mandi 5 richieste in una volta sola, va bene: spendi 5 gettoni e nella pila ne rimangono 15. Se ne mandi 25, le prime 20 vengono accettate (pila svuotata) e le restanti 5 ricevono un 429. Il flag `nodelay` fa sì che nginx non le metta in coda smistando lentamente: o le serve subito o le rifiuta.
+
+Un utente reale che naviga il sito non toccherà mai questo limite. Uno script di flood che martella l'endpoint a centinaia di richieste al minuto esaurirà il burst nel primo secondo e verrà bloccato per il resto.
+
+Non impedisce a qualcuno di costruire un flusso lento di percorsi falsi (il rate limiting non è validazione degli input), ma blocca il tipo di martellamento senza freni che il test di Anatoli ha sfruttato. Il controllo dell'origine a livello applicativo è uno strato separato che gestisce il resto.
+
+## Perché il Load Testing Conta Anche per un Sito Personale 🏋️
 
 È facile pensare che il load testing sia roba da aziende con milioni di utenti e team SRE dedicati. Ma anche per un sito personale su un VPS, ha senso per alcune ragioni concrete:
 
@@ -39,7 +61,7 @@ La cattiva notizia: l'endpoint di analytics accettava qualsiasi dato Anatoli vol
 - **Le regressioni arrivano in silenzio.** Una query al database che hai aggiunto, una chiamata a un servizio esterno che hai introdotto: ognuna di queste può degradare silenziosamente le prestazioni. I load test regolari le intercettano prima degli utenti.
 - **Ti dà fiducia.** C'è qualcosa di genuinamente rassicurante nel sapere che il tuo sito ha retto a 100 connessioni simultanee e ne è uscito indenne.
 
-## I Tipi di Test che Dovresti Conoscere
+## I Tipi di Test che Dovresti Conoscere 📚
 
 Prima di scegliere uno strumento e lanciarlo, vale la pena capire *cosa* vuoi effettivamente misurare.
 
@@ -47,13 +69,13 @@ Prima di scegliere uno strumento e lanciarlo, vale la pena capire *cosa* vuoi ef
 
 **Load test**: una simulazione prolungata di traffico realistico. Definisci un numero target di utenti concorrenti e lo mantieni abbastanza a lungo da rivelare memory leak, esaurimento del connection pool o degrado dei tempi di risposta sotto pressione costante.
 
-**Stress test**: spingi oltre il tuo tetto previsto per trovare il punto di rottura. L'obiettivo non è passare il test; è scoprire *dove* fallisci e *con quanta grazia*.
+**Stress test**: spingi oltre il tuo tetto previsto per trovare il punto di rottura. L'obiettivo non è passare il test; è scoprire *dove* fallisci e *quanto male* lo fai.
 
 **Soak test** (detto anche endurance test): mantieni un carico moderato per molto tempo (ore, a volte giorni). È quello che intercetta i memory leak lenti e il connection drift che appaiono solo col tempo.
 
 Per un sito personale, smoke e load test sono i due essenziali. Lo stress test è utile se stai per fare qualcosa che potrebbe generare un picco di traffico: un lancio di prodotto, un talk a una conferenza, essere postato su un aggregatore popolare.
 
-## Come Configurarlo con `autocannon`
+## Come Configurarlo con `autocannon` ⚙️
 
 [autocannon](https://github.com/mcollina/autocannon) è uno strumento di benchmarking HTTP per Node.js creato da [Matteo Collina](https://github.com/mcollina), uno dei contributori più prolifici dell'ecosistema Node.js. È veloce, scriptabile e si installa come un normale pacchetto npm, il che significa niente binari separati da gestire.
 
@@ -113,11 +135,11 @@ Ho aggiunto tre comandi al mio `package.json`:
 
 Ogni modalità esegue un set diverso di stage. `smoke` dura quindici secondi con cinque connessioni, giusto abbastanza per confermare che il sito sia vivo. `load` replica più o meno quello che ha fatto Anatoli. `stress` va oltre, spingendo fino a 300 connessioni concorrenti per trovare il punto in cui le cose iniziano a degradare.
 
-## Una Cosa a Cui Fare Attenzione
+## Una Cosa a Cui Fare Attenzione ⚠️
 
 Se stai testando un endpoint POST che ha effetti collaterali come l'invio di email, scritture nel database o addebiti su carta di credito, assicurati che il payload del test sia progettato per fallire la validazione rapidamente. Per il mio endpoint `/api/contact`, passo un campo `reason` deliberatamente non valido in modo che il server restituisca un rapido `400` senza mai toccare il mail transport.
 
-## Leggere i Risultati
+## Leggere i Risultati 📊
 
 `autocannon` stampa una tabella dopo ogni stage. Ecco come appare per un smoke run su questo stesso sito:
 
@@ -126,20 +148,20 @@ Se stai testando un endpoint POST che ha effetti collaterali come l'invio di ema
 I numeri su cui concentrarsi:
 
 - **Req/s** (richieste al secondo): il throughput. Più alto è meglio.
-- **Latency p95 / p97.5 / p99**: latenze percentili. Prendi tutte le tue richieste, ordinale dalla più veloce alla più lenta, poi leggi il valore in quella posizione. p95 = il tempo di risposta alla posizione 950 su 1000. p99 = posizione 990. La media nasconde gli outlier lenti; i percentili li espongono. Si chiama *tail latency* — la coda lunga e sottile della distribuzione, dove una piccola percentuale di utenti aspetta molto più a lungo di tutti gli altri.
+- **Latency p95 / p97.5 / p99**: latenze percentili. Prendi tutte le tue richieste, ordinale dalla più veloce alla più lenta, poi leggi il valore in quella posizione. p95 = il tempo di risposta alla posizione 950 su 1000. p99 = posizione 990. La media nasconde gli outlier lenti; i percentili li espongono. Si chiama *tail latency*: la coda lunga e sottile della distribuzione, dove una piccola percentuale di utenti aspetta molto più a lungo di tutti gli altri.
 
   ![Istogramma di 1000 richieste colorate per banda percentile: blu per la massa sotto p95, arancione p95-p97.5, rosso-arancio p97.5-p99, rosso sopra p99](../../../assets/blog/friend-stress-tested-my-website/tail-latency.png)
 
-  Un p99 sopra i 1000ms significa che 1 visitatore su 100 ha aspettato più di un secondo. Su un sito personale tranquillo può essere accettabile; durante un picco di traffico si amplifica velocemente.
+  Un p99 sopra i 1000ms significa che 1 visitatore su 100 ha aspettato più di un secondo. 
 - **Errors / Timeouts**: qualsiasi valore diverso da zero merita attenzione immediata. Significa che il server sta scartando o rifiutando connessioni.
 
-Dal lato VPS, tieni d'occhio `htop` o `docker stats` durante il test. Stai cercando CPU al 100% che ci rimane (un collo di bottiglia), memoria che cresce senza rilasciarsi (un leak) e conteggio connessioni che si avvicina ai limiti configurati.
+Dal lato VPS, tieni d'occhio `htop` o `docker stats` durante il test. Nota se la CPU rimane al 100% (un collo di bottiglia), memoria che cresce senza rilasciarsi (un leak) e conteggio connessioni che si avvicina ai limiti configurati.
 
 ![Dashboard Grafana con la CPU che sale a ~40% e la memoria stabile durante lo stress test](../../../assets/blog/friend-stress-tested-my-website/cpu-ram.png)
 
 Il trend della CPU racconta la storia chiaramente: baseline piatta, una salita visibile man mano che il carico aumenta, poi il recupero una volta terminato il test. La memoria è rimasta stabile per tutto il tempo. Nessun leak. Se quella linea della CPU avesse toccato il 100% e ci fosse rimasta, quello sarebbe stato il segnale per indagare.
 
-## Cosa Mi Ha Lasciato Tutto Questo
+## Cosa Mi Ha Lasciato Tutto Questo 💡
 
 Anatoli non ha solo fatto un load test. Ha dimostrato qualcosa che sapevo già intellettualmente ma che non avevo mai fatto concretamente: non puoi fidarti della resilienza del tuo sito senza prove. Le assunzioni non sono SLA.
 
@@ -147,4 +169,6 @@ L'automazione è semplice. Gli strumenti sono ottimi. Non c'è nessuna buona rag
 
 Esegui lo smoke test dopo ogni deploy. Esegui il load test prima di qualsiasi cosa ti aspetti che generi traffico. E se la tua analytics dovesse mai mostrare un percorso chiamato `/your-friend-was-here`, consideralo un regalo.
 
-> *Grazie, [Anatoli](https://anatolinicolae.com/). Non mi devi niente e mi hai dato un post. A presto in ufficio.*
+> *Grazie, [Anatoli](https://anatolinicolae.com/). Ti ringrazio per aver inondato il mio sito con i tuoi ~~Spritzs~~ Scripts. Ci vediamo in ufficio.*
+
+![Anatoli inondando bicchieri di Spritz](../../../assets/blog/friend-stress-tested-my-website/anatoli-spritz.png)
