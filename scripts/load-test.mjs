@@ -11,9 +11,6 @@
  */
 
 import autocannon from "autocannon";
-import { promisify } from "util";
-
-const run = promisify(autocannon);
 
 const BASE_URL = "https://aleromano.com";
 
@@ -37,21 +34,23 @@ const REQUESTS = [
   },
 ];
 
-async function runStage({ connections, duration, label }) {
+function runStage({ connections, duration, label }) {
   console.log(
-    `\n${"─".repeat(60)}\n Stage: ${label}\n Connections: ${connections} | Duration: ${duration}s\n${"─".repeat(60)}`
+    `\n${"─".repeat(60)}\n Stage: ${label}\n Connections: ${connections} | Duration: ${duration}s\n${"─".repeat(60)}\n`
   );
 
-  const result = await run({
-    url: BASE_URL,
-    connections,
-    duration,
-    requests: REQUESTS,
-    title: label,
+  return new Promise((resolve, reject) => {
+    const instance = autocannon(
+      { url: BASE_URL, connections, duration, requests: REQUESTS, title: label },
+      (err, result) => {
+        if (err) return reject(err);
+        autocannon.printResult(result);
+        resolve(result);
+      }
+    );
+    // Show live req/s counter but no progress bar (it would clobber the table)
+    autocannon.track(instance, { renderProgressBar: false });
   });
-
-  autocannon.printResult(result);
-  return result;
 }
 
 function summarise(results) {
@@ -78,7 +77,7 @@ function summarise(results) {
 
   console.log("");
   if (allPassed) {
-    console.log("  All stages passed — your VPS handled it. Nice.");
+    console.log("  All stages passed. Your VPS handled it. Nice.");
   } else {
     console.log(
       "  Some stages had errors or timeouts — check your server logs."

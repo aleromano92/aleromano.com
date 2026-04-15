@@ -24,11 +24,11 @@ He confirmed he wasn't trying to DDoS me, just experimenting with `k6`. He later
 
 ## What He Did
 
-Anatoli ran a `k6` load test that ramped from 20 to 100 virtual users over about three and a half minutes, each hitting my analytics collect endpoint with a custom path. The `/anatoli-was-here<3` marker was his way of signing his work. The analytics system is something I built myself — if you're curious how it works, I covered it in detail in [this slide of my DIY in the AI era talk](/posts/about-this-site/present#/27).
+Anatoli ran a `k6` load test that ramped from 20 to 100 virtual users over about three and a half minutes, each hitting my analytics collect endpoint with a custom path. The `/anatoli-was-here<3` marker was his way of signing his work. The analytics system is something I built myself; if you're curious how it works, I covered it in detail in [this slide of my DIY in the AI era talk](/posts/about-this-site/present#/25).
 
 The result? Two things, actually. The good news: my site handled it. The VPS didn't buckle, the response times stayed within acceptable bounds. But I had never actually *verified* any of that myself. I had deployed my site, tuned it a bit, added observability, and then just assumed it would hold up under pressure. Anatoli's unannounced stress test was the first real proof I had that it would.
 
-The bad news: the analytics endpoint accepted whatever data Anatoli threw at it, no questions asked. Any path, any payload. That's how `/anatoli-was-here<3` ended up as my most visited page of the week. The server held up fine; the data integrity did not.
+The bad news: the analytics endpoint accepted whatever data Anatoli threw at it, no questions asked. Any path, any payload. That's how `/anatoli-was-here<3` ended up as my most visited page of the week.
 
 ## Why Load Testing a Personal Site Still Matters
 
@@ -53,7 +53,7 @@ Before picking a tool and running it, it helps to understand what you are actual
 
 For a personal site, smoke and load tests are the essential two. Stress testing is valuable if you are about to do something that might drive a traffic spike (a product launch, a conference talk, getting posted on a popular aggregator).
 
-## Setting It Up with autocannon
+## Setting It Up with `autocannon`
 
 [autocannon](https://github.com/mcollina/autocannon) is a Node.js HTTP benchmarking tool built by [Matteo Collina](https://github.com/mcollina), one of the most prolific contributors to the Node.js ecosystem. It is fast, scriptable, and installs as a regular npm package, which means no separate binary to manage.
 
@@ -115,14 +115,22 @@ Each mode runs a different set of stages. `smoke` is fifteen seconds and five co
 
 ## One Thing to Watch Out For
 
-If you are testing a POST endpoint that triggers side effects like sending emails, writing to a database, or charging a credit card, make sure your test payload is designed to fail validation quickly. For my `/api/contact` endpoint, I pass a deliberately invalid `reason` field so the server returns a fast `400` without ever touching the mail transport. You get the timing data without the spam.
+If you are testing a POST endpoint that triggers side effects like sending emails, writing to a database, or charging a credit card, make sure your test payload is designed to fail validation quickly. For my `/api/contact` endpoint, I pass a deliberately invalid `reason` field so the server returns a fast `400` without ever touching the mail transport.
 
 ## Reading the Results
 
-autocannon prints a table after each stage. The numbers to focus on:
+`autocannon` prints a table after each stage. Here is what it looks like for a smoke run against this very site:
+
+![autocannon output table showing latency and throughput results for a smoke test against aleromano.com](../../../assets/blog/friend-stress-tested-my-website/autocannon-output.png)
+
+The numbers to focus on:
 
 - **Req/s** (requests per second): your throughput. Higher is better.
-- **Latency p99 / p97.5**: the response time at the 99th percentile. This is the tail latency, what your *slowest* users are experiencing. A p99 above 1000ms is worth investigating.
+- **Latency p95 / p97.5 / p99**: percentile latencies. Take all your requests, sort them from fastest to slowest, then read off the value at that position. p95 = the response time at position 950 out of 1000. p99 = position 990. The average hides the slow outliers; percentiles expose them. This is called *tail latency* — the long, thin end of the distribution where a small percentage of users are waiting much longer than everyone else.
+
+  ![Histogram of 1000 requests coloured by percentile band: blue bulk below p95, orange p95-p97.5, red-orange p97.5-p99, red above p99](../../../assets/blog/friend-stress-tested-my-website/tail-latency.png)
+
+  A p99 above 1000ms means 1 in every 100 visitors waited over a second. On a quiet personal site that is acceptable; during a traffic spike it compounds fast.
 - **Errors / Timeouts**: any non-zero value here deserves immediate attention. These mean your server is dropping or refusing connections.
 
 On the VPS side, watch `htop` or `docker stats` during the test. You are looking for CPU hitting 100% and staying there (a bottleneck), memory growing and not releasing (a leak), and connection count approaching your configured limits.
@@ -139,6 +147,4 @@ The automation is straightforward. The tooling is excellent. There is no good re
 
 Run the smoke test after every deploy. Run the load test before anything you expect to drive traffic. And if your analytics ever show a path called `/your-friend-was-here`, consider it a gift.
 
----
-
-*Thanks, [Anatoli](https://anatolinicolae.com/). You owe me nothing and gave me a blog post. See you at the office.*
+> *Thanks, [Anatoli](https://anatolinicolae.com/). You owe me nothing and gave me a blog post. See you at the office.*
