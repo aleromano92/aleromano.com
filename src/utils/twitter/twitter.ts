@@ -101,12 +101,19 @@ export class TwitterService {
         freshness: DataFreshness.LIVE
       };
     } catch (error) {
-      console.warn('Twitter API error:', error);
-      
+      const isCreditsError = error instanceof Error && error.message.includes('402');
+      if (isCreditsError) {
+        console.log('Twitter API credits depleted, falling back to cache');
+      } else {
+        console.warn('Twitter API error:', error);
+      }
+
       // Try to use any cached data as fallback (even if stale)
       const staleCached = this.cache.getStale(TWITTER_CACHE_KEY);
       if (staleCached) {
-        console.warn('Using stale cached Twitter data due to API error');
+        if (!isCreditsError) {
+          console.warn('Using stale cached Twitter data due to API error');
+        }
         return {
           apiResponse: JSON.parse(staleCached),
           freshness: DataFreshness.CACHE
