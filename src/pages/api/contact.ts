@@ -21,8 +21,13 @@ function createJsonResponse(responseData: ApiResponseData, status: number): Resp
   });
 }
 
-// Define allowed contact reasons that require full form data and email sending
 const VALID_CONTACT_REASONS = ["consultancy", "mentoring", "job", "blogpost", "general"];
+
+const MAX_PAYLOAD_BYTES = 10 * 1024; // 10 KB
+const MAX_NAME_LENGTH = 100;
+const MAX_EMAIL_LENGTH = 200;
+const MAX_MESSAGE_LENGTH = 5_000;
+const MAX_BLOG_POST_TITLE_LENGTH = 200;
 
 interface MailTransportConfig {
   transportOptions: nodemailer.TransportOptions;
@@ -82,17 +87,36 @@ export const POST: APIRoute = async ({ request }) => {
     return createJsonResponse({ success: false, message: "Invalid content type, expected application/json." }, HTTP_BAD_REQUEST);
   }
 
+  const contentLength = request.headers.get("Content-Length");
+  if (contentLength && parseInt(contentLength, 10) > MAX_PAYLOAD_BYTES) {
+    return createJsonResponse({ success: false, message: "Payload too large." }, 413);
+  }
+
   try {
-    const data = await request.json();
+    const bodyText = await request.text();
+    if (Buffer.byteLength(bodyText, 'utf8') > MAX_PAYLOAD_BYTES) {
+      return createJsonResponse({ success: false, message: "Payload too large." }, 413);
+    }
+
+    let data: Record<string, unknown>;
+    try {
+      data = JSON.parse(bodyText);
+    } catch {
+      return createJsonResponse({ success: false, message: "Invalid JSON." }, HTTP_BAD_REQUEST);
+    }
+
     const { reason, name, email, message, blogPostTitle } = data;
 
-    // Basic validation for the reason
-    if (!reason) {
+    if (typeof reason !== 'string' || !reason) {
       return createJsonResponse({ success: false, message: "Contact reason is required." }, HTTP_BAD_REQUEST);
     }
 
     if (!VALID_CONTACT_REASONS.includes(reason)) {
-        return createJsonResponse({ success: false, message: "Invalid contact reason provided." }, HTTP_BAD_REQUEST);
+      return createJsonResponse({ success: false, message: "Invalid contact reason provided." }, HTTP_BAD_REQUEST);
+    }
+
+    if (typeof name !== 'string' || typeof email !== 'string' || typeof message !== 'string') {
+      return createJsonResponse({ success: false, message: "Invalid field types." }, HTTP_BAD_REQUEST);
     }
 
     if (!name || !email || !message) {
@@ -101,6 +125,14 @@ export const POST: APIRoute = async ({ request }) => {
       if (!email) missingFields.push("email");
       if (!message) missingFields.push("message");
       return createJsonResponse({ success: false, message: `Missing required fields: ${missingFields.join(', ')}.` }, HTTP_BAD_REQUEST);
+    }
+
+    if (name.length > MAX_NAME_LENGTH || email.length > MAX_EMAIL_LENGTH || message.length > MAX_MESSAGE_LENGTH) {
+      return createJsonResponse({ success: false, message: "One or more fields exceed the maximum allowed length." }, HTTP_BAD_REQUEST);
+    }
+
+    if (blogPostTitle !== undefined && (typeof blogPostTitle !== 'string' || blogPostTitle.length > MAX_BLOG_POST_TITLE_LENGTH)) {
+      return createJsonResponse({ success: false, message: "Blog post title is invalid or exceeds the maximum allowed length." }, HTTP_BAD_REQUEST);
     }
 
     const PERSONAL_EMAIL = import.meta.env.ALE_PERSONAL_EMAIL || process.env.ALE_PERSONAL_EMAIL;
