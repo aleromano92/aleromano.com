@@ -51,7 +51,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const { request, url } = context;
   const pathname = url.pathname;
 
-  // Basic Auth protection for /admin routes
   if (pathname.startsWith('/admin')) {
     if (!isAuthorized(request)) {
       return createUnauthorizedResponse();
