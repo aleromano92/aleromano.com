@@ -158,8 +158,18 @@ The audit also flagged several things I chose not to implement.
 
 ## Was It Worth It? 🤔
 
-The traffic from AI agents crawling this site is not something I can measure precisely. Most of it looks like ordinary HTTP traffic without distinctive user agents.
+Some of the traffic is measurable: GPTBot, ClaudeBot, PerplexityBot and others announce themselves with distinctive user agents, and a Loki regex over the nginx logs is enough to count them. The bonus section below shows the panel I built for exactly this. But agents that spoof a browser string, or just do not bother identifying themselves, are invisible.
 
-But I think about it differently. The web has always adapted to how content gets consumed. We added RSS for feed readers. We added Open Graph tags for social previews. We added structured data for search result snippets. AI agents are the next layer of consumer, and the investment to support them is genuinely small: a few endpoint files, a couple of response headers, two text files, and a JSON blob.
+I think about it differently regardless. The web has always adapted to how content gets consumed. We added RSS for feed readers. We added Open Graph tags for social previews. We added structured data for search result snippets. AI agents are the next layer of consumer, and the investment to support them is genuinely small: a few endpoint files, a couple of response headers, two text files, and a JSON blob.
 
 The before score was 25. I will update this post with the after score once the changes are live on the production site.
+
+## Bonus: Watching Agents in Grafana 📈
+
+As a companion to these changes, I added a panel to the site's Grafana logs dashboard that splits nginx traffic by user agent: known AI crawlers (GPTBot, ClaudeBot, PerplexityBot, and a dozen others) on one series, everything else on the other.
+
+![Grafana timeseries panel titled "AI Agents vs Humans (5m)" showing two lines: AI Agents in purple and Humans (or unidentified bots) in blue, with a visible traffic spike from a test run](../../../assets/blog/agent-ready/grafana-ai-agents-vs-humans.png)
+
+This screenshot is from a local test run where I sent 50 fake AI agent requests and 20 fake human requests to verify the panel. The "humans" line is higher because it also picks up the browser traffic from loading Grafana itself. On the real production site the ratio will be more telling.
+
+A Loki regex over user agents is not perfect detection: agents that do not self-identify look like humans, and some agents spoof browser strings deliberately. But the ones that do announce themselves give enough signal to be interesting.
