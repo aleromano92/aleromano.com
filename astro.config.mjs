@@ -2,6 +2,8 @@ import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
 import rehypeExternalLinks from 'rehype-external-links';
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
 
 // Enable MSW for server-side mocking in development
 if (import.meta.env.DEV || process.env.NODE_ENV === 'development') {
@@ -28,7 +30,23 @@ export default defineConfig({
     filter: (page) => !page.includes('/api/'),
     changefreq: 'weekly',
     priority: 0.7,
-    lastmod: new Date(),
+    serialize(item) {
+      const pathname = new URL(item.url).pathname;
+      const match = pathname.match(/^\/posts\/(?:(it)\/)?(.+)$/);
+      if (match) {
+        const lang = match[1] ?? 'en';
+        const slug = match[2].replace(/\/$/, '');
+        const filePath = join(process.cwd(), 'src/content/blog', lang, `${slug}.md`);
+        if (existsSync(filePath)) {
+          const raw = readFileSync(filePath, 'utf-8');
+          const pubDateMatch = raw.match(/^pubDate:\s*(.+)$/m);
+          if (pubDateMatch) {
+            return { ...item, lastmod: new Date(pubDateMatch[1].trim()) };
+          }
+        }
+      }
+      return item;
+    },
   })],
 
   markdown: {
