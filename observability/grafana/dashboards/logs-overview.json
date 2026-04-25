@@ -106,6 +106,50 @@
                 "x": 12,
                 "y": 8
             }
+        },
+        {
+            "type": "timeseries",
+            "title": "AI Agents vs Humans (5m)",
+            "description": "Nginx requests split between known AI crawlers and everyone else. Agent detection is based on User-Agent strings — agents that don't identify themselves appear as humans.",
+            "datasource": "Loki",
+            "targets": [
+                {
+                    "expr": "sum(count_over_time({job=\"nginx\"} |~ \"(?i)(GPTBot|ClaudeBot|Anthropic-AI|PerplexityBot|CCBot|meta-externalagent|Googlebot|bingbot|AhrefsBot|DataForSeoBot|Bytespider|DuckDuckBot|amazonbot|applebot|Twitterbot|LinkedInBot|WhatsApp)\" [5m]))",
+                    "refId": "A",
+                    "legendFormat": "AI Agents"
+                },
+                {
+                    "expr": "sum(count_over_time({job=\"nginx\"} !~ \"(?i)(GPTBot|ClaudeBot|Anthropic-AI|PerplexityBot|CCBot|meta-externalagent|Googlebot|bingbot|AhrefsBot|DataForSeoBot|Bytespider|DuckDuckBot|amazonbot|applebot|Twitterbot|LinkedInBot|WhatsApp)\" [5m]))",
+                    "refId": "B",
+                    "legendFormat": "Humans (or unidentified bots)"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "short",
+                    "decimals": 0
+                },
+                "overrides": [
+                    {
+                        "matcher": { "id": "byName", "options": "AI Agents" },
+                        "properties": [
+                            { "id": "color", "value": { "mode": "fixed", "fixedColor": "purple" } }
+                        ]
+                    },
+                    {
+                        "matcher": { "id": "byName", "options": "Humans (or unidentified bots)" },
+                        "properties": [
+                            { "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 20
+            }
         }
     ],
     "templating": {
