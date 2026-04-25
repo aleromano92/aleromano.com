@@ -47,6 +47,17 @@ function createUnauthorizedResponse(): Response {
   });
 }
 
+const GLOBAL_LINK_HEADERS = [
+  '</llms.txt>; rel="alternate"; type="text/plain"; title="LLM Index"',
+  '</llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Full Corpus"',
+  '</rss.xml>; rel="alternate"; type="application/rss+xml"; title="RSS Feed"',
+  '</sitemap-index.xml>; rel="sitemap"',
+];
+
+// Matches /posts/my-post and /posts/it/my-post (with optional trailing slash),
+// but not /posts/tags/*, /posts/.../present, or .md endpoints.
+const POST_PAGE_RE = /^\/posts\/(?:it\/)?[^/]+\/?$/;
+
 export const onRequest = defineMiddleware(async (context, next) => {
   const { request, url } = context;
   const pathname = url.pathname;
@@ -57,5 +68,21 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   }
 
-  return next();
+  const response = await next();
+
+  const headers = new Headers(response.headers);
+  for (const link of GLOBAL_LINK_HEADERS) {
+    headers.append('Link', link);
+  }
+
+  if (POST_PAGE_RE.test(pathname) && !pathname.includes('/tags')) {
+    const mdUrl = pathname.replace(/\/$/, '') + '.md';
+    headers.append('Link', `<${mdUrl}>; rel="alternate"; type="text/markdown"`);
+  }
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 });

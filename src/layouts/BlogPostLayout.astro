@@ -47,6 +47,9 @@ const contactMeFooterText =
   publishedTime={frontmatter.pubDate}
   author={frontmatter.author}
 >
+  <Fragment slot="head">
+    <link rel="alternate" type="text/markdown" href={`${Astro.url.pathname.replace(/\/$/, '')}.md`} />
+  </Fragment>
   <article class="post">
     <header class="post-header">
       <p class="description"><em>{frontmatter.description}</em></p>
