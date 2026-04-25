@@ -9,7 +9,10 @@ Disallow: /api/
 Sitemap: https://aleromano.com/sitemap-index.xml
 
 # Crawl-delay for politeness
-Crawl-delay: 1`;
+Crawl-delay: 1
+
+# AI content signals (https://contentsignals.org/)
+Content-Signal: search=yes, ai-train=no, ai-input=yes`;
 
     return new Response(robotsContent, {
         headers: {
