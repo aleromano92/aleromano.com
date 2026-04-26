@@ -19,6 +19,48 @@ const postPlainText = stripHtmlToPlainText(content);
 // Check if a presentation exists for this blog post
 const presentationInfo = await findPresentationByBlogPost(Astro.url.pathname, currentLang);
 
+const wordCount = postPlainText.split(/\s+/).filter(Boolean).length;
+const postUrl = `https://aleromano.com${Astro.url.pathname}`;
+const blogUrl = `https://aleromano.com${currentLang === 'it' ? '/it' : ''}/blog`;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      headline: frontmatter.title,
+      description: frontmatter.description,
+      articleBody: postPlainText,
+      wordCount,
+      timeRequired: `PT${readingTime}M`,
+      datePublished: frontmatter.pubDate.toISOString(),
+      url: postUrl,
+      author: {
+        '@type': 'Person',
+        name: 'Alessandro Romano',
+        url: 'https://aleromano.com/about',
+        knowsAbout: [
+          'Software Engineering',
+          'Engineering Management',
+          'Cloud Architecture',
+          'Team Leadership',
+          'TypeScript',
+          'JavaScript',
+          'Azure',
+          'System Design',
+        ],
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Blog', item: blogUrl },
+        { '@type': 'ListItem', position: 2, name: frontmatter.title, item: postUrl },
+      ],
+    },
+  ],
+};
+
 // Pass language info to BaseLayout
 const i18nData = {
   currentLang,
@@ -46,7 +88,11 @@ const contactMeFooterText =
   imageAlt={frontmatter.image?.alt}
   publishedTime={frontmatter.pubDate}
   author={frontmatter.author}
+  structuredData={structuredData}
 >
+  <Fragment slot="head">
+    <link rel="alternate" type="text/markdown" href={`${Astro.url.pathname.replace(/\/$/, '')}.md`} />
+  </Fragment>
   <article class="post">
     <header class="post-header">
       <p class="description"><em>{frontmatter.description}</em></p>

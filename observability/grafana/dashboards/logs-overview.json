@@ -106,6 +106,61 @@
                 "x": 12,
                 "y": 8
             }
+        },
+        {
+            "type": "timeseries",
+            "title": "AI Agents vs Crawlers vs Humans (5m)",
+            "description": "Nginx requests split by User-Agent type. AI agents are LLM-powered consumers (GPTBot, ClaudeBot, PerplexityBot, etc.). Crawlers are traditional bots (Googlebot, Bingbot, social preview bots, etc.). Everything else is counted as humans or unidentified bots.",
+            "datasource": "Loki",
+            "targets": [
+                {
+                    "expr": "sum(count_over_time({job=\"nginx\"} |~ \"(?i)(GPTBot|ClaudeBot|Anthropic-AI|PerplexityBot|CCBot|meta-externalagent|Bytespider|DataForSeoBot|amazonbot|applebot)\" [5m]))",
+                    "refId": "A",
+                    "legendFormat": "AI Agents"
+                },
+                {
+                    "expr": "sum(count_over_time({job=\"nginx\"} |~ \"(?i)(Googlebot|bingbot|AhrefsBot|SemrushBot|DuckDuckBot|Twitterbot|LinkedInBot|WhatsApp|YandexBot|Baiduspider|facebookexternalhit)\" [5m]))",
+                    "refId": "B",
+                    "legendFormat": "Crawlers"
+                },
+                {
+                    "expr": "sum(count_over_time({job=\"nginx\"} !~ \"(?i)(GPTBot|ClaudeBot|Anthropic-AI|PerplexityBot|CCBot|meta-externalagent|Bytespider|DataForSeoBot|amazonbot|applebot|Googlebot|bingbot|AhrefsBot|SemrushBot|DuckDuckBot|Twitterbot|LinkedInBot|WhatsApp|YandexBot|Baiduspider|facebookexternalhit)\" [5m]))",
+                    "refId": "C",
+                    "legendFormat": "Humans (and others)"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "short",
+                    "decimals": 0
+                },
+                "overrides": [
+                    {
+                        "matcher": { "id": "byName", "options": "AI Agents" },
+                        "properties": [
+                            { "id": "color", "value": { "mode": "fixed", "fixedColor": "purple" } }
+                        ]
+                    },
+                    {
+                        "matcher": { "id": "byName", "options": "Crawlers" },
+                        "properties": [
+                            { "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }
+                        ]
+                    },
+                    {
+                        "matcher": { "id": "byName", "options": "Humans (and others)" },
+                        "properties": [
+                            { "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 20
+            }
         }
     ],
     "templating": {
