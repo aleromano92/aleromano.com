@@ -75,7 +75,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     headers.append('Link', link);
   }
 
-  if (POST_PAGE_RE.test(pathname) && !pathname.includes('/tags')) {
+  if (POST_PAGE_RE.test(pathname) && !pathname.includes('/tags') && !pathname.endsWith('.md')) {
     const mdUrl = pathname.replace(/\/$/, '') + '.md';
     headers.append('Link', `<${mdUrl}>; rel="alternate"; type="text/markdown"`);
   }

@@ -109,19 +109,24 @@
         },
         {
             "type": "timeseries",
-            "title": "AI Agents vs Humans (5m)",
-            "description": "Nginx requests split between known AI crawlers and everyone else. Agent detection is based on User-Agent strings — agents that don't identify themselves appear as humans.",
+            "title": "AI Agents vs Crawlers vs Humans (5m)",
+            "description": "Nginx requests split by User-Agent type. AI agents are LLM-powered consumers (GPTBot, ClaudeBot, PerplexityBot, etc.). Crawlers are traditional bots (Googlebot, Bingbot, social preview bots, etc.). Everything else is counted as humans or unidentified bots.",
             "datasource": "Loki",
             "targets": [
                 {
-                    "expr": "sum(count_over_time({job=\"nginx\"} |~ \"(?i)(GPTBot|ClaudeBot|Anthropic-AI|PerplexityBot|CCBot|meta-externalagent|Googlebot|bingbot|AhrefsBot|DataForSeoBot|Bytespider|DuckDuckBot|amazonbot|applebot|Twitterbot|LinkedInBot|WhatsApp)\" [5m]))",
+                    "expr": "sum(count_over_time({job=\"nginx\"} |~ \"(?i)(GPTBot|ClaudeBot|Anthropic-AI|PerplexityBot|CCBot|meta-externalagent|Bytespider|DataForSeoBot|amazonbot|applebot)\" [5m]))",
                     "refId": "A",
                     "legendFormat": "AI Agents"
                 },
                 {
-                    "expr": "sum(count_over_time({job=\"nginx\"} !~ \"(?i)(GPTBot|ClaudeBot|Anthropic-AI|PerplexityBot|CCBot|meta-externalagent|Googlebot|bingbot|AhrefsBot|DataForSeoBot|Bytespider|DuckDuckBot|amazonbot|applebot|Twitterbot|LinkedInBot|WhatsApp)\" [5m]))",
+                    "expr": "sum(count_over_time({job=\"nginx\"} |~ \"(?i)(Googlebot|bingbot|AhrefsBot|SemrushBot|DuckDuckBot|Twitterbot|LinkedInBot|WhatsApp|YandexBot|Baiduspider|facebookexternalhit)\" [5m]))",
                     "refId": "B",
-                    "legendFormat": "Humans (or unidentified bots)"
+                    "legendFormat": "Crawlers"
+                },
+                {
+                    "expr": "sum(count_over_time({job=\"nginx\"} !~ \"(?i)(GPTBot|ClaudeBot|Anthropic-AI|PerplexityBot|CCBot|meta-externalagent|Bytespider|DataForSeoBot|amazonbot|applebot|Googlebot|bingbot|AhrefsBot|SemrushBot|DuckDuckBot|Twitterbot|LinkedInBot|WhatsApp|YandexBot|Baiduspider|facebookexternalhit)\" [5m]))",
+                    "refId": "C",
+                    "legendFormat": "Humans (and others)"
                 }
             ],
             "fieldConfig": {
@@ -137,7 +142,13 @@
                         ]
                     },
                     {
-                        "matcher": { "id": "byName", "options": "Humans (or unidentified bots)" },
+                        "matcher": { "id": "byName", "options": "Crawlers" },
+                        "properties": [
+                            { "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }
+                        ]
+                    },
+                    {
+                        "matcher": { "id": "byName", "options": "Humans (and others)" },
                         "properties": [
                             { "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }
                         ]

@@ -166,10 +166,10 @@ The before score was 25. I will update this post with the after score once the c
 
 ## Bonus: Watching Agents in Grafana 📈
 
-As a companion to these changes, I added a panel to the site's Grafana logs dashboard that splits nginx traffic by user agent: known AI crawlers (GPTBot, ClaudeBot, PerplexityBot, and a dozen others) on one series, everything else on the other.
+As a companion to these changes, I added a panel to the site's Grafana logs dashboard that splits nginx traffic into three series by user agent: known AI agents (GPTBot, ClaudeBot, PerplexityBot, and similar LLM-powered consumers), known crawlers (Googlebot, Bingbot, social preview bots), and everyone else.
 
-![Grafana timeseries panel titled "AI Agents vs Humans (5m)" showing two lines: AI Agents in purple and Humans (or unidentified bots) in blue, with a visible traffic spike from a test run](../../../assets/blog/agent-ready/grafana-ai-agents-vs-humans.png)
+![Grafana timeseries panel titled "AI Agents vs Crawlers vs Humans (5m)" showing three lines: AI Agents in purple, Crawlers in orange, and Humans in blue, with a visible traffic spike from a test run](../../../assets/blog/agent-ready/grafana-ai-agents-vs-humans.png)
 
 This screenshot is from a local test run where I sent 50 fake AI agent requests and 20 fake human requests to verify the panel. The "humans" line is higher because it also picks up the browser traffic from loading Grafana itself. On the real production site the ratio will be more telling.
 
-A Loki regex over user agents is not perfect detection: agents that do not self-identify look like humans, and some agents spoof browser strings deliberately. But the ones that do announce themselves give enough signal to be interesting.
+A Loki regex over user agents is not perfect detection: agents that do not self-identify land in the humans bucket, and some spoof browser strings deliberately. But the ones that do announce themselves give enough signal to be worth watching.
