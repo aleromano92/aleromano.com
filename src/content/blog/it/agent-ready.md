@@ -157,7 +157,11 @@ L'audit ha anche segnalato diverse cose che ho scelto di non implementare.
 
 Il web si è sempre adattato a come i contenuti vengono consumati. Abbiamo aggiunto RSS per i feed reader. Abbiamo aggiunto i tag Open Graph per le anteprime social. Abbiamo aggiunto i dati strutturati per i frammenti dei risultati di ricerca. Gli agenti AI sono il prossimo livello di consumatore, e l'investimento per supportarli è genuinamente piccolo: pochi file endpoint, un paio di header di risposta, due file di testo e un blob JSON.
 
-Il punteggio iniziale era 25. Aggiornerò questo post con il punteggio finale una volta che le modifiche saranno live sul sito di produzione.
+Il punteggio iniziale era 25. Ecco il risultato finale:
+
+![Scansione di isitagentready.com su aleromano.com dopo le modifiche, con un punteggio di 50 su 100](../../../assets/blog/agent-ready/agent-ready-after.png)
+
+50 su 100. Un salto solido, e lo accetto volentieri. Il gap restante è quasi interamente dovuto al controllo sulla negoziazione del contenuto `Accept: text/markdown`, che ho deliberatamente saltato (vedi sopra). Lo strumento premia chi serve markdown quando la richiesta include quell'header; l'approccio con URL `.md` statici copre lo stesso bisogno pratico senza la complessità, ma lo scanner non lo riconosce. Gli altri controlli falliti sono quelli che ho saltato intenzionalmente: API catalog, metadati OAuth, e MCP server card.
 
 ## Bonus: Dividere il traffico in Grafana 📈
 

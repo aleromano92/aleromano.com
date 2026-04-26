@@ -20,8 +20,8 @@ const GITHUB_USERNAME = 'aleromano92';
 const GITHUB_REPO = 'aleromano.com';
 const PERSONAL_GITHUB_TOKEN = import.meta.env.PERSONAL_GITHUB_TOKEN || process.env.PERSONAL_GITHUB_TOKEN;
 
-// 1 hour TTL — commits update frequently enough that shorter cache is appropriate
-const CACHE_TTL = 60 * 60 * 1000;
+// 10 minutes TTL — commits update frequently enough that shorter cache is appropriate
+const CACHE_TTL = 10 * 60 * 1000;
 const GITHUB_CACHE_KEY = 'github:commits';
 
 function formatDate(dateString: string, lang: string = 'en'): string {

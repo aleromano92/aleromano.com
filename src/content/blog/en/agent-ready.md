@@ -157,7 +157,11 @@ The audit also flagged several things I chose not to implement.
 
 The web has always adapted to how content gets consumed. We added RSS for feed readers. We added Open Graph tags for social previews. We added structured data for search result snippets. AI agents are the next layer of consumer, and the investment to support them is genuinely small: a few endpoint files, a couple of response headers, two text files, and a JSON blob.
 
-The before score was 25. I will update this post with the after score once the changes are live on the production site.
+The before score was 25. Here is the after:
+
+![isitagentready.com scan of aleromano.com after the changes, showing a score of 50 out of 100](../../../assets/blog/agent-ready/agent-ready-after.png)
+
+50 out of 100. A solid jump, and I will take it. The remaining gap is almost entirely the `Accept: text/markdown` content negotiation check, which I deliberately skipped (see above). The tool rewards serving markdown when the request includes that header; the static `.md` URL approach covers the same practical need without the complexity, but the scanner does not credit it. The other failed checks are the ones I skipped intentionally: API catalog, OAuth metadata, and MCP server card.
 
 ## Bonus: Split traffic in Grafana 📈
 
