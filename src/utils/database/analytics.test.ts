@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { getDaysAgoTimestamp, analyticsManager } from './analytics';
+import { getDaysAgoTimestamp, analyticsManager, deleteOldRecords } from './analytics';
 import { getDatabase } from './connection';
 
 describe('getDaysAgoTimestamp', () => {
@@ -322,5 +322,78 @@ describe('analyticsManager query methods', () => {
       const result60 = analyticsManager.getAIFeatureStats(60);
       expect(result60.detected).toBe(result30.detected + 1);
     });
+  });
+});
+
+describe('deleteOldRecords', () => {
+  beforeEach(() => {
+    const db = getDatabase();
+    db.exec('DELETE FROM analytics_visits');
+    db.exec('DELETE FROM analytics_events');
+  });
+
+  function insertVisit(path: string, secondsAgo: number) {
+    const db = getDatabase();
+    const ts = Math.floor(Date.now() / 1000) - secondsAgo;
+    db.prepare(`
+      INSERT INTO analytics_visits (path, visitor_hash, created_at)
+      VALUES (?, 'h', ?)
+    `).run(path, ts);
+  }
+
+  function insertEvent(path: string, secondsAgo: number) {
+    const db = getDatabase();
+    const ts = Math.floor(Date.now() / 1000) - secondsAgo;
+    db.prepare(`
+      INSERT INTO analytics_events (type, path, created_at)
+      VALUES ('click', ?, ?)
+    `).run(path, ts);
+  }
+
+  function visitPaths(): string[] {
+    const db = getDatabase();
+    return (db.prepare('SELECT path FROM analytics_visits ORDER BY path').all() as Array<{ path: string }>)
+      .map(r => r.path);
+  }
+
+  function eventPaths(): string[] {
+    const db = getDatabase();
+    return (db.prepare('SELECT path FROM analytics_events ORDER BY path').all() as Array<{ path: string }>)
+      .map(r => r.path);
+  }
+
+  it('deletes records older than the retention window and keeps younger ones', () => {
+    const day = 24 * 60 * 60;
+    insertVisit('/young-visit', 10 * day);
+    insertVisit('/old-visit', 200 * day);
+    insertEvent('/young-event', 10 * day);
+    insertEvent('/old-event', 200 * day);
+
+    const result = deleteOldRecords(180);
+
+    expect(result).toEqual({ visits: 1, events: 1 });
+    expect(visitPaths()).toEqual(['/young-visit']);
+    expect(eventPaths()).toEqual(['/young-event']);
+  });
+
+  it('deletes nothing when all records are within the retention window', () => {
+    insertVisit('/recent-visit', 60);
+    insertEvent('/recent-event', 60);
+
+    const result = deleteOldRecords(180);
+
+    expect(result).toEqual({ visits: 0, events: 0 });
+    expect(visitPaths()).toEqual(['/recent-visit']);
+    expect(eventPaths()).toEqual(['/recent-event']);
+  });
+
+  it('treats records exactly at the cutoff as still within retention', () => {
+    const day = 24 * 60 * 60;
+    insertVisit('/at-cutoff', 180 * day - 1);
+
+    const result = deleteOldRecords(180);
+
+    expect(result.visits).toBe(0);
+    expect(visitPaths()).toEqual(['/at-cutoff']);
   });
 });

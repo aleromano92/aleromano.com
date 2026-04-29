@@ -32,6 +32,36 @@ export function generateVisitorHash(ip: string, userAgent: string): string {
 }
 
 // ============================================================================
+// Retention (GDPR storage limitation — Article 5(1)(e))
+// ============================================================================
+
+const RETENTION_DAYS = 730;
+
+const CLEANUP_INTERVAL_MS = 24 * 60 * 60 * 1000;
+
+let cleanupTimer: ReturnType<typeof setInterval> | null = null;
+
+function runRetentionCleanup(): void {
+  try {
+    const result = deleteOldRecords(RETENTION_DAYS);
+    if (result.visits > 0 || result.events > 0) {
+      console.log(
+        `[Analytics] Retention cleanup deleted ${result.visits} visits and ${result.events} events older than ${RETENTION_DAYS} days`
+      );
+    }
+  } catch (error) {
+    console.error('[Analytics] Retention cleanup failed:', error);
+  }
+}
+
+function ensureRetentionJobStarted(): void {
+  if (cleanupTimer) return;
+  runRetentionCleanup();
+  cleanupTimer = setInterval(runRetentionCleanup, CLEANUP_INTERVAL_MS);
+  cleanupTimer.unref?.();
+}
+
+// ============================================================================
 // Event Buffer (In-memory micro-batching for high-frequency events)
 // ============================================================================
 
@@ -104,18 +134,33 @@ export function getDaysAgoTimestamp(days: number): number {
 // Analytics Manager
 // ============================================================================
 
+/**
+ * Delete analytics records older than `days` from both visits and events tables.
+ * Returns the number of rows deleted from each table.
+ */
+export function deleteOldRecords(days: number): { visits: number; events: number } {
+  const db = getDatabase();
+  const cutoff = getDaysAgoTimestamp(days);
+
+  const visitsResult = db.prepare(`DELETE FROM analytics_visits WHERE created_at < ?`).run(cutoff);
+  const eventsResult = db.prepare(`DELETE FROM analytics_events WHERE created_at < ?`).run(cutoff);
+
+  return { visits: visitsResult.changes, events: eventsResult.changes };
+}
+
 export const analyticsManager = {
   /**
    * Record a page visit (called from middleware, writes directly)
    */
   recordVisit(visit: VisitRecord): void {
     try {
+      ensureRetentionJobStarted();
       const db = getDatabase();
       const stmt = db.prepare(`
         INSERT INTO analytics_visits (path, visitor_hash, referer, user_agent, country)
         VALUES (?, ?, ?, ?, ?)
       `);
-      
+
       stmt.run(
         visit.path,
         visit.visitorHash,
@@ -132,14 +177,21 @@ export const analyticsManager = {
    * Queue an event for batched insertion (called from API endpoint)
    */
   queueEvent(event: EventRecord): void {
+    ensureRetentionJobStarted();
     eventBuffer.push(event);
-    
+
     if (eventBuffer.length >= FLUSH_THRESHOLD) {
       flushEventBuffer();
     } else {
       scheduleFlush();
     }
   },
+
+  /**
+   * Delete records older than the configured retention window.
+   * Exposed for manual triggering / testing; the daily job calls this automatically.
+   */
+  deleteOldRecords,
 
   /**
    * Force flush any pending events (call on shutdown)
