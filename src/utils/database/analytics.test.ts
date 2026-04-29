@@ -85,16 +85,16 @@ describe('analyticsManager query methods', () => {
 
     // Insert visits with different countries
     const insertVisit = db.prepare(`
-      INSERT INTO analytics_visits (path, visitor_hash, referer, user_agent, country, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO analytics_visits (path, visitor_hash, referer, browser, os, country, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
 
-    insertVisit.run('/', 'hash1', 'https://google.com', 'Mozilla/5.0', 'US', now - 100);
-    insertVisit.run('/', 'hash2', 'https://google.com', 'Safari/1.0', 'US', now - 200);
-    insertVisit.run('/blog', 'hash1', null, 'Mozilla/5.0', 'IT', now - 300);
-    insertVisit.run('/about', 'hash3', 'https://twitter.com', 'Chrome/1.0', 'IT', now - 400);
-    insertVisit.run('/blog', 'hash4', null, 'Firefox/1.0', 'DE', now - 500);
-    insertVisit.run('/contact', 'hash5', null, 'Edge/1.0', null, now - 600);
+    insertVisit.run('/', 'hash1', 'https://google.com', 'Chrome', 'Windows', 'US', now - 100);
+    insertVisit.run('/', 'hash2', 'https://google.com', 'Safari', 'macOS', 'US', now - 200);
+    insertVisit.run('/blog', 'hash1', null, 'Chrome', 'Windows', 'IT', now - 300);
+    insertVisit.run('/about', 'hash3', 'https://twitter.com', 'Firefox', 'Linux', 'IT', now - 400);
+    insertVisit.run('/blog', 'hash4', null, 'Safari', 'iOS', 'DE', now - 500);
+    insertVisit.run('/contact', 'hash5', null, null, null, null, now - 600);
 
     // Insert events of different types
     const insertEvent = db.prepare(`
@@ -156,6 +156,55 @@ describe('analyticsManager query methods', () => {
 
       const result = analyticsManager.getVisitorsByCountry(30);
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('getBrowserOSBreakdown', () => {
+    it('returns aggregated browser and OS counts ordered by visits', () => {
+      const result = analyticsManager.getBrowserOSBreakdown(30);
+
+      // Seed has: Chrome×2 (hash1, hash1), Safari×2 (hash2, hash4), Firefox×1 (hash3)
+      // The /contact row has NULL browser/os and should be excluded.
+      const chrome = result.browsers.find(b => b.browser === 'Chrome');
+      expect(chrome).toEqual({ browser: 'Chrome', visits: 2, uniqueVisitors: 1 });
+
+      const safari = result.browsers.find(b => b.browser === 'Safari');
+      expect(safari).toEqual({ browser: 'Safari', visits: 2, uniqueVisitors: 2 });
+
+      const firefox = result.browsers.find(b => b.browser === 'Firefox');
+      expect(firefox).toEqual({ browser: 'Firefox', visits: 1, uniqueVisitors: 1 });
+
+      // Browsers ordered by visits desc
+      for (let i = 1; i < result.browsers.length; i++) {
+        expect(result.browsers[i - 1].visits).toBeGreaterThanOrEqual(result.browsers[i].visits);
+      }
+
+      // OSes
+      const windows = result.oses.find(o => o.os === 'Windows');
+      expect(windows).toEqual({ os: 'Windows', visits: 2, uniqueVisitors: 1 });
+      const macOS = result.oses.find(o => o.os === 'macOS');
+      expect(macOS).toEqual({ os: 'macOS', visits: 1, uniqueVisitors: 1 });
+      const linux = result.oses.find(o => o.os === 'Linux');
+      expect(linux).toEqual({ os: 'Linux', visits: 1, uniqueVisitors: 1 });
+      const ios = result.oses.find(o => o.os === 'iOS');
+      expect(ios).toEqual({ os: 'iOS', visits: 1, uniqueVisitors: 1 });
+    });
+
+    it('excludes rows with NULL browser/os', () => {
+      const result = analyticsManager.getBrowserOSBreakdown(30);
+      // /contact (hash5) is the only NULL/NULL row in seed
+      const totalBrowserVisits = result.browsers.reduce((s, b) => s + b.visits, 0);
+      const totalOSVisits = result.oses.reduce((s, o) => s + o.visits, 0);
+      expect(totalBrowserVisits).toBe(5);
+      expect(totalOSVisits).toBe(5);
+    });
+
+    it('returns empty arrays when no visits exist', () => {
+      const db = getDatabase();
+      db.exec('DELETE FROM analytics_visits');
+
+      const result = analyticsManager.getBrowserOSBreakdown(30);
+      expect(result).toEqual({ browsers: [], oses: [] });
     });
   });
 

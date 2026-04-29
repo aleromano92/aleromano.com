@@ -29,7 +29,8 @@ export interface VisitRecord {
   path: string;
   visitorHash: string;
   referer?: string;
-  userAgent?: string;
+  browser?: string | null;
+  os?: string | null;
   country?: string;
 }
 
@@ -73,6 +74,18 @@ export interface TopReferer {
 
 export interface CountryStats {
   country: string;
+  visits: number;
+  uniqueVisitors: number;
+}
+
+export interface BrowserStats {
+  browser: string;
+  visits: number;
+  uniqueVisitors: number;
+}
+
+export interface OSStats {
+  os: string;
   visits: number;
   uniqueVisitors: number;
 }

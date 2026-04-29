@@ -53,7 +53,8 @@ db.exec(`
     path TEXT NOT NULL,
     visitor_hash TEXT NOT NULL,
     referer TEXT,
-    user_agent TEXT,
+    browser TEXT,
+    os TEXT,
     country TEXT,
     created_at INTEGER DEFAULT (strftime('%s', 'now'))
   );

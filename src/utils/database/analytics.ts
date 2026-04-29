@@ -1,9 +1,9 @@
 import { createHash } from 'crypto';
 import { getDatabase } from './connection';
-import type { VisitRecord, EventRecord, DailyStats, TopPage, TopReferer, CountryStats, EventTypeBreakdown } from '../../types/analytics';
+import type { VisitRecord, EventRecord, DailyStats, TopPage, TopReferer, CountryStats, EventTypeBreakdown, BrowserStats, OSStats } from '../../types/analytics';
 
 // Re-export types for compatibility with existing imports
-export type { VisitRecord, EventRecord, DailyStats, TopPage, TopReferer, CountryStats, EventTypeBreakdown };
+export type { VisitRecord, EventRecord, DailyStats, TopPage, TopReferer, CountryStats, EventTypeBreakdown, BrowserStats, OSStats };
 
 // ============================================================================
 // Visitor Hash Generation (Privacy-preserving daily rotation)
@@ -157,15 +157,16 @@ export const analyticsManager = {
       ensureRetentionJobStarted();
       const db = getDatabase();
       const stmt = db.prepare(`
-        INSERT INTO analytics_visits (path, visitor_hash, referer, user_agent, country)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO analytics_visits (path, visitor_hash, referer, browser, os, country)
+        VALUES (?, ?, ?, ?, ?, ?)
       `);
 
       stmt.run(
         visit.path,
         visit.visitorHash,
         visit.referer || null,
-        visit.userAgent || null,
+        visit.browser ?? null,
+        visit.os ?? null,
         visit.country || null
       );
     } catch (error) {
@@ -366,6 +367,35 @@ export const analyticsManager = {
       duration: row.duration,
       createdAt: row.created_at
     }));
+  },
+
+  /**
+   * Get visitor counts grouped by browser and OS labels
+   */
+  getBrowserOSBreakdown(days: number = 30): { browsers: BrowserStats[]; oses: OSStats[] } {
+    const db = getDatabase();
+    const cutoff = getDaysAgoTimestamp(days);
+
+    const browserRows = db.prepare(`
+      SELECT browser, COUNT(*) as visits, COUNT(DISTINCT visitor_hash) as unique_visitors
+      FROM analytics_visits
+      WHERE created_at >= ? AND browser IS NOT NULL AND browser != ''
+      GROUP BY browser
+      ORDER BY visits DESC
+    `).all(cutoff) as Array<{ browser: string; visits: number; unique_visitors: number }>;
+
+    const osRows = db.prepare(`
+      SELECT os, COUNT(*) as visits, COUNT(DISTINCT visitor_hash) as unique_visitors
+      FROM analytics_visits
+      WHERE created_at >= ? AND os IS NOT NULL AND os != ''
+      GROUP BY os
+      ORDER BY visits DESC
+    `).all(cutoff) as Array<{ os: string; visits: number; unique_visitors: number }>;
+
+    return {
+      browsers: browserRows.map(r => ({ browser: r.browser, visits: r.visits, uniqueVisitors: r.unique_visitors })),
+      oses: osRows.map(r => ({ os: r.os, visits: r.visits, uniqueVisitors: r.unique_visitors })),
+    };
   },
 
   /**

@@ -17,6 +17,7 @@ const topReferers = analyticsManager.getTopReferers(20, days);
 const avgTimeOnPage = analyticsManager.getAverageTimeOnPage(days);
 const recentEvents = analyticsManager.getRecentEvents(50);
 const countryStats = analyticsManager.getVisitorsByCountry(days);
+const { browsers, oses } = analyticsManager.getBrowserOSBreakdown(days);
 const eventBreakdown = analyticsManager.getEventBreakdown(days);
 
 // Prepare chart data (reverse for chronological order)
@@ -329,6 +330,62 @@ const timeRanges = [
                                             <td>{cs.country}</td>
                                             <td class="number-cell">{cs.visits.toLocaleString()}</td>
                                             <td class="number-cell">{cs.uniqueVisitors.toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )
+            }
+
+            {
+                browsers.length > 0 && (
+                    <div class="table-card">
+                        <h3>Visitors by Browser</h3>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Browser</th>
+                                        <th class="number-cell">Views</th>
+                                        <th class="number-cell">Unique</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {browsers.map((b) => (
+                                        <tr>
+                                            <td>{b.browser}</td>
+                                            <td class="number-cell">{b.visits.toLocaleString()}</td>
+                                            <td class="number-cell">{b.uniqueVisitors.toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )
+            }
+
+            {
+                oses.length > 0 && (
+                    <div class="table-card">
+                        <h3>Visitors by OS</h3>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>OS</th>
+                                        <th class="number-cell">Views</th>
+                                        <th class="number-cell">Unique</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {oses.map((o) => (
+                                        <tr>
+                                            <td>{o.os}</td>
+                                            <td class="number-cell">{o.visits.toLocaleString()}</td>
+                                            <td class="number-cell">{o.uniqueVisitors.toLocaleString()}</td>
                                         </tr>
                                     ))}
                                 </tbody>

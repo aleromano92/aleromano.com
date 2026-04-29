@@ -3,6 +3,7 @@ import { analyticsManager, generateVisitorHash } from '../../../utils/database';
 import type { AnalyticsEvent } from '../../../types/analytics';
 import { ANALYTICS_ELEMENT_TEXT_MAX_LENGTH } from '../../../utils/constants';
 import { getCountryFromIP } from '../../../utils/geoip';
+import { parseUserAgent } from '../../../utils/user-agent';
 
 /**
  * Extract client IP from request headers (behind nginx proxy)
@@ -57,12 +58,14 @@ export const POST: APIRoute = async ({ request }) => {
       const userAgent = request.headers.get('User-Agent') || 'unknown';
       const visitorHash = generateVisitorHash(ip, userAgent);
       const country = await getCountryFromIP(ip);
+      const { browser, os } = parseUserAgent(userAgent);
 
       analyticsManager.recordVisit({
         path: payload.path,
         visitorHash,
         referer: payload.referer,
-        userAgent,
+        browser,
+        os,
         country: country ?? undefined,
       });
     } else {
