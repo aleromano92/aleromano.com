@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import Database from 'better-sqlite3';
-import { migrateAnalyticsVisits } from './migrations';
+import { migrateAnalyticsVisits, migrateNormalizeReferer } from './migrations';
 
 function createLegacyDb(): Database.Database {
   const db = new Database(':memory:');
@@ -92,5 +92,92 @@ describe('migrateAnalyticsVisits', () => {
 
     expect(() => migrateAnalyticsVisits(db)).not.toThrow();
     expect(columnNames(db)).not.toContain('user_agent');
+  });
+});
+
+describe('migrateNormalizeReferer', () => {
+  function createDb(): Database.Database {
+    const db = new Database(':memory:');
+    db.exec(`
+      CREATE TABLE analytics_visits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT NOT NULL,
+        visitor_hash TEXT NOT NULL,
+        referer TEXT,
+        browser TEXT,
+        os TEXT,
+        country TEXT,
+        created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+      )
+    `);
+    return db;
+  }
+
+  function insert(db: Database.Database, path: string, referer: string | null) {
+    db.prepare(`INSERT INTO analytics_visits (path, visitor_hash, referer) VALUES (?, ?, ?)`)
+      .run(path, 'h', referer);
+  }
+
+  function refererFor(db: Database.Database, path: string): string | null {
+    return (db.prepare(`SELECT referer FROM analytics_visits WHERE path = ?`).get(path) as { referer: string | null }).referer;
+  }
+
+  it('strips query and fragment but keeps the path', () => {
+    const db = createDb();
+    insert(db, '/a', 'https://google.com/search?q=secret+search+term');
+    insert(db, '/b', 'https://linkedin.com/feed/post/123?utm_source=x');
+    insert(db, '/c', 'https://example.com/page#section');
+
+    migrateNormalizeReferer(db);
+
+    expect(refererFor(db, '/a')).toBe('https://google.com/search');
+    expect(refererFor(db, '/b')).toBe('https://linkedin.com/feed/post/123');
+    expect(refererFor(db, '/c')).toBe('https://example.com/page');
+  });
+
+  it('collapses lone "/" so bare-origin variants share a bucket', () => {
+    const db = createDb();
+    insert(db, '/a', 'https://google.com/');
+    insert(db, '/b', 'https://google.com');
+
+    migrateNormalizeReferer(db);
+
+    expect(refererFor(db, '/a')).toBe('https://google.com');
+    expect(refererFor(db, '/b')).toBe('https://google.com');
+  });
+
+  it('leaves NULL and already-normalized referrers untouched', () => {
+    const db = createDb();
+    insert(db, '/a', null);
+    insert(db, '/b', 'https://google.com');
+    insert(db, '/c', 'https://linkedin.com/feed');
+
+    migrateNormalizeReferer(db);
+
+    expect(refererFor(db, '/a')).toBeNull();
+    expect(refererFor(db, '/b')).toBe('https://google.com');
+    expect(refererFor(db, '/c')).toBe('https://linkedin.com/feed');
+  });
+
+  it('nullifies unparseable referrers', () => {
+    const db = createDb();
+    insert(db, '/a', 'not a url at all');
+
+    migrateNormalizeReferer(db);
+
+    expect(refererFor(db, '/a')).toBeNull();
+  });
+
+  it('is idempotent — running twice yields the same result', () => {
+    const db = createDb();
+    insert(db, '/a', 'https://google.com/search?q=foo');
+
+    migrateNormalizeReferer(db);
+    const first = refererFor(db, '/a');
+    migrateNormalizeReferer(db);
+    const second = refererFor(db, '/a');
+
+    expect(first).toBe('https://google.com/search');
+    expect(second).toBe(first);
   });
 });

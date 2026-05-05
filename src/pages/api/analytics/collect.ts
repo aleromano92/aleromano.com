@@ -4,6 +4,7 @@ import type { AnalyticsEvent } from '../../../types/analytics';
 import { ANALYTICS_ELEMENT_TEXT_MAX_LENGTH } from '../../../utils/constants';
 import { getCountryFromIP } from '../../../utils/geoip';
 import { parseUserAgent } from '../../../utils/user-agent';
+import { normalizeReferer } from '../../../utils/referer';
 
 /**
  * Extract client IP from request headers (behind nginx proxy)
@@ -63,7 +64,7 @@ export const POST: APIRoute = async ({ request }) => {
       analyticsManager.recordVisit({
         path: payload.path,
         visitorHash,
-        referer: payload.referer,
+        referer: normalizeReferer(payload.referer) ?? undefined,
         browser,
         os,
         country: country ?? undefined,

@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 import { dirname } from 'path';
 import { existsSync, mkdirSync } from 'fs';
-import { migrateAnalyticsVisits } from './migrations';
+import { migrateAnalyticsVisits, migrateNormalizeReferer } from './migrations';
 
 const getDatabasePath = (): string => {
   const dbPath = import.meta.env.DATABASE_PATH || process.env.DATABASE_PATH;
@@ -101,6 +101,7 @@ function initializeSchema(db: Database.Database): void {
   `);
 
   migrateAnalyticsVisits(db);
+  migrateNormalizeReferer(db);
 
   // Indexes for efficient analytics queries
   db.exec(`

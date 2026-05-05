@@ -1,5 +1,6 @@
 import type Database from 'better-sqlite3';
 import { parseUserAgent } from '../user-agent';
+import { normalizeReferer } from '../referer';
 
 /**
  * One-shot, idempotent migration: add `browser` and `os` columns to
@@ -50,4 +51,26 @@ export function migrateAnalyticsVisits(db: Database.Database): void {
       `[Migration] analytics_visits has ${remaining} rows with non-null user_agent after backfill; column not dropped.`
     );
   }
+}
+
+/**
+ * Idempotent migration: normalize all stored referrers by stripping their
+ * query string and fragment (which can leak personal data) while preserving
+ * the path (which carries useful traffic-source context).
+ */
+export function migrateNormalizeReferer(db: Database.Database): void {
+  const rows = db.prepare(
+    `SELECT id, referer FROM analytics_visits WHERE referer IS NOT NULL AND referer != ''`
+  ).all() as Array<{ id: number; referer: string }>;
+
+  const update = db.prepare(`UPDATE analytics_visits SET referer = ? WHERE id = ?`);
+  const run = db.transaction((batch: typeof rows) => {
+    for (const row of batch) {
+      const normalized = normalizeReferer(row.referer);
+      if (normalized !== row.referer) {
+        update.run(normalized, row.id);
+      }
+    }
+  });
+  run(rows);
 }
