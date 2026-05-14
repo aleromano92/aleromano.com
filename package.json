@@ -32,7 +32,7 @@
     "@opentelemetry/resources": "^2.5.1",
     "@opentelemetry/sdk-node": "^0.217.0",
     "@opentelemetry/semantic-conventions": "^1.39.0",
-    "astro": "^6.0.8",
+    "astro": "^6.3.2",
     "better-sqlite3": "^12.4.1",
     "chart.js": "^4.5.1",
     "chartjs-chart-geo": "^4.3.6",
