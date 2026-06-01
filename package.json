@@ -59,6 +59,6 @@
     "eslint": "^8.57.0",
     "eslint-plugin-astro": "^0.31.4",
     "msw": "^2.11.5",
-    "vitest": "^3.0.5"
+    "vitest": "^4.1.0"
   }
 }
