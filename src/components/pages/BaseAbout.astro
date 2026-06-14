@@ -1,7 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import brandLogo from '../../assets/nano-banana-personal-logo-light.png';
-import brandLogoDark from '../../assets/nano-banana-personal-logo-dark.png';
+import landsatLogo from '../../assets/Alessandro-landsat.png';
 import TwitterFeed from '../TwitterFeed.astro';
 import ImageModal from '../ImageModal.astro';
 import profilePic from '../../assets/alepro.png';
@@ -114,6 +113,11 @@ export interface AboutTranslations {
     needHelp: string;
     letsTalk: string;
     profilePicAlt: string;
+
+    // Landsat logo
+    landsatAlt: string;
+    landsatCreditPrefix: string;
+    landsatCreditLinkText: string;
 }
 
 export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
@@ -357,6 +361,9 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         needHelp: 'Need help launching your startup, scaling your engineering team, or growing as a software engineer?',
         letsTalk: "Let's talk.",
         profilePicAlt: 'Alessandro Romano profile picture',
+        landsatAlt: 'The name "Alessandro" spelled out using NASA Landsat satellite imagery',
+        landsatCreditPrefix: 'Want a similar image? Generate yours at NASA’s',
+        landsatCreditLinkText: 'Your Name in Landsat',
     },
     it: {
         pageTitle: 'Chi Sono',
@@ -605,6 +612,9 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             'Hai bisogno di aiuto per lanciare la tua startup, scalare il tuo team di ingegneria, o crescere come ingegnere del software?',
         letsTalk: 'Parliamone.',
         profilePicAlt: 'Foto profilo di Alessandro Romano',
+        landsatAlt: 'Il nome "Alessandro" composto usando immagini satellitari Landsat della NASA',
+        landsatCreditPrefix: 'Vuoi un’immagine simile? Generala su',
+        landsatCreditLinkText: 'Your Name in Landsat',
     },
 };
 
@@ -652,26 +662,17 @@ const twitterData = await twitterService.getTwitterPosts(language);
     </ul>
 </nav>
 
-<div class="logo-container">
-    <Image
-        src={brandLogo}
-        alt="Brand Logo"
-        class="logo dark-logo"
-        width={300}
-        height={300}
-        densities={[2]}
-        quality="high"
-    />
-    <Image
-        src={brandLogoDark}
-        alt="Brand Logo"
-        class="logo light-logo"
-        width={300}
-        height={300}
-        densities={[2]}
-        quality="high"
-    />
-</div>
+<figure class="logo-container">
+    <Image src={landsatLogo} alt={t.landsatAlt} class="logo" width={900} height={200} densities={[2]} quality="high" />
+    <figcaption class="landsat-credit">
+        {t.landsatCreditPrefix}
+        <a
+            href="https://science.nasa.gov/mission/landsat/outreach/your-name-in-landsat/"
+            target="_blank"
+            rel="noopener noreferrer">{t.landsatCreditLinkText}</a
+        >
+    </figcaption>
+</figure>
 
 <!-- Biography Section -->
 <section id="biography" class="biography">
@@ -1161,35 +1162,34 @@ const twitterData = await twitterService.getTwitterPosts(language);
     /* Logo Container */
     .logo-container {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        height: clamp(8rem, 15vw, 16rem);
+        margin: var(--space-lg) 0;
+        gap: var(--space-xs);
     }
 
     .logo {
-        height: 100%;
-        width: auto;
-        border-radius: 50%;
+        width: 100%;
+        max-width: 900px;
+        height: auto;
+        border-radius: var(--border-radius);
     }
 
-    /* Show/hide based on theme */
-    .dark-logo {
-        display: none;
+    .landsat-credit {
+        align-self: flex-end;
+        font-size: var(--font-size-xs);
+        color: var(--color-text-secondary);
+        font-style: italic;
+        opacity: 0.8;
     }
 
-    :global([data-theme='dark']) .dark-logo {
-        display: block;
+    .landsat-credit a {
+        color: var(--color-accent);
+        text-decoration: none;
     }
 
-    :global([data-theme='dark']) .light-logo {
-        display: none;
-    }
-
-    /* Mobile centering */
-    @media (max-width: 636px) {
-        .logo-container {
-            margin-left: auto;
-        }
+    .landsat-credit a:hover {
+        text-decoration: underline;
     }
 
     /* Title with icon styling */

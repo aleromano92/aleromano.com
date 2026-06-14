@@ -1,5 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import SocialLink from './SocialLink.astro';
+import brandLogoLight from '../assets/nano-banana-personal-logo-light.png';
+import brandLogoDark from '../assets/nano-banana-personal-logo-dark.png';
 import type { SupportedLanguage } from '../types/i18n';
 
 export interface FooterTranslations {
@@ -38,6 +41,24 @@ const currentYear = new Date().getFullYear();
 ---
 
 <footer class="container">
+    <div class="footer-logo">
+        <Image
+            src={brandLogoDark}
+            alt="Alessandro Romano personal logo"
+            class="brand-logo light-logo"
+            width={96}
+            height={96}
+            densities={[2]}
+        />
+        <Image
+            src={brandLogoLight}
+            alt="Alessandro Romano personal logo"
+            class="brand-logo dark-logo"
+            width={96}
+            height={96}
+            densities={[2]}
+        />
+    </div>
     <div class="footer-content">
         <div class="copyright">
             <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/" class="copyright-text">
@@ -78,6 +99,40 @@ const currentYear = new Date().getFullYear();
         background-color: var(--color-bg);
         z-index: 100;
         position: relative;
+    }
+
+    footer.container {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+    }
+
+    .footer-logo {
+        display: flex;
+        flex-shrink: 0;
+    }
+
+    .brand-logo {
+        height: 2rem;
+        width: auto;
+        border-radius: 50%;
+    }
+
+    .footer-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .dark-logo {
+        display: none;
+    }
+
+    :global([data-theme='dark']) .dark-logo {
+        display: block;
+    }
+
+    :global([data-theme='dark']) .light-logo {
+        display: none;
     }
 
     .footer-content {
