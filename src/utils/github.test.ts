@@ -6,11 +6,11 @@ import type { GitHubCommitsData } from './github';
 import type { CacheManager } from './database';
 import mockGitHubCommits from '../mocks/mock-github-commits-response.json';
 
-const GITHUB_USERNAME = 'aleromano92';
-const GITHUB_REPO = 'aleromano.com';
-
+// Independently hardcoded (not imported from ./github) so this acts as a tripwire:
+// a change to the cache key or TTL in the source must fail here and be acknowledged,
+// rather than silently propagating. Keep these in sync with github.ts on purpose.
 const GITHUB_CACHE_KEY = 'github:commits';
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
 // Mock console.error/warn to avoid noise in tests
 const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -189,7 +189,7 @@ describe('GitHub Repository Commits API utilities', () => {
       expect(mockCache.set).toHaveBeenCalledWith(
         GITHUB_CACHE_KEY,
         JSON.stringify(mockGitHubCommits),
-        CACHE_TTL_MS
+        CACHE_TTL
       );
     });
 
