@@ -18,6 +18,7 @@
     "load:test": "node scripts/load-test.mjs load",
     "load:stress": "node scripts/load-test.mjs stress",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "postinstall": "node -e \"if (process.env.CI || process.env.GEOIP_DOWNLOAD === '0') { process.exit(0); } import('geolite2-redist').then(g => g.downloadDbs())\""
   },
@@ -55,6 +56,7 @@
     "@types/reveal.js": "^5.2.0",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
+    "@vitest/coverage-v8": "^4.1.9",
     "autocannon": "^8.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-astro": "^0.31.4",

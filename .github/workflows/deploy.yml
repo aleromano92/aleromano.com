@@ -33,8 +33,8 @@ jobs:
       - name: TypeScript & Astro check
         run: npx astro check
 
-      - name: Run tests
-        run: npm test
+      - name: Run tests with coverage gate
+        run: npm run test:coverage
 
   build-and-push:
     needs: checks

@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # SQLite database files
 /data/
+
+# Test coverage output
+coverage/
