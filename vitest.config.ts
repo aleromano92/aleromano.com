@@ -11,6 +11,9 @@ export default defineConfig({
     // Global test timeout
     testTimeout: 10000,
 
+    // Never pick up Stryker's instrumented sandbox copies.
+    exclude: ['**/node_modules/**', '**/dist/**', '**/.stryker-tmp/**'],
+
     coverage: {
       provider: 'v8',
       reporter: ['text-summary', 'html', 'lcov'],
@@ -30,10 +33,10 @@ export default defineConfig({
       // regression fails the build, but a single uncovered helper in an otherwise
       // good PR doesn't trip a spurious failure. Raise these as coverage grows.
       thresholds: {
-        statements: 63,
-        branches: 58,
-        functions: 53,
-        lines: 63,
+        statements: 66,
+        branches: 61,
+        functions: 57,
+        lines: 66,
       },
     },
   },

@@ -1,0 +1,61 @@
+name: Mutation testing
+
+# Mutation testing measures the *strength* of the test suite (do tests fail when
+# code is broken?). A full run is slow, so:
+#   - on PRs: run incrementally (only mutants affected by the diff), blocking via
+#     the `break` threshold in stryker.config.json.
+#   - weekly + manual: run the full suite to refresh the baseline / catch drift.
+on:
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 4 * * 1' # Mondays 04:00 UTC
+  workflow_dispatch:
+
+jobs:
+  mutation:
+    name: Stryker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Reuse the incremental result file across PR runs so only changed mutants
+      # are re-tested. Always saves a fresh cache (key includes the SHA) and
+      # restores the most recent one via the prefix.
+      - name: Restore incremental mutation cache
+        if: github.event_name == 'pull_request'
+        uses: actions/cache@v4
+        with:
+          path: reports/mutation/incremental.json
+          key: stryker-incremental-${{ github.sha }}
+          restore-keys: |
+            stryker-incremental-
+
+      - name: Mutation testing (incremental on PRs)
+        if: github.event_name == 'pull_request'
+        run: npx stryker run --incremental
+
+      - name: Mutation testing (full)
+        if: github.event_name != 'pull_request'
+        run: npx stryker run
+
+      - name: Upload mutation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-report
+          path: reports/mutation/mutation.html
+          if-no-files-found: ignore

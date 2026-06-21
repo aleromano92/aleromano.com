@@ -29,3 +29,7 @@ pnpm-debug.log*
 
 # Test coverage output
 coverage/
+
+# Mutation testing
+.stryker-tmp/
+reports/
