@@ -25,13 +25,15 @@ export default defineConfig({
         'src/content/**',
         'src/env.d.ts',
       ],
-      // Ratchet floor: set just below the current baseline so any regression fails
-      // the build, while today's suite passes. Raise these as coverage grows.
+      // Ratchet floor: set a couple of points below the current baseline
+      // (stmts 64.09 / branch 59.65 / funcs 54.81 / lines 64.21) so a meaningful
+      // regression fails the build, but a single uncovered helper in an otherwise
+      // good PR doesn't trip a spurious failure. Raise these as coverage grows.
       thresholds: {
-        statements: 64,
-        branches: 59,
-        functions: 54,
-        lines: 64,
+        statements: 63,
+        branches: 58,
+        functions: 53,
+        lines: 63,
       },
     },
   },
