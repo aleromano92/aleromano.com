@@ -8,8 +8,9 @@
   "reporters": ["html", "clear-text", "progress"],
   "clearTextReporter": { "allowColor": false },
   "htmlReporter": { "fileName": "reports/mutation/mutation.html" },
+  "incrementalFile": "reports/mutation/incremental.json",
   "timeoutMS": 20000,
   "concurrency": 4,
-  "_thresholds_comment": "break = blocking floor (ratchet, set below the 58.35% src/utils baseline). high/low only affect report colouring.",
-  "thresholds": { "high": 80, "low": 60, "break": 55 }
+  "_thresholds_comment": "break = blocking floor (ratchet, set below the 64.06% src/utils baseline). high/low only affect report colouring.",
+  "thresholds": { "high": 80, "low": 64, "break": 60 }
 }
