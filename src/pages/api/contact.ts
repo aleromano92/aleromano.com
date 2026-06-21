@@ -146,7 +146,7 @@ export const POST: APIRoute = async ({ request }) => {
       const transporter = nodemailer.createTransport(transportOptions);
 
       const mailOptions = {
-        from: `"${name} via aleromano.com" ${PERSONAL_EMAIL}>`,
+        from: `"${name} via aleromano.com" <${PERSONAL_EMAIL}>`,
         to: PERSONAL_EMAIL,
         replyTo: email,
         subject: `Contact Form: ${reason}${blogPostTitle ? ` - ${blogPostTitle}` : ''}`,
