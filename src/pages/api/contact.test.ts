@@ -85,7 +85,8 @@ describe('POST /api/contact', () => {
       const mailOptions = mockSendMail.mock.calls[0][0];
       expect(mailOptions.to).toBe(RECIPIENT);
       expect(mailOptions.replyTo).toBe(validPayload.email);
-      expect(mailOptions.from).toContain(validPayload.name);
+      // From must be a well-formed address: "Name via aleromano.com" <recipient>
+      expect(mailOptions.from).toBe(`"${validPayload.name} via aleromano.com" <${RECIPIENT}>`);
       expect(mailOptions.subject).toBe('Contact Form: general');
       expect(mailOptions.text).toContain(validPayload.message);
       expect(mailOptions.html).toContain('Hello there<br>second line');
