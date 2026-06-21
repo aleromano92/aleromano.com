@@ -11,6 +11,9 @@ export default defineConfig({
     // Global test timeout
     testTimeout: 10000,
 
+    // Never pick up Stryker's instrumented sandbox copies.
+    exclude: ['**/node_modules/**', '**/dist/**', '**/.stryker-tmp/**'],
+
     coverage: {
       provider: 'v8',
       reporter: ['text-summary', 'html', 'lcov'],

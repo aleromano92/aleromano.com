@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": "Mutation testing — measures the STRENGTH of the test suite (do tests fail when code is broken?), not just line coverage. Start scoped to src/utils; expand over time.",
+  "testRunner": "vitest",
+  "vitest": { "configFile": "vitest.config.ts" },
+  "coverageAnalysis": "perTest",
+  "mutate": ["src/utils/**/*.ts", "!src/utils/**/*.test.ts"],
+  "reporters": ["html", "clear-text", "progress"],
+  "clearTextReporter": { "allowColor": false },
+  "htmlReporter": { "fileName": "reports/mutation/mutation.html" },
+  "timeoutMS": 20000,
+  "concurrency": 4,
+  "_thresholds_comment": "break = blocking floor (ratchet, set below the 58.35% src/utils baseline). high/low only affect report colouring.",
+  "thresholds": { "high": 80, "low": 60, "break": 55 }
+}

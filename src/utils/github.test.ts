@@ -103,6 +103,8 @@ describe('GitHub Repository Commits API utilities', () => {
       expect(result.commits).toEqual([]);
       expect(result.error).toBe('Failed to load recent commits');
       expect(mockConsoleError).toHaveBeenCalled();
+      // With no stale cache available, the stale-fallback branch must NOT be taken.
+      expect(mockConsoleWarn).not.toHaveBeenCalledWith(expect.stringContaining('stale'));
     });
 
     it('should handle network errors gracefully', async () => {
