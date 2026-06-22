@@ -29,7 +29,13 @@ function sourceFiles(dir: string, exts = ['.ts', '.astro']): string[] {
     .map((e) => path.join(root, e));
 }
 
-/** Raw module specifiers imported/exported-from/dynamically-imported by a file. */
+/**
+ * Raw module specifiers imported/exported-from/dynamically-imported by a file.
+ * Regex-based (good enough for this ESM/Astro codebase): it handles multi-line,
+ * `import type`, re-exports, dynamic and side-effect imports. Known blind spot:
+ * a quote inside an inline comment within a multi-line import statement — not a
+ * pattern that occurs here. Switch to a TS AST parser if that ever bites.
+ */
 function importSpecifiers(file: string): string[] {
   const content = readFileSync(file, 'utf8');
   const specifiers: string[] = [];
@@ -111,9 +117,12 @@ describe('architectural fitness functions', () => {
     expect(violations, `Utils must not depend on UI layers:\n${violations.join('\n')}`).toEqual([]);
   });
 
-  it('R5: middleware still guards the /admin route prefix', () => {
+  it('R5: middleware still references the /admin prefix (structural canary)', () => {
+    // Cheap canary that the admin guard has not been deleted wholesale. The
+    // REAL authorization gate — that /admin actually denies/permits requests —
+    // lives in middleware.test.ts as a behavioural test.
     const middleware = readFileSync(path.join(SRC, 'middleware.ts'), 'utf8');
-    expect(middleware, 'middleware.ts must protect /admin routes').toMatch(/['"`]\/admin/);
+    expect(middleware, 'middleware.ts must reference /admin routes').toMatch(/['"`]\/admin/);
   });
 
   // Guard against the rules silently testing nothing if a directory moves.

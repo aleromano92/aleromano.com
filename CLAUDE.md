@@ -27,7 +27,7 @@ Several conventions below are not just guidance — they are **mechanically enfo
 - `better-sqlite3` may only be imported inside `src/utils/database/` (the DB driver stays encapsulated behind the connection pool / cache layer).
 - `src/utils/` is a leaf layer — it must not import from `components/` or `pages/`.
 - Every Italian page under `src/pages/it/` delegates to a `Base*` shell from `src/components/pages/`.
-- `src/middleware.ts` guards the `/admin` route prefix.
+- `src/middleware.ts` guards the `/admin` route prefix — a structural canary in `architecture.test.ts` plus behavioural auth tests in [`src/middleware.test.ts`](src/middleware.test.ts) (401 without/with-wrong credentials, fails closed when unconfigured).
 
 When you change one of these intentionally, update the test first — it's the gate.
 
