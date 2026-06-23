@@ -100,6 +100,11 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
 
   /* Mobile: show only the logo, but keep the name available to assistive tech */
   @media (max-width: 636px) {
+    /* Keep the logo clear of the hamburger */
+    .brand {
+      margin-left: var(--space-sm);
+    }
+
     .brand-name {
       position: absolute;
       width: 1px;
