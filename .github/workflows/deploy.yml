@@ -36,8 +36,30 @@ jobs:
       - name: Run tests with coverage gate
         run: npm run test:coverage
 
+  perf-budget:
+    name: Client bundle budget
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (client bundles)
+        run: npx astro build
+
+      - name: Check bundle budget
+        run: npm run perf:budget
+
   build-and-push:
-    needs: checks
+    needs: [checks, perf-budget]
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
