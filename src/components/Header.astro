@@ -1,9 +1,12 @@
 ---
+import { Image } from 'astro:assets';
 import Hamburger from './Hamburger.astro';
 import Navigation from './Navigation.astro';
 import ThemeSwitcher from './ThemeSwitcher.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import { getLocalizedPathname } from '../utils/i18n';
+import brandLogoLight from '../assets/nano-banana-personal-logo-light.png';
+import brandLogoDark from '../assets/nano-banana-personal-logo-dark.png';
 
 const { i18nData } = Astro.props;
 const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
@@ -11,7 +14,11 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
 
 <header class="container header-container">
   <Hamburger />
-  <a href={homeUrl}><h2>Alessandro Romano</h2></a>
+  <a href={homeUrl} class="brand" aria-label="Alessandro Romano - home">
+    <Image src={brandLogoLight} alt="" class="brand-logo light-logo" width={80} height={80} densities={[2]} />
+    <Image src={brandLogoDark} alt="" class="brand-logo dark-logo" width={80} height={80} densities={[2]} />
+    <h2 class="brand-name">Alessandro Romano</h2>
+  </a>
   <Navigation language={i18nData?.currentLang || 'en'} />
   <section class="switchers">
     <LanguageSwitcher i18nData={i18nData} />
@@ -67,10 +74,42 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
     margin: 0;
   }
 
-  /* Mobile centering */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .brand-logo {
+    height: 2.5rem;
+    width: auto;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Theme-based logo swap (matches Footer behaviour) */
+  .dark-logo {
+    display: none;
+  }
+  :global([data-theme='dark']) .dark-logo {
+    display: block;
+  }
+  :global([data-theme='dark']) .light-logo {
+    display: none;
+  }
+
+  /* Mobile: show only the logo, but keep the name available to assistive tech */
   @media (max-width: 636px) {
-    header h2 {
-      margin-left: var(--space-sm);
+    .brand-name {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      border: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
     }
   }
 
