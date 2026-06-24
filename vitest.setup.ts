@@ -5,7 +5,13 @@
  * Sets up in-memory database for testing.
  */
 import { beforeAll, afterEach, afterAll } from 'vitest';
+import fc from 'fast-check';
 import { server } from './src/mocks/server';
+
+// Property-based tests use a fixed seed so a failure is reproducible and the
+// gate is deterministic (no flaky CI). numRuns controls how many random
+// stressors each property is subjected to.
+fc.configureGlobal({ seed: 0x5eed, numRuns: 300 });
 
 // Configure in-memory database for tests
 process.env.DATABASE_PATH = ':memory:';

@@ -64,6 +64,7 @@
     "autocannon": "^8.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-astro": "^0.31.4",
+    "fast-check": "^4.8.0",
     "msw": "^2.11.5",
     "vitest": "^4.1.0"
   }
