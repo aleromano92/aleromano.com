@@ -93,7 +93,7 @@ Every test so far checks **points**: for input X, expect output Y. You pick X, s
 - For *any* referer, normalizing it twice equals normalizing it once.
 - For *any* JSON body, the contact endpoint returns a sane status and never crashes.
 
-This connects to [residuality theory](https://www.amazon.com/Residues-Time-Philosophy-Barry-OReilly/dp/B0CW3HSPCG) (Barry O'Reilly): a system is best understood by its **residues** — what survives after you hit it with **stressors**. You design for resilience by enumerating the stressors and making sure a coping residue exists for each. Random inputs, dependency failures, hostile payloads: an autonomous agent is itself a stressor generator, so the right question stops being "did I test what I imagined?" and becomes "what is the universe of stressors, and does a residue survive each?"
+This connects to [residuality theory](https://www.sciencedirect.com/science/article/pii/S1877050920305585) (Barry O'Reilly): a system is best understood by its **residues** — what survives after you hit it with **stressors**. You design for resilience by enumerating the stressors and making sure a coping residue exists for each. Random inputs, dependency failures, hostile payloads: an autonomous agent is itself a stressor generator, so the right question stops being "did I test what I imagined?" and becomes "what is the universe of stressors, and does a residue survive each?"
 
 It paid off within minutes. A generated stressor produced:
 
