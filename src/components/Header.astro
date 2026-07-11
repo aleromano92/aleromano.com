@@ -5,8 +5,8 @@ import Navigation from './Navigation.astro';
 import ThemeSwitcher from './ThemeSwitcher.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import { getLocalizedPathname } from '../utils/i18n';
-import brandLogoLight from '../assets/nano-banana-personal-logo-light.png';
-import brandLogoDark from '../assets/nano-banana-personal-logo-dark.png';
+import brandLogoLight from '../assets/nano-banana-personal-logo-light-no-background.png';
+import brandLogoDark from '../assets/nano-banana-personal-logo-dark-no-background.png';
 
 const { i18nData } = Astro.props;
 const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
@@ -81,9 +81,8 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
   }
 
   .brand-logo {
-    height: 2.5rem;
+    height: 6.5rem;
     width: auto;
-    border-radius: 50%;
     flex-shrink: 0;
   }
 
