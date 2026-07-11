@@ -29,6 +29,15 @@ main {
 a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link) {
     color: var(--color-accent);
     text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+    /* Repaint-only hover cue: only the underline redraws, so no layout shift
+       and no font flicker (unlike the old transform/text-shadow hover). */
+    transition: text-decoration-thickness 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link):hover {
+    text-decoration-thickness: 2px;
 }
 
 /* Mark links that open in a new tab with an external-link arrow.
