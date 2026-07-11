@@ -69,7 +69,7 @@ src/utils/github.ts:209:11
 +       if (true) {
 ```
 
-Il mio test "gestisce gli errori dell'API con grazia" passava comunque: verificava che l'endpoint restituisse un errore pulito, ma non che *non* stesse servendo dati stantii quando non ce n'erano. Con `if (true)` il branch veniva sempre imboccato, e nessuno se ne accorgeva. Una riga di assertion è bastata a uccidere il mutante — **senza aggiungere una sola riga coperta**:
+Il mio test che "gestisce gli errori dell'API con grazia" passava comunque: verificava che l'endpoint restituisse un errore pulito, ma non che *non* stesse servendo dati stantii quando non ce n'erano. Con `if (true)` il branch veniva sempre imboccato, e nessuno se ne accorgeva. Una riga di assertion è bastata a uccidere il mutante — **senza aggiungere una sola riga coperta**:
 
 ```ts
 // nel test "should handle API errors gracefully"
