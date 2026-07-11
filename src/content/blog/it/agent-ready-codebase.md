@@ -28,29 +28,28 @@ Secondo, e molto peggio: **quel test fallito non aveva mai fatto fallire la CI.*
 
 Insomma, avevo dei test, ma non avevo dei **gate**. E se non potevo fidarmi della mia stessa rete di sicurezza, di certo non potevo consegnare le chiavi a un agente autonomo.
 
-Così mi sono imbarcato in un piccolo viaggio. Ecco la scala che ho salito.
+Così mi sono imbarcato in un piccolo viaggio. 
 
-## Gradino 0: Far Sì che i Test Vengano Davvero Eseguiti ✅
+## Step 0: Far Sì che i Test Vengano Davvero Eseguiti ✅
 
 Le fondamenta poco affascinanti. Ho aggiunto un job `checks` al workflow che esegue il type checker e l'intera suite di test a ogni push **e a ogni pull request**, e ho reso build-and-deploy dipendente da esso.
 
-Col senno di poi è banalmente ovvio, ed è esattamente questo il punto: la falla più pericolosa è quella che dai per scontata sia coperta. Una suite di test che non gira sulle PR è teatro. Ora un test rosso blocca il merge. Pavimento posato.
+Onestamente ero convinto di aver messo i test in CI dal giorno 0 😅 So il valore e l'importanza di una batteria di unit test veloci e affidabili, quindi li ho sempre scritti anche per questo mio getso personale. Semplicemente se non li lanciavo a mano, non giravano. SISTEMATO!
 
-## Gradino 1: Coverage — Necessaria, Non Sufficiente 📏
+## Step 1: Coverage — Necessaria, Non Sufficiente 📏
 
-Poi ho aggiunto un gate sulla coverage, impostato come **cricchetto** (ratchet): la soglia sta un paio di punti sotto il valore attuale, così qualsiasi modifica che *abbassa* la coverage fa fallire la build, e man mano che la coverage sale alzo il pavimento.
+Poi ho aggiunto un gate sulla coverage, impostato come **cricchetto** (ratchet): la soglia sta un paio di punti sotto il valore attuale, così qualsiasi modifica che *abbassa* la coverage fa fallire la build, e man mano che la coverage sale alzo la baseline.
 
-Ma ecco la cosa che a nessuno piace ammettere sulla coverage: **misura l'esecuzione, non la verifica.** Una riga può essere coperta al 100% e verificata allo 0%, se il test la esegue ma non fa alcuna assertion sul risultato. La coverage ti dice che il codice è stato *eseguito*. Non può dirti che il test stesse *guardando*.
+Cosa fa davvero la Coverage? **Misura l'esecuzione, non la verifica.** Una riga può essere coperta al 100% e verificata allo 0%, se il test la esegue ma non fa alcuna assertion sul risultato. La coverage ti dice che il codice è stato *eseguito*. Non può dirti che il test stesse *funzionando*.
 
-La mia assertion obsoleta sul TTL lo dimostra. La riga era coperta. Il test girava. Era comunque sbagliato. La coverage è necessaria — non puoi verificare codice che non esegui mai — ma trattarla come obiettivo di qualità è il modo in cui ottieni la [legge di Goodhart](https://en.wikipedia.org/wiki/Goodhart%27s_law) e una codebase piena di test senza assertion che esistono solo per far salire un numero.
+La coverage è necessaria — non puoi verificare codice che non esegui mai — ma trattarla come obiettivo di qualità è il modo in cui ottieni la [legge di Goodhart](https://en.wikipedia.org/wiki/Goodhart%27s_law) e una codebase piena di test senza assertion che esistono solo per far salire un numero.
+Infatti la ritengo una misura "pericolosa" che nel momento in cui diventa un obiettivo può essere ingannata e *ingannevole* (ricordo "colleghi" testare i Getter e i Setter nel mondo Java...).
 
-Quindi la coverage è il pavimento del pavimento. Mi serviva qualcosa che misurasse se i miei test hanno i **denti**.
+Nel mondo agentico però ha il suo scopo nell'indirizzare l'AI verso un output testato by deisng senza scrivere codice che riceverà i test solo in seguito (o più probabilmente MAI).
 
-## Gradino 2: Mutation Testing — Testare i Test 🧬
+## Step 2: Mutation Testing — Testare i Test 🧬
 
-Questo è il gradino che manda in crisi il modello mentale delle persone, quindi seguimi.
-
-Il [mutation testing](https://stryker-mutator.io/) attacca i tuoi **test** invece del tuo codice. Introduce piccoli difetti nel sorgente — trasforma un `>` in `>=`, un `if (x)` in `if (true)`, cancella una riga — e riesegue la tua suite contro ogni versione mutata (un *mutante*).
+Il [mutation testing](https://en.wikipedia.org/wiki/Mutation_testing) attacca il tuo codice per vedere se i tuoi test sono efficaci. Introduce piccoli difetti nel sorgente — trasforma un `>` in `>=`, un `if (x)` in `if (true)`, cancella una riga — e riesegue la tua suite contro ogni versione mutata (un *mutante*).
 
 - Se un test **fallisce** sul mutante, il mutante è "ucciso" — i tuoi test avrebbero preso quel bug. Bene.
 - Se ogni test **passa** comunque, il mutante è **sopravvissuto** — hai del codice la cui rottura nessun test noterebbe. Una falla, quantificata.
@@ -61,11 +60,28 @@ Ho puntato [Stryker](https://stryker-mutator.io/) sulla mia cartella `utils`. Il
 
 > Un file aveva il **75% di line coverage ma un mutation score del 46%.** Più della metà della sua logica poteva essere rotta silenziosamente senza che un solo test si lamentasse.
 
-Ha persino individuato il tipo di bug che si nasconde dietro la coverage verde. Il mio test "gestisce gli errori dell'API con grazia" mutava `if (staleCached)` in `if (true)` ed è **sopravvissuto** — perché il test non verificava mai davvero che io *non* servissi dati stantii (stale) quando non ce ne sono. Ho rafforzato una sola assertion e ho ucciso il mutante **senza aggiungere una sola riga coperta.** Ecco l'intera lezione in un solo diff: la robustezza non è la coverage.
+Ha persino individuato il tipo di bug che si nasconde dietro la coverage verde. In `github.ts` ho un fallback che, se l'API di GitHub è irraggiungibile, serve una copia dalla cache anche se scaduta. Stryker ha mutato la condizione di quel branch e il mutante è **sopravvissuto**:
 
-## Gradino 3: Fitness Function Architetturali — Regole che un Agente Non Può Infrangere 🏛️
+```text
+[Survived] ConditionalExpression
+src/utils/github.ts:209:11
+-       if (staleCached) {
++       if (true) {
+```
 
-Fin qui stavo testando il *comportamento*. Ma gran parte di ciò che mantiene sana una codebase è la **struttura**: il driver del database resta dietro il suo modulo, i componenti non importano le pagine, le route italiane riutilizzano gli shell condivisi. Quella conoscenza viveva nel mio `CLAUDE.md` come prosa — esattamente il tipo di regola tribale che un documento registra e che la realtà viola lentamente.
+Il mio test "gestisce gli errori dell'API con grazia" passava comunque: verificava che l'endpoint restituisse un errore pulito, ma non che *non* stesse servendo dati stantii quando non ce n'erano. Con `if (true)` il branch veniva sempre imboccato, e nessuno se ne accorgeva. Una riga di assertion è bastata a uccidere il mutante — **senza aggiungere una sola riga coperta**:
+
+```ts
+// nel test "should handle API errors gracefully"
+expect(mockConsoleWarn).not.toHaveBeenCalledWith(expect.stringContaining('stale'));
+```
+
+Ecco l'intera lezione in un solo diff: la robustezza non è la coverage.
+
+
+## Step 3: Fitness Function Architetturali — Regole che un Agente Non Può Infrangere 🏛️
+
+Fin qui stavo testando il *comportamento*. Ma gran parte di ciò che mantiene sana una codebase è la **struttura**: il driver del database resta dietro il suo modulo, i componenti non importano le pagine, le route italiane riutilizzano gli shell condivisi. Quella conoscenza viveva nel mio `CLAUDE.md` come prosa.
 
 Prendendo in prestito da [*Building Evolutionary Architecture*](https://www.thoughtworks.com/en-us/insights/books/building-evolutionary-architectures), ho trasformato quelle regole in **fitness function**: semplici test che scansionano la codebase e fanno fallire la build in caso di violazione. Alcune:
 
@@ -76,15 +92,15 @@ Prendendo in prestito da [*Building Evolutionary Architecture*](https://www.thou
 
 La morale per lo sviluppo agentico: **un agente non può violare una regola imposta meccanicamente.** Una linea guida in un documento è un suggerimento che potrebbe ignorare. Una fitness function è una recinzione che non può attraversare. Non ho nemmeno cancellato la prosa — l'ho *retrocessa*: il documento ora spiega il *perché* (guida per chi scrive il codice), e il test possiede il *cosa* (il verdetto). Documenta l'intento; imponi la regola.
 
-## Gradino 4: Performance Budget — Una Fitness Function per la Velocità ⚡
+## Step 4: Performance Budget — Una Fitness Function per la Velocità ⚡
 
 Stessa forma, obiettivo diverso. Il senso di avere questo sito in Astro è che spedisce quasi zero JavaScript. Niente impediva a un agente (o a me) di importare qualche libreria pesante in un componente e disfare silenziosamente tutto ciò.
 
-Così ho aggiunto un [budget sulla dimensione del bundle](https://github.com/aleromano92/aleromano.com): uno script che gira dopo la build e fallisce se il JavaScript lato client cresce oltre il suo limite. La parte delicata era che il mio bundle di gran lunga più grande è il runtime delle presentazioni reveal.js (~1,1 MB), che viene caricato solo sulle route `/present`. Un budget ingenuo sul "JS totale" misurerebbe semplicemente reveal.js e lascerebbe allegramente passare una regressione nel codice che gira su ogni pagina. Così l'ho isolato su una propria riga di budget e ho messo un tetto separato e più stretto sul JavaScript a livello di applicazione.
+Così ho aggiunto un [budget sulla dimensione del bundle](https://github.com/aleromano92/aleromano.com/blob/main/scripts/check-bundle-budget.mjs): uno script che gira dopo la build e fallisce se il JavaScript lato client cresce oltre il suo limite. La parte delicata era che il mio bundle di gran lunga più grande è il runtime delle presentazioni reveal.js (~1,1 MB), che viene caricato solo sulle route `/present`. Un budget ingenuo sul "JS totale" misurerebbe semplicemente reveal.js e lascerebbe allegramente passare una regressione nel codice che gira su ogni pagina. Così l'ho isolato su una propria riga di budget e ho messo un tetto separato e più stretto sul JavaScript a livello di applicazione.
 
 Una **non-scelta** deliberata qui, che conta: *non* ho trasformato Lighthouse o i load test in gate. Sul perché, tra un attimo.
 
-## Gradino 5: Property-Based Testing e Residualità — Stressare l'Intero Spazio 🎲
+## Step 5: Property-Based Testing e Residualità — Stressare l'Intero Spazio 🎲
 
 Ogni test fin qui controlla dei **punti**: per l'input X, aspettati l'output Y. Sei tu a scegliere X, quindi controlli sempre e solo i casi che hai immaginato. Il bug vive nel caso che non hai immaginato.
 
@@ -102,7 +118,7 @@ Ha dato i suoi frutti nel giro di minuti. Uno stressor generato ha prodotto:
 normalizeReferer("git:foo") // → "null"  (la stringa letterale!)
 ```
 
-`URL.origin` restituisce la *stringa* `"null"` per gli schemi non `http(s)`, e la mia analytics stava allegramente salvando quel valore come referer. Nessun test a esempi avrebbe mai provato `git:foo`. La property di idempotenza l'ha trovato, l'ha ridotto a quattro caratteri, e l'ho corretto restringendo ai referer http(s) reali.
+`URL.origin` restituisce la *stringa* `"null"` per gli schemi non `http(s)`, e la mia analytics stava salvando quel valore come referer. Nessun test a esempi avrebbe mai provato `git:foo`. La property di idempotenza l'ha trovato, l'ha ridotto a quattro caratteri, e l'ho corretto restringendo ai referer http(s) reali.
 
 ## Perché "Deterministico" È Tutto il Punto 🎯
 
@@ -120,17 +136,13 @@ E i test randomizzati? Ho fissato il seed. Il property-based testing è casuale 
 
 ## Cosa Ho Ottenuto Davvero 🧩
 
-Impila i gradini e ognuno chiude una falla che gli altri non vedono:
+Unendo tutti gli step:
 
 - I test a esempi controllano il **comportamento scelto**.
 - La coverage controlla **se ho guardato**.
-- Il mutation testing controlla **se il mio guardare ha i denti**.
+- Il mutation testing controlla **se il mio guardare è attento**.
 - Le fitness function architetturali controllano **la forma del sistema**.
 - I performance budget ne controllano **il costo**.
 - Il property-based testing controlla **l'intero spazio degli input, sotto stress**.
 
-È difesa in profondità, non ridondanza. E la prova che non è teatro sta nel conteggio dei caduti: lungo il percorso questi gate hanno fatto emergere un'assertion di test obsoleta, un mutante sopravvissuto, un header email `From` malformato e un referer che si serializzava nella stringa `"null"` — ognuno di essi un bug reale e preesistente, nessuno preso dai test che avevo già.
-
-È questo il segnale rivelatore. Nel momento in cui costruisci gate con i denti, iniziano a trovare cose.
-
-Rendere il mio sito leggibile dagli agenti mi ha preso un sabato sera. Rendere il mio codice *sicuro da modificare per gli agenti* è la metà più interessante — perché in fondo è semplicemente la disciplina che rende la codebase più sicura anche per **me**. L'agente è sempre stato solo la molla che ha fatto scattare tutto.
+Avendo gettato queste basi, mi sento molto più sicuro nel procedere a creare dei *Loop* in cui diversi segnali possono generare nuovo lavoro sul mio sito per una AI che quindi arriva a produrre molto più codice, sicuramente molto di più di quello che riesco a vedere nel mio tempo limitato. COn questi gate, mi sento più sicuro a mergiare e dormire sereno.

@@ -1,19 +1,19 @@
 ---
 title: "Making My Codebase Agent-Ready"
-description: "A while ago I made my site readable by AI agents. This is the mirror image: the deterministic gates that let an AI agent change my code without me losing sleep — CI, coverage, mutation testing, architectural fitness functions, performance budgets, and property-based testing. Each one caught a real bug."
+description: "AI writes 99% of the code on this site — though I still read all of it, to learn and stay sharp. But I've made my review focus on what actually matters instead of being a kind of human QA. I introduced deterministic gates that let an AI agent change my code without me losing sleep: CI, coverage, mutation testing, architectural fitness functions, performance budgets, and property-based testing. Along the way, I also found some real bugs."
 pubDate: 2026-06-24
 author: "Alessandro Romano"
 tags: ["AI", "aleromano.com", "Best Practices", "DevOps", "Software Engineering"]
 language: "en"
 ---
 
-A while ago I wrote about [making my site agent-ready](/posts/agent-ready) — how to get AI agents that *read* the web to understand my content: markdown endpoints, `llms.txt`, structured data.
+A while ago I wrote about [making my site easily digestible](/posts/agent-ready) by the agents that browse the web: markdown endpoints, `llms.txt`, structured data.
 
-This post is the mirror image. Not agents reading my site, but agents **writing** it. I have been letting Claude Code make real changes to this codebase, and the question that kept nagging me was simple:
+This time I focused on my own Developer eXperience — letting me (or rather, letting an agent) write more code without introducing regressions. I started from a question:
 
 > What stops a tireless, fast, plausible-sounding contributor with zero accountability from quietly breaking things?
 
-The answer turned out to be the same thing that makes [trunk-based development](https://trunkbaseddevelopment.com/) work for humans: a harness of **deterministic gates**. This is the story of building that harness — and of the very real bugs it found along the way.
+The answer turned out to be the same thing that makes [trunk-based development](https://trunkbaseddevelopment.com/) work for humans: a scaffolding of **deterministic gates**. This is the story of building that scaffolding — and of the very real bugs that surfaced along the way.
 
 ## The Incident That Started It 🧨
 
@@ -23,48 +23,62 @@ It did. But while poking around it noticed two things.
 
 First, one test was **failing** — a cache TTL assertion expecting one hour while the code said ten minutes. Someone (me) had changed the source months earlier and never updated the test.
 
-Second, and far worse: **that failing test had never failed CI.** My pipeline only built a Docker image and deployed it. There was no `npm test` step anywhere, and no `pull_request` trigger. The tests existed. They simply never ran. A broken assertion had been sitting green-by-absence for who knows how long.
+Second, and far worse: **that failing test had never failed CI.** My pipeline only built a Docker image and deployed it. There was no `npm test` step anywhere, and no `pull_request` trigger. The tests existed. They simply never ran. A broken assertion had been sitting green for who knows how long.
 
-That is the moment the penny dropped. I had tests, but I did not have **gates**. And if I could not trust my own safety net, I certainly could not hand an autonomous agent the keys.
+So: I had tests, but I did not have **gates**. And if I could not trust my own safety net, I certainly could not hand an autonomous agent the keys.
 
-So I went on a little journey. Here is the ladder I climbed.
+So I set off on a little journey.
 
-## Rung 0: Make the Tests Actually Run ✅
+## Step 0: Make the Tests Actually Run ✅
 
-The unglamorous foundation. I added a `checks` job to the workflow that runs the type checker and the full test suite on every push **and every pull request**, and made the build-and-deploy depend on it.
+The unglamorous foundation. I added a `checks` job to the workflow that runs the type checker and the full test suite on every push **and every pull request**, and made build-and-deploy depend on it.
 
-This is trivially obvious in hindsight, and that is exactly the point: the most dangerous gap is the one you assume is covered. A test suite that does not run on PRs is theatre. Now a red test blocks the merge. Floor established.
+Honestly, I was convinced I had wired the tests into CI since day 0 😅. I know the value of a fast, reliable battery of unit tests, so I have always written them — even for this personal project. It's just that if I didn't run them by hand, they didn't run. FIXED!
 
-## Rung 1: Coverage — Necessary, Not Sufficient 📏
+## Step 1: Coverage — Necessary, Not Sufficient 📏
 
-Next I added a coverage gate, set as a **ratchet**: the threshold sits a couple of points below the current number, so any change that *drops* coverage fails the build, and as coverage climbs I raise the floor.
+Next I added a coverage gate, set up as a **ratchet**: the threshold sits a couple of points below the current number, so any change that *drops* coverage fails the build, and as coverage climbs I raise the baseline.
 
-But here is the thing nobody likes to admit about coverage: **it measures execution, not verification.** A line can be 100% covered and 0% checked, if your test runs it but never asserts anything about the result. Coverage tells you the code *ran*. It cannot tell you the test was *looking*.
+What does coverage actually do? **It measures execution, not verification.** A line can be 100% covered and 0% checked, if your test runs it but never asserts anything about the result. Coverage tells you the code *ran*. It cannot tell you the test was *working*.
 
-My stale TTL assertion proves the point. The line was covered. The test ran. It was still wrong. Coverage is necessary — you cannot verify code you never execute — but treating it as a quality target is how you get [Goodhart's law](https://en.wikipedia.org/wiki/Goodhart%27s_law) and a codebase full of assertion-free tests that exist purely to make a number go up.
+Coverage is necessary — you cannot verify code you never execute — but treating it as a quality target is how you get [Goodhart's law](https://en.wikipedia.org/wiki/Goodhart%27s_law) and a codebase full of assertion-free tests that exist purely to make a number go up. In fact I consider it a "dangerous" metric: the moment it becomes a target, it can be gamed and turn *misleading* (I still remember "colleagues" testing getters and setters in the Java world…).
 
-So coverage is the floor of the floor. I needed something that measures whether my tests have **teeth**.
+In the agentic world, though, it has its use: steering the AI toward output that is tested by design, instead of writing code that will get tests later (or, more likely, NEVER).
 
-## Rung 2: Mutation Testing — Testing the Tests 🧬
+## Step 2: Mutation Testing — Testing the Tests 🧬
 
-This is the rung that breaks people's mental model, so stay with me.
-
-[Mutation testing](https://stryker-mutator.io/) attacks your **tests** instead of your code. It introduces small faults into the source — flips a `>` to `>=`, turns `if (x)` into `if (true)`, deletes a line — and re-runs your suite against each mutated version (a *mutant*).
+[Mutation testing](https://en.wikipedia.org/wiki/Mutation_testing) attacks your code to see whether your tests are any good. It introduces small faults into the source — flips a `>` to `>=`, turns `if (x)` into `if (true)`, deletes a line — and re-runs your suite against each mutated version (a *mutant*).
 
 - If a test **fails** on the mutant, the mutant is "killed" — your tests would have caught that bug. Good.
 - If every test still **passes**, the mutant **survived** — you have code whose breakage no test would notice. A hole, quantified.
 
-The idea is from a 1978 paper by DeMillo, Lipton and Sayward, and it answers the exact question coverage cannot: *"if this code were wrong, would anything go red?"*
+The idea comes from a 1978 paper by DeMillo, Lipton and Sayward, and it answers the exact question coverage cannot: *"if this code were wrong, would anything go red?"*
 
 I pointed [Stryker](https://stryker-mutator.io/) at my `utils` folder. The headline:
 
 > One file had **75% line coverage but a 46% mutation score.** Over half of its logic could be silently broken and not a single test would complain.
 
-It even pinpointed the kind of bug that hides behind green coverage. My "handles API errors gracefully" test mutated `if (staleCached)` into `if (true)` and **survived** — because the test never actually verified that I *don't* serve stale data when there is none. I strengthened one assertion and killed the mutant **without adding a single covered line.** That is the whole lesson in one diff: strength is not coverage.
+It even pinpointed the kind of bug that hides behind green coverage. In `github.ts` I have a fallback that, if the GitHub API is unreachable, serves a cached copy even when it is stale. Stryker mutated that branch's condition and the mutant **survived**:
 
-## Rung 3: Architectural Fitness Functions — Rules an Agent Cannot Break 🏛️
+```text
+[Survived] ConditionalExpression
+src/utils/github.ts:209:11
+-       if (staleCached) {
++       if (true) {
+```
 
-Up to here I was testing *behaviour*. But a lot of what keeps a codebase healthy is **structure**: the database driver stays behind its module, components do not import pages, the Italian routes reuse the shared shells. That knowledge lived in my `CLAUDE.md` as prose — exactly the kind of tribal rule a doc records and reality slowly violates.
+My "handles API errors gracefully" test passed anyway: it checked that the endpoint returned a clean error, but not that it *wasn't* serving stale data when there was none. With `if (true)` the branch was always taken, and nobody noticed. One line of assertion was enough to kill the mutant — **without adding a single covered line**:
+
+```ts
+// in the "should handle API errors gracefully" test
+expect(mockConsoleWarn).not.toHaveBeenCalledWith(expect.stringContaining('stale'));
+```
+
+That is the whole lesson in one diff: strength is not coverage.
+
+## Step 3: Architectural Fitness Functions — Rules an Agent Cannot Break 🏛️
+
+Up to here I was testing *behaviour*. But a lot of what keeps a codebase healthy is **structure**: the database driver stays behind its module, components do not import pages, the Italian routes reuse the shared shells. That knowledge lived in my `CLAUDE.md` as prose.
 
 Borrowing from [*Building Evolutionary Architecture*](https://www.thoughtworks.com/en-us/insights/books/building-evolutionary-architectures), I turned those rules into **fitness functions**: plain tests that scan the codebase and fail the build on violation. A handful of them:
 
@@ -75,15 +89,15 @@ Borrowing from [*Building Evolutionary Architecture*](https://www.thoughtworks.c
 
 The punchline for agentic development: **an agent cannot violate a rule that is mechanically enforced.** A guideline in a doc is a suggestion it might ignore. A fitness function is a fence it cannot walk through. I did not even delete the prose — I *demoted* it: the doc now explains the *why* (guidance for whoever is writing the code), and the test owns the *what* (the verdict). Document the intent; enforce the rule.
 
-## Rung 4: Performance Budgets — A Fitness Function for Speed ⚡
+## Step 4: Performance Budgets — A Fitness Function for Speed ⚡
 
 Same shape, different goal. The point of this site being Astro is that it ships almost no JavaScript. Nothing stopped an agent (or me) from importing some heavy library into a component and quietly undoing that.
 
-So I added a [bundle-size budget](https://github.com/aleromano92/aleromano.com): a script that runs after the build and fails if the client JavaScript grows past its limit. The fiddly bit was that my biggest bundle by far is the reveal.js presentation runtime (~1.1 MB), which only loads on `/present` routes. A naive "total JS" budget would just be measuring reveal.js and would happily wave through a regression in the code that runs on every page. So I isolated it on its own budget line and put a separate, tighter ceiling on the app-wide JavaScript.
+So I added a [bundle-size budget](https://github.com/aleromano92/aleromano.com/blob/main/scripts/check-bundle-budget.mjs): a script that runs after the build and fails if the client JavaScript grows past its limit. The fiddly bit was that my biggest bundle by far is the reveal.js presentation runtime (~1.1 MB), which only loads on `/present` routes. A naive "total JS" budget would just be measuring reveal.js and would happily wave through a regression in the code that runs on every page. So I isolated it on its own budget line and put a separate, tighter ceiling on the app-wide JavaScript.
 
 One deliberate **non-choice** here, which matters: I did *not* make Lighthouse or load tests into gates. More on why in a second.
 
-## Rung 5: Property-Based Testing & Residuality — Stressing the Whole Space 🎲
+## Step 5: Property-Based Testing & Residuality — Stressing the Whole Space 🎲
 
 Every test so far checks **points**: for input X, expect output Y. You pick X, so you only ever check the cases you imagined. The bug lives in the case you didn't.
 
@@ -101,7 +115,7 @@ It paid off within minutes. A generated stressor produced:
 normalizeReferer("git:foo") // → "null"  (the literal string!)
 ```
 
-`URL.origin` returns the *string* `"null"` for non-`http(s)` schemes, and my analytics was happily storing that as a referer. No example test would ever have tried `git:foo`. The idempotence property found it, shrank it to four characters, and I fixed it by restricting to real http(s) referers.
+`URL.origin` returns the *string* `"null"` for non-`http(s)` schemes, and my analytics was storing that as a referer. No example test would ever have tried `git:foo`. The idempotence property found it, shrank it to four characters, and I fixed it by restricting to real http(s) referers.
 
 ## Why "Deterministic" Is the Whole Point 🎯
 
@@ -119,17 +133,13 @@ And the randomized tests? I pinned the seed. Property-based testing is random in
 
 ## What I Actually Got 🧩
 
-Stack the rungs and each one closes a hole the others are blind to:
+Putting all the steps together:
 
 - Example tests check **chosen behaviour**.
 - Coverage checks **whether I looked**.
-- Mutation testing checks **whether my looking has teeth**.
+- Mutation testing checks **whether my looking is sharp**.
 - Architectural fitness functions check **the shape of the system**.
 - Performance budgets check **its cost**.
 - Property-based testing checks **the whole input space, under stress**.
 
-It is defence in depth, not redundancy. And the proof that it is not theatre is in the body count: along the way these gates surfaced a stale test assertion, a survived mutant, a malformed email `From` header, and a referer that serialised to the string `"null"` — every one of them a real, pre-existing bug, none of them caught by the tests I already had.
-
-That is the tell. The moment you build gates with teeth, they start finding things.
-
-Making my site readable by agents took a Saturday evening. Making my codebase *safe for agents to change* is the more interesting half — because it is really just the discipline that makes the codebase safer for **me** too. The agent was only ever the forcing function.
+Having laid these foundations, I feel far more confident about the next step: building *loops* where different signals can spin up new work on my site for an AI that then produces far more code than I could ever review in my limited time. With these gates in place, I feel safe merging — and sleeping soundly.
