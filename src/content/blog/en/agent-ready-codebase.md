@@ -3,7 +3,7 @@ title: "Making My Codebase Agent-Ready"
 description: "A while ago I made my site readable by AI agents. This is the mirror image: the deterministic gates that let an AI agent change my code without me losing sleep — CI, coverage, mutation testing, architectural fitness functions, performance budgets, and property-based testing. Each one caught a real bug."
 pubDate: 2026-06-24
 author: "Alessandro Romano"
-tags: ["AI", "Testing", "Best Practices", "aleromano.com", "DevOps"]
+tags: ["AI", "aleromano.com", "Best Practices", "DevOps", "Software Engineering"]
 language: "en"
 ---
 

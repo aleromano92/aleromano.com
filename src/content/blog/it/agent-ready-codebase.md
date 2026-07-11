@@ -1,19 +1,20 @@
 ---
-title: "Rendere il Mio Codice Pronto per gli Agenti AI"
-description: "Tempo fa ho reso il mio sito leggibile dagli agenti AI. Questo è il rovescio della medaglia: i gate deterministici che permettono a un agente AI di modificare il mio codice senza farmi perdere il sonno — CI, coverage, mutation testing, fitness function architetturali, performance budget e property-based testing. Ognuno ha trovato un bug reale."
+title: "Rendere la mia Codebase Pronta per gli Agenti AI"
+description: "AI scrive il 99% del codice di questo sito, anche se ancora lo leggo tutto per imparare e rimanere sul pezzo. Però ho fatto in modo che la mia Review si possa concentrare sulle cose che davvero contano invece di essere una sorta di QA umana. Ho introdotto dei gate deterministici che permettono a un agente AI di modificare il mio codice senza farmi perdere il sonno — CI, coverage, mutation testing, fitness function architetturali, performance budget e property-based testing. Nel farlo, ho anche trovato dei veri bug."
 pubDate: 2026-06-24
 author: "Alessandro Romano"
-tags: ["AI", "Testing", "Best Practices", "aleromano.com", "DevOps"]
+tags: ["AI", "aleromano.com", "Best Practices", "DevOps", "Software Engineering"]
 language: "it"
 ---
 
-Tempo fa ho scritto su come [rendere il mio sito pronto per gli agenti](/it/posts/agent-ready) — come far sì che gli agenti AI che *leggono* il web capiscano i miei contenuti: endpoint markdown, `llms.txt`, dati strutturati.
+Tempo fa ho scritto su come [rendere il mio sito facilmente digeribile dagli agenti](/it/posts/agent-ready) che navigano il web: endpoint markdown, `llms.txt`, dati strutturati.
 
-Questo post è il rovescio della medaglia. Non agenti che leggono il mio sito, ma agenti che lo **scrivono**. Ho iniziato a lasciare che Claude Code apportasse modifiche reali a questo codice, e la domanda che continuava a tormentarmi era semplice:
+Ora invece mi sono concentrato sulla mia Developer eXperience, permettendomi di (far) scrivere più codice senza introdurre regressioni. 
+Sono partito da una domanda:
 
 > Cosa impedisce a un collaboratore instancabile, veloce e dall'aria convincente, con zero responsabilità, di rompere silenziosamente le cose?
 
-La risposta si è rivelata la stessa cosa che fa funzionare il [trunk-based development](https://trunkbaseddevelopment.com/) per gli umani: un'impalcatura di **gate deterministici**. Questa è la storia della costruzione di quell'impalcatura — e dei bug molto reali che ha scovato lungo il percorso.
+La risposta si è rivelata la stessa cosa che fa funzionare il [trunk-based development](https://trunkbaseddevelopment.com/) per gli umani: un'impalcatura di **gate deterministici**. Questa è la storia della costruzione di quell'impalcatura e dei bug molto reali che sono emersi lungo il percorso.
 
 ## L'Incidente da Cui È Partito Tutto 🧨
 
@@ -21,11 +22,11 @@ La risposta si è rivelata la stessa cosa che fa funzionare il [trunk-based deve
 
 Lo ha fatto. Ma mentre ci frugava ha notato due cose.
 
-Primo, un test stava **fallendo** — un'assertion sul TTL della cache che si aspettava un'ora mentre il codice diceva dieci minuti. Qualcuno (io) aveva cambiato il sorgente mesi prima senza mai aggiornare il test.
+Primo, un test stava **fallendo**; un'assertion sul TTL della cache che si aspettava un'ora mentre il codice diceva dieci minuti. Qualcuno (io) aveva cambiato il sorgente mesi prima senza mai aggiornare il test.
 
-Secondo, e molto peggio: **quel test fallito non aveva mai fatto fallire la CI.** La mia pipeline si limitava a costruire un'immagine Docker e a fare il deploy. Non c'era alcuno step `npm test` da nessuna parte, e nessun trigger su `pull_request`. I test esistevano. Semplicemente non venivano mai eseguiti. Un'assertion rotta era rimasta verde-per-assenza per chissà quanto tempo.
+Secondo, e molto peggio: **quel test fallito non aveva mai fatto fallire la CI.** La mia pipeline si limitava a costruire un'immagine Docker e a fare il deploy. Non c'era alcuno step `npm test` da nessuna parte, e nessun trigger su `pull_request`. I test esistevano. Semplicemente non venivano mai eseguiti. Un'assertion rotta era rimasta verde per chissà quanto tempo.
 
-È il momento in cui mi è caduto l'occhio. Avevo dei test, ma non avevo dei **gate**. E se non potevo fidarmi della mia stessa rete di sicurezza, di certo non potevo consegnare le chiavi a un agente autonomo.
+Insomma, avevo dei test, ma non avevo dei **gate**. E se non potevo fidarmi della mia stessa rete di sicurezza, di certo non potevo consegnare le chiavi a un agente autonomo.
 
 Così mi sono imbarcato in un piccolo viaggio. Ecco la scala che ho salito.
 
