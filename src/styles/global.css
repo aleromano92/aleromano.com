@@ -29,21 +29,14 @@ main {
 a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link) {
     color: var(--color-accent);
     text-decoration: underline;
-    position: relative;
+}
+
+/* Mark links that open in a new tab with an external-link arrow.
+   Scoped to content links so footer/social icon links stay clean. */
+a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link)[target='_blank']::after {
+    content: '↗';
     display: inline-block;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    backface-visibility: hidden;
-    transform: translateZ(0);
-    will-change: transform;
-}
-
-/* Hover states with improved effect */
-a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link):hover {
-    transform: translateY(-2px);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Dark theme adjustments */
-:root[data-theme='dark'] a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link)::after {
-    opacity: 0.2;
+    margin-left: 0.15em;
+    font-size: 0.85em;
+    text-decoration: none;
 }
