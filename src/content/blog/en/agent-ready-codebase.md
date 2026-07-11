@@ -5,6 +5,9 @@ pubDate: 2026-06-24
 author: "Alessandro Romano"
 tags: ["AI", "aleromano.com", "Best Practices", "DevOps", "Software Engineering"]
 language: "en"
+image:
+    url: ../../../assets/blog/agent-ready-codebase/featured.jpeg
+    alt: "Me building a picket fence labelled 'DETERMINISTIC' to pen in an autonomous 'AGENT' robot roaming the field"
 ---
 
 A while ago I wrote about [making my site easily digestible](/posts/agent-ready) by the agents that browse the web: markdown endpoints, `llms.txt`, structured data.

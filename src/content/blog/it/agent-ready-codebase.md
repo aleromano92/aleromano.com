@@ -5,6 +5,9 @@ pubDate: 2026-06-24
 author: "Alessandro Romano"
 tags: ["AI", "aleromano.com", "Best Practices", "DevOps", "Software Engineering"]
 language: "it"
+image:
+    url: ../../../assets/blog/agent-ready-codebase/featured.jpeg
+    alt: "Io che costruisco una staccionata con la scritta 'DETERMINISTIC' per recintare un robot 'AGENT' autonomo che gira per il campo"
 ---
 
 Tempo fa ho scritto su come [rendere il mio sito facilmente digeribile dagli agenti](/it/posts/agent-ready) che navigano il web: endpoint markdown, `llms.txt`, dati strutturati.
