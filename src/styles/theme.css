@@ -15,6 +15,10 @@
     --color-border-light: oklch(from var(--color-primary) calc(l + 0.47) calc(c - 0.05) h);
     --color-checkbox-bg: oklch(from var(--color-primary) calc(l + 0.23) calc(c + 0.04) h);
 
+    /* Semantic feedback colors */
+    --color-success: #22c55e;
+    --color-error: #ef4444;
+
     /* Typography */
     --font-family: system-ui, sans-serif;
     --font-size-base: 1.125rem;
