@@ -190,6 +190,8 @@ const t = getContactTranslations(language);
             {t.buttons.openGitHubIssue}
         </a>
     </div>
+
+    <p id="formStatus" class="form-status" role="status" hidden></p>
 </div>
 
 <script is:inline define:vars={{ t }}>
@@ -203,6 +205,19 @@ const t = getContactTranslations(language);
     const emailInput = document.getElementById('email');
     const blogPostTitleInput = document.getElementById('blogPostTitle');
     const blogPostTitleGroup = document.getElementById('blogPostTitleGroup');
+    const formStatus = document.getElementById('formStatus');
+
+    function showStatus(message, type) {
+        formStatus.textContent = message;
+        formStatus.classList.remove('success', 'error');
+        formStatus.classList.add(type);
+        formStatus.hidden = false;
+    }
+
+    function hideStatus() {
+        formStatus.hidden = true;
+        formStatus.textContent = '';
+    }
 
     const PREFILL_MESSAGES = {
         consultancy: t.prefillMessages.consultancy,
@@ -241,6 +256,7 @@ const t = getContactTranslations(language);
 
     contactReasonSelect.addEventListener('change', () => {
         const reason = contactReasonSelect.value;
+        hideStatus();
         resetAndInitializeForm(reason);
     });
 
@@ -252,10 +268,12 @@ const t = getContactTranslations(language);
 
         if (formFields.style.display === 'block') {
             if (!data.name || !data.email || !data.message) {
-                alert(t.alerts.fillRequired);
+                showStatus(t.alerts.fillRequired, 'error');
                 return;
             }
         }
+
+        hideStatus();
 
         if (submitButton) {
             submitButton.disabled = true;
@@ -263,6 +281,7 @@ const t = getContactTranslations(language);
         }
 
         let feedbackMessage = '';
+        let isSuccess = false;
 
         try {
             const response = await fetch('/api/contact', {
@@ -277,6 +296,7 @@ const t = getContactTranslations(language);
 
             if (response.ok && result.success) {
                 feedbackMessage = result.message || t.alerts.success;
+                isSuccess = true;
                 resetAndInitializeForm();
             } else {
                 feedbackMessage = result.message || t.alerts.error;
@@ -291,7 +311,7 @@ const t = getContactTranslations(language);
             submitButton.textContent = t.buttons.submit;
         }
 
-        alert(feedbackMessage);
+        showStatus(feedbackMessage, isSuccess ? 'success' : 'error');
     });
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -399,6 +419,24 @@ const t = getContactTranslations(language);
     #githubIssueButtonContainer {
         text-align: center;
         margin-top: var(--space-md);
+    }
+
+    .form-status {
+        margin: var(--space-md) 0 0;
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--border-radius-sm);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-bold);
+    }
+
+    .form-status.success {
+        background: color-mix(in srgb, #22c55e 20%, transparent);
+        color: #22c55e;
+    }
+
+    .form-status.error {
+        background: color-mix(in srgb, #ef4444 20%, transparent);
+        color: #ef4444;
     }
 
     @media (max-width: 480px) {
