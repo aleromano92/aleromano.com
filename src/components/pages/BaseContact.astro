@@ -196,11 +196,8 @@ const t = getContactTranslations(language);
     const contactReasonSelect = document.getElementById('contactReason');
     const formFields = document.getElementById('formFields');
     const githubIssueButtonContainer = document.getElementById('githubIssueButtonContainer');
-    const messageTextarea = document.getElementById('message');
     const contactForm = document.getElementById('contactForm');
     const submitButton = contactForm.querySelector('button[type="submit"]');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
     const blogPostTitleInput = document.getElementById('blogPostTitle');
     const blogPostTitleGroup = document.getElementById('blogPostTitleGroup');
     const formStatus = document.getElementById('formStatus');
@@ -242,36 +239,36 @@ const t = getContactTranslations(language);
         reasonHelper.hidden = false;
     }
 
-    function resetAndInitializeForm(selectedReason = '') {
-        messageTextarea.value = '';
-        nameInput.value = '';
-        emailInput.value = '';
-        blogPostTitleInput.value = '';
-        contactReasonSelect.value = selectedReason;
-
+    // Only toggles what is visible for the reason; never touches what the user typed
+    function applyReasonVisibility(reason) {
         formFields.style.display = 'none';
         githubIssueButtonContainer.style.display = 'none';
         blogPostTitleGroup.style.display = 'none';
         if (submitButton) submitButton.style.display = 'none';
 
-        renderHelper(selectedReason);
+        renderHelper(reason);
 
-        if (selectedReason === 'problems') {
+        if (reason === 'problems') {
             githubIssueButtonContainer.style.display = 'block';
-        } else if (['consultancy', 'mentoring', 'job', 'blogpost', 'general'].includes(selectedReason)) {
+        } else if (['consultancy', 'mentoring', 'job', 'blogpost', 'general'].includes(reason)) {
             formFields.style.display = 'block';
             if (submitButton) submitButton.style.display = 'block';
 
-            if (selectedReason === 'blogpost') {
+            if (reason === 'blogpost') {
                 blogPostTitleGroup.style.display = 'block';
             }
         }
     }
 
+    function resetForm() {
+        contactForm.reset();
+        contactReasonSelect.value = '';
+        applyReasonVisibility('');
+    }
+
     contactReasonSelect.addEventListener('change', () => {
-        const reason = contactReasonSelect.value;
         hideStatus();
-        resetAndInitializeForm(reason);
+        applyReasonVisibility(contactReasonSelect.value);
     });
 
     contactForm.addEventListener('submit', async (event) => {
@@ -279,6 +276,11 @@ const t = getContactTranslations(language);
 
         const formData = new FormData(contactForm);
         const data = Object.fromEntries(formData.entries());
+
+        // A preserved-but-hidden title must not leak into unrelated submissions
+        if (data.reason !== 'blogpost') {
+            delete data.blogPostTitle;
+        }
 
         if (formFields.style.display === 'block') {
             if (!data.name || !data.email || !data.message) {
@@ -311,7 +313,7 @@ const t = getContactTranslations(language);
             if (response.ok && result.success) {
                 feedbackMessage = result.message || t.alerts.success;
                 isSuccess = true;
-                resetAndInitializeForm();
+                resetForm();
             } else {
                 feedbackMessage = result.message || t.alerts.error;
             }
@@ -335,14 +337,14 @@ const t = getContactTranslations(language);
 
         const validReasons = ['consultancy', 'mentoring', 'job', 'blogpost', 'general', 'problems'];
         if (preselectedReason && validReasons.includes(preselectedReason)) {
-            resetAndInitializeForm(preselectedReason);
+            contactReasonSelect.value = preselectedReason;
 
             if (preselectedReason === 'blogpost' && prefilledTitle) {
                 blogPostTitleInput.value = decodeURIComponent(prefilledTitle);
             }
-        } else {
-            resetAndInitializeForm(contactReasonSelect.value);
         }
+
+        applyReasonVisibility(contactReasonSelect.value);
     });
 </script>
 
