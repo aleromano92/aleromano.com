@@ -130,9 +130,17 @@ const { language } = Astro.props;
 
 // Get translations for the current language
 const t = getContactTranslations(language);
+
+// Only what the client-side script needs; serialized on the container element
+const clientTexts = {
+    helpers: t.prefillMessages,
+    submitLabel: t.buttons.submit,
+    submittingLabel: t.buttons.submitting,
+    messages: t.alerts,
+};
 ---
 
-<div class="contact-form-container">
+<div class="contact-form-container" data-texts={JSON.stringify(clientTexts)}>
     <form id="contactForm">
         <div class="form-group">
             <label for="contactReason">{t.formLabels.reason}</label>
@@ -189,145 +197,103 @@ const t = getContactTranslations(language);
     <p id="formStatus" class="form-status" role="status" hidden></p>
 </div>
 
-<script is:inline define:vars={{ t }}>
-    const contactReasonSelect = document.getElementById('contactReason');
-    const formFields = document.getElementById('formFields');
-    const githubIssueButtonContainer = document.getElementById('githubIssueButtonContainer');
-    const contactForm = document.getElementById('contactForm');
-    const submitButton = contactForm.querySelector('button[type="submit"]');
-    const blogPostTitleInput = document.getElementById('blogPostTitle');
-    const blogPostTitleGroup = document.getElementById('blogPostTitleGroup');
-    const formStatus = document.getElementById('formStatus');
+<script>
+    import {
+        getReasonView,
+        linkifyUrls,
+        buildSubmissionPayload,
+        parseReasonPreselection,
+        submitContactForm,
+        type SubmitMessages,
+    } from './contact-form';
 
-    function showStatus(message, type) {
-        formStatus.textContent = message;
-        formStatus.classList.remove('success', 'error');
-        formStatus.classList.add(type);
-        formStatus.hidden = false;
+    interface ClientTexts {
+        helpers: Record<string, string>;
+        submitLabel: string;
+        submittingLabel: string;
+        messages: SubmitMessages;
     }
 
-    function hideStatus() {
-        formStatus.hidden = true;
-        formStatus.textContent = '';
+    const container = document.querySelector<HTMLElement>('.contact-form-container');
+    if (container) initContactForm(container);
+
+    function initContactForm(root: HTMLElement): void {
+        const texts: ClientTexts = JSON.parse(root.dataset.texts ?? '{}');
+
+        const form = root.querySelector<HTMLFormElement>('#contactForm')!;
+        const reasonSelect = root.querySelector<HTMLSelectElement>('#contactReason')!;
+        const formFields = root.querySelector<HTMLFieldSetElement>('#formFields')!;
+        const blogPostTitleGroup = root.querySelector<HTMLElement>('#blogPostTitleGroup')!;
+        const blogPostTitleInput = root.querySelector<HTMLInputElement>('#blogPostTitle')!;
+        const githubIssueContainer = root.querySelector<HTMLElement>('#githubIssueButtonContainer')!;
+        const reasonHelper = root.querySelector<HTMLElement>('#reasonHelper')!;
+        const formStatus = root.querySelector<HTMLElement>('#formStatus')!;
+        const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+
+        function showStatus(message: string, type: 'success' | 'error'): void {
+            formStatus.textContent = message;
+            formStatus.classList.remove('success', 'error');
+            formStatus.classList.add(type);
+            formStatus.hidden = false;
+        }
+
+        function hideStatus(): void {
+            formStatus.hidden = true;
+            formStatus.textContent = '';
+        }
+
+        function renderHelper(reason: string): void {
+            const helperText = texts.helpers[reason];
+            reasonHelper.hidden = !helperText;
+            reasonHelper.innerHTML = helperText ? linkifyUrls(helperText) : '';
+        }
+
+        // Only toggles what is enabled/visible for the reason; never touches what the user typed
+        function applyReason(reason: string): void {
+            const view = getReasonView(reason);
+            formFields.style.display = view.showForm ? '' : 'none';
+            formFields.disabled = !view.enableForm;
+            githubIssueContainer.style.display = view.showGithubIssue ? 'block' : 'none';
+            blogPostTitleGroup.style.display = view.showBlogPostTitle ? 'block' : 'none';
+            renderHelper(reason);
+        }
+
+        function resetForm(): void {
+            form.reset();
+            reasonSelect.value = '';
+            applyReason('');
+        }
+
+        function setSubmitting(submitting: boolean): void {
+            submitButton.disabled = submitting;
+            submitButton.textContent = submitting ? texts.submittingLabel : texts.submitLabel;
+        }
+
+        reasonSelect.addEventListener('change', () => {
+            hideStatus();
+            applyReason(reasonSelect.value);
+        });
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            hideStatus();
+            setSubmitting(true);
+
+            const payload = buildSubmissionPayload(Object.fromEntries(new FormData(form)));
+            const outcome = await submitContactForm(payload, texts.messages);
+
+            setSubmitting(false);
+            if (outcome.success) resetForm();
+            showStatus(outcome.message, outcome.success ? 'success' : 'error');
+        });
+
+        const preselection = parseReasonPreselection(window.location.search);
+        if (preselection) {
+            reasonSelect.value = preselection.reason;
+            if (preselection.blogPostTitle) blogPostTitleInput.value = preselection.blogPostTitle;
+        }
+        applyReason(reasonSelect.value);
     }
-
-    const reasonHelper = document.getElementById('reasonHelper');
-
-    const HELPER_MESSAGES = {
-        consultancy: t.prefillMessages.consultancy,
-        mentoring: t.prefillMessages.mentoring,
-        job: t.prefillMessages.job,
-        blogpost: t.prefillMessages.blogpost,
-    };
-
-    function renderHelper(reason) {
-        const helperText = HELPER_MESSAGES[reason];
-        if (!helperText) {
-            reasonHelper.hidden = true;
-            reasonHelper.textContent = '';
-            return;
-        }
-        reasonHelper.textContent = helperText;
-        // Linkify bare URLs after textContent has neutralized any markup
-        reasonHelper.innerHTML = reasonHelper.innerHTML.replace(
-            /https?:\/\/[^\s)]+/g,
-            (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
-        );
-        reasonHelper.hidden = false;
-    }
-
-    const MESSAGE_REASONS = ['consultancy', 'mentoring', 'job', 'blogpost', 'general'];
-
-    // Only toggles what is enabled/visible for the reason; never touches what the user typed
-    function applyReasonVisibility(reason) {
-        // 'problems' goes to GitHub instead: the message form would be pure noise
-        formFields.style.display = reason === 'problems' ? 'none' : '';
-        formFields.disabled = !MESSAGE_REASONS.includes(reason);
-        githubIssueButtonContainer.style.display = reason === 'problems' ? 'block' : 'none';
-        blogPostTitleGroup.style.display = reason === 'blogpost' ? 'block' : 'none';
-
-        renderHelper(reason);
-    }
-
-    function resetForm() {
-        contactForm.reset();
-        contactReasonSelect.value = '';
-        applyReasonVisibility('');
-    }
-
-    contactReasonSelect.addEventListener('change', () => {
-        hideStatus();
-        applyReasonVisibility(contactReasonSelect.value);
-    });
-
-    contactForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const formData = new FormData(contactForm);
-        const data = Object.fromEntries(formData.entries());
-
-        // A preserved-but-hidden title must not leak into unrelated submissions
-        if (data.reason !== 'blogpost') {
-            delete data.blogPostTitle;
-        }
-
-        hideStatus();
-
-        if (submitButton) {
-            submitButton.disabled = true;
-            submitButton.textContent = t.buttons.submitting;
-        }
-
-        let feedbackMessage = '';
-        let isSuccess = false;
-
-        try {
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-
-            const result = await response.json();
-
-            if (response.ok && result.success) {
-                feedbackMessage = result.message || t.alerts.success;
-                isSuccess = true;
-                resetForm();
-            } else {
-                feedbackMessage = result.message || t.alerts.error;
-            }
-        } catch (error) {
-            console.error('Error submitting contact form:', error);
-            feedbackMessage = t.alerts.networkError;
-        }
-
-        if (submitButton) {
-            submitButton.disabled = false;
-            submitButton.textContent = t.buttons.submit;
-        }
-
-        showStatus(feedbackMessage, isSuccess ? 'success' : 'error');
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const preselectedReason = urlParams.get('reason');
-        const prefilledTitle = urlParams.get('title');
-
-        const validReasons = ['consultancy', 'mentoring', 'job', 'blogpost', 'general', 'problems'];
-        if (preselectedReason && validReasons.includes(preselectedReason)) {
-            contactReasonSelect.value = preselectedReason;
-
-            if (preselectedReason === 'blogpost' && prefilledTitle) {
-                blogPostTitleInput.value = decodeURIComponent(prefilledTitle);
-            }
-        }
-
-        applyReasonVisibility(contactReasonSelect.value);
-    });
 </script>
 
 <style>
@@ -402,8 +368,8 @@ const t = getContactTranslations(language);
     /* Native validation: flag fields only after the user has interacted with them */
     input:user-invalid,
     textarea:user-invalid {
-        border-color: #ef4444;
-        box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 25%, transparent);
+        border-color: var(--color-error);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 25%, transparent);
     }
 
     .reason-helper {
@@ -457,13 +423,13 @@ const t = getContactTranslations(language);
     }
 
     .form-status.success {
-        background: color-mix(in srgb, #22c55e 20%, transparent);
-        color: #22c55e;
+        background: color-mix(in srgb, var(--color-success) 20%, transparent);
+        color: var(--color-success);
     }
 
     .form-status.error {
-        background: color-mix(in srgb, #ef4444 20%, transparent);
-        color: #ef4444;
+        background: color-mix(in srgb, var(--color-error) 20%, transparent);
+        color: var(--color-error);
     }
 
     @media (max-width: 480px) {
