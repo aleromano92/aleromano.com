@@ -32,7 +32,6 @@ export interface ContactTranslations {
         blogpost: string;
     };
     alerts: {
-        fillRequired: string;
         success: string;
         error: string;
         networkError: string;
@@ -73,7 +72,6 @@ export const contactTranslations: Record<SupportedLanguage, ContactTranslations>
             blogpost: 'Share your thoughts, feedback, or questions about this post — I appreciate constructive discussions!',
         },
         alerts: {
-            fillRequired: 'Please fill in all required fields: Name, Email, and Message.',
             success: 'Your message has been sent successfully!',
             error: 'An error occurred. Please try again.',
             networkError: 'An unexpected error occurred. Please check your connection and try again.',
@@ -113,7 +111,6 @@ export const contactTranslations: Record<SupportedLanguage, ContactTranslations>
                 'Condividi pensieri, feedback o domande su questo articolo — apprezzo confronti costruttivi e discussioni interessanti!',
         },
         alerts: {
-            fillRequired: 'Compila tutti i campi obbligatori: Nome, Email e Messaggio.',
             success: 'Il tuo messaggio è stato inviato con successo!',
             error: 'Si è verificato un errore. Riprova.',
             networkError: 'Si è verificato un errore imprevisto. Controlla la connessione e riprova.',
@@ -274,13 +271,6 @@ const t = getContactTranslations(language);
             delete data.blogPostTitle;
         }
 
-        if (!formFields.disabled) {
-            if (!data.name || !data.email || !data.message) {
-                showStatus(t.alerts.fillRequired, 'error');
-                return;
-            }
-        }
-
         hideStatus();
 
         if (submitButton) {
@@ -407,6 +397,13 @@ const t = getContactTranslations(language);
         outline: none;
         border-color: var(--color-accent);
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 25%, transparent);
+    }
+
+    /* Native validation: flag fields only after the user has interacted with them */
+    input:user-invalid,
+    textarea:user-invalid {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 25%, transparent);
     }
 
     .reason-helper {
