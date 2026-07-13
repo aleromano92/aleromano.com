@@ -158,7 +158,7 @@ const t = getContactTranslations(language);
             <input type="text" id="blogPostTitle" name="blogPostTitle" />
         </div>
 
-        <div id="formFields" style="display: none;">
+        <fieldset id="formFields" disabled>
             <div class="form-group">
                 <label for="name">{t.formLabels.name}</label>
                 <input type="text" id="name" name="name" required />
@@ -175,7 +175,7 @@ const t = getContactTranslations(language);
             </div>
 
             <button type="submit" class="button">{t.buttons.submit}</button>
-        </div>
+        </fieldset>
     </form>
 
     <div id="githubIssueButtonContainer" style="display: none;">
@@ -239,25 +239,17 @@ const t = getContactTranslations(language);
         reasonHelper.hidden = false;
     }
 
-    // Only toggles what is visible for the reason; never touches what the user typed
+    const MESSAGE_REASONS = ['consultancy', 'mentoring', 'job', 'blogpost', 'general'];
+
+    // Only toggles what is enabled/visible for the reason; never touches what the user typed
     function applyReasonVisibility(reason) {
-        formFields.style.display = 'none';
-        githubIssueButtonContainer.style.display = 'none';
-        blogPostTitleGroup.style.display = 'none';
-        if (submitButton) submitButton.style.display = 'none';
+        // 'problems' goes to GitHub instead: the message form would be pure noise
+        formFields.style.display = reason === 'problems' ? 'none' : '';
+        formFields.disabled = !MESSAGE_REASONS.includes(reason);
+        githubIssueButtonContainer.style.display = reason === 'problems' ? 'block' : 'none';
+        blogPostTitleGroup.style.display = reason === 'blogpost' ? 'block' : 'none';
 
         renderHelper(reason);
-
-        if (reason === 'problems') {
-            githubIssueButtonContainer.style.display = 'block';
-        } else if (['consultancy', 'mentoring', 'job', 'blogpost', 'general'].includes(reason)) {
-            formFields.style.display = 'block';
-            if (submitButton) submitButton.style.display = 'block';
-
-            if (reason === 'blogpost') {
-                blogPostTitleGroup.style.display = 'block';
-            }
-        }
     }
 
     function resetForm() {
@@ -282,7 +274,7 @@ const t = getContactTranslations(language);
             delete data.blogPostTitle;
         }
 
-        if (formFields.style.display === 'block') {
+        if (!formFields.disabled) {
             if (!data.name || !data.email || !data.message) {
                 showStatus(t.alerts.fillRequired, 'error');
                 return;
@@ -359,6 +351,17 @@ const t = getContactTranslations(language);
         border-radius: var(--border-radius);
         padding: var(--space-lg);
         color: var(--color-text);
+    }
+
+    fieldset {
+        border: none;
+        padding: 0;
+        margin: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    fieldset:disabled {
+        opacity: 0.45;
     }
 
     .form-group {
