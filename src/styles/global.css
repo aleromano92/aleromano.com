@@ -42,7 +42,7 @@ a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link):hover {
 
 /* Mark links that open in a new tab with an external-link arrow.
    Scoped to content links so footer/social icon links stay clean. */
-a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link)[target='_blank']::after {
+a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link, .commit-item)[target='_blank']::after {
     content: '↗';
     display: inline-block;
     margin-left: 0.15em;
