@@ -8,6 +8,8 @@
     text-decoration: none;
     transition: all 0.3s ease;
     border: none;
+    /* Native <button> elements don't inherit the site font, unlike <a> */
+    font: inherit;
     /* Added to ensure consistency if <button> elements are used */
     cursor: pointer;
     /* Added for better UX on <button> elements */

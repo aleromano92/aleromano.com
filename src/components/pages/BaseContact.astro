@@ -67,12 +67,10 @@ export const contactTranslations: Record<SupportedLanguage, ContactTranslations>
         },
         prefillMessages: {
             consultancy:
-                "Please, in order to make good use of your time and mine, please don't contact me before reviewing at least my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). If you think I could be a good help for your company, write here why you think so and leave me a link to get more details",
-            mentoring:
-                'Please, in order to make good use of your time and mine, write here why you think I could be of any help and I will happily do my best to help you',
-            job: "please, in order to make good use of your time and mine, please don't contact me before reviewing at least my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). If you think I could be a good fit for your company, write here why you think so and leave me a link to get more details",
-            blogpost:
-                'Please share your thoughts, feedback, or questions about this blog post. I appreciate constructive feedback and engaging discussions!',
+                'Before reaching out, please review my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). Then tell me why you think I could help your company, with a link for more details.',
+            mentoring: "Tell me why you think I could be of help and I'll happily do my best.",
+            job: 'Before reaching out, please review my LinkedIn profile (https://www.linkedin.com/in/aleromano92/). Then tell me why I could be a good fit, with a link for more details.',
+            blogpost: 'Share your thoughts, feedback, or questions about this post — I appreciate constructive discussions!',
         },
         alerts: {
             fillRequired: 'Please fill in all required fields: Name, Email, and Message.',
@@ -108,12 +106,11 @@ export const contactTranslations: Record<SupportedLanguage, ContactTranslations>
         },
         prefillMessages: {
             consultancy:
-                "Per favore, per sfruttare al meglio il tuo tempo e il mio, non contattarmi prima di aver visto almeno il mio profilo LinkedIn (https://www.linkedin.com/in/aleromano92/). Se pensi che potrei essere d'aiuto per la tua azienda, scrivi qui perché lo pensi e lasciami un link per maggiori dettagli",
-            mentoring:
-                "Per favore, per sfruttare al meglio il tuo tempo e il mio, scrivi qui perché pensi che potrei esserti d'aiuto e farò del mio meglio per aiutarti",
-            job: 'Per favore, per sfruttare al meglio il tuo tempo e il mio, non contattarmi prima di aver visto almeno il mio profilo LinkedIn (https://www.linkedin.com/in/aleromano92/). Se pensi che potrei essere adatto per la tua azienda, scrivi qui perché lo pensi e lasciami un link per maggiori dettagli',
+                "Prima di contattarmi, dai un'occhiata al mio profilo LinkedIn (https://www.linkedin.com/in/aleromano92/). Poi scrivimi perché pensi che potrei aiutare la tua azienda, con un link per approfondire.",
+            mentoring: "Scrivimi perché pensi che potrei esserti d'aiuto e farò del mio meglio.",
+            job: "Prima di contattarmi, dai un'occhiata al mio profilo LinkedIn (https://www.linkedin.com/in/aleromano92/). Poi scrivimi perché sarei adatto alla tua azienda, con un link per approfondire.",
             blogpost:
-                'Condividi i tuoi pensieri, feedback o domande su questo articolo. Apprezzo feedback costruttivi e discussioni interessanti!',
+                'Condividi pensieri, feedback o domande su questo articolo — apprezzo confronti costruttivi e discussioni interessanti!',
         },
         alerts: {
             fillRequired: 'Compila tutti i campi obbligatori: Nome, Email e Messaggio.',
@@ -153,6 +150,7 @@ const t = getContactTranslations(language);
                     <option value="general">{t.reasonOptions.general}</option>
                 </select>
             </div>
+            <p id="reasonHelper" class="reason-helper" hidden></p>
         </div>
 
         <div class="form-group" id="blogPostTitleGroup" style="display: none;">
@@ -219,12 +217,30 @@ const t = getContactTranslations(language);
         formStatus.textContent = '';
     }
 
-    const PREFILL_MESSAGES = {
+    const reasonHelper = document.getElementById('reasonHelper');
+
+    const HELPER_MESSAGES = {
         consultancy: t.prefillMessages.consultancy,
         mentoring: t.prefillMessages.mentoring,
         job: t.prefillMessages.job,
         blogpost: t.prefillMessages.blogpost,
     };
+
+    function renderHelper(reason) {
+        const helperText = HELPER_MESSAGES[reason];
+        if (!helperText) {
+            reasonHelper.hidden = true;
+            reasonHelper.textContent = '';
+            return;
+        }
+        reasonHelper.textContent = helperText;
+        // Linkify bare URLs after textContent has neutralized any markup
+        reasonHelper.innerHTML = reasonHelper.innerHTML.replace(
+            /https?:\/\/[^\s)]+/g,
+            (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+        );
+        reasonHelper.hidden = false;
+    }
 
     function resetAndInitializeForm(selectedReason = '') {
         messageTextarea.value = '';
@@ -238,6 +254,8 @@ const t = getContactTranslations(language);
         blogPostTitleGroup.style.display = 'none';
         if (submitButton) submitButton.style.display = 'none';
 
+        renderHelper(selectedReason);
+
         if (selectedReason === 'problems') {
             githubIssueButtonContainer.style.display = 'block';
         } else if (['consultancy', 'mentoring', 'job', 'blogpost', 'general'].includes(selectedReason)) {
@@ -246,10 +264,6 @@ const t = getContactTranslations(language);
 
             if (selectedReason === 'blogpost') {
                 blogPostTitleGroup.style.display = 'block';
-            }
-
-            if (PREFILL_MESSAGES[selectedReason]) {
-                messageTextarea.value = PREFILL_MESSAGES[selectedReason];
             }
         }
     }
@@ -388,6 +402,17 @@ const t = getContactTranslations(language);
         outline: none;
         border-color: var(--color-accent);
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 25%, transparent);
+    }
+
+    .reason-helper {
+        margin: var(--space-xs) 0 0;
+        padding: var(--space-xs) var(--space-sm);
+        border-left: 3px solid var(--color-accent);
+        border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+        background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+        font-style: italic;
     }
 
     /* Custom select arrow, colored via CSS variables (a background-image SVG couldn't be) */
