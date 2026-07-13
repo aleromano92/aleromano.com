@@ -142,15 +142,17 @@ const t = getContactTranslations(language);
     <form id="contactForm">
         <div class="form-group">
             <label for="contactReason">{t.formLabels.reason}</label>
-            <select id="contactReason" name="reason">
-                <option value="">{t.reasonOptions.select}</option>
-                <option value="problems">{t.reasonOptions.problems}</option>
-                <option value="consultancy">{t.reasonOptions.consultancy}</option>
-                <option value="mentoring">{t.reasonOptions.mentoring}</option>
-                <option value="job">{t.reasonOptions.job}</option>
-                <option value="blogpost">{t.reasonOptions.blogpost}</option>
-                <option value="general">{t.reasonOptions.general}</option>
-            </select>
+            <div class="select-wrapper">
+                <select id="contactReason" name="reason">
+                    <option value="">{t.reasonOptions.select}</option>
+                    <option value="problems">{t.reasonOptions.problems}</option>
+                    <option value="consultancy">{t.reasonOptions.consultancy}</option>
+                    <option value="mentoring">{t.reasonOptions.mentoring}</option>
+                    <option value="job">{t.reasonOptions.job}</option>
+                    <option value="blogpost">{t.reasonOptions.blogpost}</option>
+                    <option value="general">{t.reasonOptions.general}</option>
+                </select>
+            </div>
         </div>
 
         <div class="form-group" id="blogPostTitleGroup" style="display: none;">
@@ -316,8 +318,10 @@ const t = getContactTranslations(language);
     .contact-form-container {
         max-width: 600px;
         margin: var(--space-lg) auto;
-        background-color: var(--color-bg-offset);
-        border-radius: 8px;
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: var(--space-lg);
         color: var(--color-text);
     }
 
@@ -328,8 +332,9 @@ const t = getContactTranslations(language);
     label {
         display: block;
         margin-bottom: var(--space-xs);
-        font-weight: bold;
-        color: var(--color-text-offset);
+        font-weight: var(--font-weight-bold);
+        font-size: var(--font-size-sm);
+        color: var(--color-text-primary);
     }
 
     input[type='text'],
@@ -337,12 +342,23 @@ const t = getContactTranslations(language);
     select,
     textarea {
         width: 100%;
-        padding: var(--space-sm);
-        border: 1px solid var(--color-border);
-        border-radius: 4px;
+        padding: var(--space-xs) var(--space-sm);
+        border: 1px solid var(--color-border-light);
+        border-radius: var(--border-radius-sm);
         background-color: var(--color-bg);
         color: var(--color-text);
-        box-sizing: border-box;
+        font: inherit;
+        line-height: var(--line-height-base);
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    input[type='text']:hover,
+    input[type='email']:hover,
+    select:hover,
+    textarea:hover {
+        border-color: var(--color-accent);
     }
 
     input[type='text']:focus,
@@ -351,7 +367,28 @@ const t = getContactTranslations(language);
     textarea:focus {
         outline: none;
         border-color: var(--color-accent);
-        box-shadow: 0 0 0 2px var(--color-accent-transparent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 25%, transparent);
+    }
+
+    /* Custom select arrow, colored via CSS variables (a background-image SVG couldn't be) */
+    .select-wrapper {
+        position: relative;
+    }
+
+    .select-wrapper::after {
+        content: '▾';
+        position: absolute;
+        right: var(--space-sm);
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--color-accent);
+        pointer-events: none;
+    }
+
+    select {
+        appearance: none;
+        padding-right: var(--space-lg);
+        cursor: var(--cursor-pointer);
     }
 
     textarea {
@@ -362,5 +399,11 @@ const t = getContactTranslations(language);
     #githubIssueButtonContainer {
         text-align: center;
         margin-top: var(--space-md);
+    }
+
+    @media (max-width: 480px) {
+        .contact-form-container {
+            padding: var(--space-md);
+        }
     }
 </style>
