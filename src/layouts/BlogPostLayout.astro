@@ -7,6 +7,7 @@ import ImageModal from '../components/ImageModal.astro';
 import BuiltInAICallout from '../components/posts/BuiltInAICallout.astro';
 import BuiltInAIBottomSheet from '../components/BuiltInAIBottomSheet.astro';
 import { findPresentationByBlogPost } from '../utils/presentations';
+import { getLocalizedPathname } from '../utils/i18n';
 
 const { frontmatter, currentLang, originalPost } = Astro.props;
 const pageTitle = frontmatter.title;
@@ -68,13 +69,14 @@ const i18nData = {
 };
 
 // Contact me footer text
+const contactHref = `${getLocalizedPathname('/contact', currentLang)}?reason=blogpost&title=${encodeURIComponent(frontmatter.title)}`;
 const contactMeFooterText =
   currentLang === 'it'
-    ? 'Se questo articolo ti è stato utile, condividilo con chi potrebbe beneficiarne. E se vuoi <strong>discutere</strong> di questi temi, <a href="/contact?reason=blogpost&title=' +
-      encodeURIComponent(frontmatter.title) +
+    ? 'Se questo articolo ti è stato utile, condividilo con chi potrebbe beneficiarne. E se vuoi <strong>discutere</strong> di questi temi, <a href="' +
+      contactHref +
       '">scrivimi</a>.'
-    : 'If this article was useful to you, share it with who might benefit from it. And if you want <strong>to discuss</strong> these topics, <a href="/contact?reason=blogpost&title=' +
-      encodeURIComponent(frontmatter.title) +
+    : 'If this article was useful to you, share it with who might benefit from it. And if you want <strong>to discuss</strong> these topics, <a href="' +
+      contactHref +
       '">write to me</a>.';
 ---
 
