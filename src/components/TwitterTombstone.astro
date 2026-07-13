@@ -1,0 +1,298 @@
+---
+import TwitterPostCard from './TwitterPostCard.astro';
+import { getTombstoneTweets } from '../utils/twitter/tombstone';
+import type { SupportedLanguage } from '../types/i18n';
+
+interface Props {
+    language: SupportedLanguage;
+}
+
+const { language } = Astro.props;
+
+const PRICING_ANNOUNCEMENT_URL =
+    'https://devcommunity.x.com/t/announcing-the-launch-of-x-api-pay-per-use-pricing/256476';
+const TIMELINE_URL = 'https://x.com/_aleromano';
+
+const posts = getTombstoneTweets(language);
+
+// The stale-fallback path faithfully condensed from src/utils/twitter/twitter.ts.
+// The 402 it now catches is literally what X's pay-per-use API returns.
+const cacheSnippet = `// src/utils/twitter/twitter.ts — serve fresh, fall back to stale
+private async fetchRawData(): Promise<TwitterRawDataResponse> {
+  const cached = this.cache.get(TWITTER_CACHE_KEY);
+  if (cached) {
+    return { apiResponse: JSON.parse(cached), freshness: DataFreshness.CACHE };
+  }
+
+  try {
+    const apiResponse = await this.fetchFromApi();
+    this.cache.set(TWITTER_CACHE_KEY, JSON.stringify(apiResponse), CACHE_TTL);
+    return { apiResponse, freshness: DataFreshness.LIVE };
+  } catch (error) {
+    // 402 Payment Required is exactly what pay-per-use now throws.
+    const stale = this.cache.getStale(TWITTER_CACHE_KEY);
+    if (stale) {
+      return { apiResponse: JSON.parse(stale), freshness: DataFreshness.CACHE };
+    }
+    throw error; // nothing cached: let the UI show its error state
+  }
+}`;
+
+const copy = {
+    en: {
+        bannerBadge: '⚰️ Deprecated',
+        bannerTitle: 'This used to be a live feed from X',
+        bannerBody: [
+            'For a while this section fetched my six most recent posts straight from X, server-side, on every page render — throttled by a cache so I never hammered the API.',
+            `In February 2026 X <a href="${PRICING_ANNOUNCEMENT_URL}" target="_blank" rel="noopener noreferrer">retired its free API tier in favour of pay-per-use pricing</a>. Keeping a hobby feed alive stopped making sense, so I froze it. The tweets below are the last six the live integration ever pulled — they will never update again.`,
+        ],
+        timelineButton: 'See my latest posts on',
+        frozenNote: 'Frozen snapshot — hover a card to bring it back to life.',
+        cachingTitle: 'How it worked: caching X in SQLite',
+        cachingBody: [
+            'Even while it was live, I never called X on every page load — that would have burned through the rate limits in minutes. Every response was cached in <strong>SQLite</strong> (via <code>better-sqlite3</code>, behind a small connection pool) with a <strong>72-hour TTL</strong>.',
+            'The part I liked most was the fallback: if a fetch failed — including the <code>402 Payment Required</code> that pay-per-use now returns — the service served the last known-good copy, even if stale, so the page never broke. Ironically, that same fallback is what let the section degrade gracefully the day the API died.',
+        ],
+        cachingReadMorePrefix: 'I wrote more about building and hardening this in',
+        readMoreLinks: [
+            { href: '/posts/manage-parent-code-ai', label: 'I Manage, I Parent and I Code' },
+            { href: '/posts/agent-ready-codebase', label: 'Making My Codebase Agent-Ready' },
+        ],
+        readMoreJoin: ' and ',
+    },
+    it: {
+        bannerBadge: '⚰️ Deprecato',
+        bannerTitle: 'Qui c’era un feed live da X',
+        bannerBody: [
+            'Per un po’ questa sezione recuperava i miei sei post più recenti direttamente da X, lato server, ad ogni render della pagina — con una cache a fare da freno per non martellare le API.',
+            `A febbraio 2026 X <a href="${PRICING_ANNOUNCEMENT_URL}" target="_blank" rel="noopener noreferrer">ha ritirato il piano gratuito delle API a favore di un modello pay-per-use</a>. Tenere in vita un feed per hobby ha smesso di avere senso, così l’ho congelato. I tweet qui sotto sono gli ultimi sei che l’integrazione live ha mai recuperato — non si aggiorneranno mai più.`,
+        ],
+        timelineButton: 'Vedi i miei ultimi post su',
+        frozenNote: 'Istantanea congelata — passa sopra una card per riportarla in vita.',
+        cachingTitle: 'Come funzionava: cache di X in SQLite',
+        cachingBody: [
+            'Anche quando era live, non chiamavo X ad ogni caricamento — avrei esaurito i rate limit in pochi minuti. Ogni risposta veniva messa in cache in <strong>SQLite</strong> (tramite <code>better-sqlite3</code>, dietro un piccolo connection pool) con un <strong>TTL di 72 ore</strong>.',
+            'La parte che preferivo era il fallback: se una fetch falliva — incluso il <code>402 Payment Required</code> che ora restituisce il pay-per-use — il servizio serviva l’ultima copia valida, anche se scaduta, così la pagina non si rompeva mai. Ironicamente, è proprio quel fallback ad aver fatto degradare la sezione con grazia il giorno in cui l’API è morta.',
+        ],
+        cachingReadMorePrefix: 'Ne ho scritto di più, tra costruzione e messa in sicurezza, in',
+        readMoreLinks: [
+            { href: '/it/posts/manage-parent-code-ai', label: 'Faccio il Manager, il Padre e lo Sviluppatore' },
+            { href: '/it/posts/agent-ready-codebase', label: 'Rendere la mia Codebase Pronta per gli Agenti AI' },
+        ],
+        readMoreJoin: ' e ',
+    },
+};
+
+const t = copy[language];
+---
+
+<div class="tombstone">
+    <div class="tombstone-banner">
+        <span class="tombstone-badge">{t.bannerBadge}</span>
+        <h4 class="tombstone-title">{t.bannerTitle}</h4>
+        {t.bannerBody.map((paragraph) => <p set:html={paragraph} />)}
+        <a href={TIMELINE_URL} target="_blank" rel="noopener noreferrer" class="button tombstone-button">
+            {t.timelineButton}
+            <svg
+                class="x-logo"
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-label="X"
+            >
+                <path
+                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                ></path>
+            </svg>
+        </a>
+    </div>
+
+    {
+        posts.length > 0 && (
+            <>
+                <div class="tombstone-posts">
+                    {posts.map((post) => (
+                        <TwitterPostCard post={post} />
+                    ))}
+                </div>
+                <p class="tombstone-frozen-note">{t.frozenNote}</p>
+            </>
+        )
+    }
+
+    <section class="caching-explainer">
+        <h4>{t.cachingTitle}</h4>
+        {t.cachingBody.map((paragraph) => <p set:html={paragraph} />)}
+
+        <pre class="code-block"><code>{cacheSnippet}</code></pre>
+
+        <p class="read-more">
+            {t.cachingReadMorePrefix}{' '}
+            {
+                t.readMoreLinks.map((link, index) => (
+                    <>
+                        {index > 0 && t.readMoreJoin}
+                        <a href={link.href}>{link.label}</a>
+                    </>
+                ))
+            }.
+        </p>
+    </section>
+</div>
+
+<style>
+    @import '../styles/buttons.css';
+
+    .tombstone {
+        margin: var(--space-md) 0;
+    }
+
+    /* Deprecation banner (the headstone) */
+    .tombstone-banner {
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border);
+        border-left: 4px solid var(--color-accent);
+        border-radius: var(--border-radius);
+        padding: var(--space-md);
+    }
+
+    .tombstone-badge {
+        display: inline-block;
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border-light);
+        border-radius: 999px;
+        padding: 0.15rem 0.6rem;
+        margin-bottom: var(--space-sm);
+    }
+
+    .tombstone-title {
+        margin: 0 0 var(--space-sm);
+        font-size: var(--font-size-lg);
+        color: var(--color-text-primary);
+    }
+
+    .tombstone-banner p {
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        margin-bottom: var(--space-sm);
+    }
+
+    .tombstone-banner p :global(a) {
+        color: var(--color-accent);
+        text-decoration: underline;
+    }
+
+    .tombstone-button {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-xs);
+        margin-top: var(--space-xs);
+    }
+
+    .x-logo {
+        flex-shrink: 0;
+    }
+
+    /* Frozen tweets — grayed out, revived on hover */
+    .tombstone-posts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-top: var(--space-lg);
+    }
+
+    .tombstone-posts :global(.tweet-card) {
+        filter: grayscale(1);
+        opacity: 0.68;
+        transition:
+            filter 0.3s ease,
+            opacity 0.3s ease,
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.2s ease;
+    }
+
+    .tombstone-posts :global(.tweet-card:hover) {
+        filter: grayscale(0);
+        opacity: 1;
+    }
+
+    .tombstone-frozen-note {
+        margin-top: var(--space-sm);
+        font-size: var(--font-size-xs);
+        font-style: italic;
+        color: var(--color-text-secondary);
+        opacity: 0.8;
+        text-align: center;
+    }
+
+    /* Caching explainer */
+    .caching-explainer {
+        margin-top: var(--space-xl);
+    }
+
+    .caching-explainer h4 {
+        font-size: var(--font-size-md);
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-sm);
+    }
+
+    .caching-explainer p {
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        margin-bottom: var(--space-sm);
+    }
+
+    .caching-explainer :global(code) {
+        font-family: ui-monospace, 'SF Mono', 'Fira Code', monospace;
+        font-size: 0.85em;
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border-light);
+        border-radius: var(--border-radius-sm);
+        padding: 0.1rem 0.35rem;
+    }
+
+    .code-block {
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: var(--space-md);
+        overflow-x: auto;
+        margin: var(--space-md) 0;
+        line-height: 1.5;
+    }
+
+    .code-block code {
+        font-family: ui-monospace, 'SF Mono', 'Fira Code', monospace;
+        font-size: var(--font-size-sm);
+        color: var(--color-text-primary);
+        background: none;
+        border: none;
+        padding: 0;
+        white-space: pre;
+    }
+
+    .read-more :global(a) {
+        color: var(--color-accent);
+        font-weight: 600;
+    }
+
+    @media (max-width: 1024px) {
+        .tombstone-posts {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .tombstone-posts {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+    }
+</style>

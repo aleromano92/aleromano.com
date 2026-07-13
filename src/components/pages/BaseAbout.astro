@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import landsatLogo from '../../assets/Alessandro-landsat.png';
-import TwitterFeed from '../TwitterFeed.astro';
+import TwitterTombstone from '../TwitterTombstone.astro';
 import ImageModal from '../ImageModal.astro';
 import profilePic from '../../assets/alepro.png';
 import rpgImage from '../../assets/rpg.webp';
@@ -15,7 +15,6 @@ import tennisImage from '../../assets/tennis.jpg';
 import onePieceImage from '../../assets/one-piece.jpg';
 import speakingImage from '../../assets/speaking.png';
 import familyImage from '../../assets/family.png';
-import { twitterService } from '../../utils/twitter/twitter';
 import type { SupportedLanguage } from '../../types/i18n';
 
 // Types for NOW history entries
@@ -374,7 +373,7 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         // Table of Contents
         tocTitle: 'Navigazione Rapida',
         tocBiography: 'Biografia',
-        tocExperience: 'Esperienza Lavorativa (più rilevante)',
+        tocExperience: 'Esperienze Lavorative (più rilevanti)',
         tocNow: 'Cosa Sto Facendo Ora',
         tocTwitter: 'Ultimi post da X',
         viewCv: 'Vedi CV completo',
@@ -403,7 +402,7 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             <br/><br/>Resto <strong>ottimista</strong> sul futuro perché credo sia la cosa più pragmatica da fare: che senso avrebbe andare avanti se non credessi che le cose possano migliorare?`,
 
         // Work Experience Section
-        experienceTitle: 'Esperienza Lavorativa',
+        experienceTitle: 'Esperienze Lavorative',
         experienceSeeMore: 'Vedi di più su ',
         currentPosition: 'Posizione Attuale',
 
@@ -641,9 +640,6 @@ interface Props {
 const { language } = Astro.props;
 
 const t = getAboutTranslations(language);
-
-// Fetch Twitter data server-side with built-in error handling
-const twitterData = await twitterService.getTwitterPosts(language);
 ---
 
 <h2>
@@ -1067,12 +1063,7 @@ const twitterData = await twitterService.getTwitterPosts(language);
         </span>
         <a href="#top" class="section-back-to-top" aria-label={t.backToTop}>{t.backToTop}</a>
     </h3>
-    <TwitterFeed
-        posts={twitterData.posts}
-        error={twitterData.error}
-        language={language}
-        freshness={twitterData.freshness}
-    />
+    <TwitterTombstone language={language} />
 </section>
 
 <!-- Image Modal -->

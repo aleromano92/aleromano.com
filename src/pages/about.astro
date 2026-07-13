@@ -72,6 +72,9 @@ const structuredData = {
     },
   ],
 };
+
+// Fully static since the X feed became a hardcoded tombstone — no per-request work.
+export const prerender = true;
 ---
 
 <BaseLayout pageTitle={pageTitle} description={pageDescription} i18nData={i18nData} structuredData={structuredData}>
