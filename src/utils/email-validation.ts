@@ -43,9 +43,10 @@ export async function domainAcceptsMail(email: string, timeoutMs = 2_000): Promi
   const domain = email.slice(email.lastIndexOf('@') + 1);
 
   const DNS_UNCERTAIN = Symbol('dns-uncertain');
-  const timeout = new Promise<typeof DNS_UNCERTAIN>((resolve) =>
-    setTimeout(() => resolve(DNS_UNCERTAIN), timeoutMs)
-  );
+  let timerId!: ReturnType<typeof setTimeout>;
+  const timeout = new Promise<typeof DNS_UNCERTAIN>((resolve) => {
+    timerId = setTimeout(() => resolve(DNS_UNCERTAIN), timeoutMs);
+  });
 
   try {
     const records = await Promise.race([resolveMx(domain), timeout]);
@@ -54,5 +55,7 @@ export async function domainAcceptsMail(email: string, timeoutMs = 2_000): Promi
   } catch (error) {
     const code = (error as NodeJS.ErrnoException).code;
     return code !== 'ENOTFOUND' && code !== 'ENODATA';
+  } finally {
+    clearTimeout(timerId);
   }
 }
