@@ -1,4 +1,12 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(grep -oE \"^[^ ]+\\\\.\\(ts|astro\\):[0-9]+:[0-9]+ - error[^$]*\")",
+      "Bash(git commit *)",
+      "Bash(gh auth *)",
+      "Bash(npx skills *)"
+    ]
+  },
   "enabledPlugins": {
     "mattpocock-skills@mattpocock": true
   }
