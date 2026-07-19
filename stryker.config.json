@@ -4,6 +4,8 @@
   "testRunner": "vitest",
   "vitest": { "configFile": "vitest.config.ts" },
   "coverageAnalysis": "perTest",
+  "_ignore_comment": "Agent tooling contains directory symlinks (.claude/skills/*) that break the sandbox copy with EISDIR.",
+  "ignorePatterns": [".claude", ".agents"],
   "mutate": ["src/utils/**/*.ts", "!src/utils/**/*.test.ts"],
   "reporters": ["html", "clear-text", "progress"],
   "clearTextReporter": { "allowColor": false },
