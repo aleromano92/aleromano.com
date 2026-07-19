@@ -21,15 +21,28 @@ vi.mock('nodemailer', () => ({
   },
 }));
 
+// Real DNS has no place in unit tests: the MX check sees a well-published domain.
+const { mockResolveMx } = vi.hoisted(() => ({ mockResolveMx: vi.fn() }));
+vi.mock('node:dns/promises', () => ({ resolveMx: mockResolveMx }));
+
 import { POST } from './contact';
+import { issueToken, TOKEN_MIN_AGE_MS } from '../../utils/contact-token';
 
 const RECIPIENT = 'ale@example.com';
 
+/** A token old enough to clear the minimum-age check right now. */
+function matureToken(): string {
+  return issueToken(Date.now() - TOKEN_MIN_AGE_MS);
+}
+
+// Object bodies get a valid Form Token unless the test supplies its own.
 function makeRequest(body: unknown, headers: Record<string, string> = {}): Request {
+  const withToken =
+    body !== null && typeof body === 'object' && !('token' in body) ? { token: matureToken(), ...body } : body;
   return new Request('http://localhost/api/contact', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...headers },
-    body: typeof body === 'string' ? body : JSON.stringify(body),
+    body: typeof withToken === 'string' ? withToken : JSON.stringify(withToken),
   });
 }
 
@@ -38,11 +51,13 @@ function call(request: Request) {
   return POST({ request } as Parameters<typeof POST>[0]);
 }
 
+// `website` is the Honeypot: honest clients always send it empty.
 const validPayload = {
   reason: 'general',
   name: 'Jane Doe',
   email: 'jane@external.com',
   message: 'Hello there\nsecond line',
+  website: '',
 };
 
 const ORIGINAL_ENV = { ...process.env };
@@ -52,6 +67,7 @@ beforeEach(() => {
   mockSendMail.mockResolvedValue({ messageId: '<test-message-id>' });
   mockCreateTestAccount.mockResolvedValue({ user: 'ethereal-user', pass: 'ethereal-pass' });
   mockGetTestMessageUrl.mockReturnValue('https://ethereal.email/message/preview');
+  mockResolveMx.mockResolvedValue([{ exchange: 'mx.external.com', priority: 10 }]);
   // Production-like config: route through the internal relay, not Ethereal.
   process.env.SMTP_HOST = 'smtp-relay';
   process.env.SMTP_PORT = '25';
@@ -155,7 +171,7 @@ describe('POST /api/contact', () => {
     });
 
     it('rejects a submission missing required fields with 400 listing them', async () => {
-      const response = await call(makeRequest({ reason: 'general', name: '', email: '', message: '' }));
+      const response = await call(makeRequest({ reason: 'general', name: '', email: '', message: '', website: '' }));
 
       expect(response.status).toBe(400);
       const json = await response.json();
@@ -170,6 +186,86 @@ describe('POST /api/contact', () => {
 
       expect(response.status).toBe(400);
       expect(mockSendMail).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('bot tripwires (generic 400, no email is sent)', () => {
+    const TRIPWIRE_MESSAGE = 'Invalid submission.';
+
+    it('rejects when the honeypot field is missing entirely (direct API scripts)', async () => {
+      const { website: _website, ...withoutHoneypot } = validPayload;
+      const response = await call(makeRequest(withoutHoneypot));
+
+      expect(response.status).toBe(400);
+      const json = await response.json();
+      expect(json.message).toBe(TRIPWIRE_MESSAGE);
+      expect(mockSendMail).not.toHaveBeenCalled();
+    });
+
+    it('rejects when the honeypot field is filled (form-filler bots)', async () => {
+      const response = await call(makeRequest({ ...validPayload, website: 'https://spam.example' }));
+
+      expect(response.status).toBe(400);
+      const json = await response.json();
+      expect(json.message).toBe(TRIPWIRE_MESSAGE);
+      expect(mockSendMail).not.toHaveBeenCalled();
+    });
+
+    it('rejects a missing token with the invalid-token code so the client can retry', async () => {
+      const response = await call(makeRequest({ ...validPayload, token: undefined }));
+
+      expect(response.status).toBe(400);
+      const json = await response.json();
+      expect(json.message).toBe(TRIPWIRE_MESSAGE);
+      expect(json.code).toBe('invalid-token');
+      expect(mockSendMail).not.toHaveBeenCalled();
+    });
+
+    it('rejects a forged token', async () => {
+      const response = await call(makeRequest({ ...validPayload, token: '1700000000000.' + 'a'.repeat(64) }));
+
+      expect(response.status).toBe(400);
+      expect((await response.json()).code).toBe('invalid-token');
+      expect(mockSendMail).not.toHaveBeenCalled();
+    });
+
+    it('rejects a token submitted faster than a human could type a message', async () => {
+      const response = await call(makeRequest({ ...validPayload, token: issueToken(Date.now()) }));
+
+      expect(response.status).toBe(400);
+      expect((await response.json()).code).toBe('invalid-token');
+      expect(mockSendMail).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('email plausibility (specific feedback, no email is sent)', () => {
+    it('rejects a syntactically broken email with the email-syntax code', async () => {
+      const response = await call(makeRequest({ ...validPayload, email: 'jane@gmailcom' }));
+
+      expect(response.status).toBe(400);
+      const json = await response.json();
+      expect(json.code).toBe('email-syntax');
+      expect(mockSendMail).not.toHaveBeenCalled();
+    });
+
+    it('rejects an email whose domain does not exist with the email-domain code', async () => {
+      mockResolveMx.mockRejectedValue(Object.assign(new Error('ENOTFOUND'), { code: 'ENOTFOUND' }));
+
+      const response = await call(makeRequest({ ...validPayload, email: 'jane@gmali.com' }));
+
+      expect(response.status).toBe(400);
+      const json = await response.json();
+      expect(json.code).toBe('email-domain');
+      expect(mockSendMail).not.toHaveBeenCalled();
+    });
+
+    it('accepts the submission when DNS fails for uncertain reasons (fail open)', async () => {
+      mockResolveMx.mockRejectedValue(Object.assign(new Error('SERVFAIL'), { code: 'SERVFAIL' }));
+
+      const response = await call(makeRequest(validPayload));
+
+      expect(response.status).toBe(200);
+      expect(mockSendMail).toHaveBeenCalledTimes(1);
     });
   });
 });

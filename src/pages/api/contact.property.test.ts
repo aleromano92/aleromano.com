@@ -84,4 +84,17 @@ describe('POST /api/contact fuzzing', () => {
       })
     );
   });
+
+  it('never accepts a payload lacking a genuine Form Token (anti-bot residue)', async () => {
+    // fc cannot forge an HMAC over the process secret, so no generated payload
+    // may ever reach the mailer — the tripwires must catch every one.
+    await fc.assert(
+      fc.asyncProperty(fc.jsonValue(), async (payload) => {
+        mockSendMail.mockClear();
+        const res = await call(JSON.stringify(payload));
+        expect(res.status).not.toBe(200);
+        expect(mockSendMail).not.toHaveBeenCalled();
+      })
+    );
+  });
 });

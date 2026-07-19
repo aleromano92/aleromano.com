@@ -35,6 +35,8 @@ export interface ContactTranslations {
         success: string;
         error: string;
         networkError: string;
+        emailSyntax: string;
+        emailDomain: string;
     };
 }
 
@@ -75,6 +77,8 @@ export const contactTranslations: Record<SupportedLanguage, ContactTranslations>
             success: 'Your message has been sent successfully!',
             error: 'An error occurred. Please try again.',
             networkError: 'An unexpected error occurred. Please check your connection and try again.',
+            emailSyntax: "That email address doesn't look right. Please double-check it.",
+            emailDomain: "That email's domain doesn't seem to receive mail. Is it spelled correctly?",
         },
     },
     it: {
@@ -114,6 +118,8 @@ export const contactTranslations: Record<SupportedLanguage, ContactTranslations>
             success: 'Il tuo messaggio è stato inviato con successo!',
             error: 'Si è verificato un errore. Riprova.',
             networkError: 'Si è verificato un errore imprevisto. Controlla la connessione e riprova.',
+            emailSyntax: "Quell'indirizzo email non sembra corretto. Ricontrollalo.",
+            emailDomain: "Il dominio di quell'email non sembra ricevere posta. È scritto correttamente?",
         },
     },
 };
@@ -164,6 +170,12 @@ const clientTexts = {
         </div>
 
         <fieldset id="formFields" disabled>
+            <!-- Honeypot: humans never see it; the API requires it present and empty -->
+            <div class="contact-extra" aria-hidden="true">
+                <label for="website">Website</label>
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+            </div>
+
             <div class="form-group">
                 <label for="name">{t.formLabels.name}</label>
                 <input type="text" id="name" name="name" required />
@@ -203,7 +215,8 @@ const clientTexts = {
         linkifyUrls,
         buildSubmissionPayload,
         parseReasonPreselection,
-        submitContactForm,
+        fetchContactToken,
+        submitWithTokenRecovery,
         type SubmitMessages,
     } from './contact-form';
 
@@ -269,8 +282,18 @@ const clientTexts = {
             submitButton.textContent = submitting ? texts.submittingLabel : texts.submitLabel;
         }
 
+        // Form Token: fetched on first interaction so it is already past its
+        // minimum age by the time a human finishes typing.
+        let tokenPromise: Promise<string | null> | null = null;
+        function ensureToken(): Promise<string | null> {
+            tokenPromise ??= fetchContactToken();
+            return tokenPromise;
+        }
+        form.addEventListener('focusin', ensureToken, { once: true });
+
         reasonSelect.addEventListener('change', () => {
             hideStatus();
+            ensureToken();
             applyReason(reasonSelect.value);
         });
 
@@ -280,7 +303,9 @@ const clientTexts = {
             setSubmitting(true);
 
             const payload = buildSubmissionPayload(Object.fromEntries(new FormData(form)));
-            const outcome = await submitContactForm(payload, texts.messages);
+            const token = await ensureToken();
+            const outcome = await submitWithTokenRecovery(payload, token, texts.messages);
+            if (outcome.code === 'invalid-token') tokenPromise = null;
 
             setSubmitting(false);
             if (outcome.success) resetForm();
@@ -322,6 +347,15 @@ const clientTexts = {
 
     .form-group {
         margin-bottom: var(--space-md);
+    }
+
+    /* Honeypot: moved off-screen rather than display:none, which naive bots detect */
+    .contact-extra {
+        position: absolute;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
     }
 
     label {

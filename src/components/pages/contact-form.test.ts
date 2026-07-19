@@ -8,6 +8,9 @@ import {
     buildSubmissionPayload,
     parseReasonPreselection,
     submitContactForm,
+    fetchContactToken,
+    submitWithTokenRecovery,
+    TOKEN_RETRY_WAIT_MS,
 } from './contact-form';
 
 describe('getReasonView', () => {
@@ -133,6 +136,8 @@ describe('submitContactForm', () => {
         success: 'fallback success',
         error: 'fallback error',
         networkError: 'network down',
+        emailSyntax: 'check that email',
+        emailDomain: 'that domain gets no mail',
     };
     const endpoint = 'http://localhost/api/contact';
     const payload = { reason: 'general', name: 'Ada', email: 'ada@example.com', message: 'Hi' };
@@ -181,5 +186,137 @@ describe('submitContactForm', () => {
             success: false,
             message: 'network down',
         });
+    });
+
+    it('maps Human Mistake codes to localized messages, ignoring the server wording', async () => {
+        server.use(
+            http.post(endpoint, () =>
+                HttpResponse.json(
+                    { success: false, message: 'English-only server text', code: 'email-syntax' },
+                    { status: 400 }
+                )
+            )
+        );
+        const outcome = await submitContactForm(payload, messages, endpoint);
+        expect(outcome.message).toBe('check that email');
+        expect(outcome.code).toBe('email-syntax');
+    });
+});
+
+describe('fetchContactToken', () => {
+    const tokenEndpoint = 'http://localhost/api/contact-token';
+
+    it('returns the token from the endpoint', async () => {
+        server.use(http.get(tokenEndpoint, () => HttpResponse.json({ token: 'abc.def' })));
+        expect(await fetchContactToken(tokenEndpoint)).toBe('abc.def');
+    });
+
+    it('returns null on an error response', async () => {
+        server.use(http.get(tokenEndpoint, () => HttpResponse.json({}, { status: 500 })));
+        expect(await fetchContactToken(tokenEndpoint)).toBeNull();
+    });
+
+    it('returns null when the request cannot complete', async () => {
+        server.use(http.get(tokenEndpoint, () => HttpResponse.error()));
+        expect(await fetchContactToken(tokenEndpoint)).toBeNull();
+    });
+});
+
+describe('submitWithTokenRecovery', () => {
+    const messages = {
+        success: 'sent',
+        error: 'failed',
+        networkError: 'network down',
+        emailSyntax: 'check that email',
+        emailDomain: 'that domain gets no mail',
+    };
+    const endpoint = 'http://localhost/api/contact';
+    const payload = { reason: 'general', name: 'Ada', email: 'ada@example.com', message: 'Hi', website: '' };
+
+    function captureSubmittedTokens(respond: (token: unknown) => Response) {
+        const tokens: unknown[] = [];
+        server.use(
+            http.post(endpoint, async ({ request }) => {
+                const body = (await request.json()) as Record<string, unknown>;
+                tokens.push(body.token);
+                return respond(body.token);
+            })
+        );
+        return tokens;
+    }
+
+    it('submits once with the provided token when the server accepts it', async () => {
+        const tokens = captureSubmittedTokens(() => HttpResponse.json({ success: true, message: 'ok' }));
+
+        const outcome = await submitWithTokenRecovery(payload, 'good-token', messages, { endpoint });
+
+        expect(outcome.success).toBe(true);
+        expect(tokens).toEqual(['good-token']);
+    });
+
+    it('refetches, waits out the minimum age, and retries once on a stale token', async () => {
+        const tokens = captureSubmittedTokens((token) =>
+            token === 'fresh-token'
+                ? HttpResponse.json({ success: true, message: 'ok' })
+                : HttpResponse.json({ success: false, message: 'Invalid submission.', code: 'invalid-token' }, { status: 400 })
+        );
+        const waits: number[] = [];
+
+        const outcome = await submitWithTokenRecovery(payload, 'stale-token', messages, {
+            endpoint,
+            fetchToken: async () => 'fresh-token',
+            wait: async (ms) => void waits.push(ms),
+        });
+
+        expect(outcome.success).toBe(true);
+        expect(tokens).toEqual(['stale-token', 'fresh-token']);
+        expect(waits).toEqual([TOKEN_RETRY_WAIT_MS]);
+    });
+
+    it('gives up after one retry when the server keeps rejecting', async () => {
+        const tokens = captureSubmittedTokens(() =>
+            HttpResponse.json({ success: false, message: 'Invalid submission.', code: 'invalid-token' }, { status: 400 })
+        );
+
+        const outcome = await submitWithTokenRecovery(payload, null, messages, {
+            endpoint,
+            fetchToken: async () => 'fresh-token',
+            wait: async () => {},
+        });
+
+        expect(outcome.success).toBe(false);
+        expect(tokens).toEqual(['', 'fresh-token']);
+    });
+
+    it('does not retry when the failure is not token-related', async () => {
+        const tokens = captureSubmittedTokens(() =>
+            HttpResponse.json({ success: false, message: 'nope', code: 'email-syntax' }, { status: 400 })
+        );
+
+        const outcome = await submitWithTokenRecovery(payload, 'good-token', messages, {
+            endpoint,
+            fetchToken: async () => 'fresh-token',
+            wait: async () => {},
+        });
+
+        expect(outcome.success).toBe(false);
+        expect(outcome.message).toBe('check that email');
+        expect(tokens).toEqual(['good-token']);
+    });
+
+    it('returns the original failure when no fresh token can be fetched', async () => {
+        const tokens = captureSubmittedTokens(() =>
+            HttpResponse.json({ success: false, message: 'Invalid submission.', code: 'invalid-token' }, { status: 400 })
+        );
+
+        const outcome = await submitWithTokenRecovery(payload, 'stale-token', messages, {
+            endpoint,
+            fetchToken: async () => null,
+            wait: async () => {},
+        });
+
+        expect(outcome.success).toBe(false);
+        expect(outcome.code).toBe('invalid-token');
+        expect(tokens).toEqual(['stale-token']);
     });
 });
