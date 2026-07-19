@@ -60,3 +60,17 @@ Vitest with MSW (Mock Service Worker) for HTTP interception. `vitest.setup.ts` s
 - **Components**: PascalCase `.astro` files; page-level reusable shells go in `src/components/pages/`
 - **i18n**: Use utilities in `src/utils/i18n.ts`; types in `src/types/i18n.ts` (`SupportedLanguage`, `LocalizedContent<T>`)
 - **Imports**: Group by type (framework → components → utils)
+
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked on GitHub (`aleromano92/aleromano.com`) via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical triage labels are used as-is (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
