@@ -88,11 +88,25 @@ export interface SubmitMessages {
     success: string;
     error: string;
     networkError: string;
+    emailSyntax: string;
+    emailDomain: string;
 }
 
 export interface SubmitOutcome {
     success: boolean;
     message: string;
+    /** Machine-readable error code from the API, when it sent one */
+    code?: string;
+}
+
+/**
+ * The API answers Human Mistakes with a machine-readable code; the client owns
+ * the localized wording. Unknown codes fall back to the server message.
+ */
+function failureMessage(code: unknown, serverMessage: unknown, messages: SubmitMessages): string {
+    if (code === 'email-syntax') return messages.emailSyntax;
+    if (code === 'email-domain') return messages.emailDomain;
+    return typeof serverMessage === 'string' && serverMessage ? serverMessage : messages.error;
 }
 
 export async function submitContactForm(
@@ -112,8 +126,59 @@ export async function submitContactForm(
         if (response.ok && result.success) {
             return { success: true, message: result.message || messages.success };
         }
-        return { success: false, message: result.message || messages.error };
+        return {
+            success: false,
+            message: failureMessage(result.code, result.message, messages),
+            ...(typeof result.code === 'string' ? { code: result.code } : {}),
+        };
     } catch {
         return { success: false, message: messages.networkError };
     }
+}
+
+export const TOKEN_ENDPOINT = '/api/contact-token';
+
+/** The API refuses tokens younger than 3s; wait a hair longer before retrying. */
+export const TOKEN_RETRY_WAIT_MS = 3_500;
+
+export async function fetchContactToken(endpoint = TOKEN_ENDPOINT): Promise<string | null> {
+    try {
+        const response = await fetch(endpoint);
+        if (!response.ok) return null;
+        const result = await response.json();
+        return typeof result.token === 'string' ? result.token : null;
+    } catch {
+        return null;
+    }
+}
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+export interface TokenRecoveryDeps {
+    fetchToken?: () => Promise<string | null>;
+    wait?: (ms: number) => Promise<void>;
+    endpoint?: string;
+}
+
+/**
+ * Submits with the given Form Token. A deploy rotates the server's signing
+ * secret, invalidating tokens already handed out — on that rejection, fetch a
+ * fresh token, wait out the minimum token age, and retry once, invisibly.
+ */
+export async function submitWithTokenRecovery(
+    payload: Record<string, FormDataEntryValue>,
+    token: string | null,
+    messages: SubmitMessages,
+    deps: TokenRecoveryDeps = {}
+): Promise<SubmitOutcome> {
+    const { fetchToken = fetchContactToken, wait = sleep, endpoint } = deps;
+
+    const outcome = await submitContactForm({ ...payload, token: token ?? '' }, messages, endpoint);
+    if (outcome.success || outcome.code !== 'invalid-token') return outcome;
+
+    const freshToken = await fetchToken();
+    if (!freshToken) return outcome;
+
+    await wait(TOKEN_RETRY_WAIT_MS);
+    return submitContactForm({ ...payload, token: freshToken }, messages, endpoint);
 }

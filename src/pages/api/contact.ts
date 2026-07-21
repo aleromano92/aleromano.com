@@ -1,5 +1,7 @@
 import type { APIRoute } from 'astro';
 import nodemailer from 'nodemailer';
+import { verifyToken } from '../../utils/contact-token';
+import { isPlausibleEmail, domainAcceptsMail } from '../../utils/email-validation';
 
 // Define HTTP status codes
 const HTTP_OK = 200;
@@ -10,8 +12,15 @@ const HTTP_INTERNAL_SERVER_ERROR = 500;
 interface ApiResponseData {
   success: boolean;
   message: string;
+  /** Machine-readable error code the client maps to a localized message */
+  code?: string;
   data?: unknown; // Optional field for additional data
 }
+
+// Tripwire Rejections deliberately share one generic message: a bot author
+// must not learn which check caught them. Humans never see it — the honest
+// client always sends the honeypot empty and retries on invalid-token.
+const TRIPWIRE_MESSAGE = 'Invalid submission.';
 
 // Helper function to create standardized JSON responses
 function createJsonResponse(responseData: ApiResponseData, status: number): Response {
@@ -105,7 +114,26 @@ export const POST: APIRoute = async ({ request }) => {
       return createJsonResponse({ success: false, message: "Invalid JSON." }, HTTP_BAD_REQUEST);
     }
 
-    const { reason, name, email, message, blogPostTitle } = data;
+    if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+      return createJsonResponse({ success: false, message: "Invalid JSON." }, HTTP_BAD_REQUEST);
+    }
+
+    const { reason, name, email, message, blogPostTitle, website, token } = data;
+
+    // Honeypot: the honest client always sends `website`, always empty.
+    if (typeof website !== 'string' || website !== '') {
+      console.warn('Contact tripwire: honeypot', { present: website !== undefined });
+      return createJsonResponse({ success: false, message: TRIPWIRE_MESSAGE }, HTTP_BAD_REQUEST);
+    }
+
+    const tokenResult = verifyToken(typeof token === 'string' ? token : '');
+    if (!tokenResult.valid) {
+      console.warn('Contact tripwire: token', { reason: tokenResult.reason });
+      return createJsonResponse(
+        { success: false, message: TRIPWIRE_MESSAGE, code: 'invalid-token' },
+        HTTP_BAD_REQUEST
+      );
+    }
 
     if (typeof reason !== 'string' || !reason) {
       return createJsonResponse({ success: false, message: "Contact reason is required." }, HTTP_BAD_REQUEST);
@@ -133,6 +161,22 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (blogPostTitle !== undefined && (typeof blogPostTitle !== 'string' || blogPostTitle.length > MAX_BLOG_POST_TITLE_LENGTH)) {
       return createJsonResponse({ success: false, message: "Blog post title is invalid or exceeds the maximum allowed length." }, HTTP_BAD_REQUEST);
+    }
+
+    // Human Mistake checks: specific feedback so a real sender can fix a typo'd
+    // address. The MX lookup fails open — DNS uncertainty must not cost a lead.
+    if (!isPlausibleEmail(email)) {
+      return createJsonResponse(
+        { success: false, message: "That email address doesn't look right. Please double-check it.", code: 'email-syntax' },
+        HTTP_BAD_REQUEST
+      );
+    }
+
+    if (!(await domainAcceptsMail(email))) {
+      return createJsonResponse(
+        { success: false, message: "The domain of that email address doesn't seem to receive mail. Is it spelled correctly?", code: 'email-domain' },
+        HTTP_BAD_REQUEST
+      );
     }
 
     const PERSONAL_EMAIL = import.meta.env.ALE_PERSONAL_EMAIL || process.env.ALE_PERSONAL_EMAIL;
