@@ -24,6 +24,10 @@ const CHUNK_BUDGETS = {
   'analytics.js': 235_000,
   'index.js': 95_000,
   'BuiltInAIBottomSheet.js': 48_000,
+  // Rolldown (Astro 7's bundler) splits the geo-chart deps used by the
+  // analytics page into their own chunk instead of folding them into
+  // analytics.js — same code, new split, so it gets its own budget line.
+  'build.js': 90_000,
 };
 // Any chunk not listed above must stay under this ceiling — a new heavy chunk
 // trips the gate and forces a deliberate budget entry.
