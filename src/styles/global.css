@@ -19,7 +19,7 @@ main {
     margin: var(--space-lg) 0;
 }
 
-@media screen and (max-width: var(--breakpoint-mobile)) {
+@media screen and (max-width: 480px) {
     main {
         margin: var(--space-md) 0;
     }
