@@ -28,7 +28,7 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
 
 <style>
   header {
-    background: var(--background);
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -46,7 +46,7 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--background);
+    background: var(--color-bg);
     opacity: 0.8;
     z-index: -1;
   }
