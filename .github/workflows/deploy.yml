@@ -60,7 +60,7 @@ jobs:
 
       - name: Server boot smoke test
         run: |
-          node ./dist/server/entry.mjs &
+          node --import=./observability/otel/node-register.mjs ./dist/server/entry.mjs &
           SERVER_PID=$!
 
           cleanup() {
