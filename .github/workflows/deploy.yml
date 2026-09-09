@@ -69,7 +69,7 @@ jobs:
           trap cleanup EXIT
 
           for i in $(seq 1 10); do
-            if curl -sf -o /dev/null http://127.0.0.1:4321/; then
+            if curl -sf -o /dev/null http://localhost:4321/; then
               echo "✅ Server booted and responded successfully"
               exit 0
             fi
