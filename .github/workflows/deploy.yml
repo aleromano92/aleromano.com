@@ -59,6 +59,9 @@ jobs:
         run: npm run perf:budget
 
       - name: Server boot smoke test
+        env:
+          DATABASE_PATH: ./data/smoke-test.db
+          ANALYTICS_SALT: smoke-test-salt
         run: |
           node --import=./observability/otel/node-register.mjs ./dist/server/entry.mjs &
           SERVER_PID=$!
