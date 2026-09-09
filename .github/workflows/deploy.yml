@@ -58,6 +58,31 @@ jobs:
       - name: Check bundle budget
         run: npm run perf:budget
 
+      - name: Server boot smoke test
+        run: |
+          node ./dist/server/entry.mjs &
+          SERVER_PID=$!
+
+          cleanup() {
+            kill "$SERVER_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          for i in $(seq 1 10); do
+            if curl -sf -o /dev/null http://127.0.0.1:4321/; then
+              echo "✅ Server booted and responded successfully"
+              exit 0
+            fi
+            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+              echo "❌ Server process exited before responding"
+              exit 1
+            fi
+            sleep 1
+          done
+
+          echo "❌ Server did not respond within timeout"
+          exit 1
+
   build-and-push:
     needs: [checks, perf-budget]
     if: github.event_name != 'pull_request'
