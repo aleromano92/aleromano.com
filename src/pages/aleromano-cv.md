@@ -7,9 +7,11 @@ description: Curriculum Vitae of Alessandro Romano
 # Alessandro Romano
 **Insightful. Precise. Human.**
 
+*   **Title:** Senior Engineering Manager, Father of 2
 *   **Location:** Milan, Lombardy, Italy
 *   **Email:** [write me](https://aleromano.com/contact?reason=job)
 *   **LinkedIn:** [linkedin.com/in/alessandroromano92](https://linkedin.com/in/alessandroromano92)
+*   **GitHub:** [github.com/aleromano92](https://github.com/aleromano92)
 *   **Website:** [aleromano.com](https://aleromano.com)
 
 <div class="cv-actions">
@@ -35,8 +37,12 @@ I strongly believe people come before processes and tools and I think great Team
 
 ## Work Experience
 
+<div class="job-header">
+
 ### Senior Engineering Manager & Milan Hub Site Lead
 **Mollie, Milan (IT) | 2025/03 - present**
+
+</div>
 
 I was promoted to Engineering Leader of the Merchant Monitoring domain. I currently manage two Engineering Managers and still have one team reporting directly to me.
 As Milan Hub Site Lead, I handle all operational and bureaucratic topics, aiming to make the Hub an outstanding place to work.
@@ -56,8 +62,12 @@ perfectly functional but clearly suboptimal.
 * I led the Milan Hub’s growth from **8 to 70+ employees** in a single year, including
 opening a new office in downtown Milan.
 
+<div class="job-header">
+
 ### Engineering Manager
 **Mollie, Milan (IT) | 2023/12 - 2025/03**
+
+</div>
 
 I manage three teams in the Merchant Monitoring domain, making sure bad actors stay out of our door.
 
@@ -67,8 +77,12 @@ I manage three teams in the Merchant Monitoring domain, making sure bad actors s
 *   Built an internal Sanctions Screening tool, including a full ETL pipeline connected to public sanctions lists and a fuzzy-matching algorithm. It became a key asset for the Customer Due Diligence team, allowing deep sanctions checks across our entire merchant base in **hours instead of days**.
 *   Rolled out a Case Management System for all Operational teams, integrated with our automated decisioning engine. When a human needs to step in, the system centralizes every relevant piece of information, enabling fast, well-informed decisions without relying on external tools. This reduced investigation time for complex financial-crime cases **from weeks to days**.
 
+<div class="job-header">
+
 ### Head of Engineering
 **Banca AideXa, Milan (IT) | 2020/10 - 2023/12**
+
+</div>
 
 I was able to achieve great results thanks to the amazing team I created, led, and managed.
 
@@ -87,8 +101,12 @@ I was able to achieve great results thanks to the amazing team I created, led, a
 *   Regularly involved all the AideXers in monthly Open Forums about Tech topics relevant to the Business, opening the field to GenAI usage.
 *   Implemented new policies and processes using automation to stay compliant with banking regulations (monthly checking 3rd parties respecting SLAs).
 
+<div class="job-header">
+
 ### Engineering Manager
 **lastminute.com, Chiasso (CH) | 2019/04 - 2020/09**
+
+</div>
 
 My role is a very unique one. Let's sum it up in a sentence: I help people shine.
 
@@ -105,8 +123,12 @@ My role is a very unique one. Let's sum it up in a sentence: I help people shine
 
 *Besides my usual work in the team, I'm an active member of &lt;❤ FrontLovers /&gt;, our multi-country Community of Practice regarding FrontEnd topics.*
 
+<div class="job-header">
+
 ### Software Engineer
 **lastminute.com, Chiasso (CH) | 2017/01 - 2019/04**
+
+</div>
 
 Started just as Front-End developer, during my journey in lastminute.com I got acquainted with Back-End and Mobile technologies. Right now, I usually develop end-to-end user stories from the REST service to the front-ends.
 In our team we are very committed to deliver value thanks to eXtreme Programming techniques: pair programming enabled us to share knowledge of the domain and the technology.
@@ -119,32 +141,52 @@ Typescript helped a lot in destroying the silos of front-end, back-end and mobil
 On the back-end side we are writing as much Kotlin as possible, enjoying its reduced verbosity and good type-inference.
 I usually play the role of the Scrum master and my aim is to make my team as self-organized as possible so it won't even need this role at all!
 
+<div class="job-header">
+
 ### Fullstack Developer
 **Cornèr Bank via Mac Solutions, Bedano (CH) | 2016/06 - 2016/12**
+
+</div>
 
 I collaborate in both developing and maintaining Java applications: most of them are built on Spring (3.2) and they're all bundled with Maven.
 We develop both for IBM Websphere Application Server and an Enterprise Service Bus running on Apache ServiceMix.
 My everyday tools are Jenkins, UML, Squirrel, Splunk, Sonar, IBM Rational and Eclipse.
 
+<div class="job-header">
+
 ### Web Developer
 **Whirlpool EMEA, Comerio (IT) | 2014/04 - 2014/10**
 
+</div>
+
 Web development of the Whirlpool EMEA Partner Store web application on IBM Websphere Application Server 8.5.5 Network Deployment.
+
+<div class="job-header">
 
 ### Web&Mobile Fullstack Developer
 **Elmec Informatica, Brunello (IT) | 2011/09 - 2016/06**
+
+</div>
 
 Multiplatform Web and Mobile Front-End development with IBM Worklight, Cordova (Phonegap), HTML5, Javascript, CSS3, Less, Bootstrap, jQuery, jQueryMobile and Framework7.
 **Back-End:** Java EE on IBM Websphere Application Server 7.5 and 8.5.5 Network Deployment.
 **Web Server:** IBM HTTP Server (Apache).
 I write English technical articles for the company's internal magazine.
 
+<div class="job-header">
+
 ### Web Developer
 **3i Technology s.r.l, Tradate (IT) | 2011/07 - 2011/08**
+
+</div>
 ASP.NET and VisualBasic.NET Web Development.
+
+<div class="job-header">
 
 ### Beta Tester (internship)
 **Alesys Srl, Cavaria con Premezzo (IT) | 2010/12 - 2011/01**
+
+</div>
 Beta-testing of a desktop C business application.
 
 ## Education

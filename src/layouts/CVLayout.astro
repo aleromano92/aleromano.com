@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import profilePic from '../assets/alepro.png';
+import profilePic from '../assets/alepro-new.jpg';
 import '../styles/theme.css';
 import '../styles/global.css';
 import '../styles/buttons.css';
@@ -42,13 +42,14 @@ const description = frontmatter.description || 'Curriculum Vitae of Alessandro R
 
             .profile-image {
                 display: block;
+                margin: 0 auto;
             }
 
             .cv-section {
                 margin-bottom: 3rem;
             }
 
-            .cv-actions {
+            :global(.cv-actions) {
                 margin: 1.5rem 0 2rem;
                 clear: both;
             }
@@ -139,17 +140,37 @@ const description = frontmatter.description || 'Curriculum Vitae of Alessandro R
             }
 
             @media print {
+                @page {
+                    margin: 1.6cm 1.8cm;
+                }
+
+                html,
                 body {
-                    background-color: var(--color-bg) !important;
+                    background-color: #ffffff !important;
                     -webkit-print-color-adjust: exact;
                     print-color-adjust: exact;
-                    color: black;
+                    color: #000000;
                 }
 
                 .cv-container {
                     max-width: 100%;
-                    padding: 2rem; /* Added padding for print */
+                    padding: 0;
                     margin: 0;
+                }
+
+                .markdown-content :global(h1),
+                .markdown-content :global(h2),
+                .markdown-content :global(h3),
+                .markdown-content :global(strong) {
+                    color: #000000 !important;
+                }
+
+                .markdown-content :global(h2) {
+                    border-bottom-color: #ccc;
+                }
+
+                .markdown-content :global(hr) {
+                    border-top-color: #ccc;
                 }
 
                 .markdown-content :global(h2),
@@ -162,12 +183,23 @@ const description = frontmatter.description || 'Curriculum Vitae of Alessandro R
                     break-inside: avoid;
                 }
 
-                a {
+                .markdown-content :global(a) {
                     text-decoration: none;
-                    color: black;
+                    color: #000000 !important;
                 }
 
-                .cv-actions {
+                .markdown-content :global(a[href^='http'])::after {
+                    content: ' (' attr(href) ')';
+                    font-size: 0.75em;
+                    color: #555555;
+                }
+
+                :global(.job-header) {
+                    break-inside: avoid;
+                    break-after: avoid;
+                }
+
+                :global(.cv-actions) {
                     display: none;
                 }
             }
@@ -181,7 +213,7 @@ const description = frontmatter.description || 'Curriculum Vitae of Alessandro R
                         src={profilePic}
                         alt="Alessandro Romano"
                         width={210}
-                        height={250}
+                        height={315}
                         class="profile-image"
                         quality="high"
                     />
