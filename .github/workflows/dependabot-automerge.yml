@@ -1,32 +1,79 @@
 name: Dependabot auto-merge
 
-# Queues GitHub auto-merge on Dependabot PRs that contain no major bump. The
-# actual merge only happens once the required status checks on main pass.
+# Two steps, so merging never depends on branch-rule bypass settings:
+#   1. On a Dependabot PR with no major bump, add the `automerge` label.
+#   2. Whenever a CI workflow (Deploy to Production / Mutation testing)
+#      finishes for that PR's branch, squash-merge it if every check on the
+#      latest commit is green. Whichever workflow finishes last does the merge.
 #
-# Uses AUTOMERGE_TOKEN (a fine-grained PAT with Contents + Pull requests write
-# on this repo) rather than GITHUB_TOKEN: a merge made with GITHUB_TOKEN does
-# not trigger the push-to-main deploy workflow. It must be stored as a
-# *Dependabot* secret (Settings → Secrets → Dependabot): Dependabot-triggered
-# runs cannot read regular Actions secrets.
+# The merge uses AUTOMERGE_TOKEN (a fine-grained PAT with Contents + Pull
+# requests write on this repo) rather than GITHUB_TOKEN: a merge made with
+# GITHUB_TOKEN does not trigger the push-to-main deploy workflow. It must be
+# stored as a *Dependabot* secret (Settings → Secrets → Dependabot):
+# Dependabot-triggered runs cannot read regular Actions secrets.
 
-on: pull_request
+on:
+  pull_request:
+  workflow_run:
+    workflows: ["Deploy to Production", "Mutation testing"]
+    types: [completed]
 
 permissions:
   contents: write
   pull-requests: write
+  issues: write # creating the `automerge` label
 
 jobs:
-  automerge:
-    if: github.event.pull_request.user.login == 'dependabot[bot]'
+  label:
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Fetch Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@v3
 
-      - name: Enable auto-merge (squash)
+      - name: Label for auto-merge
         if: steps.metadata.outputs.update-type != 'version-update:semver-major'
-        run: gh pr merge --auto --squash "$PR_URL"
+        run: |
+          gh label create automerge --repo "$REPO" --color 0E8A16 --force
+          gh pr edit "$PR_URL" --add-label automerge
         env:
+          REPO: ${{ github.repository }}
           PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  merge:
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      startsWith(github.event.workflow_run.head_branch, 'dependabot/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge if labelled and every check is green on the latest commit
+        run: |
+          pr=$(gh pr list --repo "$REPO" --head "$BRANCH" --state open \
+            --json number,headRefOid,author,labels \
+            --jq ".[] | select(.author.is_bot and .headRefOid == \"$SHA\" and any(.labels[]; .name == \"automerge\")) | .number")
+          if [ -z "$pr" ]; then
+            echo "Nothing to merge (not labelled, not Dependabot, or a newer commit is pending CI)."
+            exit 0
+          fi
+
+          # Ignore this workflow's own runs; every other check must have finished
+          # successfully (skipped/neutral jobs, e.g. deploy on PRs, are fine).
+          blocking=$(gh pr view "$pr" --repo "$REPO" --json statusCheckRollup --jq '
+            [.statusCheckRollup[]
+             | select(.workflowName != "Dependabot auto-merge")
+             | select((.conclusion // .state) as $c | ($c | IN("SUCCESS","SKIPPED","NEUTRAL")) | not)
+            ] | length')
+          if [ "$blocking" != "0" ]; then
+            echo "$blocking check(s) still running or failed; a later workflow_run will retry."
+            exit 0
+          fi
+          gh pr merge "$pr" --repo "$REPO" --squash --delete-branch
+        env:
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
           GH_TOKEN: ${{ secrets.AUTOMERGE_TOKEN }}
