@@ -12,6 +12,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Docker Dev**: `npm run docker:dev`
 - **Deploy**: `npm run deploy` (builds Docker image on remote Hetzner VPS via SSH)
 - **Observability local testing**: `npm run docker:dev:obs` 
+- **Complexity gate**: `npm run complexity` (needs the [`cccc`](https://github.com/moznion/cccc) binary on `PATH` — grab a release binary or `cargo install cccc-cli`)
+
+## Complexity gate (must pass)
+
+Before considering any change done, run `npm run complexity` and make sure it passes. [`cccc.toml`](cccc.toml) caps every function at **cognitive ≤ 40 and cyclomatic ≤ 40**; CI fails otherwise. If a function exceeds a limit, refactor it (extract well-named helpers, early returns, lookup tables) — never raise the thresholds or add excludes to get green. `cccc` does not parse `.astro` files, so keep non-trivial logic in `.ts` modules where it is both tested and measured.
 
 ## Architecture
 

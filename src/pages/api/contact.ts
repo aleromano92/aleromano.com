@@ -91,132 +91,173 @@ async function getMailTransportConfig(): Promise<MailTransportConfig> {
   }
 }
 
-export const POST: APIRoute = async ({ request }) => {
+function badRequest(message: string, code?: string): Response {
+  return createJsonResponse({ success: false, message, ...(code && { code }) }, HTTP_BAD_REQUEST);
+}
+
+interface ContactSubmission {
+  reason: string;
+  name: string;
+  email: string;
+  message: string;
+  blogPostTitle?: string;
+}
+
+// Each step returns either the value it produced or the Response that ends the request.
+
+function checkRequestHeaders(request: Request): Response | null {
   if (request.headers.get("Content-Type") !== "application/json") {
-    return createJsonResponse({ success: false, message: "Invalid content type, expected application/json." }, HTTP_BAD_REQUEST);
+    return badRequest("Invalid content type, expected application/json.");
   }
 
   const contentLength = request.headers.get("Content-Length");
   if (contentLength && parseInt(contentLength, 10) > MAX_PAYLOAD_BYTES) {
     return createJsonResponse({ success: false, message: "Payload too large." }, 413);
   }
+  return null;
+}
+
+async function readJsonObject(request: Request): Promise<Record<string, unknown> | Response> {
+  const bodyText = await request.text();
+  if (Buffer.byteLength(bodyText, 'utf8') > MAX_PAYLOAD_BYTES) {
+    return createJsonResponse({ success: false, message: "Payload too large." }, 413);
+  }
+
+  let data: unknown;
+  try {
+    data = JSON.parse(bodyText);
+  } catch {
+    return badRequest("Invalid JSON.");
+  }
+
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+    return badRequest("Invalid JSON.");
+  }
+  return data as Record<string, unknown>;
+}
+
+function checkTripwires({ website, token }: Record<string, unknown>): Response | null {
+  // Honeypot: the honest client always sends `website`, always empty.
+  if (typeof website !== 'string' || website !== '') {
+    console.warn('Contact tripwire: honeypot', { present: website !== undefined });
+    return badRequest(TRIPWIRE_MESSAGE);
+  }
+
+  const tokenResult = verifyToken(typeof token === 'string' ? token : '');
+  if (!tokenResult.valid) {
+    console.warn('Contact tripwire: token', { reason: tokenResult.reason });
+    return badRequest(TRIPWIRE_MESSAGE, 'invalid-token');
+  }
+  return null;
+}
+
+function validateFields(data: Record<string, unknown>): ContactSubmission | Response {
+  const { reason, name, email, message, blogPostTitle } = data;
+
+  if (typeof reason !== 'string' || !reason) {
+    return badRequest("Contact reason is required.");
+  }
+
+  if (!VALID_CONTACT_REASONS.includes(reason)) {
+    return badRequest("Invalid contact reason provided.");
+  }
+
+  if (typeof name !== 'string' || typeof email !== 'string' || typeof message !== 'string') {
+    return badRequest("Invalid field types.");
+  }
+
+  const missingFields = Object.entries({ name, email, message })
+    .filter(([, value]) => !value)
+    .map(([field]) => field);
+  if (missingFields.length > 0) {
+    return badRequest(`Missing required fields: ${missingFields.join(', ')}.`);
+  }
+
+  if (name.length > MAX_NAME_LENGTH || email.length > MAX_EMAIL_LENGTH || message.length > MAX_MESSAGE_LENGTH) {
+    return badRequest("One or more fields exceed the maximum allowed length.");
+  }
+
+  if (blogPostTitle !== undefined && (typeof blogPostTitle !== 'string' || blogPostTitle.length > MAX_BLOG_POST_TITLE_LENGTH)) {
+    return badRequest("Blog post title is invalid or exceeds the maximum allowed length.");
+  }
+
+  return { reason, name, email, message, blogPostTitle };
+}
+
+// Human Mistake checks: specific feedback so a real sender can fix a typo'd
+// address. The MX lookup fails open — DNS uncertainty must not cost a lead.
+async function checkEmailAddress(email: string): Promise<Response | null> {
+  if (!isPlausibleEmail(email)) {
+    return badRequest("That email address doesn't look right. Please double-check it.", 'email-syntax');
+  }
+
+  if (!(await domainAcceptsMail(email))) {
+    return badRequest("The domain of that email address doesn't seem to receive mail. Is it spelled correctly?", 'email-domain');
+  }
+  return null;
+}
+
+function buildMailOptions({ reason, name, email, message, blogPostTitle }: ContactSubmission, recipient: string) {
+  return {
+    from: `"${name} via aleromano.com" <${recipient}>`,
+    to: recipient,
+    replyTo: email,
+    subject: `Contact Form: ${reason}${blogPostTitle ? ` - ${blogPostTitle}` : ''}`,
+    text: `You have a new contact form submission:\n\nName: ${name}\nEmail: ${email}\nReason: ${reason}${blogPostTitle ? `\nBlog Post Title: ${blogPostTitle}` : ''}\nMessage:\n${message}`,
+    html: `<p>You have a new contact form submission:</p>
+           <ul>
+             <li><strong>Name:</strong> ${name}</li>
+             <li><strong>Email:</strong> ${email}</li>
+             <li><strong>Reason:</strong> ${reason}</li>
+             ${blogPostTitle ? `<li><strong>Blog Post Title:</strong> ${blogPostTitle}</li>` : ''}
+           </ul>
+           <p><strong>Message:</strong></p>
+           <p>${message.replace(/\n/g, '<br>')}</p>`,
+  };
+}
+
+async function sendContactEmail(submission: ContactSubmission): Promise<Response | null> {
+  const PERSONAL_EMAIL = import.meta.env.ALE_PERSONAL_EMAIL || process.env.ALE_PERSONAL_EMAIL;
+  if (!PERSONAL_EMAIL) {
+    console.error("ALE_PERSONAL_EMAIL environment variable is not set through import.meta.env or process.env.");
+    return createJsonResponse({ success: false, message: "Server configuration error (email recipient not set). Please try again later." }, HTTP_INTERNAL_SERVER_ERROR);
+  }
+
+  const { transportOptions, isEthereal } = await getMailTransportConfig();
+  const transporter = nodemailer.createTransport(transportOptions);
 
   try {
-    const bodyText = await request.text();
-    if (Buffer.byteLength(bodyText, 'utf8') > MAX_PAYLOAD_BYTES) {
-      return createJsonResponse({ success: false, message: "Payload too large." }, 413);
+    const info = await transporter.sendMail(buildMailOptions(submission, PERSONAL_EMAIL));
+    console.log('Message sent: %s', info.messageId);
+    if (isEthereal) {
+      console.log('Preview URL (Ethereal): %s', nodemailer.getTestMessageUrl(info));
     }
+  } catch (emailError) {
+    console.error("Error sending email:", emailError);
+    return createJsonResponse({ success: false, message: "Failed to send message. Please try again later." }, HTTP_INTERNAL_SERVER_ERROR);
+  }
+  return null;
+}
 
-    let data: Record<string, unknown>;
-    try {
-      data = JSON.parse(bodyText);
-    } catch {
-      return createJsonResponse({ success: false, message: "Invalid JSON." }, HTTP_BAD_REQUEST);
-    }
+export const POST: APIRoute = async ({ request }) => {
+  const headerError = checkRequestHeaders(request);
+  if (headerError) return headerError;
 
-    if (typeof data !== 'object' || data === null || Array.isArray(data)) {
-      return createJsonResponse({ success: false, message: "Invalid JSON." }, HTTP_BAD_REQUEST);
-    }
+  try {
+    const data = await readJsonObject(request);
+    if (data instanceof Response) return data;
 
-    const { reason, name, email, message, blogPostTitle, website, token } = data;
+    const tripwire = checkTripwires(data);
+    if (tripwire) return tripwire;
 
-    // Honeypot: the honest client always sends `website`, always empty.
-    if (typeof website !== 'string' || website !== '') {
-      console.warn('Contact tripwire: honeypot', { present: website !== undefined });
-      return createJsonResponse({ success: false, message: TRIPWIRE_MESSAGE }, HTTP_BAD_REQUEST);
-    }
+    const submission = validateFields(data);
+    if (submission instanceof Response) return submission;
 
-    const tokenResult = verifyToken(typeof token === 'string' ? token : '');
-    if (!tokenResult.valid) {
-      console.warn('Contact tripwire: token', { reason: tokenResult.reason });
-      return createJsonResponse(
-        { success: false, message: TRIPWIRE_MESSAGE, code: 'invalid-token' },
-        HTTP_BAD_REQUEST
-      );
-    }
+    const addressError = await checkEmailAddress(submission.email);
+    if (addressError) return addressError;
 
-    if (typeof reason !== 'string' || !reason) {
-      return createJsonResponse({ success: false, message: "Contact reason is required." }, HTTP_BAD_REQUEST);
-    }
-
-    if (!VALID_CONTACT_REASONS.includes(reason)) {
-      return createJsonResponse({ success: false, message: "Invalid contact reason provided." }, HTTP_BAD_REQUEST);
-    }
-
-    if (typeof name !== 'string' || typeof email !== 'string' || typeof message !== 'string') {
-      return createJsonResponse({ success: false, message: "Invalid field types." }, HTTP_BAD_REQUEST);
-    }
-
-    if (!name || !email || !message) {
-      const missingFields: string[] = [];
-      if (!name) missingFields.push("name");
-      if (!email) missingFields.push("email");
-      if (!message) missingFields.push("message");
-      return createJsonResponse({ success: false, message: `Missing required fields: ${missingFields.join(', ')}.` }, HTTP_BAD_REQUEST);
-    }
-
-    if (name.length > MAX_NAME_LENGTH || email.length > MAX_EMAIL_LENGTH || message.length > MAX_MESSAGE_LENGTH) {
-      return createJsonResponse({ success: false, message: "One or more fields exceed the maximum allowed length." }, HTTP_BAD_REQUEST);
-    }
-
-    if (blogPostTitle !== undefined && (typeof blogPostTitle !== 'string' || blogPostTitle.length > MAX_BLOG_POST_TITLE_LENGTH)) {
-      return createJsonResponse({ success: false, message: "Blog post title is invalid or exceeds the maximum allowed length." }, HTTP_BAD_REQUEST);
-    }
-
-    // Human Mistake checks: specific feedback so a real sender can fix a typo'd
-    // address. The MX lookup fails open — DNS uncertainty must not cost a lead.
-    if (!isPlausibleEmail(email)) {
-      return createJsonResponse(
-        { success: false, message: "That email address doesn't look right. Please double-check it.", code: 'email-syntax' },
-        HTTP_BAD_REQUEST
-      );
-    }
-
-    if (!(await domainAcceptsMail(email))) {
-      return createJsonResponse(
-        { success: false, message: "The domain of that email address doesn't seem to receive mail. Is it spelled correctly?", code: 'email-domain' },
-        HTTP_BAD_REQUEST
-      );
-    }
-
-    const PERSONAL_EMAIL = import.meta.env.ALE_PERSONAL_EMAIL || process.env.ALE_PERSONAL_EMAIL;
-    if (!PERSONAL_EMAIL) {
-      console.error("ALE_PERSONAL_EMAIL environment variable is not set through import.meta.env or process.env.");
-      return createJsonResponse({ success: false, message: "Server configuration error (email recipient not set). Please try again later." }, HTTP_INTERNAL_SERVER_ERROR);
-    }
-
-    if (VALID_CONTACT_REASONS.includes(reason)) {
-      const { transportOptions, isEthereal } = await getMailTransportConfig();
-      const transporter = nodemailer.createTransport(transportOptions);
-
-      const mailOptions = {
-        from: `"${name} via aleromano.com" <${PERSONAL_EMAIL}>`,
-        to: PERSONAL_EMAIL,
-        replyTo: email,
-        subject: `Contact Form: ${reason}${blogPostTitle ? ` - ${blogPostTitle}` : ''}`,
-        text: `You have a new contact form submission:\n\nName: ${name}\nEmail: ${email}\nReason: ${reason}${blogPostTitle ? `\nBlog Post Title: ${blogPostTitle}` : ''}\nMessage:\n${message}`,
-        html: `<p>You have a new contact form submission:</p>
-               <ul>
-                 <li><strong>Name:</strong> ${name}</li>
-                 <li><strong>Email:</strong> ${email}</li>
-                 <li><strong>Reason:</strong> ${reason}</li>
-                 ${blogPostTitle ? `<li><strong>Blog Post Title:</strong> ${blogPostTitle}</li>` : ''}
-               </ul>
-               <p><strong>Message:</strong></p>
-               <p>${message.replace(/\n/g, '<br>')}</p>`,
-      };
-
-      try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Message sent: %s', info.messageId);
-        if (isEthereal) {
-          console.log('Preview URL (Ethereal): %s', nodemailer.getTestMessageUrl(info));
-        }
-      } catch (emailError) {
-        console.error("Error sending email:", emailError);
-        return createJsonResponse({ success: false, message: "Failed to send message. Please try again later." }, HTTP_INTERNAL_SERVER_ERROR);
-      }
-    }
+    const sendError = await sendContactEmail(submission);
+    if (sendError) return sendError;
 
     return createJsonResponse({ success: true, message: "Your message has been received. Thank you!" }, HTTP_OK);
 

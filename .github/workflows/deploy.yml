@@ -36,6 +36,11 @@ jobs:
       - name: Run tests with coverage gate
         run: npm run test:coverage
 
+      - name: Complexity gate (cccc)
+        uses: moznion/cccc-action@v1
+        with:
+          path: src scripts observability # thresholds come from cccc.toml
+
   perf-budget:
     name: Client bundle budget
     runs-on: ubuntu-latest

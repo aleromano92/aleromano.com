@@ -1,0 +1,6 @@
+# Complexity gate — https://github.com/moznion/cccc
+# Run with `npm run complexity`; enforced in CI. Note: `.astro` frontmatter is
+# not analyzed, so keep non-trivial logic in `.ts` modules.
+max-cognitive = 40
+max-cyclomatic = 40
+exclude = ["dist/**", ".astro/**", "coverage/**", ".stryker-tmp/**", "reports/**"]
