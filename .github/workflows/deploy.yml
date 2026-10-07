@@ -9,6 +9,13 @@ on:
       - main
   workflow_dispatch:
 
+# PR runs: a new push cancels the stale run. main: never cancel a deploy
+# mid-flight, but a burst of merges collapses to the running deploy plus the
+# latest pending one (GitHub drops older pending runs in the same group).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
