@@ -1,0 +1,32 @@
+name: Dependabot auto-merge
+
+# Queues GitHub auto-merge on Dependabot PRs that contain no major bump. The
+# actual merge only happens once the required status checks on main pass.
+#
+# Uses AUTOMERGE_TOKEN (a fine-grained PAT with Contents + Pull requests write
+# on this repo) rather than GITHUB_TOKEN: a merge made with GITHUB_TOKEN does
+# not trigger the push-to-main deploy workflow. It must be stored as a
+# *Dependabot* secret (Settings → Secrets → Dependabot): Dependabot-triggered
+# runs cannot read regular Actions secrets.
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+
+      - name: Enable auto-merge (squash)
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.AUTOMERGE_TOKEN }}

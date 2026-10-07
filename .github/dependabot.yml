@@ -1,0 +1,32 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Rome
+    groups:
+      # All security fixes land in a single PR instead of one per package.
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
+      # Routine bumps: one PR for minor/patch (auto-merged when CI is green),
+      # one for majors (left for review).
+      minor-and-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: [minor, patch]
+      major:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: [major]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
