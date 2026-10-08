@@ -3,23 +3,14 @@ import { getDaysAgoTimestamp, analyticsManager, deleteOldRecords } from './analy
 import { getDatabase } from './connection';
 
 describe('getDaysAgoTimestamp', () => {
-  let originalDateNow: () => number;
-
-  beforeEach(() => {
-    originalDateNow = Date.now;
-  });
-
   afterEach(() => {
-    Date.now = originalDateNow;
+    vi.restoreAllMocks();
   });
 
   it('should calculate correct timestamp for 30 days ago', () => {
     // Mock Date.now to return a fixed timestamp
     const mockNow = 1700000000000; // Mock timestamp in milliseconds
-    vi.stubGlobal('Date', {
-      ...Date,
-      now: () => mockNow
-    });
+    vi.spyOn(Date, 'now').mockReturnValue(mockNow);
 
     const result = getDaysAgoTimestamp(30);
     
@@ -34,10 +25,7 @@ describe('getDaysAgoTimestamp', () => {
 
   it('should calculate correct timestamp for 7 days ago', () => {
     const mockNow = 1700000000000;
-    vi.stubGlobal('Date', {
-      ...Date,
-      now: () => mockNow
-    });
+    vi.spyOn(Date, 'now').mockReturnValue(mockNow);
 
     const result = getDaysAgoTimestamp(7);
     const expectedCutoff = Math.floor(mockNow / 1000) - (7 * 24 * 60 * 60);
@@ -49,10 +37,7 @@ describe('getDaysAgoTimestamp', () => {
 
   it('should calculate correct timestamp for 1 day ago', () => {
     const mockNow = 1700000000000;
-    vi.stubGlobal('Date', {
-      ...Date,
-      now: () => mockNow
-    });
+    vi.spyOn(Date, 'now').mockReturnValue(mockNow);
 
     const result = getDaysAgoTimestamp(1);
     const expectedCutoff = Math.floor(mockNow / 1000) - (1 * 24 * 60 * 60);
@@ -64,10 +49,7 @@ describe('getDaysAgoTimestamp', () => {
 
   it('should handle edge case of 0 days', () => {
     const mockNow = 1700000000000;
-    vi.stubGlobal('Date', {
-      ...Date,
-      now: () => mockNow
-    });
+    vi.spyOn(Date, 'now').mockReturnValue(mockNow);
 
     const result = getDaysAgoTimestamp(0);
     const expectedCutoff = Math.floor(mockNow / 1000) - (0 * 24 * 60 * 60);

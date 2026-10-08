@@ -17,7 +17,7 @@ if (typeof window === 'undefined') {
   const { server } = await import('./server');
   
   server.listen({
-    onUnhandledRequest: 'bypass', // Allow non-mocked requests to pass through
+    onUnhandledFrame: 'bypass', // Allow non-mocked requests to pass through
   });
   
   console.log('[MSW] Server-side mocking enabled for development');

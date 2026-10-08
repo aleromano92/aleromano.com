@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import nodemailer from 'nodemailer';
+import nodemailer, { type TransportOptions } from 'nodemailer';
 import { verifyToken } from '../../utils/contact-token';
 import { isPlausibleEmail, domainAcceptsMail } from '../../utils/email-validation';
 
@@ -39,7 +39,7 @@ const MAX_MESSAGE_LENGTH = 5_000;
 const MAX_BLOG_POST_TITLE_LENGTH = 200;
 
 interface MailTransportConfig {
-  transportOptions: nodemailer.TransportOptions;
+  transportOptions: TransportOptions;
   isEthereal: boolean;
 }
 
@@ -57,7 +57,7 @@ async function getMailTransportConfig(): Promise<MailTransportConfig> {
         port: smtpPort,
         secure: false, // Typically, internal relays might not use TLS for app-to-relay communication.
                       // The relay itself handles secure connection to the external SMTP (e.g., Gmail).
-      } as nodemailer.TransportOptions,
+      } as TransportOptions,
       isEthereal: false,
     };
   } else {
@@ -85,7 +85,7 @@ async function getMailTransportConfig(): Promise<MailTransportConfig> {
           user: testAccount.user,
           pass: testAccount.pass,
         },
-      } as nodemailer.TransportOptions,
+      } as TransportOptions,
       isEthereal: true,
     };
   }
