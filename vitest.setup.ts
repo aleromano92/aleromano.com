@@ -21,7 +21,7 @@ process.env.ANALYTICS_SALT = 'test-salt-value';
 
 // Start MSW server before all tests
 beforeAll(() => {
-  server.listen({ onUnhandledRequest: 'warn' });
+  server.listen({ onUnhandledFrame: 'warn' });
 });
 
 // Reset handlers after each test to prevent test pollution

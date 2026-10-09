@@ -3,8 +3,8 @@ import type { CollectionEntry } from 'astro:content';
 import type { SupportedLanguage } from '../types/i18n';
 import { parseSlides } from '../utils/presentations';
 
-import 'reveal.js/dist/reveal.css';
-import 'reveal.js/dist/theme/night.css';
+import 'reveal.js/reveal.css';
+import 'reveal.js/theme/night.css';
 import 'reveal.js/plugin/highlight/monokai.css';
 
 declare global {
@@ -59,10 +59,10 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
 
         <script>
             import Reveal from 'reveal.js';
-            import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
-            import Highlight from 'reveal.js/plugin/highlight/highlight.esm.js';
-            import Notes from 'reveal.js/plugin/notes/notes.esm.js';
-            import Zoom from 'reveal.js/plugin/zoom/zoom.esm.js';
+            import Markdown from 'reveal.js/plugin/markdown';
+            import Highlight from 'reveal.js/plugin/highlight';
+            import Notes from 'reveal.js/plugin/notes';
+            import Zoom from 'reveal.js/plugin/zoom';
 
             // Initialize Reveal.js when DOM is ready
             document.addEventListener('DOMContentLoaded', function () {

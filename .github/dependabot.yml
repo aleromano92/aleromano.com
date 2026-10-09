@@ -22,6 +22,17 @@ updates:
         applies-to: version-updates
         patterns: ["*"]
         update-types: [major]
+    # Majors blocked UPSTREAM — not skipped by choice. The weekly Dependabot
+    # sweep routine re-checks each blocker and removes the entry once it's fixed.
+    ignore:
+      # Under Vitest 5, Stryker (9 and 10) kills almost no mutants
+      # (email-validation.ts: 6% vs 94% on Vitest 4), whatever coverageAnalysis
+      # or vitest.related is set to — the mutation gate would silently pass.
+      # https://github.com/stryker-mutator/stryker-js/issues/6210
+      - dependency-name: vitest
+        versions: [">=5"]
+      - dependency-name: "@vitest/coverage-v8"
+        versions: [">=5"]
 
   - package-ecosystem: github-actions
     directory: /

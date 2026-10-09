@@ -18,7 +18,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text-summary', 'html', 'lcov'],
       // Measure unit-testable TypeScript source. .astro components are covered by
-      // the build + `astro check` gate, not by vitest, so they are excluded here.
+      // the build + `npm run typecheck` gate, not by vitest, so they are excluded here.
       include: ['src/**/*.ts'],
       exclude: [
         'src/**/*.test.ts',
