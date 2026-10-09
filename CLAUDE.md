@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build, Lint & Test Commands
 - **Development**: `npm run dev`
 - **Build**: `npm run build` (runs TypeScript check + Astro build)
-- **TypeScript Check**: `npx astro check`
+- **TypeScript Check**: `npm run typecheck` (TypeScript 7.1 `tsc` + `@astrojs/ts-content-mapper` for `.astro` files; replaces `astro check`, which does not support TypeScript 7)
 - **Test All**: `npm test`
 - **Test Single File**: `npx vitest run src/path/to/file.test.ts`
 - **Test Watch Mode**: `npm run test:watch`

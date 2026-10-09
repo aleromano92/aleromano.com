@@ -25,11 +25,6 @@ updates:
     # Majors blocked UPSTREAM — not skipped by choice. The weekly Dependabot
     # sweep routine re-checks each blocker and removes the entry once it's fixed.
     ignore:
-      # @astrojs/check needs TypeScript's programmatic API, which the TS 7
-      # native compiler does not ship yet (expected in 7.1).
-      # https://github.com/withastro/astro/issues/17268
-      - dependency-name: typescript
-        versions: [">=7"]
       # Under Vitest 5, Stryker (9 and 10) kills almost no mutants
       # (email-validation.ts: 6% vs 94% on Vitest 4), whatever coverageAnalysis
       # or vitest.related is set to — the mutation gate would silently pass.

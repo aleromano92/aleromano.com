@@ -65,7 +65,7 @@ npm run test:watch            # Test watch mode
 npm run docker:dev            # Full dev stack with nginx
 
 # Content operations
-npx astro check               # TypeScript validation for .astro files
+npm run typecheck             # TypeScript validation for .ts and .astro files
 ```
 
 ## 🐳 Docker Magic

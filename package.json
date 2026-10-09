@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "typecheck": "node scripts/typecheck.mjs",
+    "build": "npm run typecheck && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "predocker:build": "npm test",
@@ -26,10 +27,10 @@
     "postinstall": "node -e \"if (process.env.CI || process.env.GEOIP_DOWNLOAD === '0') { process.exit(0); } import('geolite2-redist').then(g => g.downloadDbs())\""
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.10",
     "@astrojs/markdown-remark": "^7.0.1",
     "@astrojs/node": "^11.1.6",
     "@astrojs/rss": "^4.0.19",
+    "@astrojs/ts-content-mapper": "^0.2.0",
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/auto-instrumentations-node": "^0.80.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.222.0",
@@ -50,12 +51,15 @@
     "reveal.js": "^6.0.2",
     "shiki": "^4.5.0",
     "turndown": "^7.2.4",
-    "typescript": "^6.0.3"
+    "typescript": "7.1.0-dev.20261008.1"
   },
   "devDependencies": {
     "@astrojs/sitemap": "^3.7.4",
+    "@emnapi/core": "^1.11.3",
+    "@emnapi/runtime": "^1.11.3",
     "@stryker-mutator/core": "^10.0.0",
     "@stryker-mutator/vitest-runner": "^10.0.0",
+    "@tybys/wasm-util": "^0.10.4",
     "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^26.6.4",
     "@types/nodemailer": "^8.0.2",
@@ -67,5 +71,10 @@
   },
   "allowScripts": {
     "better-sqlite3": false
+  },
+  "overrides": {
+    "msw": {
+      "typescript": "$typescript"
+    }
   }
 }

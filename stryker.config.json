@@ -6,6 +6,8 @@
   "coverageAnalysis": "perTest",
   "_ignore_comment": "Agent tooling contains directory symlinks (.claude/skills/*) that break the sandbox copy with EISDIR.",
   "ignorePatterns": [".claude", ".agents"],
+  "_tsconfig_comment": "Stryker rewrites relative paths in tsconfig.json with TypeScript's JS API, which TypeScript 7 does not ship. Our tsconfig only extends a package, so point it at a missing file to skip the rewrite.",
+  "tsconfigFile": "stryker-skip-tsconfig-rewrite.json",
   "mutate": ["src/utils/**/*.ts", "!src/utils/**/*.test.ts"],
   "reporters": ["html", "clear-text", "progress"],
   "clearTextReporter": { "allowColor": false },
