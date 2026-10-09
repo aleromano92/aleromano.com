@@ -1,4 +1,6 @@
-FROM node:24-alpine AS base
+# Pulled via Google's free Docker Hub mirror: GitHub runners regularly hit
+# auth.docker.io timeouts and anonymous pull rate limits.
+FROM mirror.gcr.io/library/node:24-alpine AS base
 WORKDIR /app
 
 # By copying only the package.json and package-lock.json here, we ensure that the following `-deps` steps are independent of the source code.
