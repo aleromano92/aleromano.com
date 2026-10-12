@@ -9,8 +9,10 @@ name: Dependabot auto-merge
 # The merge uses AUTOMERGE_TOKEN (a fine-grained PAT with Contents + Pull
 # requests write on this repo) rather than GITHUB_TOKEN: a merge made with
 # GITHUB_TOKEN does not trigger the push-to-main deploy workflow. It must be
-# stored as a *Dependabot* secret (Settings → Secrets → Dependabot):
-# Dependabot-triggered runs cannot read regular Actions secrets.
+# stored as an *Actions* secret (Settings → Secrets → Actions): the merge job
+# runs on workflow_run, which gets Actions secrets even when the actor is
+# Dependabot. With it stored only as a Dependabot secret, GH_TOKEN is empty
+# and gh exits with code 4.
 
 on:
   pull_request:
@@ -71,7 +73,13 @@ jobs:
             echo "$blocking check(s) still running or failed; a later workflow_run will retry."
             exit 0
           fi
-          gh pr merge "$pr" --repo "$REPO" --squash --delete-branch
+          # Grouped PRs often go green together; when another merge lands first
+          # GitHub rejects this one with "Base branch was modified", so retry.
+          for attempt in 1 2 3; do
+            gh pr merge "$pr" --repo "$REPO" --squash --delete-branch && exit 0
+            sleep $((attempt * 10))
+          done
+          exit 1
         env:
           REPO: ${{ github.repository }}
           BRANCH: ${{ github.event.workflow_run.head_branch }}
