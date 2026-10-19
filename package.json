@@ -51,7 +51,7 @@
     "reveal.js": "^6.0.2",
     "shiki": "^4.5.0",
     "turndown": "^7.2.4",
-    "typescript": "7.1.0-dev.20261008.1"
+    "typescript": "7.1.0-dev.20261015.1"
   },
   "devDependencies": {
     "@astrojs/sitemap": "^3.7.4",
