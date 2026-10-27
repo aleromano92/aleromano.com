@@ -63,11 +63,11 @@
     "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^26.6.5",
     "@types/nodemailer": "^8.0.2",
-    "@vitest/coverage-v8": "^4.1.12",
+    "@vitest/coverage-v8": "^5.0.5",
     "autocannon": "^8.0.0",
     "fast-check": "^4.10.2",
     "msw": "^3.0.3",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.5"
   },
   "allowScripts": {
     "better-sqlite3": false
