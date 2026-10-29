@@ -1,4 +1,7 @@
+import { register } from 'node:module';
+import os from 'node:os';
 import process from 'node:process';
+import { createAddHookMessageChannel } from 'import-in-the-middle';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
@@ -23,6 +26,12 @@ if (!endpointBase) {
         diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
     }
 
+    // The server is ESM, so instrumentations need an ESM loader hook: without it
+    // `import 'node:http'` bypasses the require hook and no spans are created.
+    // The message channel limits the hook to modules an instrumentation targets.
+    const { registerOptions, waitForAllMessagesAcknowledged } = createAddHookMessageChannel();
+    register('import-in-the-middle/hook.mjs', import.meta.url, registerOptions);
+
     const sdk = new NodeSDK({
         resource: resourceFromAttributes({
             [serviceNameAttribute]: process.env.OTEL_SERVICE_NAME || 'aleromano-web',
@@ -41,17 +50,27 @@ if (!endpointBase) {
     } catch (error) {
         console.error('[otel] SDK start error, tracing disabled:', error);
     }
+    await waitForAllMessagesAcknowledged();
 
     if (sdkStarted) {
-        const shutdown = async () => {
+        // A signal listener replaces Node's default exit, so flush spans and exit
+        // ourselves. Re-raising the signal would not work: in the container node
+        // is PID 1, and the kernel ignores signals PID 1 has no handler for.
+        // The flush is capped so an unreachable collector can't outlast Docker's
+        // 10s stop timeout, which would SIGKILL the server mid-request.
+        const shutdown = async (signal) => {
             try {
-                await sdk.shutdown();
+                await Promise.race([
+                    sdk.shutdown(),
+                    new Promise((resolve) => setTimeout(resolve, 5000).unref()),
+                ]);
             } catch (error) {
                 console.error('[otel] shutdown error:', error);
             }
+            process.exit(128 + os.constants.signals[signal]);
         };
 
-        process.on('SIGTERM', shutdown);
-        process.on('SIGINT', shutdown);
+        process.once('SIGTERM', shutdown);
+        process.once('SIGINT', shutdown);
     }
 }
