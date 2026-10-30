@@ -76,6 +76,12 @@
   "overrides": {
     "msw": {
       "typescript": "$typescript"
+    },
+    "typed-rest-client": {
+      "qs": "^6.17.1"
+    },
+    "hyperid": {
+      "uuid": "^11.1.1"
     }
   }
 }
