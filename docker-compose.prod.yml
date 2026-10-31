@@ -20,6 +20,9 @@ services:
       - OTEL_SERVICE_NAME=aleromano-web
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
       - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=production
+      # The collector only has a traces pipeline: OTLP metrics and logs get a 404.
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
       - NODE_OPTIONS=--import=./observability/otel/node-register.mjs
     volumes:
       # On your Hetzner VPS, you need to create the folder as being run by user ID 1001 (see Dockerfile)
@@ -27,8 +30,11 @@ services:
       # sudo chown -R 1001:1001 /var/docker/aleromano.com/app/data
       # sudo chmod -R 755 /var/docker/aleromano.com/app/data
       - /var/docker/aleromano.com/app/data:/app/data
+    # Compose stops a service only after everything that depends on it, so the
+    # collector stays up while the app flushes its last spans on shutdown.
     depends_on:
       - smtp-relay
+      - otel-collector
 
   nginx:
     image: nginx:alpine

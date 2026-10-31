@@ -6,6 +6,8 @@ services:
       - OTEL_SERVICE_NAME=aleromano-web
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
       - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=development
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
       - NODE_OPTIONS=--import=./observability/otel/node-register.mjs
     volumes:
       - app_data_dev:/app/data
