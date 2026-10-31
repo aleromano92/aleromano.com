@@ -45,7 +45,7 @@
     "es-module-lexer": "^3.0.4",
     "geolite2-redist": "^4.0.0",
     "import-in-the-middle": "^3.5.3",
-    "marked": "^18.1.1",
+    "marked": "^18.1.2",
     "maxmind": "^5.0.7",
     "nodemailer": "^10.2.1",
     "rehype-external-links": "^3.0.0",
