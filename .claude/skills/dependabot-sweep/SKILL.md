@@ -10,7 +10,7 @@ Dependabot PRs are grouped (security / minor-and-patch / major / actions). Non-m
 
 ## 1. Re-check held-back and temporary items
 
-- Each `ignore:` entry in `.github/dependabot.yml` links its upstream blocker. Vitest 5 is held because Stryker's vitest-runner kills almost no mutants under it. Verify with `npm i -D vitest@5 @vitest/coverage-v8@5 && npx stryker run --mutate src/utils/email-validation.ts` — Vitest 4 scores ~94%; if Vitest 5 is close to that, open a PR that upgrades and removes the ignore entry. Restore the working tree afterwards (`git checkout -- . && npm ci`).
+- Each `ignore:` entry in `.github/dependabot.yml` (if any) links its upstream blocker. Re-check whether the blocker has been fixed; if so, open a PR that upgrades and removes the entry. Restore the working tree afterwards (`git checkout -- . && npm ci`).
 - TypeScript is pinned to a 7.1 nightly because type checking (`npm run typecheck`: tsc + `@astrojs/ts-content-mapper`) needs 7.1 content mappers. When TypeScript 7.1.0 stable is released, open a PR switching to it (`^7.1.0`). If msw's peer range then accepts it, drop the `overrides.msw` entry; if `@astrojs/astro2tsx` now declares `@emnapi/core`, `@emnapi/runtime` and `@tybys/wasm-util` itself, drop those devDependencies. Until then, a newer nightly is fine.
 
 ## 2. Handle open Dependabot PRs
