@@ -1,5 +1,6 @@
 import { defineMiddleware } from 'astro:middleware';
 import { timingSafeEqual } from 'crypto';
+import { IMAGE_ENDPOINT_PATH, isValidImageRequest } from './utils/image-request';
 
 const ADMIN_USER = import.meta.env.ADMIN_USER || process.env.ADMIN_USER;
 const ADMIN_PASS = import.meta.env.ADMIN_PASS || process.env.ADMIN_PASS;
@@ -61,6 +62,11 @@ const POST_PAGE_RE = /^\/posts\/(?:it\/)?[^/]+\/?$/;
 export const onRequest = defineMiddleware(async (context, next) => {
   const { request, url } = context;
   const pathname = url.pathname;
+
+  // Astro turns some malformed image requests into 500s; answer them with 400.
+  if (pathname === IMAGE_ENDPOINT_PATH && !isValidImageRequest(url.searchParams)) {
+    return new Response('Bad Request', { status: 400, headers: { 'Content-Type': 'text/plain' } });
+  }
 
   if (pathname.startsWith('/admin')) {
     if (!isAuthorized(request)) {

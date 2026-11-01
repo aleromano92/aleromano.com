@@ -106,3 +106,28 @@ describe('admin auth middleware', () => {
     expect(res.headers.get('Link')).toContain('llms.txt');
   });
 });
+
+describe('image endpoint guard', () => {
+  it('returns 400 without running the handler for a malformed /_image request', async () => {
+    const onRequest = await loadMiddleware({ user: VALID_USER, pass: VALID_PASS });
+    const next = okNext();
+
+    const res = await onRequest(
+      contextFor('/_image?href=%2F_astro%2Flogo.Ab12.png&w=80&f=webp%29%20AND%201%3D1'),
+      next,
+    );
+
+    expect(res.status).toBe(400);
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it('passes a valid /_image request through to the handler', async () => {
+    const onRequest = await loadMiddleware({ user: VALID_USER, pass: VALID_PASS });
+    const next = okNext();
+
+    const res = await onRequest(contextFor('/_image?href=%2F_astro%2Flogo.Ab12.png&w=80&f=webp'), next);
+
+    expect(res.status).toBe(200);
+    expect(next).toHaveBeenCalledOnce();
+  });
+});
