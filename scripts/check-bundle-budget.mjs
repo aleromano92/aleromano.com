@@ -23,8 +23,8 @@ const CHUNK_BUDGETS = {
   'PresentationMode.js': 1_250_000,
   'analytics.js': 235_000,
   'index.js': 95_000,
-  // Mostly marked; 18.1.2 added ~1.2 KB of CommonMark fixes.
-  'BuiltInAIBottomSheet.js': 50_000,
+  // Mostly marked; 18.1.2 and 18.1.3 each added ~1.3 KB of CommonMark fixes.
+  'BuiltInAIBottomSheet.js': 52_000,
   // Rolldown (Astro 7's bundler) splits the geo-chart deps used by the
   // analytics page into their own chunk instead of folding them into
   // analytics.js — same code, new split, so it gets its own budget line.
