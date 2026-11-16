@@ -65,7 +65,7 @@
     "@types/node": "^26.6.6",
     "@types/nodemailer": "^8.0.2",
     "@vitest/coverage-v8": "^5.1.0",
-    "autocannon": "^8.0.0",
+    "autocannon": "^9.0.0",
     "fast-check": "^4.10.2",
     "msw": "^3.0.5",
     "vitest": "^5.0.5"
