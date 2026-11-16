@@ -9,5 +9,18 @@
   },
   "enabledPlugins": {
     "mattpocock-skills@mattpocock": true
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/complexity-gate.sh",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
   }
 }
