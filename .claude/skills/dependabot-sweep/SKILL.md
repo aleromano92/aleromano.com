@@ -18,7 +18,7 @@ Dependabot PRs are grouped (security / minor-and-patch / major / actions). Non-m
 List open PRs authored by `dependabot[bot]` (`gh pr list --author app/dependabot`). For each:
 
 - **CI green, labelled `automerge`, not merged**: find out why (e.g. merge conflict → comment `@dependabot rebase`; the merge job failing → read its log with `gh run view --log-failed`) and fix it.
-- **CI failing**: check out the branch and reproduce with the CI steps: `npm ci`, `npm run typecheck`, `npm run test:coverage`, `npx astro build`, `npm run perf:budget`, `npm run complexity`, `npx stryker run`. Fix the code on that branch so all checks pass, and push. Dependabot sometimes produces a `package.json` that disagrees with `package-lock.json`; if so, apply the bumps to `package.json` and regenerate the lock from the existing one (never delete the lockfile).
+- **CI failing**: check out the branch and reproduce with the CI steps: `npm ci`, `npm run typecheck`, `npm run test:coverage`, `npx astro build`, `npm run perf:budget`, the server boot smoke test (the "Server boot smoke test" step in `.github/workflows/deploy.yml`), `npm run complexity`, `npx stryker run`. Fix the code on that branch so all checks pass, and push. Dependabot sometimes produces a `package.json` that disagrees with `package-lock.json`; if so, apply the bumps to `package.json` and regenerate the lock from the existing one (never delete the lockfile).
 - **Major bump**: read the release notes/changelogs for breaking changes, migrate the code, make all checks pass. Merge it if you are confident; otherwise leave a PR comment explaining what's risky.
 - Merge green PRs one at a time with `gh pr merge --squash --delete-branch`, then `git fetch` before the next one.
 

@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Test Single File**: `npx vitest run src/path/to/file.test.ts`
 - **Test Watch Mode**: `npm run test:watch`
 - **Docker Dev**: `npm run docker:dev`
-- **Deploy**: `npm run deploy` (builds Docker image on remote Hetzner VPS via SSH)
+- **Deploy**: no local deploy script; pushing to `main` runs `.github/workflows/deploy.yml` (checks → image pushed to GHCR → SSH deploy to the Hetzner VPS)
 - **Observability local testing**: `npm run docker:dev:obs` 
 - **Complexity gate**: `npm run complexity` (needs the [`cccc`](https://github.com/moznion/cccc) binary on `PATH` — grab a release binary or `cargo install cccc-cli`)
 
@@ -20,7 +20,7 @@ Before considering any change done, run `npm run complexity` and make sure it pa
 
 ## Architecture
 
-**Astro 6 SSR** app deployed as a standalone Node.js server inside Docker on Hetzner VPS, behind nginx. Output mode is `server` (not static), so there is no static pre-rendering by default — add `export const prerender = true` only for pages that genuinely don't need server execution.
+**Astro 7 SSR** app deployed as a standalone Node.js server inside Docker on Hetzner VPS, behind nginx. Output mode is `server` (not static), so there is no static pre-rendering by default — add `export const prerender = true` only for pages that genuinely don't need server execution.
 
 **Runtime entry point**: `node --import=./observability/otel/node-register.mjs ./dist/server/entry.mjs` — OpenTelemetry is auto-instrumented at startup.
 
@@ -48,7 +48,7 @@ Blog posts in `src/content/blog/{en|it}/` and presentations in `src/content/pres
 
 ### Database
 SQLite via `better-sqlite3` with a connection pool in `src/utils/database/connection.ts` (driver import is confined to `src/utils/database/` — enforced). Used for:
-- **Caching**: API responses (Twitter feed, GitHub commits) with configurable TTL — 36 hours for Twitter
+- **Caching**: API responses (Twitter feed, GitHub commits) with a per-source TTL (the `CACHE_TTL` constants in `src/utils/twitter/twitter.ts` and `src/utils/github.ts`)
 - **Analytics**: Custom hit tracking with IP geolocation via `geolite2-redist`
 
 In tests, the DB is replaced with an in-memory instance via `vitest.setup.ts`.
