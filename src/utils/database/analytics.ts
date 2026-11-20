@@ -2,12 +2,7 @@ import { createHash } from 'crypto';
 import { getDatabase } from './connection';
 import type { VisitRecord, EventRecord, DailyStats, TopPage, TopReferer, CountryStats, EventTypeBreakdown, BrowserStats, OSStats } from '../../types/analytics';
 
-// Re-export types for compatibility with existing imports
 export type { VisitRecord, EventRecord, DailyStats, TopPage, TopReferer, CountryStats, EventTypeBreakdown, BrowserStats, OSStats };
-
-// ============================================================================
-// Visitor Hash Generation (Privacy-preserving daily rotation)
-// ============================================================================
 
 const HASH_SALT = (() => {
   const salt = import.meta.env.ANALYTICS_SALT || process.env.ANALYTICS_SALT;
@@ -19,21 +14,11 @@ const HASH_SALT = (() => {
   return salt;
 })();
 
-/**
- * Generate a privacy-preserving visitor hash that rotates daily.
- * This allows counting unique visitors per day without long-term tracking.
- * 
- * Hash = SHA256(IP + UserAgent + Date + Salt)
- */
 export function generateVisitorHash(ip: string, userAgent: string): string {
-  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const today = new Date().toISOString().split('T')[0];
   const input = `${ip}|${userAgent}|${today}|${HASH_SALT}`;
   return createHash('sha256').update(input).digest('hex').substring(0, 16);
 }
-
-// ============================================================================
-// Retention (GDPR storage limitation — Article 5(1)(e))
-// ============================================================================
 
 const RETENTION_DAYS = 730;
 
@@ -61,14 +46,10 @@ function ensureRetentionJobStarted(): void {
   cleanupTimer.unref?.();
 }
 
-// ============================================================================
-// Event Buffer (In-memory micro-batching for high-frequency events)
-// ============================================================================
-
 const eventBuffer: EventRecord[] = [];
 let flushTimer: ReturnType<typeof setTimeout> | null = null;
-const FLUSH_INTERVAL_MS = 5000; // Flush every 5 seconds
-const FLUSH_THRESHOLD = 50; // Or when buffer reaches 50 items
+const FLUSH_INTERVAL_MS = 5000;
+const FLUSH_THRESHOLD = 50;
 
 function scheduleFlush(): void {
   if (flushTimer) return;
@@ -110,34 +91,14 @@ function flushEventBuffer(): void {
     insertMany(eventsToFlush);
   } catch (error) {
     console.error('[Analytics] Failed to flush events:', error);
-    // Re-add failed events to buffer (optional: could drop them instead)
     eventBuffer.unshift(...eventsToFlush);
   }
 }
 
-// ============================================================================
-// Helper Functions
-// ============================================================================
-
-/**
- * Calculate timestamp for N days ago from current time.
- * Used for filtering analytics queries by time range.
- * 
- * @param days - Number of days to go back from now
- * @returns Unix timestamp (seconds since epoch) for the cutoff time
- */
 export function getDaysAgoTimestamp(days: number): number {
   return Math.floor(Date.now() / 1000) - (days * 24 * 60 * 60);
 }
 
-// ============================================================================
-// Analytics Manager
-// ============================================================================
-
-/**
- * Delete analytics records older than `days` from both visits and events tables.
- * Returns the number of rows deleted from each table.
- */
 export function deleteOldRecords(days: number): { visits: number; events: number } {
   const db = getDatabase();
   const cutoff = getDaysAgoTimestamp(days);
@@ -149,9 +110,6 @@ export function deleteOldRecords(days: number): { visits: number; events: number
 }
 
 export const analyticsManager = {
-  /**
-   * Record a page visit (called from middleware, writes directly)
-   */
   recordVisit(visit: VisitRecord): void {
     try {
       ensureRetentionJobStarted();
@@ -174,9 +132,6 @@ export const analyticsManager = {
     }
   },
 
-  /**
-   * Queue an event for batched insertion (called from API endpoint)
-   */
   queueEvent(event: EventRecord): void {
     ensureRetentionJobStarted();
     eventBuffer.push(event);
@@ -188,15 +143,8 @@ export const analyticsManager = {
     }
   },
 
-  /**
-   * Delete records older than the configured retention window.
-   * Exposed for manual triggering / testing; the daily job calls this automatically.
-   */
   deleteOldRecords,
 
-  /**
-   * Force flush any pending events (call on shutdown)
-   */
   flush(): void {
     if (flushTimer) {
       clearTimeout(flushTimer);
@@ -205,13 +153,6 @@ export const analyticsManager = {
     flushEventBuffer();
   },
 
-  // ==========================================================================
-  // Query Methods (for dashboard)
-  // ==========================================================================
-
-  /**
-   * Get daily statistics for the last N days
-   */
   getDailyStats(days: number = 30): DailyStats[] {
     const db = getDatabase();
     const cutoff = getDaysAgoTimestamp(days);
@@ -246,9 +187,6 @@ export const analyticsManager = {
     }));
   },
 
-  /**
-   * Get top pages by visit count
-   */
   getTopPages(limit: number = 20, days: number = 30): TopPage[] {
     const db = getDatabase();
     const cutoff = getDaysAgoTimestamp(days);
@@ -272,9 +210,6 @@ export const analyticsManager = {
     }));
   },
 
-  /**
-   * Get top referers
-   */
   getTopReferers(limit: number = 20, days: number = 30): TopReferer[] {
     const db = getDatabase();
     const cutoff = getDaysAgoTimestamp(days);
@@ -291,9 +226,6 @@ export const analyticsManager = {
     `).all(cutoff, limit) as TopReferer[];
   },
 
-  /**
-   * Get average time on page (from time_on_page events)
-   */
   getAverageTimeOnPage(days: number = 30): Array<{ path: string; avgDuration: number; samples: number }> {
     const db = getDatabase();
     const cutoff = getDaysAgoTimestamp(days);
@@ -318,9 +250,6 @@ export const analyticsManager = {
     }));
   },
 
-  /**
-   * Get recent events (clicks and time-on-page) for dashboard display
-   */
   getRecentEvents(limit: number = 50): Array<{
     type: string;
     path: string;
@@ -369,9 +298,6 @@ export const analyticsManager = {
     }));
   },
 
-  /**
-   * Get visitor counts grouped by browser and OS labels
-   */
   getBrowserOSBreakdown(days: number = 30): { browsers: BrowserStats[]; oses: OSStats[] } {
     const db = getDatabase();
     const cutoff = getDaysAgoTimestamp(days);
@@ -398,9 +324,6 @@ export const analyticsManager = {
     };
   },
 
-  /**
-   * Get visitor counts grouped by country code
-   */
   getVisitorsByCountry(days: number = 30): CountryStats[] {
     const db = getDatabase();
     const cutoff = getDaysAgoTimestamp(days);
@@ -423,9 +346,6 @@ export const analyticsManager = {
     }));
   },
 
-  /**
-   * Get event counts broken down by type (page_view from visits, click/time_on_page from events)
-   */
   getEventBreakdown(days: number = 30): EventTypeBreakdown[] {
     const db = getDatabase();
     const cutoff = getDaysAgoTimestamp(days);
@@ -449,9 +369,6 @@ export const analyticsManager = {
     return breakdown.filter(e => e.count > 0);
   },
 
-  /**
-   * Get AI feature usage stats (detected, clicked, completed) by feature name
-   */
   getAIFeatureStats(days: number = 30): {
     detected: number;
     clicked: Array<{ feature: string; count: number }>;
@@ -489,9 +406,6 @@ export const analyticsManager = {
     return { detected, clicked, completed, completionRate };
   },
 
-  /**
-   * Get total stats summary
-   */
   getSummary(days: number = 30): { totalVisits: number; uniqueVisitors: number; totalEvents: number; avgTimeOnPage: number } {
     const db = getDatabase();
     const cutoff = getDaysAgoTimestamp(days);

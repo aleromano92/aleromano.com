@@ -6,13 +6,9 @@ import type { GitHubCommitsData } from './github';
 import type { CacheManager } from './database';
 import mockGitHubCommits from '../mocks/mock-github-commits-response.json';
 
-// Independently hardcoded (not imported from ./github) so this acts as a tripwire:
-// a change to the cache key or TTL in the source must fail here and be acknowledged,
-// rather than silently propagating. Keep these in sync with github.ts on purpose.
 const GITHUB_CACHE_KEY = 'github:commits';
-const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+const CACHE_TTL = 10 * 60 * 1000;
 
-// Mock console.error/warn to avoid noise in tests
 const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 const mockConsoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
@@ -44,13 +40,11 @@ describe('GitHub Repository Commits API utilities', () => {
 
   describe('getCommitsData', () => {
     it('should return commits when Repository Commits API call is successful', async () => {
-      // MSW will use the default handler from handlers.ts
       const result: GitHubCommitsData = await service.getCommitsData('en');
 
       expect(result.error).toBeUndefined();
       expect(result.commits).toHaveLength(3);
 
-      // Check first commit details
       expect(result.commits[0]).toEqual({
         sha: 'abc123d',
         message: 'Add new feature',
@@ -62,7 +56,6 @@ describe('GitHub Repository Commits API utilities', () => {
         relativeTime: expect.any(String)
       });
 
-      // Check that commits are sorted by date (newest first)
       const firstCommitDate = new Date(result.commits[0].date);
       const lastCommitDate = new Date(result.commits[result.commits.length - 1].date);
       expect(firstCommitDate.getTime()).toBeGreaterThanOrEqual(lastCommitDate.getTime());
@@ -103,7 +96,6 @@ describe('GitHub Repository Commits API utilities', () => {
       expect(result.commits).toEqual([]);
       expect(result.error).toBe('Failed to load recent commits');
       expect(mockConsoleError).toHaveBeenCalled();
-      // With no stale cache available, the stale-fallback branch must NOT be taken.
       expect(mockConsoleWarn).not.toHaveBeenCalledWith(expect.stringContaining('stale'));
     });
 
@@ -137,8 +129,8 @@ describe('GitHub Repository Commits API utilities', () => {
 
       const result = await service.getCommitsData();
 
-      expect(result.commits[0].sha).toBe('newer45'); // Newer commit first
-      expect(result.commits[1].sha).toBe('older12'); // Older commit second
+      expect(result.commits[0].sha).toBe('newer45');
+      expect(result.commits[1].sha).toBe('older12');
     });
 
     it('should handle empty response gracefully', async () => {
@@ -180,7 +172,7 @@ describe('GitHub Repository Commits API utilities', () => {
       const result = await service.getCommitsData();
 
       expect(result.commits[0].truncatedMessage).toBe('A'.repeat(180) + '...');
-      expect(result.commits[0].truncatedMessage.length).toBe(183); // 180 + '...'
+      expect(result.commits[0].truncatedMessage.length).toBe(183);
     });
   });
 
@@ -211,11 +203,9 @@ describe('GitHub Repository Commits API utilities', () => {
       const resultEn = await service.getCommitsData('en');
       const resultIt = await service.getCommitsData('it');
 
-      // Both should have commits (from same cached raw data)
       expect(resultEn.commits.length).toBeGreaterThan(0);
       expect(resultIt.commits.length).toBeGreaterThan(0);
 
-      // Relative time strings should differ by language
       expect(resultEn.commits[0].relativeTime).not.toBe(resultIt.commits[0].relativeTime);
     });
 
@@ -232,7 +222,6 @@ describe('GitHub Repository Commits API utilities', () => {
 
     it('should return error when both API and cache are unavailable', async () => {
       server.use(githubErrorHandlers.networkError);
-      // getStale already returns null by default in beforeEach
 
       const result = await service.getCommitsData('en');
 

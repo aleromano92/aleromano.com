@@ -37,10 +37,8 @@ const {
   structuredData,
 } = Astro.props;
 
-// Get current language from i18nData or default to 'en'
 const currentLang = i18nData?.currentLang || 'en';
 
-// Set up default image and alt text fallbacks
 const finalImage = image || defaultProfileImage;
 const defaultImageAlt =
   currentLang === 'it' ? 'Foto profilo di Alessandro Romano' : 'Alessandro Romano profile picture';
@@ -106,7 +104,6 @@ const blogPostsListUrl = `/${currentLang === 'it' ? 'it/' : ''}blog`;
     <Footer language={currentLang} />
     <NotACookieBanner showAutomatically={showNotACookieBannerAutomatically} language={currentLang} />
 
-    <!-- Analytics: Client-side tracking -->
     <script>
       import { initAnalytics } from '../scripts/analytics';
       initAnalytics();

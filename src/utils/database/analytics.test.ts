@@ -8,17 +8,13 @@ describe('getDaysAgoTimestamp', () => {
   });
 
   it('should calculate correct timestamp for 30 days ago', () => {
-    // Mock Date.now to return a fixed timestamp
-    const mockNow = 1700000000000; // Mock timestamp in milliseconds
+    const mockNow = 1700000000000;
     vi.spyOn(Date, 'now').mockReturnValue(mockNow);
 
     const result = getDaysAgoTimestamp(30);
     
-    // Calculate expected cutoff (30 days ago in seconds)
     const expectedCutoff = Math.floor(mockNow / 1000) - (30 * 24 * 60 * 60);
     
-    // The expected cutoff should be:
-    // 1700000000 (seconds) - 2592000 (30 days in seconds) = 1697408000
     expect(result).toBe(1697408000);
     expect(result).toBe(expectedCutoff);
   });
@@ -30,7 +26,6 @@ describe('getDaysAgoTimestamp', () => {
     const result = getDaysAgoTimestamp(7);
     const expectedCutoff = Math.floor(mockNow / 1000) - (7 * 24 * 60 * 60);
     
-    // 1700000000 - 604800 (7 days) = 1699395200
     expect(result).toBe(1699395200);
     expect(result).toBe(expectedCutoff);
   });
@@ -42,7 +37,6 @@ describe('getDaysAgoTimestamp', () => {
     const result = getDaysAgoTimestamp(1);
     const expectedCutoff = Math.floor(mockNow / 1000) - (1 * 24 * 60 * 60);
     
-    // 1700000000 - 86400 (1 day) = 1699913600
     expect(result).toBe(1699913600);
     expect(result).toBe(expectedCutoff);
   });
@@ -54,7 +48,6 @@ describe('getDaysAgoTimestamp', () => {
     const result = getDaysAgoTimestamp(0);
     const expectedCutoff = Math.floor(mockNow / 1000) - (0 * 24 * 60 * 60);
     
-    // Should return current timestamp
     expect(result).toBe(1700000000);
     expect(result).toBe(expectedCutoff);
   });
@@ -65,7 +58,6 @@ describe('analyticsManager query methods', () => {
     const db = getDatabase();
     const now = Math.floor(Date.now() / 1000);
 
-    // Insert visits with different countries
     const insertVisit = db.prepare(`
       INSERT INTO analytics_visits (path, visitor_hash, referer, browser, os, country, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -78,7 +70,6 @@ describe('analyticsManager query methods', () => {
     insertVisit.run('/blog', 'hash4', null, 'Safari', 'iOS', 'DE', now - 500);
     insertVisit.run('/contact', 'hash5', null, null, null, null, now - 600);
 
-    // Insert events of different types
     const insertEvent = db.prepare(`
       INSERT INTO analytics_events (type, path, visitor_hash, element_tag, element_id, element_text, href, duration, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -92,7 +83,6 @@ describe('analyticsManager query methods', () => {
   }
 
   beforeEach(() => {
-    // Clear tables before each test
     const db = getDatabase();
     db.exec('DELETE FROM analytics_visits');
     db.exec('DELETE FROM analytics_events');
@@ -103,12 +93,12 @@ describe('analyticsManager query methods', () => {
     it('should return visitor counts grouped by country', () => {
       const result = analyticsManager.getVisitorsByCountry(30);
 
-      expect(result).toHaveLength(3); // US, IT, DE (null excluded)
+      expect(result).toHaveLength(3);
       
       const us = result.find(r => r.country === 'US');
       expect(us).toBeDefined();
       expect(us!.visits).toBe(2);
-      expect(us!.uniqueVisitors).toBe(2); // hash1, hash2
+      expect(us!.uniqueVisitors).toBe(2);
 
       const it = result.find(r => r.country === 'IT');
       expect(it).toBeDefined();
@@ -145,8 +135,6 @@ describe('analyticsManager query methods', () => {
     it('returns aggregated browser and OS counts ordered by visits', () => {
       const result = analyticsManager.getBrowserOSBreakdown(30);
 
-      // Seed has: Chrome×2 (hash1, hash1), Safari×2 (hash2, hash4), Firefox×1 (hash3)
-      // The /contact row has NULL browser/os and should be excluded.
       const chrome = result.browsers.find(b => b.browser === 'Chrome');
       expect(chrome).toEqual({ browser: 'Chrome', visits: 2, uniqueVisitors: 1 });
 
@@ -156,12 +144,10 @@ describe('analyticsManager query methods', () => {
       const firefox = result.browsers.find(b => b.browser === 'Firefox');
       expect(firefox).toEqual({ browser: 'Firefox', visits: 1, uniqueVisitors: 1 });
 
-      // Browsers ordered by visits desc
       for (let i = 1; i < result.browsers.length; i++) {
         expect(result.browsers[i - 1].visits).toBeGreaterThanOrEqual(result.browsers[i].visits);
       }
 
-      // OSes
       const windows = result.oses.find(o => o.os === 'Windows');
       expect(windows).toEqual({ os: 'Windows', visits: 2, uniqueVisitors: 1 });
       const macOS = result.oses.find(o => o.os === 'macOS');
@@ -174,7 +160,6 @@ describe('analyticsManager query methods', () => {
 
     it('excludes rows with NULL browser/os', () => {
       const result = analyticsManager.getBrowserOSBreakdown(30);
-      // /contact (hash5) is the only NULL/NULL row in seed
       const totalBrowserVisits = result.browsers.reduce((s, b) => s + b.visits, 0);
       const totalOSVisits = result.oses.reduce((s, o) => s + o.visits, 0);
       expect(totalBrowserVisits).toBe(5);
@@ -196,7 +181,7 @@ describe('analyticsManager query methods', () => {
 
       const pageViews = result.find(r => r.type === 'page_view');
       expect(pageViews).toBeDefined();
-      expect(pageViews!.count).toBe(6); // 6 visits
+      expect(pageViews!.count).toBe(6);
 
       const clicks = result.find(r => r.type === 'click');
       expect(clicks).toBeDefined();
@@ -231,7 +216,7 @@ describe('analyticsManager query methods', () => {
       const result = analyticsManager.getTopPages(10, 30);
 
       expect(result.length).toBeGreaterThan(0);
-      expect(result[0].path).toBe('/'); // 2 visits
+      expect(result[0].path).toBe('/');
       expect(result[0].visits).toBe(2);
     });
   });
@@ -252,8 +237,8 @@ describe('analyticsManager query methods', () => {
       const result = analyticsManager.getSummary(30);
 
       expect(result.totalVisits).toBe(6);
-      expect(result.uniqueVisitors).toBe(5); // hash1-hash5
-      expect(result.totalEvents).toBe(5); // 2 clicks + 3 time_on_page
+      expect(result.uniqueVisitors).toBe(5);
+      expect(result.totalEvents).toBe(5);
     });
   });
 
@@ -267,18 +252,15 @@ describe('analyticsManager query methods', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
 
-      // 3 detected events (different feature combos)
       insertEvent.run('ai_feature', '/posts/test', 'hash1', null, 'ai-features-detected', 'summarize,translate:de', null, null, now - 100);
       insertEvent.run('ai_feature', '/posts/test', 'hash2', null, 'ai-features-detected', 'summarize', null, null, now - 200);
       insertEvent.run('ai_feature', '/posts/test', 'hash3', null, 'ai-features-detected', 'summarize', null, null, now - 300);
 
-      // 4 clicked events
       insertEvent.run('ai_feature', '/posts/test', 'hash1', null, 'ai-feature-clicked', 'tldr', null, null, now - 110);
       insertEvent.run('ai_feature', '/posts/test', 'hash1', null, 'ai-feature-clicked', 'key-points', null, null, now - 120);
       insertEvent.run('ai_feature', '/posts/test', 'hash2', null, 'ai-feature-clicked', 'tldr', null, null, now - 210);
       insertEvent.run('ai_feature', '/posts/test', 'hash3', null, 'ai-feature-clicked', 'translate:de', null, null, now - 310);
 
-      // 3 completed events (one click didn't complete)
       insertEvent.run('ai_feature', '/posts/test', 'hash1', null, 'ai-feature-completed', 'tldr', null, null, now - 115);
       insertEvent.run('ai_feature', '/posts/test', 'hash1', null, 'ai-feature-completed', 'key-points', null, null, now - 125);
       insertEvent.run('ai_feature', '/posts/test', 'hash2', null, 'ai-feature-completed', 'tldr', null, null, now - 215);
@@ -327,7 +309,6 @@ describe('analyticsManager query methods', () => {
 
     it('should calculate completion rate correctly', () => {
       const result = analyticsManager.getAIFeatureStats(30);
-      // 3 completed out of 4 clicked = 75%
       expect(result.completionRate).toBe(75);
     });
 
@@ -343,7 +324,7 @@ describe('analyticsManager query methods', () => {
 
     it('should respect the days parameter and exclude older events', () => {
       const db = getDatabase();
-      const oldTimestamp = Math.floor(Date.now() / 1000) - (40 * 24 * 60 * 60); // 40 days ago
+      const oldTimestamp = Math.floor(Date.now() / 1000) - (40 * 24 * 60 * 60);
       db.prepare(`
         INSERT INTO analytics_events (type, path, visitor_hash, element_tag, element_id, element_text, href, duration, created_at)
         VALUES ('ai_feature', '/posts/test', 'hash9', null, 'ai-features-detected', 'summarize', null, null, ?)

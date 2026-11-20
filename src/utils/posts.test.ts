@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import type { CollectionEntry } from 'astro:content';
 import { getLocalizedPostUrl, parsePostSlug, findPostBySlug } from './posts';
 
-// Minimal stand-in for a blog collection entry — only `id` is used by these helpers.
 const post = (id: string) => ({ id }) as CollectionEntry<'blog'>;
 
 describe('getLocalizedPostUrl', () => {

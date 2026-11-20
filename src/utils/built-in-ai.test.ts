@@ -21,7 +21,7 @@ describe('detectFeatures', () => {
 
   it('returns all false when neither Summarizer nor Translator is in self', async () => {
     mockNavigatorLanguage('fr-FR');
-    mockSelf({}); // no Summarizer, no Translator
+    mockSelf({});
 
     const { detectFeatures } = await import('./built-in-ai');
     const result = await detectFeatures('en');

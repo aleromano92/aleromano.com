@@ -69,13 +69,11 @@ const currentLang = i18nData?.currentLang || getLanguageFromURL(pathname);
 
         setLanguagePreference(lang);
 
-        // If switching to English and we have an originalLink, use that
         if (lang === 'en' && originalLink) {
           window.location.href = originalLink;
           return;
         }
 
-        // Otherwise use the normal language switching logic
         const newPath = getLocalizedPathname(currentPath, lang);
         window.location.href = newPath;
       });

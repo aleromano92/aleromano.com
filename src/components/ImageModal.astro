@@ -4,23 +4,19 @@
 </div>
 
 <script>
-    // Get the modal
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImage') as HTMLImageElement;
     const closeBtn = document.querySelector('.close');
 
     if (modal && modalImg && closeBtn) {
-        // Add click handler to all clickable images (both post content and biography images)
         document.querySelectorAll('.post-content img, .clickable-image').forEach((img) => {
             if (img instanceof HTMLImageElement) {
                 img.style.cursor = 'zoom-in';
                 img.addEventListener('click', function () {
                     modal.style.display = 'flex';
 
-                    // Try to get the highest quality source available
                     let src = img.src;
 
-                    // If it's an Astro optimized image, try to get the original or a larger version
                     if (img.srcset) {
                         const srcsetArray = img.srcset.split(',');
                         const highestQuality = srcsetArray[srcsetArray.length - 1];
@@ -35,7 +31,6 @@
             }
         });
 
-        // Close handlers
         closeBtn.addEventListener('click', () => (modal.style.display = 'none'));
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
@@ -43,7 +38,6 @@
             }
         });
 
-        // Close on escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.style.display === 'flex') {
                 modal.style.display = 'none';

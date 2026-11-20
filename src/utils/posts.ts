@@ -5,12 +5,10 @@ export function getLocalizedPostUrl(post: CollectionEntry<'blog'>): string {
   const [lang, ...slugParts] = post.id.split('/');
   const postSlug = slugParts.join('/');
 
-  // For English posts (default language), don't include language prefix
   if (lang === DEFAULT_LANGUAGE) {
     return `/posts/${postSlug}`;
   }
 
-  // For other languages, include the language prefix
   return `/posts/${lang}/${postSlug}`;
 }
 
@@ -19,7 +17,6 @@ export function parsePostSlug(slug: string | undefined): { lang: SupportedLangua
     return { lang: DEFAULT_LANGUAGE, cleanSlug: '' };
   }
 
-  // Handle both /it/my-post and my-post formats
   const parts = slug.split('/');
   const possibleLang = parts[0] as SupportedLanguage;
 
@@ -43,7 +40,6 @@ export function findPostBySlug(
 ): CollectionEntry<'blog'> | undefined {
   if (!slug) return undefined;
 
-  // Remove any leading language prefix from the URL slug
   const cleanSlug = slug.replace(/^(en|it)\//, '');
 
   return posts.find((post) => {

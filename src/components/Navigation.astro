@@ -37,13 +37,10 @@ const { language } = Astro.props;
 
 const currentUrl = Astro.request.url;
 
-// Base routes (always in English format)
 const BASE_ROUTES = ['/', '/about', '/blog', '/contact'] as const;
 
-// Get translations for labels
 const t = getNavigationTranslations(language);
 
-// Create route-to-label mapping
 const routeLabelMap = new Map([
   ['/', t.home],
   ['/about', t.about],
@@ -51,7 +48,6 @@ const routeLabelMap = new Map([
   ['/contact', t.contact],
 ]);
 
-// Create route mapping with href and label
 const routeMap = BASE_ROUTES.map((route) => ({
   href: getLocalizedPathname(route, language),
   label: routeLabelMap.get(route) || route.slice(1).toUpperCase(),
@@ -72,7 +68,6 @@ const routeMap = BASE_ROUTES.map((route) => ({
   }
 
   @media (max-width: 636px) {
-    /* Hardcoded from --breakpoint-tablet */
     nav {
       display: none;
       position: fixed;

@@ -6,7 +6,6 @@ import {
   extractBlogPostSlugFromPathname 
 } from './presentations';
 
-// Mock Astro content collection
 vi.mock('astro:content', () => ({
   getCollection: vi.fn()
 }));
@@ -19,7 +18,6 @@ describe('presentations utils', () => {
     mockGetCollection = vi.mocked(getCollection);
     vi.clearAllMocks();
     
-    // Setup default mock data
     mockGetCollection.mockResolvedValue([
       {
         id: '3-career-tips',
@@ -184,7 +182,6 @@ describe('presentations utils', () => {
     });
 
     it('should return null when presentation exists but not in requested language', async () => {
-      // Mock only English presentation
       mockGetCollection.mockResolvedValue([
         {
           id: 'english-only',
@@ -212,7 +209,6 @@ describe('presentations utils', () => {
             title: 'Minimal Presentation',
             blogPostSlug: 'minimal-post',
             language: 'en'
-            // No description, theme, or transition
           }
         }
       ]);

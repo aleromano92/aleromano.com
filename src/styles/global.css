@@ -1,4 +1,3 @@
-/* Layout */
 .container {
     width: 100%;
     max-width: var(--container-max-width);
@@ -6,13 +5,11 @@
     padding: var(--container-padding);
 }
 
-/* Layout */
 .header-container {
     max-width: var(--header-container-max-width);
     padding: var(--header-container-padding);
 }
 
-/* Content layouts */
 main {
     width: 100%;
     max-width: var(--container-max-width);
@@ -25,14 +22,11 @@ main {
     }
 }
 
-/* General link styles (excluding nav and special components) */
 a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link) {
     color: var(--color-accent);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.15em;
-    /* Repaint-only hover cue: only the underline redraws, so no layout shift
-       and no font flicker (unlike the old transform/text-shadow hover). */
     transition: text-decoration-thickness 0.15s ease, text-decoration-color 0.15s ease;
 }
 
@@ -40,8 +34,6 @@ a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link):hover {
     text-decoration-thickness: 2px;
 }
 
-/* Mark links that open in a new tab with an external-link arrow.
-   Scoped to content links so footer/social icon links stay clean. */
 a:not(nav a, .tag a, .lang-button, header a, footer a, .post-link, .commit-item)[target='_blank']::after {
     content: '↗';
     display: inline-block;

@@ -28,25 +28,19 @@ const {
     structuredData,
 } = Astro.props;
 
-// Generate canonical URL
 const canonicalUrl = new URL(currentUrl, 'https://aleromano.com').href;
 
-// Generate language alternate links
 const alternateLinks = getAlternateLinks(new URL(currentUrl).pathname);
 
-// Generate image URL if provided
 const imageUrl = image ? new URL(image.src, 'https://aleromano.com').href : undefined;
 ---
 
-<!-- Basic SEO Meta Tags -->
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalUrl} />
 <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
-<!-- Language Alternates -->
 {alternateLinks.map(({ href, hreflang }) => <link rel="alternate" hreflang={hreflang} href={href} />)}
 
-<!-- Open Graph Tags -->
 <meta property="og:type" content={type} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
@@ -65,7 +59,6 @@ const imageUrl = image ? new URL(image.src, 'https://aleromano.com').href : unde
     )
 }
 
-<!-- Twitter Card Tags -->
 <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
 <meta name="twitter:site" content="@_aleromano" />
 <meta name="twitter:creator" content="@_aleromano" />
@@ -74,7 +67,6 @@ const imageUrl = image ? new URL(image.src, 'https://aleromano.com').href : unde
 
 {image && imageUrl && <meta name="twitter:image" content={imageUrl} />}
 
-<!-- Article-specific Tags (for blog posts) -->
 {
     type === 'article' && (
         <>
@@ -85,5 +77,4 @@ const imageUrl = image ? new URL(image.src, 'https://aleromano.com').href : unde
     )
 }
 
-<!-- Structured Data / JSON-LD -->
 {structuredData && <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />}

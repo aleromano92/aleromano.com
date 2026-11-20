@@ -17,7 +17,6 @@ import speakingImage from '../../assets/speaking.png';
 import familyImage from '../../assets/family.png';
 import type { SupportedLanguage } from '../../types/i18n';
 
-// Types for NOW history entries
 export type NowEntryStatus = 'completed' | 'ongoing' | 'dropped';
 
 export interface NowHistoryEntry {
@@ -39,7 +38,6 @@ export interface AboutTranslations {
     pageDescription: string;
     tagline: string;
 
-    // Table of Contents
     tocTitle: string;
     tocBiography: string;
     tocExperience: string;
@@ -47,22 +45,18 @@ export interface AboutTranslations {
     tocTwitter: string;
     viewCv: string;
 
-    // Back to top
     backToTop: string;
 
-    // Biography Section
     biographyTitle: string;
     biographySection1: string;
     biographySection2: string;
     biographySection3: string;
     biographySection4: string;
 
-    // Work Experience Section
     experienceTitle: string;
     experienceSeeMore: string;
     currentPosition: string;
 
-    // Job entries
     mollieTitle: string;
     mollieRole: string;
     molliePeriod: string;
@@ -81,7 +75,6 @@ export interface AboutTranslations {
     lastminuteDescription: string;
     lastminuteAchievements: string[];
 
-    // Now Section
     nowTitle: string;
     nowSubtitle: string;
     nowLearning: string[];
@@ -89,23 +82,19 @@ export interface AboutTranslations {
     nowSideProjects: string[];
     nowPersonal: string[];
 
-    // Now Section Labels
     nowLearningLabel: string;
     nowReadingLabel: string;
     nowSideProjectsLabel: string;
     nowPersonalLabel: string;
 
-    // Historical entries toggle
     showHistory: string;
     nowHistory: NowHistoryQuarter[];
     nowHistoryDisclaimer: string;
 
-    // Status labels
     statusCompleted: string;
     statusOngoing: string;
     statusDropped: string;
 
-    // Contact and Social
     stayUpdated: string;
     followTwitter: string;
     subscribeRss: string;
@@ -113,7 +102,6 @@ export interface AboutTranslations {
     letsTalk: string;
     profilePicAlt: string;
 
-    // Landsat logo
     landsatAlt: string;
     landsatCreditPrefix: string;
     landsatCreditLinkText: string;
@@ -126,7 +114,6 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             'Senior Engineering Manager at Mollie, father of two amazing kids, and funny lovely husband. Addicted to details and obsessed with how things work: from Cloud services to human relationships.',
         tagline: 'Insightful. Precise. Human.',
 
-        // Table of Contents
         tocTitle: 'Quick Navigation',
         tocBiography: 'Biography',
         tocExperience: 'Work Experience (most relevant)',
@@ -134,10 +121,8 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         tocTwitter: 'Latest from X',
         viewCv: 'View full CV',
 
-        // Back to top
         backToTop: '↑ Back to top',
 
-        // Biography Section
         biographyTitle: 'Biography',
         biographySection1: `The first sign that I was very curious comes from the fact that at 5 years old I had learned to read simply because I pestered my parents asking them to read me cartoon titles or the words written on cookie boxes.
             <br/>I believe I started reading very early precisely to satisfy this <strong>curiosity</strong> of mine as soon as possible without having to always depend on someone else.
@@ -157,12 +142,10 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             <br/><br/>Finally, the thing that makes me most proud is having managed to build my path while always keeping my <strong>word</strong>. If I promise something to someone, I don't accept not keeping it, even if this has sometimes led me to having to manage anxiety and pressure beyond the limit.
             <br/><br/>I remain <strong>optimistic</strong> about the future because I believe it's the most pragmatic thing to do: what sense would there be in moving forward if I didn't believe things could get better?`,
 
-        // Work Experience Section
         experienceTitle: 'Work Experience',
         experienceSeeMore: 'See more on ',
         currentPosition: 'Current Position',
 
-        // Mollie
         mollieTitle: 'Mollie',
         mollieRole: 'Senior Engineering Manager & Milan Hub Site Lead',
         molliePeriod: 'December 2023 - Present',
@@ -176,7 +159,6 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             'Led the growth of Milan Hub from 8 to 70+ employees in just 1 year, including setting up a new office in downtown Milan',
         ],
 
-        // Banca AideXa
         bancaAideXaTitle: 'Banca AideXa',
         bancaAideXaRole: 'Head of Engineering',
         bancaAideXaPeriod: 'October 2020 - December 2023',
@@ -191,7 +173,6 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             'Implemented Policies and Procedures making extensive use of technology and automation to be compliant without excessive bureaucracy',
         ],
 
-        // lastminute.com
         lastminuteTitle: 'lastminute.com',
         lastminuteRole: 'Software Engineer → Engineering Manager',
         lastminutePeriod: 'January 2017 - September 2020',
@@ -205,7 +186,6 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             'Struck by lightning on the road to Clean Code and eXtreme Programming, using pair programming and code reviews to grow team skills',
         ],
 
-        // Now Section
         nowTitle: "What I'm Up To Now",
         nowSubtitle: 'Last updated: July 2026',
         nowLearning: ['Started learning how to customize a model using the /teach skill by Matt Pocock'],
@@ -215,7 +195,6 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             'Renovation of our new house - almost done, finalizing details and cleaning, expected move-in October',
         ],
 
-        // Historical entries toggle
         showHistory: 'What I Did Before',
         nowHistory: [
             {
@@ -388,18 +367,15 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         nowHistoryDisclaimer:
             "Status reflects the state when the next NOW section was written. I won't retroactively update past entries.",
 
-        // Status labels
         statusCompleted: '✓ Completed',
         statusOngoing: '→ Ongoing',
         statusDropped: '✗ Dropped',
 
-        // Now Section Labels
         nowLearningLabel: '📚 Learning',
         nowReadingLabel: '📖 Reading',
         nowSideProjectsLabel: '💻 Side Projects',
         nowPersonalLabel: '🏠 Personal',
 
-        // Contact and Social
         stayUpdated: 'Wanna stay updated?',
         followTwitter: 'Follow @_aleromano',
         subscribeRss: 'subscribe to my RSS feed.',
@@ -416,7 +392,6 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             'Senior Engineering Manager a Mollie, padre di due bambini fantastici e marito divertente e affettuoso. Ossessionato dai dettagli e da come funzionano le cose: dai servizi Cloud alle relazioni umane.',
         tagline: 'Perspicace. Preciso. Umano.',
 
-        // Table of Contents
         tocTitle: 'Navigazione Rapida',
         tocBiography: 'Biografia',
         tocExperience: 'Esperienze Lavorative (più rilevanti)',
@@ -424,10 +399,8 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         tocTwitter: 'Ultimi post da X',
         viewCv: 'Vedi CV completo',
 
-        // Back to top
         backToTop: '↑ Torna su',
 
-        // Biography Section
         biographyTitle: 'Biografia',
         biographySection1: `Il primo segno che io fossi molto curioso viene dal fatto che a 5 anni avevo imparato a leggere semplicemente perché tartassavo i miei genitori chiedendo loro di leggermi i titoli dei cartoni animati o le cose scritte sulle scatole dei biscotti.
             <br/>Credo di aver iniziato a leggere molto presto proprio per saziare questa mia <strong>curiosità</strong> quanto prima senza dover dipendere sempre da qualcun altro.
@@ -447,12 +420,10 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             <br/><br/>In ultimo, la cosa che mi rende più orgoglioso è l'essere riusciuto a costruirmi il mio percorso mantenendo sempre la mia <strong>parola</strong>. Se prometto qualcosa a qualcuno, non accetto di non mantenerla, anche se questo a volte mi ha portato a dover gestire ansia e pressione oltre il limite.
             <br/><br/>Resto <strong>ottimista</strong> sul futuro perché credo sia la cosa più pragmatica da fare: che senso avrebbe andare avanti se non credessi che le cose possano migliorare?`,
 
-        // Work Experience Section
         experienceTitle: 'Esperienze Lavorative',
         experienceSeeMore: 'Vedi di più su ',
         currentPosition: 'Posizione Attuale',
 
-        // Mollie
         mollieTitle: 'Mollie',
         mollieRole: 'Senior Engineering Manager & Milan Hub Site Lead',
         molliePeriod: 'Dicembre 2023 - Presente',
@@ -466,7 +437,6 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             'Guidato la crescita del Milan Hub da 8 a 70+ dipendenti in solo 1 anno, incluso il setup di un nuovo ufficio in centro a Milano',
         ],
 
-        // Banca AideXa
         bancaAideXaTitle: 'Banca AideXa',
         bancaAideXaRole: 'Head of Engineering',
         bancaAideXaPeriod: 'Ottobre 2020 - Dicembre 2023',
@@ -481,7 +451,6 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             'Implementato Policy e Procedure facendo largo uso di tecnologia e automazioni per essere compliant senza eccedere nella burocrazia',
         ],
 
-        // lastminute.com
         lastminuteTitle: 'lastminute.com',
         lastminuteRole: 'Software Engineer → Engineering Manager',
         lastminutePeriod: 'Gennaio 2017 - Settembre 2020',
@@ -495,7 +464,6 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             'Fulminato sulla via del Clean Code ed eXtreme Programming, usando il pair programming e le code reviews per far crescere le competenze del team',
         ],
 
-        // Now Section
         nowTitle: 'Cosa Sto Facendo Ora',
         nowSubtitle: 'Ultimo aggiornamento: Luglio 2026',
         nowLearning: ['Iniziato a imparare come personalizzare un modello usando la skill /teach di Matt Pocock'],
@@ -505,7 +473,6 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
             'Ristrutturazione della nostra nuova casa - quasi finita, ultimi dettagli e pulizie, trasloco previsto a ottobre',
         ],
 
-        // Historical entries toggle
         showHistory: 'Cosa Facevo Prima',
         nowHistory: [
             {
@@ -685,18 +652,15 @@ export const aboutTranslations: Record<SupportedLanguage, AboutTranslations> = {
         nowHistoryDisclaimer:
             'Lo stato riflette la situazione al momento della scrittura della sezione NOW successiva. Non aggiornerò retroattivamente le voci passate.',
 
-        // Status labels
         statusCompleted: '✓ Completato',
         statusOngoing: '→ In corso',
         statusDropped: '✗ Abbandonato',
 
-        // Now Section Labels
         nowLearningLabel: '📚 Studio',
         nowReadingLabel: '📖 Letture',
         nowSideProjectsLabel: '💻 Progetti Personali',
         nowPersonalLabel: '🏠 Vita Personale',
 
-        // Contact and Social
         stayUpdated: 'Vuoi rimanere aggiornato?',
         followTwitter: 'Segui @_aleromano',
         subscribeRss: 'iscriviti al mio feed RSS.',
@@ -714,7 +678,6 @@ export function getAboutTranslations(language: SupportedLanguage): AboutTranslat
     return aboutTranslations[language];
 }
 
-// Helper function to map status to translated label
 function getStatusLabel(status: NowEntryStatus, t: AboutTranslations): string {
     switch (status) {
         case 'completed':
@@ -739,7 +702,6 @@ const t = getAboutTranslations(language);
     {t.tagline}
 </h2>
 
-<!-- Table of Contents -->
 <nav class="toc">
     <h3>{t.tocTitle}</h3>
     <ul>
@@ -763,14 +725,12 @@ const t = getAboutTranslations(language);
     </figcaption>
 </figure>
 
-<!-- Biography Section -->
 <section id="biography" class="biography">
     <h3>
         {t.biographyTitle}
         <a href="#top" class="section-back-to-top" aria-label={t.backToTop}>{t.backToTop}</a>
     </h3>
     <div class="biography-content">
-        <!-- Section 1: Early curiosity and technology -->
         <div class="biography-section">
             <p set:html={t.biographySection1} />
         </div>
@@ -805,7 +765,6 @@ const t = getAboutTranslations(language);
             />
         </div>
 
-        <!-- Section 2: Gaming and English learning -->
         <div class="biography-section">
             <p set:html={t.biographySection2} />
         </div>
@@ -840,7 +799,6 @@ const t = getAboutTranslations(language);
             />
         </div>
 
-        <!-- Section 3: Sports, perfectionism, and physics -->
         <div class="biography-section">
             <p set:html={t.biographySection3} />
         </div>
@@ -875,7 +833,6 @@ const t = getAboutTranslations(language);
             />
         </div>
 
-        <!-- Section 4: Family and professional life -->
         <div class="biography-section">
             <p set:html={t.biographySection4} />
         </div>
@@ -913,7 +870,6 @@ const t = getAboutTranslations(language);
     </div>
 </section>
 
-<!-- Work Experience Section -->
 <section id="experience" class="experience">
     <h3>
         {t.experienceTitle}
@@ -921,7 +877,6 @@ const t = getAboutTranslations(language);
     </h3>
 
     <div class="job-entries">
-        <!-- Mollie -->
         <article class="job-entry current">
             <div class="job-header">
                 <div class="company-info">
@@ -950,7 +905,6 @@ const t = getAboutTranslations(language);
             </ul>
         </article>
 
-        <!-- Banca AideXa -->
         <article class="job-entry">
             <div class="job-header">
                 <div class="company-info">
@@ -978,7 +932,6 @@ const t = getAboutTranslations(language);
             </ul>
         </article>
 
-        <!-- lastminute.com -->
         <article class="job-entry">
             <div class="job-header">
                 <div class="company-info">
@@ -1027,7 +980,6 @@ const t = getAboutTranslations(language);
     </div>
 </section>
 
-<!-- Now Section -->
 <section id="now" class="now">
     <h3>
         {t.nowTitle}
@@ -1065,7 +1017,6 @@ const t = getAboutTranslations(language);
         </div>
     </div>
 
-    <!-- Collapsible Historical Entries -->
     {
         t.nowHistory.map((quarter) => (
             <details class="history-toggle">
@@ -1136,7 +1087,6 @@ const t = getAboutTranslations(language);
     <p class="history-disclaimer">{t.nowHistoryDisclaimer}</p>
 </section>
 
-<!-- Contact Section -->
 <section class="contact">
     <p>
         {t.stayUpdated}
@@ -1160,13 +1110,11 @@ const t = getAboutTranslations(language);
     <TwitterTombstone language={language} />
 </section>
 
-<!-- Image Modal -->
 <ImageModal />
 
 <style>
     @import '../../styles/buttons.css';
 
-    /* Table of Contents */
     .toc {
         background: var(--color-bg-secondary);
         border-radius: var(--border-radius);
@@ -1210,10 +1158,9 @@ const t = getAboutTranslations(language);
         color: var(--color-bg);
     }
 
-    /* Sections */
     section {
         margin: var(--space-xl) 0;
-        scroll-margin-top: calc(4rem + var(--space-md)); /* Header height (4rem) + breathing space (1.5rem) = 5.5rem */
+        scroll-margin-top: calc(4rem + var(--space-md));
     }
 
     section h3 {
@@ -1227,7 +1174,6 @@ const t = getAboutTranslations(language);
         align-items: center;
     }
 
-    /* Section back-to-top links */
     .section-back-to-top {
         color: var(--color-text-secondary);
         text-decoration: none;
@@ -1244,7 +1190,6 @@ const t = getAboutTranslations(language);
         text-decoration: none;
     }
 
-    /* Logo Container */
     .logo-container {
         display: flex;
         flex-direction: column;
@@ -1277,7 +1222,6 @@ const t = getAboutTranslations(language);
         text-decoration: underline;
     }
 
-    /* Title with icon styling */
     .title-with-icon {
         display: flex;
         align-items: center;
@@ -1287,7 +1231,6 @@ const t = getAboutTranslations(language);
         margin-left: var(--space-xs);
     }
 
-    /* Biography Section */
     .biography-content {
         margin-top: var(--space-md);
     }
@@ -1301,7 +1244,6 @@ const t = getAboutTranslations(language);
         color: var(--color-text-primary);
     }
 
-    /* Image Galleries */
     .image-gallery {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -1331,7 +1273,6 @@ const t = getAboutTranslations(language);
         cursor: zoom-in;
     }
 
-    /* Work Experience Section */
     .experience-actions {
         margin-top: var(--space-lg);
         display: flex;
@@ -1420,7 +1361,6 @@ const t = getAboutTranslations(language);
         height: 2.5rem;
     }
 
-    /* Show/hide based on theme */
     .dark-logo {
         display: none;
     }
@@ -1476,7 +1416,6 @@ const t = getAboutTranslations(language);
         font-weight: bold;
     }
 
-    /* Now Section */
     .now-subtitle {
         font-size: var(--font-size-sm);
         color: var(--color-text-secondary);
@@ -1531,7 +1470,6 @@ const t = getAboutTranslations(language);
         font-weight: bold;
     }
 
-    /* History Toggle */
     .history-toggle {
         border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
@@ -1584,7 +1522,6 @@ const t = getAboutTranslations(language);
         line-height: 1.5;
     }
 
-    /* History Categories */
     .history-category {
         margin-bottom: var(--space-md);
     }
@@ -1661,7 +1598,6 @@ const t = getAboutTranslations(language);
         opacity: 0.7;
     }
 
-    /* Contact Section */
     .contact {
         text-align: center;
     }
@@ -1687,7 +1623,6 @@ const t = getAboutTranslations(language);
         text-decoration: none;
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
         .toc ul {
             flex-direction: column;

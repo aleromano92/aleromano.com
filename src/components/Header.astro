@@ -41,7 +41,6 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
     -webkit-backdrop-filter: blur(10px);
   }
 
-  /* Add some opacity to the background for a glass effect */
   header::before {
     content: '';
     position: absolute;
@@ -51,7 +50,6 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
     z-index: -1;
   }
 
-  /* Soft gradient border effect */
   header::after {
     content: '';
     position: absolute;
@@ -86,7 +84,6 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
     flex-shrink: 0;
   }
 
-  /* Theme-based logo swap (matches Footer behaviour) */
   .dark-logo {
     display: none;
   }
@@ -97,9 +94,7 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
     display: none;
   }
 
-  /* Mobile: show only the logo, but keep the name available to assistive tech */
   @media (max-width: 636px) {
-    /* Keep the logo clear of the hamburger */
     .brand {
       margin-left: var(--space-sm);
     }
@@ -117,7 +112,6 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
     }
   }
 
-  /* Tablet centering */
   @media (min-width: 636px) and (max-width: 860px) {
     header h2 {
       width: min-content;
@@ -133,7 +127,6 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
 </style>
 
 <script>
-  // Add shadow based on scroll position
   document.addEventListener('DOMContentLoaded', () => {
     const header = document.querySelector('header');
     const addShadowClass = () => {
@@ -146,7 +139,6 @@ const homeUrl = getLocalizedPathname('/', i18nData?.currentLang || 'en');
       }
     };
 
-    // Set initial values
     header?.style.setProperty('--shadow-opacity', '0.05');
     header?.style.setProperty('--gradient-start', '5%');
 

@@ -20,18 +20,12 @@ export interface TwitterRawDataResponse {
   freshness: DataFreshness;
 }
 
-// Alessandro Romano's Twitter user ID (this never changes)
 const TWITTER_USER_ID = '4266046641';
 
-// 72 hours TTL (reduces API calls while keeping content reasonably fresh)
 const CACHE_TTL = 72 * 60 * 60 * 1000;
 
-// Cache key for Twitter API responses
 const TWITTER_CACHE_KEY = 'twitter:timeline';
 
-/**
- * TwitterService - handles fetching Twitter data with caching and error handling
- */
 export class TwitterService {
   private adapter: typeof TwitterViewAdapter;
   private cache: CacheManager;
@@ -54,7 +48,6 @@ export class TwitterService {
     } catch (error) {
       console.error('Failed to load Twitter feed:', error);
 
-      // Provide more specific error messages based on the error type
       let errorMessage = 'Unknown error occurred';
 
       if (error instanceof Error) {
@@ -79,7 +72,6 @@ export class TwitterService {
   }
 
   private async fetchRawData(): Promise<TwitterRawDataResponse> {
-    // Check cache first
     const cached = this.cache.get(TWITTER_CACHE_KEY);
     if (cached) {
       console.log('Using cached Twitter data');
@@ -90,10 +82,8 @@ export class TwitterService {
     }
 
     try {
-      // Fetch fresh data from API
       const apiResponse = await this.fetchFromApi();
       
-      // Update cache with successful data
       this.cache.set(TWITTER_CACHE_KEY, JSON.stringify(apiResponse), CACHE_TTL);
       
       return {
@@ -108,7 +98,6 @@ export class TwitterService {
         console.warn('Twitter API error:', error);
       }
 
-      // Try to use any cached data as fallback (even if stale)
       const staleCached = this.cache.getStale(TWITTER_CACHE_KEY);
       if (staleCached) {
         if (!isCreditsError) {
@@ -120,7 +109,6 @@ export class TwitterService {
         };
       }
       
-      // No fallback available, re-throw the error
       throw error;
     }
   }
@@ -137,10 +125,8 @@ export class TwitterService {
       'Content-Type': 'application/json',
     };
 
-    // Use hardcoded user ID (saves one API call vs username lookup)
     const userId = TWITTER_USER_ID;
 
-    // Fetch user's timeline (tweets and retweets)
     const timelineUrl = `https://api.twitter.com/2/users/${userId}/tweets?` +
       `tweet.fields=created_at,public_metrics,author_id,attachments&` +
       `expansions=author_id,attachments.media_keys&` +
@@ -159,5 +145,4 @@ export class TwitterService {
   }
 }
 
-// Export a default instance for convenience
 export const twitterService = new TwitterService(TwitterViewAdapter, cacheManager);

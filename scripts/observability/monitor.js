@@ -1,75 +1,51 @@
 #!/usr/bin/env node
 
-/**
- * VPS Observability Script
- * 
- * This script monitors:
- * 1. Docker container status
- * 2. Docker logs for errors
- * 3. Website availability via HTTP requests
- * 
- * It sends notifications via Telegram when issues are detected.
- */
-
 const { exec } = require('child_process');
 const https = require('https');
 const fs = require('fs');
 
-// Configuration
 const CONFIG = {
-    // Monitoring intervals (in milliseconds)
-    containerCheckInterval: 60000, // 1 minute
-    logCheckInterval: 300000,      // 5 minutes
-    websiteCheckInterval: 180000,  // 3 minutes
+    containerCheckInterval: 60_000,
+    logCheckInterval: 5 * 60_000,
+    websiteCheckInterval: 3 * 60_000,
 
-    // Website to monitor
     website: {
         url: 'https://aleromano.com',
-        timeout: 30000, // 30 seconds
+        timeout: 30_000,
     },
 
-    // Containers to monitor (leave empty to monitor all)
     containers: ['app-app-1', 'app-nginx-1', 'app-smtp-relay-1'],
 
-    // Telegram configuration
     telegram: {
         botToken: process.env.TELEGRAM_BOT_TOKEN,
         chatId: process.env.TELEGRAM_CHAT_ID,
     },
 
-    // Log file for this script
     logFile: '/var/log/observability.log',
 };
 
-// Ensure we have the required environment variables
 if (!CONFIG.telegram.botToken || !CONFIG.telegram.chatId) {
     console.error('Error: TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID environment variables must be set');
     process.exit(1);
 }
 
-// Setup logging
 const log = (message, level = 'INFO') => {
     const timestamp = new Date().toISOString();
     const logMessage = `[${timestamp}] [${level}] ${message}`;
 
-    // Only log to console if we're not also logging to a file
-    // This prevents duplicate logs when stdout/stderr are redirected to the same log file
     if (!CONFIG.logFile || process.env.NODE_ENV === 'development') {
         console.log(logMessage);
     }
 
-    // Log to file if specified
     if (CONFIG.logFile) {
         fs.appendFileSync(CONFIG.logFile, logMessage + '\n');
     }
 };
 
-// Send a message to Telegram
 const sendTelegramNotification = async (message) => {
     const { botToken, chatId } = CONFIG.telegram;
     const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
-    // Use URL-encoded form data instead of JSON
     const postData = new URLSearchParams({
         chat_id: chatId,
         text: message,
@@ -117,7 +93,6 @@ const sendTelegramNotification = async (message) => {
     });
 };
 
-// Check Docker container status
 const checkContainerStatus = () => {
     log('Checking container status...');
 
@@ -141,12 +116,10 @@ const checkContainerStatus = () => {
         containers.forEach((container) => {
             const [name, status] = container.split('|');
 
-            // Skip if we're only monitoring specific containers and this isn't one of them
             if (CONFIG.containers.length > 0 && !monitoredContainers.has(name)) {
                 return;
             }
 
-            // Count how many monitored containers we found
             foundMonitoredContainers++;
 
             if (!status.startsWith('Up')) {
@@ -154,7 +127,6 @@ const checkContainerStatus = () => {
             }
         });
 
-        // Check if any monitored containers are missing entirely
         if (CONFIG.containers.length > 0 && foundMonitoredContainers < CONFIG.containers.length) {
             const foundContainerNames = new Set(containers.map(c => c.split('|')[0]));
             const missingContainers = CONFIG.containers.filter(name => !foundContainerNames.has(name));
@@ -177,11 +149,9 @@ const checkContainerStatus = () => {
     });
 };
 
-// Check Docker logs for errors
 const checkDockerLogs = () => {
     log('Checking Docker logs for errors...');
 
-    // Get the list of containers to check
     exec('docker ps --format "{{.Names}}"', (error, stdout, _stderr) => {
         if (error) {
             log(`Error getting container list: ${error.message}`, 'ERROR');
@@ -191,18 +161,14 @@ const checkDockerLogs = () => {
         const containers = stdout.trim().split('\n');
 
         containers.forEach((containerName) => {
-            // Skip if we're only monitoring specific containers and this isn't one of them
             if (CONFIG.containers.length > 0 && !CONFIG.containers.includes(containerName)) {
                 return;
             }
 
-            // Check logs from the last 5 minutes for errors
             const since = Math.floor((Date.now() - CONFIG.logCheckInterval) / 1000);
             const command = `docker logs --since ${since} ${containerName} 2>&1 | grep -i "error\\|exception\\|fatal" | tail -n 10`;
 
             exec(command, (error, stdout, _stderr) => {
-                // grep returns exit code 1 if no matches, which causes exec to return an error
-                // We only care about actual errors, not the absence of matches
                 if (error && error.code !== 1) {
                     log(`Error checking logs for ${containerName}: ${error.message}`, 'ERROR');
                     return;
@@ -223,12 +189,10 @@ const checkDockerLogs = () => {
     });
 };
 
-// Check website availability
 const checkWebsite = () => {
     log(`Checking website availability: ${CONFIG.website.url}`);
     const startTime = Date.now();
 
-    // Create options for the request
     const url = new URL(CONFIG.website.url);
     const options = {
         hostname: url.hostname,
@@ -243,7 +207,6 @@ const checkWebsite = () => {
     const request = https.request(options, (response) => {
         const responseTime = Date.now() - startTime;
 
-        // Consume the response data to free up memory
         response.resume();
 
         if (response.statusCode >= 200 && response.statusCode < 400) {
@@ -260,7 +223,6 @@ const checkWebsite = () => {
         log(`Website check timed out after ${CONFIG.website.timeout}ms`, 'WARNING');
         request.destroy();
 
-        // Try a simple curl command to see if the website is reachable
         exec(`curl -s -o /dev/null -w "%{http_code}" -m 10 ${CONFIG.website.url}`, (error, stdout, _stderr) => {
             if (!error && stdout.trim() >= 200 && stdout.trim() < 400) {
                 log(`Curl check succeeded with status ${stdout.trim()} despite timeout in Node.js request`, 'WARNING');
@@ -286,25 +248,20 @@ const checkWebsite = () => {
     request.end();
 };
 
-// Start monitoring
 log('Starting VPS observability daemon...');
 
-// Send a startup notification
 sendTelegramNotification(
     `🚀 <b>VPS Monitoring Started</b>\n\nMonitoring:\n- Docker containers\n- Error logs\n- Website availability`
 );
 
-// Schedule regular checks
 setInterval(checkContainerStatus, CONFIG.containerCheckInterval);
 setInterval(checkDockerLogs, CONFIG.logCheckInterval);
 setInterval(checkWebsite, CONFIG.websiteCheckInterval);
 
-// Run initial checks
 checkContainerStatus();
 checkDockerLogs();
 checkWebsite();
 
-// Handle process termination
 process.on('SIGINT', () => {
     log('Received SIGINT, shutting down...', 'INFO');
     sendTelegramNotification('🛑 <b>VPS Monitoring Stopped</b>')
@@ -317,5 +274,4 @@ process.on('SIGTERM', () => {
         .finally(() => process.exit(0));
 });
 
-// Keep the process running
 log('Monitoring active. Press Ctrl+C to stop.'); 

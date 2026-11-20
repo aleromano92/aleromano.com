@@ -1,16 +1,5 @@
 #!/usr/bin/env node
 
-/**
- * Seed the local analytics SQLite database with fixture data.
- *
- * Usage:
- *   npm run db:seed          – seed default database (./data/analytics.db)
- *   node scripts/seed-analytics.mjs path/to/db  – seed a specific database
- *
- * The script reads the SQL fixture from src/test/fixtures/analytics-seed.sql
- * and executes all INSERTs, printing a summary.
- */
-
 import Database from "better-sqlite3";
 import { readFileSync, existsSync, mkdirSync } from "node:fs";
 import { resolve, dirname } from "node:path";
@@ -19,19 +8,16 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
 
-// Resolve database path from CLI arg, env var, or default
 const dbPath = resolve(
     projectRoot,
     process.argv[2] ?? process.env.DATABASE_PATH ?? "./data/analytics.db"
 );
 
-// Ensure the data directory exists
 const dataDir = dirname(dbPath);
 if (!existsSync(dataDir)) {
     mkdirSync(dataDir, { recursive: true });
 }
 
-// Read fixture SQL
 const sqlPath = resolve(
     projectRoot,
     "src/test/fixtures/analytics-seed.sql"
@@ -42,11 +28,9 @@ console.log(`📂 Database: ${dbPath}`);
 console.log(`📄 Fixture:  ${sqlPath}`);
 console.log();
 
-// Open DB and ensure the schema exists
 const db = new Database(dbPath);
 db.pragma("journal_mode = WAL");
 
-// Create tables if they don't exist yet
 db.exec(`
   CREATE TABLE IF NOT EXISTS analytics_visits (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,7 +65,6 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_analytics_events_type_created_at ON analytics_events(type, created_at);
 `);
 
-// Run the seed inside a transaction
 const countBefore = {
     visits: db.prepare("SELECT COUNT(*) as c FROM analytics_visits").get().c,
     events: db.prepare("SELECT COUNT(*) as c FROM analytics_events").get().c,

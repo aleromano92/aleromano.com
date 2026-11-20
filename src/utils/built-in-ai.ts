@@ -1,10 +1,3 @@
-// Chrome Built-in AI APIs — Summarizer and Translator
-// Docs: https://developer.chrome.com/docs/ai/summarizer-api
-//       https://developer.chrome.com/docs/ai/translator-api
-//
-// API access: global `Summarizer` and `Translator` objects (Chrome 138+)
-// Feature detection: `'Summarizer' in self` / `'Translator' in self`
-
 import { LANGUAGES } from '../types/i18n';
 
 export type SummaryType = 'tldr' | 'key-points';
@@ -16,7 +9,6 @@ export interface BuiltInAIFeatures {
   targetLangName: string | null;
 }
 
-// Languages the site already supports natively — no translation offered
 const NATIVE_LANGUAGES = Object.keys(LANGUAGES);
 
 function getBrowserLangBase(): string {
@@ -29,7 +21,6 @@ export async function detectFeatures(postLanguage = 'en'): Promise<BuiltInAIFeat
   let targetLang: string | null = null;
   let targetLangName: string | null = null;
 
-  // Check Summarizer API
   if (!('Summarizer' in self)) {
     console.info('[Built-in AI] Summarizer API not available — requires Chrome 138+ with Built-in AI enabled.');
   } else {
@@ -45,7 +36,6 @@ export async function detectFeatures(postLanguage = 'en'): Promise<BuiltInAIFeat
     }
   }
 
-  // Check Translator API
   const browserLang = getBrowserLangBase();
   const isNativeLang = NATIVE_LANGUAGES.includes(browserLang);
 

@@ -8,24 +8,18 @@ import type { SupportedLanguage } from '../types/i18n';
 
 const pageTitle = 'Blog';
 
-// Get the current language from URL
 const language = (getLanguageFromURL(Astro.url.pathname) || 'en') as SupportedLanguage;
 
-// Get translations for the current language
 const t = getBlogTranslations(language);
 
-// Page description for SEO and social sharing
 const pageDescription = t.pageDescription;
 
-// Get blog posts filtered by language
 const posts = await getCollection('blog', ({ data }) => {
   return data.language === language;
 });
 
-// Sort posts by publication date (newest first)
 const sortedPosts = posts.sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
 
-// Set language info for BaseLayout
 const i18nData = {
   currentLang: language,
 };

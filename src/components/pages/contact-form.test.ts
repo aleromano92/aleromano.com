@@ -126,7 +126,6 @@ describe('parseReasonPreselection', () => {
     });
 
     it('survives titles containing a literal percent sign', () => {
-        // double-decoding would throw URIError here
         expect(parseReasonPreselection('?reason=blogpost&title=100%25%20CSS')?.blogPostTitle).toBe('100% CSS');
     });
 });

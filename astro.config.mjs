@@ -5,12 +5,10 @@ import rehypeExternalLinks from 'rehype-external-links';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
-// Enable MSW for server-side mocking in development
 if (import.meta.env.DEV || process.env.NODE_ENV === 'development') {
   await import('./src/mocks/node.ts');
 }
 
-// https://astro.build/config
 export default defineConfig({
   output: 'server',
 
@@ -26,7 +24,6 @@ export default defineConfig({
         it: 'it',
       }
     },
-    // Custom filter to exclude API routes
     filter: (page) => !page.includes('/api/'),
     changefreq: 'weekly',
     priority: 0.7,

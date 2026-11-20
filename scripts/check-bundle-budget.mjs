@@ -1,44 +1,20 @@
 #!/usr/bin/env node
-/**
- * Client bundle-size budget — a deterministic performance gate.
- *
- * Astro's value is shipping little client JS; this script fails the build if
- * the compiled client bundles exceed their budgets, so a heavy dependency or
- * an accidental client-side import is caught at PR time instead of in prod.
- *
- * Budgets are a ratchet: set a little above the current size. When a change
- * legitimately needs more, raise the budget deliberately (and notice you did).
- *
- * Run after `astro build`:  node scripts/check-bundle-budget.mjs
- */
 import { readdirSync, statSync } from 'node:fs';
 import path from 'node:path';
 
 const ASTRO_DIR = path.join(process.cwd(), 'dist', 'client', '_astro');
 
-// Per-logical-chunk budgets in bytes (filename content-hash stripped).
-// reveal.js (PresentationMode) is isolated on its own line: it only loads on
-// /posts/*/present routes, so it must not mask regressions in app-wide chunks.
 const CHUNK_BUDGETS = {
   'PresentationMode.js': 1_250_000,
   'analytics.js': 235_000,
   'index.js': 95_000,
-  // Mostly marked; 18.1.2 and 18.1.3 each added ~1.3 KB of CommonMark fixes.
   'BuiltInAIBottomSheet.js': 52_000,
-  // Rolldown (Astro 7's bundler) splits the geo-chart deps used by the
-  // analytics page into their own chunk instead of folding them into
-  // analytics.js — same code, new split, so it gets its own budget line.
   'build.js': 90_000,
 };
-// Any chunk not listed above must stay under this ceiling — a new heavy chunk
-// trips the gate and forces a deliberate budget entry.
 const DEFAULT_CHUNK_BUDGET = 25_000;
-// Aggregate ceiling for all client JS except the presentation bundle.
 const APP_JS_BUDGET = 385_000;
-// Aggregate ceiling for all client CSS.
 const CSS_BUDGET = 130_000;
 
-/** Strip Vite/Astro content hashes and the astro script suffix to a logical key. */
 function logicalName(file) {
   return file
     .replace(/\.astro_astro_type_script_index_0_lang/, '')
@@ -61,7 +37,6 @@ function listFiles(dir, ext) {
 const jsFiles = listFiles(ASTRO_DIR, '.js');
 const cssFiles = listFiles(ASTRO_DIR, '.css');
 
-// Sum sizes per logical chunk name.
 const chunks = new Map();
 for (const { file, size } of jsFiles) {
   const name = logicalName(file);

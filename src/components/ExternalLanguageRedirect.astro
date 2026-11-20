@@ -11,7 +11,6 @@ const { targetLanguage } = Astro.props;
 const pathname = new URL(Astro.request.url).pathname;
 const currentLang = getLanguageFromURL(pathname);
 
-// If we're already on the target language, redirect to external URL
 if (currentLang === targetLanguage) {
     return Astro.redirect(Astro.props.externalUrl);
 }

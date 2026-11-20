@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock geolite2-redist and maxmind before importing the module under test
 const mockGet = vi.fn();
 const mockClose = vi.fn();
 const mockReader = { get: mockGet, close: mockClose };
@@ -23,7 +22,6 @@ vi.mock('maxmind', () => ({
 describe('GeoIP utility', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Reset the module to clear the singleton reader between tests
     vi.resetModules();
   });
 
@@ -111,7 +109,6 @@ describe('GeoIP utility', () => {
 
   describe('closeGeoIPReader', () => {
     it('should close the reader when initialized', async () => {
-      // First initialize the reader by making a lookup
       mockGet.mockReturnValue({ country: { iso_code: 'US' } });
       const { getCountryFromIP, closeGeoIPReader } = await import('./geoip');
       await getCountryFromIP('8.8.8.8');
