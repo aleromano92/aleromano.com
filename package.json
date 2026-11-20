@@ -23,6 +23,7 @@
     "test:mutation": "stryker run",
     "perf:budget": "node scripts/check-bundle-budget.mjs",
     "complexity": "cccc src scripts observability > /dev/null && echo 'cccc: complexity gate passed'",
+    "lint:comments": "node scripts/lint-comments.mjs",
     "test:watch": "vitest",
     "postinstall": "node -e \"if (process.env.CI || process.env.GEOIP_DOWNLOAD === '0') { process.exit(0); } import('geolite2-redist').then(g => g.downloadDbs())\""
   },
@@ -55,6 +56,7 @@
     "typescript": "7.1.0-dev.20261112.1"
   },
   "devDependencies": {
+    "@astrojs/compiler-rs": "^0.5.2",
     "@astrojs/sitemap": "^3.7.4",
     "@emnapi/core": "^1.11.3",
     "@emnapi/runtime": "^1.11.3",
@@ -68,6 +70,7 @@
     "autocannon": "^9.0.0",
     "fast-check": "^4.10.2",
     "msw": "^3.0.5",
+    "rolldown": "~1.2.15",
     "vitest": "^5.0.5"
   },
   "allowScripts": {
