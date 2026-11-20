@@ -34,7 +34,6 @@ describe('TwitterViewAdapter', () => {
     });
 
     it('should clean tweet text by removing t.co links when media is present', () => {
-      // Create a mock response with a tweet that has t.co links and media
       const mockResponseWithTcoLinks = {
         data: [{
           id: '1234567890',
@@ -74,7 +73,6 @@ describe('TwitterViewAdapter', () => {
     });
 
     it('should preserve tweet text when no media is present', () => {
-      // Create a mock response with a tweet that has t.co links but no media
       const mockResponseNoMedia = {
         data: [{
           id: '1234567890',
@@ -98,7 +96,6 @@ describe('TwitterViewAdapter', () => {
 
       const posts = TwitterViewAdapter.parseApiResponse(mockResponseNoMedia as TwitterApiResponse);
       
-      // Should preserve the t.co link when no media is present
       expect(posts[0].text).toBe('This is a test tweet with a link https://t.co/abcd1234');
     });
 
@@ -143,7 +140,7 @@ describe('TwitterViewAdapter', () => {
           },
         }],
         includes: {
-          users: [], // No users included
+          users: [],
         },
       };
 

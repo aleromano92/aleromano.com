@@ -64,10 +64,8 @@ interface Props {
 
 const { language } = Astro.props;
 
-// Get translations for the current language
 const t = getHomeTranslations(language);
 
-// Fetch GitHub commits data server-side
 const githubData = await getGitHubCommitsData(language);
 ---
 
@@ -118,7 +116,6 @@ const githubData = await getGitHubCommitsData(language);
         flex: 1;
     }
 
-    /* Show/hide based on theme */
     .dark-logo {
         display: none;
     }

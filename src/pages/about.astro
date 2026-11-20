@@ -6,21 +6,16 @@ import type { SupportedLanguage } from '../types/i18n';
 
 const pageTitle = 'About';
 
-// Get the current language from URL
 const language = (getLanguageFromURL(Astro.url.pathname) || 'en') as SupportedLanguage;
 
-// Get translations for the current language
 const t = getAboutTranslations(language);
 
-// Page description for SEO and social sharing
 const pageDescription = t.pageDescription;
 
-// Set language info for BaseLayout
 const i18nData = {
   currentLang: language,
 };
 
-// Structured data for Person schema
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'Person',
@@ -73,7 +68,6 @@ const structuredData = {
   ],
 };
 
-// Fully static since the X feed became a hardcoded tombstone — no per-request work.
 export const prerender = true;
 ---
 

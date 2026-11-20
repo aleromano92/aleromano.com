@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import fc from 'fast-check';
 
-// Same nodemailer mock as contact.test.ts so no real mail is sent.
 const { mockSendMail, mockCreateTransport, mockCreateTestAccount, mockGetTestMessageUrl } = vi.hoisted(() => {
   const sendMail = vi.fn();
   return {
@@ -47,11 +46,6 @@ afterEach(() => {
   process.env = { ...ORIGINAL_ENV };
 });
 
-/**
- * Fault injection on the input boundary: throw arbitrary payloads at the
- * endpoint and assert its residues survive — it never crashes, always answers
- * with a sane HTTP status, and never sends mail unless it returns 200.
- */
 describe('POST /api/contact fuzzing', () => {
   it('always returns a Response with an allowed status for arbitrary JSON payloads', async () => {
     await fc.assert(
@@ -86,8 +80,6 @@ describe('POST /api/contact fuzzing', () => {
   });
 
   it('never accepts a payload lacking a genuine Form Token (anti-bot residue)', async () => {
-    // fc cannot forge an HMAC over the process secret, so no generated payload
-    // may ever reach the mailer — the tripwires must catch every one.
     await fc.assert(
       fc.asyncProperty(fc.jsonValue(), async (payload) => {
         mockSendMail.mockClear();

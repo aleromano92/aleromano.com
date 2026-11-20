@@ -22,14 +22,11 @@ interface Props {
 
 const { presentation, language, blogPostSlug } = Astro.props;
 
-// Parse slides on the server side for better performance and reliability
 const slides = parseSlides(presentation.body ?? '');
 
-// Generate back to blog post URL
 const backUrl = language === 'en' ? `/posts/${blogPostSlug}` : `/it/posts/${blogPostSlug}`;
 const backText = language === 'it' ? 'Torna al post' : 'Back to post';
 
-// Generate print URL with query parameter
 const printUrl = `${Astro.url.pathname}?print-pdf`;
 const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
 ---
@@ -64,7 +61,6 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
             import Notes from 'reveal.js/plugin/notes';
             import Zoom from 'reveal.js/plugin/zoom';
 
-            // Initialize Reveal.js when DOM is ready
             document.addEventListener('DOMContentLoaded', function () {
                 const deck = new Reveal({
                     plugins: [Markdown, Highlight, Notes, Zoom],
@@ -77,14 +73,12 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
                     keyboard: true,
                     overview: true,
                     help: true,
-                    // PDF export configuration
                     pdfMaxPagesPerSlide: 1,
                     pdfSeparateFragments: false,
                 });
 
                 deck.initialize();
 
-                // Setup keyboard handlers
                 document.addEventListener('keydown', function (event) {
                     if (event.key === 'Escape') {
                         const backLink = document.querySelector('.back-to-blog') as HTMLAnchorElement;
@@ -98,7 +92,6 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
     </body>
 </html>
 
-<!-- Custom styles to match website theme -->
 <style>
     body {
         margin: 0;
@@ -160,7 +153,6 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
         color: white;
     }
 
-    /* Print mode optimizations */
     @media print {
         .back-to-blog-button,
         .print-pdf-button {
@@ -168,7 +160,6 @@ const printText = language === 'it' ? 'Stampa PDF' : 'Print PDF';
         }
     }
 
-    /* Mobile responsive adjustments */
     @media (max-width: 768px) {
         .back-to-blog-button,
         .print-pdf-button {

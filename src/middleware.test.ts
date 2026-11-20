@@ -1,23 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// astro:middleware is a virtual module; defineMiddleware just returns its handler.
 vi.mock('astro:middleware', () => ({ defineMiddleware: (fn: unknown) => fn }));
-
-/**
- * Behavioural gate for the /admin Basic-Auth guard.
- *
- * The architectural fitness function (R5 in architecture.test.ts) only checks
- * that middleware.ts still references the /admin prefix — a cheap structural
- * canary. THIS file is the real authorization gate: it drives the middleware
- * and asserts it actually denies/permits requests.
- */
 
 const ORIGINAL_ENV = { ...process.env };
 const VALID_USER = 'admin';
 const VALID_PASS = 's3cr3t';
 
-// Credentials are read at module load, so import the middleware fresh after
-// setting the desired env for each scenario.
 async function loadMiddleware(env: { user?: string; pass?: string }) {
   vi.resetModules();
   if (env.user === undefined) delete process.env.ADMIN_USER;
@@ -25,8 +13,6 @@ async function loadMiddleware(env: { user?: string; pass?: string }) {
   if (env.pass === undefined) delete process.env.ADMIN_PASS;
   else process.env.ADMIN_PASS = env.pass;
   const mod = await import('./middleware');
-  // The handler's real type expects a full Astro APIContext; for a focused unit
-  // test we drive it with the minimal { request, url } it actually reads.
   return mod.onRequest as (context: unknown, next: unknown) => Promise<Response>;
 }
 
@@ -102,7 +88,6 @@ describe('admin auth middleware', () => {
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(res.status).toBe(200);
-    // Global discovery Link headers are appended on the way out.
     expect(res.headers.get('Link')).toContain('llms.txt');
   });
 });

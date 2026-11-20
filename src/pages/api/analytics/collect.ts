@@ -6,9 +6,6 @@ import { getCountryFromIP } from '../../../utils/geoip';
 import { parseUserAgent } from '../../../utils/user-agent';
 import { normalizeReferer } from '../../../utils/referer';
 
-/**
- * Extract client IP from request headers (behind nginx proxy)
- */
 function getClientIP(request: Request): string {
   const realIP = request.headers.get('X-Real-IP');
   if (realIP) return realIP;
@@ -36,7 +33,6 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const payload = await request.json() as AnalyticsEvent;
 
-    // Validate required fields
     if (!payload.type || !payload.path) {
       return new Response(JSON.stringify({ error: 'Missing required fields: type, path' }), {
         status: 400,
@@ -44,7 +40,6 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    // Validate event type
     const validTypes = ['page_view', 'click', 'time_on_page', 'ai_feature'];
     if (!validTypes.includes(payload.type)) {
       return new Response(JSON.stringify({ error: 'Invalid event type' }), {
@@ -53,7 +48,6 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    // Handle page_view separately - insert into visits table
     if (payload.type === 'page_view') {
       const ip = getClientIP(request);
       const userAgent = request.headers.get('User-Agent') || 'unknown';
@@ -70,7 +64,6 @@ export const POST: APIRoute = async ({ request }) => {
         country: country ?? undefined,
       });
     } else {
-      // Queue click/time_on_page events for batched insertion
       analyticsManager.queueEvent({
         type: payload.type,
         path: payload.path,
@@ -81,7 +74,6 @@ export const POST: APIRoute = async ({ request }) => {
         duration: payload.duration,
       });
       
-      // Return 202 Accepted since the event is queued but not yet processed
       return new Response(JSON.stringify({ success: true, queued: true }), {
         status: 202,
         headers: { 'Content-Type': 'application/json' },
@@ -101,7 +93,6 @@ export const POST: APIRoute = async ({ request }) => {
   }
 };
 
-// Reject other methods
 export const ALL: APIRoute = () => {
   return new Response(JSON.stringify({ error: 'Method not allowed' }), {
     status: 405,

@@ -1,10 +1,7 @@
 :root {
-    /* Colors - Light theme (default) */
-    /* Base colors - all other colors derive from these */
     --color-bg: oklch(0.95 0.09 97.88);
     --color-primary: oklch(0.38 0.11 294.79);
 
-    /* Derived colors using relative color syntax */
     --color-bg-secondary: oklch(from var(--color-bg) calc(l + 0.02) calc(c - 0.03) h);
     --color-text: var(--color-primary);
     --color-text-primary: var(--color-primary);
@@ -15,11 +12,9 @@
     --color-border-light: oklch(from var(--color-primary) calc(l + 0.47) calc(c - 0.05) h);
     --color-checkbox-bg: oklch(from var(--color-primary) calc(l + 0.23) calc(c + 0.04) h);
 
-    /* Semantic feedback colors */
     --color-success: #22c55e;
     --color-error: #ef4444;
 
-    /* Typography */
     --font-family: system-ui, sans-serif;
     --font-size-base: 1.125rem;
     --font-size-xs: 0.75rem;
@@ -30,30 +25,25 @@
     --line-height-base: 1.5;
     --font-weight-bold: 600;
 
-    /* Border radius */
     --border-radius: 0.5rem;
     --border-radius-sm: 0.25rem;
     --border-radius-lg: 1rem;
 
-    /* Layout */
     --container-max-width: 1080px;
     --header-container-max-width: calc(1080px + 4rem);
     --container-padding: clamp(1rem, 5vw, 2rem);
     --header-container-padding: 1.5rem;
     --post-content-max-width: 70ch;
-    /* Breakpoints */
     --breakpoint-mobile: 480px;
     --breakpoint-tablet: 636px;
     --breakpoint-desktop: 860px;
 
-    /* Spacing */
     --space-xs: 0.5rem;
     --space-sm: 1rem;
     --space-md: 1.5rem;
     --space-lg: 2rem;
     --space-xl: 3rem;
 
-    /* Cursor interactions */
     --cursor-default: default;
     --cursor-pointer: pointer;
     --cursor-text: text;
@@ -61,11 +51,9 @@
 }
 
 [data-theme="dark"] {
-    /* Base colors - all other colors derive from these */
     --color-bg: oklch(0.27 0.08 294.79);
     --color-primary: oklch(0.93 0.11 97.88);
 
-    /* Derived colors using relative color syntax */
     --color-bg-secondary: oklch(from var(--color-bg) calc(l + 0.16) calc(c + 0.04) h);
     --color-text: var(--color-primary);
     --color-text-primary: var(--color-primary);
@@ -77,7 +65,6 @@
     --color-checkbox-bg: oklch(from var(--color-primary) calc(l + 0.03) calc(c - 0.01) h);
 }
 
-/* Reset & Base Styles */
 *,
 *::before,
 *::after {
@@ -122,7 +109,6 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Interactive elements */
 button,
 .button,
 [role="button"],
@@ -143,7 +129,6 @@ textarea {
     cursor: var(--cursor-not-allowed);
 }
 
-/* Selection cursor */
 ::selection {
     background-color: var(--color-primary);
     color: var(--color-bg);

@@ -1,8 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// Mock nodemailer before importing the route under test.
-// contact.ts uses the default export: nodemailer.createTransport / createTestAccount / getTestMessageUrl.
-// vi.hoisted is required because vi.mock is hoisted above these declarations.
 const { mockSendMail, mockCreateTransport, mockCreateTestAccount, mockGetTestMessageUrl } = vi.hoisted(() => {
   const sendMail = vi.fn();
   return {
@@ -21,7 +18,6 @@ vi.mock('nodemailer', () => ({
   },
 }));
 
-// Real DNS has no place in unit tests: the MX check sees a well-published domain.
 const { mockResolveMx } = vi.hoisted(() => ({ mockResolveMx: vi.fn() }));
 vi.mock('node:dns/promises', () => ({ resolveMx: mockResolveMx }));
 
@@ -30,12 +26,10 @@ import { issueToken, TOKEN_MIN_AGE_MS } from '../../utils/contact-token';
 
 const RECIPIENT = 'ale@example.com';
 
-/** A token old enough to clear the minimum-age check right now. */
 function matureToken(): string {
   return issueToken(Date.now() - TOKEN_MIN_AGE_MS);
 }
 
-// Object bodies get a valid Form Token unless the test supplies its own.
 function makeRequest(body: unknown, headers: Record<string, string> = {}): Request {
   const withToken =
     body !== null && typeof body === 'object' && !('token' in body) ? { token: matureToken(), ...body } : body;
@@ -47,11 +41,9 @@ function makeRequest(body: unknown, headers: Record<string, string> = {}): Reque
 }
 
 function call(request: Request) {
-  // The route only uses `request` from the APIContext.
   return POST({ request } as Parameters<typeof POST>[0]);
 }
 
-// `website` is the Honeypot: honest clients always send it empty.
 const validPayload = {
   reason: 'general',
   name: 'Jane Doe',
@@ -68,7 +60,6 @@ beforeEach(() => {
   mockCreateTestAccount.mockResolvedValue({ user: 'ethereal-user', pass: 'ethereal-pass' });
   mockGetTestMessageUrl.mockReturnValue('https://ethereal.email/message/preview');
   mockResolveMx.mockResolvedValue([{ exchange: 'mx.external.com', priority: 10 }]);
-  // Production-like config: route through the internal relay, not Ethereal.
   process.env.SMTP_HOST = 'smtp-relay';
   process.env.SMTP_PORT = '25';
   process.env.ALE_PERSONAL_EMAIL = RECIPIENT;
@@ -87,7 +78,6 @@ describe('POST /api/contact', () => {
       const json = await response.json();
       expect(json.success).toBe(true);
 
-      // Relay transport, not the Ethereal fallback.
       expect(mockCreateTestAccount).not.toHaveBeenCalled();
       expect(mockCreateTransport).toHaveBeenCalledWith(
         expect.objectContaining({ host: 'smtp-relay', port: 25, secure: false })
@@ -101,7 +91,6 @@ describe('POST /api/contact', () => {
       const mailOptions = mockSendMail.mock.calls[0][0];
       expect(mailOptions.to).toBe(RECIPIENT);
       expect(mailOptions.replyTo).toBe(validPayload.email);
-      // From must be a well-formed address: "Name via aleromano.com" <recipient>
       expect(mailOptions.from).toBe(`"${validPayload.name} via aleromano.com" <${RECIPIENT}>`);
       expect(mailOptions.subject).toBe('Contact Form: general');
       expect(mailOptions.text).toContain(validPayload.message);

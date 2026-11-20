@@ -1,22 +1,7 @@
-/**
- * Load testing script for aleromano.com using autocannon
- * by Matteo Collina (https://github.com/mcollina/autocannon)
- *
- * Usage:
- *   node scripts/load-test.mjs [smoke|load|stress]
- *
- *   smoke  — quick sanity check (5 connections, 15s)
- *   load   — sustained ramp-up similar to a real traffic spike (default)
- *   stress — push beyond normal capacity to find limits
- */
-
 import autocannon from "autocannon";
 
 const BASE_URL = "https://aleromano.com";
 
-// Requests cycle through all these in round-robin per connection.
-// The POST /api/contact uses an intentionally invalid payload so the server
-// returns a fast 400 without triggering email delivery.
 const REQUESTS = [
   { method: "GET", path: "/" },
   { method: "GET", path: "/about" },
@@ -29,7 +14,6 @@ const REQUESTS = [
     method: "POST",
     path: "/api/contact",
     headers: { "content-type": "application/json" },
-    // Missing required fields → instant 400, no email sent
     body: JSON.stringify({ reason: "load-test-probe" }),
   },
 ];
@@ -48,7 +32,6 @@ function runStage({ connections, duration, label }) {
         resolve(result);
       }
     );
-    // Show live req/s counter but no progress bar (it would clobber the table)
     autocannon.track(instance, { renderProgressBar: false });
   });
 }
@@ -58,9 +41,6 @@ function summarise(results) {
   console.log(" Summary");
   console.log(`${"═".repeat(60)}`);
 
-  // Pass/fail is based on transport errors and timeouts only.
-  // 4xx responses (e.g. intentional 400 from /api/contact probe) and 3xx
-  // redirects are expected and must not count as failures.
   const allPassed = results.every(
     (r) => r.errors === 0 && r.timeouts === 0
   );

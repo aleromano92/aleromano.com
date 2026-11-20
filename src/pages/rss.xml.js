@@ -8,7 +8,7 @@ export async function GET(context) {
         title: post.data.title,
         pubDate: post.data.pubDate,
         description: post.data.description,
-        link: context.site + getLocalizedPostUrl(post).slice(1), // Remove leading slash and append to site URL
+        link: context.site + getLocalizedPostUrl(post).slice(1),
         customData: `<language>${post.data.language}</language>`,
     }));
 

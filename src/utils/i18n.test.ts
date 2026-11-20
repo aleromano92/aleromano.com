@@ -79,41 +79,33 @@ describe('getLocalizedPathname', () => {
     });
 
     it('should properly distinguish between blog posts and tags paths', () => {
-      // These should be treated as blog posts (language goes after /posts/)
       expect(getLocalizedPathname('/posts/my-blog-post', 'it')).toBe('/posts/it/my-blog-post');
       expect(getLocalizedPathname('/posts/another-post', 'it')).toBe('/posts/it/another-post');
       
-      // These should be treated as regular pages (language goes at the beginning)
       expect(getLocalizedPathname('/posts/tags/react', 'it')).toBe('/it/posts/tags/react');
       expect(getLocalizedPathname('/posts/tags/javascript', 'it')).toBe('/it/posts/tags/javascript');
     });
 
     it('should handle language switching on tags pages correctly', () => {
-      // English tags page to Italian
       expect(getLocalizedPathname('/posts/tags/', 'it')).toBe('/it/posts/tags/');
       expect(getLocalizedPathname('/posts/tags/react', 'it')).toBe('/it/posts/tags/react');
       
-      // Italian tags page to English  
       expect(getLocalizedPathname('/it/posts/tags/', 'en')).toBe('/posts/tags/');
       expect(getLocalizedPathname('/it/posts/tags/react', 'en')).toBe('/posts/tags/react');
     });
 
     it('should NOT generate /posts/it/tags/ for tags pages (regression test)', () => {
-      // This was the bug: generating /posts/it/tags/ instead of /it/posts/tags/
       expect(getLocalizedPathname('/posts/tags/', 'it')).not.toBe('/posts/it/tags/');
       expect(getLocalizedPathname('/posts/tags', 'it')).not.toBe('/posts/it/tags');
       
-      // Should generate correct paths
       expect(getLocalizedPathname('/posts/tags/', 'it')).toBe('/it/posts/tags/');
       expect(getLocalizedPathname('/posts/tags', 'it')).toBe('/it/posts/tags');
     });
 
     it('should handle same language switching (no-op)', () => {
-      // English to English
       expect(getLocalizedPathname('/posts/tags/', 'en')).toBe('/posts/tags/');
       expect(getLocalizedPathname('/posts/tags/react', 'en')).toBe('/posts/tags/react');
       
-      // Italian to Italian  
       expect(getLocalizedPathname('/it/posts/tags/', 'it')).toBe('/it/posts/tags/');
       expect(getLocalizedPathname('/it/posts/tags/react', 'it')).toBe('/it/posts/tags/react');
     });
@@ -124,15 +116,12 @@ describe('detectLanguage', () => {
   let mockStorage: Storage;
 
   beforeEach(() => {
-    // Mock window and localStorage
     mockStorage = {} as Storage;
 
-    // Mock window with localStorage
     const windowMock: Pick<Window, 'localStorage'> = {
       localStorage: mockStorage
     };
 
-    // Mock navigator with Object.defineProperty to handle read-only property
     const navigatorMock = { language: 'en-US' };
     Object.defineProperty(navigatorMock, 'language', {
       writable: true,
@@ -181,7 +170,6 @@ describe('setLanguagePreference', () => {
   let mockStorage: Storage;
 
   beforeEach(() => {
-    // Mock window and localStorage
     mockStorage = {
       getItem: vi.fn(),
       setItem: vi.fn(),
@@ -191,7 +179,6 @@ describe('setLanguagePreference', () => {
       length: 0
     } as Storage;
 
-    // Mock window with localStorage
     const windowMock: Pick<Window, 'localStorage'> = {
       localStorage: mockStorage
     };

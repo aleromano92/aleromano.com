@@ -48,6 +48,9 @@ jobs:
         with:
           path: src scripts observability # thresholds come from cccc.toml
 
+      - name: Comment ratchet
+        run: npm run lint:comments
+
   perf-budget:
     name: Client bundle budget
     runs-on: ubuntu-latest

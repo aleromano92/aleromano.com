@@ -1,16 +1,14 @@
-const WORDS_PER_MINUTE = 195; // Average adult reading speed
+const WORDS_PER_MINUTE = 195;
 
 export function stripHtmlToPlainText(content: string): string {
-    // Remove HTML tags
     const strippedHtml = content.replace(/<[^>]*>/g, ' ');
 
-    // Remove markdown syntax and extra whitespace
     return strippedHtml
         .replace(/[#*_~`]/g, '')
         .replace(/\s+/g, ' ')
-        .replace(/\[\[.*?\]\]/g, '') // Remove wiki-style links
-        .replace(/\[.*?\]\(.*?\)/g, '') // Remove markdown links
-        .replace(/!\[.*?\]\(.*?\)/g, '') // Remove image references
+        .replace(/\[\[.*?\]\]/g, '')
+        .replace(/\[.*?\]\(.*?\)/g, '')
+        .replace(/!\[.*?\]\(.*?\)/g, '')
         .trim();
 }
 
@@ -20,5 +18,5 @@ export function getReadingTime(content: string): number {
     const words = cleanText.split(/\s+/).length;
     const minutes = Math.ceil(words / WORDS_PER_MINUTE);
 
-    return Math.max(1, minutes); // Ensure at least 1 minute reading time
+    return Math.max(1, minutes);
 } 

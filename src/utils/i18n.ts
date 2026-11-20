@@ -12,44 +12,38 @@ export function getLanguageFromURL(pathname: string): SupportedLanguage {
 function getLocalizedBlogPath(pathname: string, targetLang: SupportedLanguage): string {
   const [, , maybeLang, ...slugParts] = pathname.split('/');
 
-  // Current path has a language prefix (e.g., /posts/it/my-post)
   if (maybeLang in LANGUAGES && maybeLang !== DEFAULT_LANGUAGE) {
     return targetLang === DEFAULT_LANGUAGE
-      ? '/posts/' + slugParts.join('/')  // To English: remove language prefix
-      : `/posts/${targetLang}/${slugParts.join('/')}`; // To other language: replace prefix
+      ? '/posts/' + slugParts.join('/')
+      : `/posts/${targetLang}/${slugParts.join('/')}`;
   }
 
-  // Current path is in English (e.g., /posts/my-post)
   return targetLang === DEFAULT_LANGUAGE
-    ? pathname  // Keep as is for English
-    : `/posts/${targetLang}/${maybeLang}${slugParts.length ? '/' + slugParts.join('/') : ''}`; // Add language prefix
+    ? pathname
+    : `/posts/${targetLang}/${maybeLang}${slugParts.length ? '/' + slugParts.join('/') : ''}`;
 }
 
 function getLocalizedPagePath(pathname: string, targetLang: SupportedLanguage): string {
   const [, currentLang, ...rest] = pathname.split('/');
 
-  // Current path has a language prefix (e.g., /it/about)
   if (currentLang in LANGUAGES && currentLang !== DEFAULT_LANGUAGE) {
     return targetLang === DEFAULT_LANGUAGE
-      ? '/' + rest.join('/')  // To English: remove language prefix
-      : `/${targetLang}/${rest.join('/')}`; // To other language: replace prefix
+      ? '/' + rest.join('/')
+      : `/${targetLang}/${rest.join('/')}`;
   }
 
-  // Current path is in English (e.g., /about)
   return targetLang === DEFAULT_LANGUAGE
-    ? pathname  // Keep as is for English
-    : `/${targetLang}${pathname}`; // Add language prefix
+    ? pathname
+    : `/${targetLang}${pathname}`;
 }
 
 export function getLocalizedPathname(pathname: string, targetLang: SupportedLanguage): string {
-  const parts = pathname.split('/').filter(Boolean); // Remove empty parts
+  const parts = pathname.split('/').filter(Boolean);
 
-  // Special handling for blog posts only (exclude /posts/tags/ and other metadata pages)
   if (parts[0] === 'posts' && parts.length > 1 && parts[1] !== 'tags') {
     return getLocalizedBlogPath(pathname, targetLang);
   }
 
-  // Regular pages (including /posts/tags/)
   return getLocalizedPagePath(pathname, targetLang);
 }
 

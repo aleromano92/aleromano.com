@@ -35,15 +35,12 @@ export function getNotFoundTranslations(language: SupportedLanguage): NotFoundTr
 const pathname = new URL(Astro.request.url).pathname;
 const currentLang = (getLanguageFromURL(pathname) || 'en') as SupportedLanguage;
 
-// Get translations for the current language
 const t = getNotFoundTranslations(currentLang);
 
-// Set language info for BaseLayout
 const i18nData = {
   currentLang,
 };
 
-// Determine the homepage URL based on language
 const homepageUrl = currentLang === 'it' ? '/it/' : '/';
 
 Astro.response.status = 404;

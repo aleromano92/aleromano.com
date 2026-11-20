@@ -6,16 +6,12 @@ import type { SupportedLanguage } from '../types/i18n';
 
 const pageTitle = 'Home';
 
-// Get the current language from URL (defaults to 'en' for homepage)
 const language = (getLanguageFromURL(Astro.url.pathname) || 'en') as SupportedLanguage;
 
-// Get translations for the current language
 const t = getHomeTranslations(language);
 
-// Page description for SEO and social sharing
 const pageDescription = t.pageDescription;
 
-// Set language info for BaseLayout
 const i18nData = {
   currentLang: language,
 };

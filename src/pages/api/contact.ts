@@ -3,26 +3,19 @@ import nodemailer, { type TransportOptions } from 'nodemailer';
 import { verifyToken } from '../../utils/contact-token';
 import { isPlausibleEmail, domainAcceptsMail } from '../../utils/email-validation';
 
-// Define HTTP status codes
 const HTTP_OK = 200;
 const HTTP_BAD_REQUEST = 400;
 const HTTP_INTERNAL_SERVER_ERROR = 500;
 
-// Define the structure for API responses
 interface ApiResponseData {
   success: boolean;
   message: string;
-  /** Machine-readable error code the client maps to a localized message */
   code?: string;
-  data?: unknown; // Optional field for additional data
+  data?: unknown;
 }
 
-// Tripwire Rejections deliberately share one generic message: a bot author
-// must not learn which check caught them. Humans never see it — the honest
-// client always sends the honeypot empty and retries on invalid-token.
 const TRIPWIRE_MESSAGE = 'Invalid submission.';
 
-// Helper function to create standardized JSON responses
 function createJsonResponse(responseData: ApiResponseData, status: number): Response {
   return new Response(JSON.stringify(responseData), {
     status,
@@ -32,7 +25,7 @@ function createJsonResponse(responseData: ApiResponseData, status: number): Resp
 
 const VALID_CONTACT_REASONS = ["consultancy", "mentoring", "job", "blogpost", "general"];
 
-const MAX_PAYLOAD_BYTES = 10 * 1024; // 10 KB
+const MAX_PAYLOAD_BYTES = 10 * 1024;
 const MAX_NAME_LENGTH = 100;
 const MAX_EMAIL_LENGTH = 200;
 const MAX_MESSAGE_LENGTH = 5_000;
@@ -45,7 +38,6 @@ interface MailTransportConfig {
 
 async function getMailTransportConfig(): Promise<MailTransportConfig> {
   const smtpHost = import.meta.env.SMTP_HOST || process.env.SMTP_HOST;
-  // Defaulting to 1025 here is a fallback if SMTP_PORT is somehow not set when using smtp-relay.
   const smtpPortString = import.meta.env.SMTP_PORT || process.env.SMTP_PORT || '1025';
   const smtpPort = parseInt(smtpPortString, 10);
 
@@ -55,15 +47,11 @@ async function getMailTransportConfig(): Promise<MailTransportConfig> {
       transportOptions: {
         host: smtpHost,
         port: smtpPort,
-        secure: false, // Typically, internal relays might not use TLS for app-to-relay communication.
-                      // The relay itself handles secure connection to the external SMTP (e.g., Gmail).
+        secure: false,
       } as TransportOptions,
       isEthereal: false,
     };
   } else {
-    // This 'else' block is entered if SMTP_HOST is not 'smtp-relay'.
-    // This indicates a deviation from the primary intended production setup or local dev without the relay.
-    // Fallback to Ethereal for local development or as an indicator of misconfiguration.
     console.warn(
       `WARNING: SMTP_HOST is configured to '${smtpHost || 'undefined'}' instead of 'smtp-relay'. ` +
       `The system is intended to use 'smtp-relay' for actual email delivery. ` +
@@ -79,8 +67,8 @@ async function getMailTransportConfig(): Promise<MailTransportConfig> {
     return {
       transportOptions: {
         host: 'smtp.ethereal.email',
-        port: 587, // Ethereal's standard SMTP port
-        secure: false, // Ethereal typically uses STARTTLS on port 587, so \`secure: false\` is correct.
+        port: 587,
+        secure: false,
         auth: {
           user: testAccount.user,
           pass: testAccount.pass,
@@ -102,8 +90,6 @@ interface ContactSubmission {
   message: string;
   blogPostTitle?: string;
 }
-
-// Each step returns either the value it produced or the Response that ends the request.
 
 function checkRequestHeaders(request: Request): Response | null {
   if (request.headers.get("Content-Type") !== "application/json") {
@@ -137,7 +123,6 @@ async function readJsonObject(request: Request): Promise<Record<string, unknown>
 }
 
 function checkTripwires({ website, token }: Record<string, unknown>): Response | null {
-  // Honeypot: the honest client always sends `website`, always empty.
   if (typeof website !== 'string' || website !== '') {
     console.warn('Contact tripwire: honeypot', { present: website !== undefined });
     return badRequest(TRIPWIRE_MESSAGE);
@@ -184,8 +169,6 @@ function validateFields(data: Record<string, unknown>): ContactSubmission | Resp
   return { reason, name, email, message, blogPostTitle };
 }
 
-// Human Mistake checks: specific feedback so a real sender can fix a typo'd
-// address. The MX lookup fails open — DNS uncertainty must not cost a lead.
 async function checkEmailAddress(email: string): Promise<Response | null> {
   if (!isPlausibleEmail(email)) {
     return badRequest("That email address doesn't look right. Please double-check it.", 'email-syntax');

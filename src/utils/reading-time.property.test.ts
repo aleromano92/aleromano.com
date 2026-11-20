@@ -2,11 +2,6 @@ import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import { stripHtmlToPlainText, getReadingTime } from './reading-time';
 
-/**
- * Property-based (residuality) tests: instead of a handful of examples, subject
- * the functions to a wide space of random "stressor" strings and assert the
- * invariants ("residues") that must survive every input.
- */
 describe('reading-time properties', () => {
   it('getReadingTime always returns a whole number of at least 1 minute', () => {
     fc.assert(

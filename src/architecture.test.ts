@@ -2,19 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
-/**
- * Architectural fitness functions.
- *
- * These tests turn the implicit conventions documented in CLAUDE.md into
- * mechanically-enforced gates: rules a human (or an agent) simply cannot
- * violate without the build going red. Each rule is verified to hold on the
- * current codebase; if a future change breaks the intended architecture, the
- * corresponding test fails and names the offending file.
- */
-
 const SRC = import.meta.dirname;
 
-/** All source files under `dir` (relative to src/) with one of the given extensions. */
 function sourceFiles(dir: string, exts = ['.ts', '.astro']): string[] {
   const root = path.join(SRC, dir);
   let entries: string[];
@@ -29,21 +18,14 @@ function sourceFiles(dir: string, exts = ['.ts', '.astro']): string[] {
     .map((e) => path.join(root, e));
 }
 
-/**
- * Raw module specifiers imported/exported-from/dynamically-imported by a file.
- * Regex-based (good enough for this ESM/Astro codebase): it handles multi-line,
- * `import type`, re-exports, dynamic and side-effect imports. Known blind spot:
- * a quote inside an inline comment within a multi-line import statement — not a
- * pattern that occurs here. Switch to a TS AST parser if that ever bites.
- */
 function importSpecifiers(file: string): string[] {
   const content = readFileSync(file, 'utf8');
   const specifiers: string[] = [];
   const patterns = [
-    /\bimport\s+[^'"]*?\bfrom\s+['"]([^'"]+)['"]/g, // import x from '...'
-    /\bexport\s+[^'"]*?\bfrom\s+['"]([^'"]+)['"]/g, // export x from '...'
-    /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g, // import('...')
-    /\bimport\s+['"]([^'"]+)['"]/g, // import '...'
+    /\bimport\s+[^'"]*?\bfrom\s+['"]([^'"]+)['"]/g,
+    /\bexport\s+[^'"]*?\bfrom\s+['"]([^'"]+)['"]/g,
+    /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
+    /\bimport\s+['"]([^'"]+)['"]/g,
   ];
   for (const re of patterns) {
     for (const m of content.matchAll(re)) specifiers.push(m[1]);
@@ -51,7 +33,6 @@ function importSpecifiers(file: string): string[] {
   return specifiers;
 }
 
-/** Absolute path a relative import resolves to (null for bare/package imports). */
 function resolveLocal(fromFile: string, spec: string): string | null {
   if (!spec.startsWith('.')) return null;
   return path.resolve(path.dirname(fromFile), spec);
@@ -118,14 +99,10 @@ describe('architectural fitness functions', () => {
   });
 
   it('R5: middleware still references the /admin prefix (structural canary)', () => {
-    // Cheap canary that the admin guard has not been deleted wholesale. The
-    // REAL authorization gate — that /admin actually denies/permits requests —
-    // lives in middleware.test.ts as a behavioural test.
     const middleware = readFileSync(path.join(SRC, 'middleware.ts'), 'utf8');
     expect(middleware, 'middleware.ts must reference /admin routes').toMatch(/['"`]\/admin/);
   });
 
-  // Guard against the rules silently testing nothing if a directory moves.
   it('sanity: the rule scanners actually see source files', () => {
     expect(sourceFiles('components').length).toBeGreaterThan(0);
     expect(sourceFiles('utils').length).toBeGreaterThan(0);
