@@ -1,0 +1,15 @@
+{
+  ".claude/hooks/complexity-gate.sh": 4,
+  ".github/dependabot.yml": 3,
+  ".github/workflows/dependabot-automerge.yml": 17,
+  ".github/workflows/deploy.yml": 26,
+  ".github/workflows/mutation.yml": 8,
+  "cccc.toml": 3,
+  "docker-compose.prod.yml": 10,
+  "Dockerfile": 14,
+  "nginx/dev.conf": 15,
+  "nginx/prod.conf": 39,
+  "observability/otel/collector.yml": 4,
+  "scripts/observability/install.sh": 16,
+  "scripts/setup-vps.sh": 42
+}

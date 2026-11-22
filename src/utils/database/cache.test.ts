@@ -1,4 +1,3 @@
-// Set DATABASE_PATH before importing database module
 process.env.DATABASE_PATH = './data/main-test.db';
 
 import { describe, it, expect, beforeEach, afterAll } from 'vitest';
@@ -16,7 +15,6 @@ describe('CacheManager', () => {
   });
   
   afterAll(() => {
-    // Clean up test database
     closeDatabase();
     const testDbPath = join(process.cwd(), 'data', 'main-test.db');
     if (existsSync(testDbPath)) {
@@ -33,7 +31,7 @@ describe('CacheManager', () => {
       const testData = { message: 'Hello, World!' };
       const testDataJson = JSON.stringify(testData);
       
-      cacheManager.set('test-key', testDataJson, 60000); // 1 minute TTL
+      cacheManager.set('test-key', testDataJson, 60000);
       
       const retrieved = cacheManager.get('test-key');
       expect(retrieved).toBe(testDataJson);
@@ -60,9 +58,8 @@ describe('CacheManager', () => {
     });
     
     it('should return null for expired entries', () => {
-      cacheManager.set('expired-key', JSON.stringify('value'), 1); // 1ms TTL
+      cacheManager.set('expired-key', JSON.stringify('value'), 1);
       
-      // Wait for expiration
       return new Promise(resolve => {
         setTimeout(() => {
           const result = cacheManager.get('expired-key');
@@ -83,9 +80,8 @@ describe('CacheManager', () => {
   describe('getStale', () => {
     it('should retrieve expired entries', () => {
       const testValue = JSON.stringify('stale-value');
-      cacheManager.set('stale-key', testValue, 1); // 1ms TTL
+      cacheManager.set('stale-key', testValue, 1);
       
-      // Wait for expiration
       return new Promise(resolve => {
         setTimeout(() => {
           const fresh = cacheManager.get('stale-key');
@@ -115,7 +111,7 @@ describe('CacheManager', () => {
     });
     
     it('should return false for expired entries', () => {
-      cacheManager.set('expired-key', JSON.stringify('value'), 1); // 1ms TTL
+      cacheManager.set('expired-key', JSON.stringify('value'), 1);
       
       return new Promise(resolve => {
         setTimeout(() => {

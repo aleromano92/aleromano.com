@@ -52,10 +52,8 @@ interface Props {
 
 const { showAutomatically = false, language } = Astro.props;
 
-// Get translations for the current language
 const t = getNotACookieBannerTranslations(language);
 
-// Process paragraph3 to replace placeholders with actual HTML links
 const paragraph3Html = t.paragraph3
     .replace('{euAcc}', `<a href="https://eu-acc.com/" target="_blank" rel="noopener noreferrer">${t.euAccText}</a>`)
     .replace(
@@ -80,7 +78,6 @@ const paragraph3Html = t.paragraph3
     const banner = document.getElementById('not-a-cookie-banner');
     const closeBtn = banner?.querySelector('.close-btn');
 
-    // Check if banner should be shown
     const bannerDismissed = localStorage.getItem('not-a-cookie-banner-dismissed');
 
     if (!bannerDismissed && showAutomatically) {
@@ -88,11 +85,9 @@ const paragraph3Html = t.paragraph3
             banner?.classList.add('show');
         }, 1000);
     } else {
-        // Hide banner immediately
         if (banner) banner.style.display = 'none';
     }
 
-    // Close banner functionality
     closeBtn?.addEventListener('click', () => {
         banner?.classList.remove('show');
         localStorage.setItem('not-a-cookie-banner-dismissed', 'true');
@@ -101,7 +96,6 @@ const paragraph3Html = t.paragraph3
         }, 300);
     });
 
-    // Global function to show banner again (for footer link)
     window.showNotACookieBanner = () => {
         if (banner) {
             banner.style.display = 'flex';

@@ -31,7 +31,6 @@ interface Props {
 
 const { language } = Astro.props;
 
-// Get translations for the current language
 const t = getFooterTranslations(language);
 
 const currentYear = new Date().getFullYear();

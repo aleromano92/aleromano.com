@@ -16,7 +16,6 @@ describe('normalizeReferer properties', () => {
     fc.assert(
       fc.property(fc.webUrl({ withQueryParameters: true, withFragments: true }), (url) => {
         const out = normalizeReferer(url);
-        // A valid URL always normalizes to a non-null origin+path with no ? or #.
         return out !== null && !out.includes('?') && !out.includes('#');
       })
     );

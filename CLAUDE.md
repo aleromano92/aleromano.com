@@ -13,10 +13,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Deploy**: no local deploy script; pushing to `main` runs `.github/workflows/deploy.yml` (checks → image pushed to GHCR → SSH deploy to the Hetzner VPS)
 - **Observability local testing**: `npm run docker:dev:obs` 
 - **Complexity gate**: `npm run complexity` (needs the [`cccc`](https://github.com/moznion/cccc) binary on `PATH` — grab a release binary or `cargo install cccc-cli`)
+- **Comment ratchet**: `npm run lint:comments` (`-- --list [pathspec…]` lists remaining comments, `-- --update` locks in removals)
 
 ## Complexity gate (must pass)
 
 Before considering any change done, run `npm run complexity` and make sure it passes. [`cccc.toml`](cccc.toml) caps every function at **cognitive ≤ 40 and cyclomatic ≤ 40**; CI fails otherwise. If a function exceeds a limit, refactor it (extract well-named helpers, early returns, lookup tables) — never raise the thresholds or add excludes to get green. `cccc` does not parse `.astro` files, so keep non-trivial logic in `.ts` modules where it is both tested and measured.
+
+## No code comments (must pass)
+
+Code carries no comments ([ADR-0003](docs/adr/0003-no-code-comments.md)). Express intent with names, types and tests; record a non-obvious *why* as an ADR in `docs/adr/`; file a GitHub issue for any workaround. `npm run lint:comments` enforces this as a ratchet against [`scripts/lint-comments/baseline.json`](scripts/lint-comments/baseline.json), and CI fails if any file gains a comment. After removing legacy comments, run `npm run lint:comments -- --update` and commit the baseline. Compiler directives (`/// <reference>`, `@ts-expect-error`) are not comments and are allowed.
 
 ## Architecture
 
@@ -29,7 +34,7 @@ Before considering any change done, run `npm run complexity` and make sure it pa
 Several conventions below are not just guidance — they are **mechanically enforced** by architectural fitness functions in [`src/architecture.test.ts`](src/architecture.test.ts), which fail the build (and CI) on violation. That test is the source of truth for the exact rule; the prose here explains the intent. Currently enforced:
 
 - Components must not import from `pages/` (pages depend on components, not the reverse).
-- `better-sqlite3` may only be imported inside `src/utils/database/` (the DB driver stays encapsulated behind the connection pool / cache layer).
+- `better-sqlite3` may only be imported inside `src/utils/database/` (the DB driver stays encapsulated behind the connection / cache layer).
 - `src/utils/` is a leaf layer — it must not import from `components/` or `pages/`.
 - Every Italian page under `src/pages/it/` delegates to a `Base*` shell from `src/components/pages/`.
 - `src/middleware.ts` guards the `/admin` route prefix — a structural canary in `architecture.test.ts` plus behavioural auth tests in [`src/middleware.test.ts`](src/middleware.test.ts) (401 without/with-wrong credentials, fails closed when unconfigured).
@@ -47,7 +52,7 @@ Content collection IDs follow `{lang}/slug` format (e.g. `en/my-post`, `it/my-po
 Blog posts in `src/content/blog/{en|it}/` and presentations in `src/content/presentations/`. Schema defined with Zod in `src/content.config.ts`. Presentations are linked to blog posts via `blogPostSlug` and rendered with reveal.js at `/posts/[slug]/present`.
 
 ### Database
-SQLite via `better-sqlite3` with a connection pool in `src/utils/database/connection.ts` (driver import is confined to `src/utils/database/` — enforced). Used for:
+SQLite via `better-sqlite3` through a single shared connection in `src/utils/database/connection.ts` ([ADR-0006](docs/adr/0006-sqlite-single-connection-and-in-code-migrations.md)) (driver import is confined to `src/utils/database/` — enforced). Used for:
 - **Caching**: API responses (Twitter feed, GitHub commits) with a per-source TTL (the `CACHE_TTL` constants in `src/utils/twitter/twitter.ts` and `src/utils/github.ts`)
 - **Analytics**: Custom hit tracking with IP geolocation via `geolite2-redist`
 

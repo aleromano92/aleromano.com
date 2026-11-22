@@ -1,20 +1,8 @@
 import { resolveMx } from 'node:dns/promises';
 
-/**
- * Email checks exist to catch Human Mistakes (typos), not bots — a bot can
- * trivially supply a deliverable address. Callers must treat DNS uncertainty
- * as acceptance (fail open): rejecting a possibly-real Lead is worse than
- * admitting Noise. See docs/adr/0001-stateless-fail-open-contact-form-defenses.md.
- */
-
 const MAX_EMAIL_TOTAL_LENGTH = 254;
 const DOMAIN_LABEL = /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$/;
 
-/**
- * Pragmatic syntax check for local@domain.tld — intentionally stricter than
- * RFC 5322 (no quoted locals, no IP domains): those never come from humans
- * typing their own address, while `name@gmailcom` does.
- */
 export function isPlausibleEmail(email: string): boolean {
   if (!email || email.length > MAX_EMAIL_TOTAL_LENGTH) return false;
 
@@ -34,11 +22,6 @@ export function isPlausibleEmail(email: string): boolean {
   return tld.length >= 2;
 }
 
-/**
- * True when the email's domain publishes MX records. Definitive negatives
- * (domain missing, no MX) reject; anything uncertain — resolver errors,
- * slow DNS — accepts.
- */
 export async function domainAcceptsMail(email: string, timeoutMs = 2_000): Promise<boolean> {
   const domain = email.slice(email.lastIndexOf('@') + 1);
 

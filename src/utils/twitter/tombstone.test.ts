@@ -1,9 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { getTombstoneTweets } from './tombstone';
 
-// Replace the huge frozen GraphQL export with a small fixture that covers
-// every entry shape the parser must handle: a pinned entry, a visibility-wrapped
-// tweet, cursor entries, empty results and a tweet missing mandatory fields.
 vi.mock('./20260710-tweets.json', () => {
   const pinnedTweet = {
     __typename: 'Tweet',
@@ -27,9 +24,7 @@ vi.mock('./20260710-tweets.json', () => {
             ext_alt_text: 'A chart',
             original_info: { width: 800, height: 600 },
           },
-          // not a photo: must be filtered out
           { type: 'video', media_url_https: 'https://pbs.twimg.com/media/BBB.jpg' },
-          // not hosted on pbs.twimg.com: cannot be mirrored locally, dropped
           { type: 'photo', media_url_https: 'https://elsewhere.example/CCC.jpg' },
         ],
       },
@@ -55,7 +50,6 @@ vi.mock('./20260710-tweets.json', () => {
     },
   };
 
-  // No user info and no metrics: exercises the author/metrics fallbacks.
   const oldestTweet = {
     __typename: 'Tweet',
     legacy: {

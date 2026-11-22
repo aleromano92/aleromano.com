@@ -1,8 +1,3 @@
----
-// Bottom sheet overlay for displaying AI-generated content (summary or translation)
-// Opened programmatically via window.openAIBottomSheet({ title, stream })
----
-
 <div id="ai-bottom-sheet" class="bottom-sheet" role="dialog" aria-modal="true" aria-labelledby="ai-sheet-title" hidden>
   <div class="backdrop" id="ai-sheet-backdrop"></div>
   <div class="sheet">
@@ -149,7 +144,6 @@
     padding: var(--space-lg);
   }
 
-  /* Prevent display:flex from overriding the [hidden] attribute */
   .loading[hidden] {
     display: none;
   }
@@ -188,7 +182,6 @@
     white-space: pre-wrap;
   }
 
-  /* Rendered markdown styles */
   .sheet-text :global(p) {
     margin: 0 0 var(--space-sm);
   }
@@ -242,7 +235,6 @@
   import { marked } from 'marked';
   import { trackEvent } from '../scripts/analytics';
 
-  // Prevent raw HTML passthrough to mitigate XSS from model output
   marked.use({
     renderer: {
       html() {
@@ -337,7 +329,6 @@
     }
   }
 
-  // Public API — called from BuiltInAICallout
   (window as any).openAIBottomSheet = async (options: {
     title: string;
     stream: ReadableStream<string>;
@@ -348,14 +339,12 @@
     await streamContent(options.stream, options.mode, options.feature);
   };
 
-  // Public API — called from BuiltInAICallout when the API call fails before a stream is returned
   (window as any).openAIBottomSheetError = (title: string) => {
     openSheet(title);
     loadingEl.hidden = true;
     contentEl.textContent = 'Something went wrong. The AI model may not be ready yet. Please try again.';
   };
 
-  // Close triggers
   closeBtn.addEventListener('click', closeSheet);
   backdrop.addEventListener('click', closeSheet);
   document.addEventListener('keydown', (e) => {

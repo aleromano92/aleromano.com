@@ -6,31 +6,25 @@ import type { SupportedLanguage } from '../../../../types/i18n';
 
 const { tag } = Astro.params;
 
-// Type assertion for tag parameter
 const tagString = tag as string;
 
 if (!tagString) {
     return Astro.redirect('/404');
 }
 
-// Get all posts and filter by tag
 const allPosts = await getCollection('blog');
 const posts = allPosts
     .filter((post) => post.id.startsWith('it/') && post.data.tags.includes(tagString))
     .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 
-// If no posts found for this tag, return 404
 if (posts.length === 0) {
     return Astro.redirect('/404');
 }
 
-// Set language to Italian for this page
 const language: SupportedLanguage = 'it';
 
-// Get translations for Italian
 const t = getTagDetailTranslations(language, tagString);
 
-// Set language info for BaseLayout
 const i18nData = {
     currentLang: language,
 };

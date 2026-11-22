@@ -2,13 +2,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { analyticsManager } from '../../utils/database';
 
-// Read time range from query params (default 30 days)
 const daysParam = Astro.url.searchParams.get('days');
 const parsedDays = daysParam !== null ? parseInt(daysParam, 10) : NaN;
 const normalizedDays = Number.isNaN(parsedDays) ? 30 : parsedDays;
 const days = Math.min(Math.max(normalizedDays, 1), 365);
 
-// Fetch analytics data
 const summary = analyticsManager.getSummary(days);
 const aiStats = analyticsManager.getAIFeatureStats(days);
 const dailyStats = analyticsManager.getDailyStats(days);
@@ -20,12 +18,10 @@ const countryStats = analyticsManager.getVisitorsByCountry(days);
 const { browsers, oses } = analyticsManager.getBrowserOSBreakdown(days);
 const eventBreakdown = analyticsManager.getEventBreakdown(days);
 
-// Prepare chart data (reverse for chronological order)
 const chartLabels = dailyStats.map((d) => d.date).reverse();
 const chartVisits = dailyStats.map((d) => d.visits).reverse();
 const chartUnique = dailyStats.map((d) => d.uniqueVisitors).reverse();
 
-// Prepare event breakdown for doughnut chart
 const eventLabels = eventBreakdown.map((e) => {
     const labels: Record<string, string> = {
         page_view: 'Page Views',
@@ -36,14 +32,11 @@ const eventLabels = eventBreakdown.map((e) => {
 });
 const eventCounts = eventBreakdown.map((e) => e.count);
 
-// Prepare top pages for horizontal bar (top 10)
 const topPagesBarLabels = topPages.slice(0, 10).map((p) => (p.path.length > 30 ? p.path.slice(0, 27) + '...' : p.path));
 const topPagesBarValues = topPages.slice(0, 10).map((p) => p.visits);
 
-// Prepare country data for choropleth
 const countryDataJson = JSON.stringify(countryStats);
 
-// Format duration helper
 function formatDuration(seconds: number): string {
     if (seconds < 60) return `${Math.round(seconds)}s`;
     const mins = Math.floor(seconds / 60);
@@ -51,7 +44,6 @@ function formatDuration(seconds: number): string {
     return `${mins}m ${secs}s`;
 }
 
-// Format timestamp helper
 function formatTimestamp(unixSeconds: number): string {
     return new Date(unixSeconds * 1000).toLocaleString('en-US', {
         month: 'short',
@@ -71,7 +63,6 @@ const timeRanges = [
 <BaseLayout pageTitle="Analytics Dashboard" description="Site analytics dashboard">
     <meta slot="head" name="robots" content="noindex, nofollow" />
 
-    <!-- Time range selector -->
     <div class="time-range-selector">
         {
             timeRanges.map((range) => (
@@ -85,7 +76,6 @@ const timeRanges = [
         }
     </div>
 
-    <!-- Summary Cards -->
     <section class="stats-grid">
         <div class="stat-card">
             <h3>Total Page Views</h3>
@@ -105,7 +95,6 @@ const timeRanges = [
         </div>
     </section>
 
-    <!-- Charts Row 1: Daily Traffic + Event Breakdown -->
     <section class="charts-row">
         <div class="chart-card chart-wide">
             <h2>Daily Traffic</h2>
@@ -121,7 +110,6 @@ const timeRanges = [
         </div>
     </section>
 
-    <!-- Charts Row 2: Country Map + Top Pages Bar -->
     <section class="charts-row">
         <div class="chart-card chart-wide">
             <h2>Visitors by Country</h2>
@@ -149,7 +137,6 @@ const timeRanges = [
         </div>
     </section>
 
-    <!-- Built-in AI Features -->
     <section class="ai-section">
         <h2>✦ Built-in AI Features</h2>
         <div class="stats-grid ai-stats-grid">
@@ -213,7 +200,6 @@ const timeRanges = [
         )}
     </section>
 
-    <!-- Data Tables -->
     <section class="tables-section">
         <h2>Detailed Data</h2>
         <div class="tables-grid">
@@ -396,7 +382,6 @@ const timeRanges = [
             }
         </div>
 
-        <!-- Recent Events (full width) -->
         <div class="table-card table-card-full">
             <h3>Recent Events</h3>
             {
@@ -453,7 +438,6 @@ const timeRanges = [
         </div>
     </section>
 
-    <!-- Pass data to client-side scripts -->
     <script
         is:inline
         define:vars={{
@@ -510,11 +494,9 @@ const timeRanges = [
             countryDataJson,
         } = window.__analyticsData;
 
-        // Detect theme for chart colors
         function getChartColors() {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
-            // Try to use the primary color from CSS variables, with a safe fallback
             const rootStyles = getComputedStyle(document.documentElement);
             const cssPrimary = rootStyles.getPropertyValue('--color-primary').trim();
             const primary = cssPrimary || '#e94560';
@@ -528,7 +510,6 @@ const timeRanges = [
 
         const colors = getChartColors();
 
-        // --- Daily Traffic Line Chart ---
         const trafficCanvas = document.getElementById('trafficChart') as HTMLCanvasElement | null;
         if (trafficCanvas) {
             new Chart(trafficCanvas, {
@@ -574,7 +555,6 @@ const timeRanges = [
             });
         }
 
-        // --- Event Breakdown Doughnut ---
         const eventCanvas = document.getElementById('eventChart') as HTMLCanvasElement | null;
         if (eventCanvas && eventCounts.length > 0) {
             new Chart(eventCanvas, {
@@ -602,7 +582,6 @@ const timeRanges = [
             });
         }
 
-        // --- Top Pages Horizontal Bar ---
         const topPagesCanvas = document.getElementById('topPagesChart') as HTMLCanvasElement | null;
         if (topPagesCanvas && topPagesBarValues.length > 0) {
             new Chart(topPagesCanvas, {
@@ -638,7 +617,6 @@ const timeRanges = [
             });
         }
 
-        // --- Bubble Map ---
         const geoCanvas = document.getElementById('geoChart') as HTMLCanvasElement | null;
         if (geoCanvas && countryDataJson) {
             type CountryVisit = { country: string; visits: number };
@@ -657,7 +635,6 @@ const timeRanges = [
                         const topojson = geo.topojson;
                         const countriesGeo = (topojson.feature as any)(topoData, topoData.objects.countries).features;
 
-                        // Build bubble data points from our country stats
                         const bubbleData = parsedCountryData
                             .filter((d) => countryCentroids[d.country])
                             .map((d) => ({
@@ -726,12 +703,10 @@ const timeRanges = [
 </BaseLayout>
 
 <style>
-    /* Override container width for dashboard — needs more room */
     :global(.container) {
         max-width: 1400px;
     }
 
-    /* Time range selector */
     .time-range-selector {
         display: flex;
         gap: var(--space-xs);
@@ -761,7 +736,6 @@ const timeRanges = [
         border-color: var(--color-accent);
     }
 
-    /* Summary Cards */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -789,7 +763,6 @@ const timeRanges = [
         color: var(--color-accent);
     }
 
-    /* Chart layout */
     .charts-row {
         display: grid;
         grid-template-columns: 2fr 1fr;
@@ -818,7 +791,6 @@ const timeRanges = [
         height: 260px;
     }
 
-    /* Tables section */
     .tables-section {
         margin-top: var(--space-lg);
     }
@@ -896,7 +868,6 @@ const timeRanges = [
         white-space: nowrap;
     }
 
-    /* Event badges */
     .event-badge {
         display: inline-block;
         padding: 0.125rem var(--space-xs);
@@ -965,7 +936,6 @@ const timeRanges = [
         color: var(--color-text-secondary);
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
         .charts-row {
             grid-template-columns: 1fr;

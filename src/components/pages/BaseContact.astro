@@ -134,10 +134,8 @@ interface Props {
 
 const { language } = Astro.props;
 
-// Get translations for the current language
 const t = getContactTranslations(language);
 
-// Only what the client-side script needs; serialized on the container element
 const clientTexts = {
     helpers: t.prefillMessages,
     submitLabel: t.buttons.submit,
@@ -170,7 +168,6 @@ const clientTexts = {
         </div>
 
         <fieldset id="formFields" disabled>
-            <!-- Honeypot: humans never see it; the API requires it present and empty -->
             <div class="contact-extra" aria-hidden="true">
                 <label for="website">Website</label>
                 <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
@@ -261,7 +258,6 @@ const clientTexts = {
             reasonHelper.innerHTML = helperText ? linkifyUrls(helperText) : '';
         }
 
-        // Only toggles what is enabled/visible for the reason; never touches what the user typed
         function applyReason(reason: string): void {
             const view = getReasonView(reason);
             formFields.style.display = view.showForm ? '' : 'none';
@@ -282,8 +278,6 @@ const clientTexts = {
             submitButton.textContent = submitting ? texts.submittingLabel : texts.submitLabel;
         }
 
-        // Form Token: fetched on first interaction so it is already past its
-        // minimum age by the time a human finishes typing.
         let tokenPromise: Promise<string | null> | null = null;
         function ensureToken(): Promise<string | null> {
             tokenPromise ??= fetchContactToken();
@@ -349,7 +343,6 @@ const clientTexts = {
         margin-bottom: var(--space-md);
     }
 
-    /* Honeypot: moved off-screen rather than display:none, which naive bots detect */
     .contact-extra {
         position: absolute;
         left: -9999px;
@@ -399,7 +392,6 @@ const clientTexts = {
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 25%, transparent);
     }
 
-    /* Native validation: flag fields only after the user has interacted with them */
     input:user-invalid,
     textarea:user-invalid {
         border-color: var(--color-error);
@@ -417,7 +409,6 @@ const clientTexts = {
         font-style: italic;
     }
 
-    /* Custom select arrow, colored via CSS variables (a background-image SVG couldn't be) */
     .select-wrapper {
         position: relative;
     }

@@ -1,6 +1,5 @@
 {
   "extends": "astro/tsconfigs/strict",
-  // Lets TypeScript 7.1+ type-check .astro files (see scripts/typecheck.mjs).
   "contentMappers": [
     { "package": "@astrojs/ts-content-mapper", "extensions": [".astro"] }
   ]

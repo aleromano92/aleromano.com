@@ -12,12 +12,10 @@ import { getLocalizedPathname } from '../utils/i18n';
 const { frontmatter, currentLang, originalPost } = Astro.props;
 const pageTitle = frontmatter.title;
 
-// Get the content as a string for reading time calculation
 const content = await Astro.slots.render('default');
 const readingTime = getReadingTime(content);
 const postPlainText = stripHtmlToPlainText(content);
 
-// Check if a presentation exists for this blog post
 const presentationInfo = await findPresentationByBlogPost(Astro.url.pathname, currentLang);
 
 const wordCount = postPlainText.split(/\s+/).filter(Boolean).length;
@@ -62,13 +60,11 @@ const structuredData = {
   ],
 };
 
-// Pass language info to BaseLayout
 const i18nData = {
   currentLang,
   originalPost: originalPost ? `/posts/${originalPost.id.split('/').slice(1).join('/')}` : frontmatter.originalLink,
 };
 
-// Contact me footer text
 const contactHref = `${getLocalizedPathname('/contact', currentLang)}?reason=blogpost&title=${encodeURIComponent(frontmatter.title)}`;
 const contactMeFooterText =
   currentLang === 'it'

@@ -22,7 +22,6 @@ function isAuthorized(request: Request): boolean {
   const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
   const [user, pass] = credentials.split(':');
 
-  // Use timing-safe comparison to prevent timing attacks
   const providedUserBuffer = Buffer.from(user || '');
   const adminUserBuffer = Buffer.from(ADMIN_USER);
   const userMatch =
@@ -55,15 +54,12 @@ const GLOBAL_LINK_HEADERS = [
   '</sitemap-index.xml>; rel="sitemap"',
 ];
 
-// Matches /posts/my-post and /posts/it/my-post (with optional trailing slash),
-// but not /posts/tags/*, /posts/.../present, or .md endpoints.
 const POST_PAGE_RE = /^\/posts\/(?:it\/)?[^/]+\/?$/;
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { request, url } = context;
   const pathname = url.pathname;
 
-  // Astro turns some malformed image requests into 500s; answer them with 400.
   if (pathname === IMAGE_ENDPOINT_PATH && !isValidImageRequest(url.searchParams)) {
     return new Response('Bad Request', { status: 400, headers: { 'Content-Type': 'text/plain' } });
   }

@@ -1,23 +1,11 @@
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 
-/**
- * Anti-bot Form Token: an HMAC-signed timestamp proving the sender fetched it
- * from this site and waited a human-plausible interval before submitting.
- *
- * Deliberately stateless and replayable within its window — nginx rate limiting
- * caps abuse. See docs/adr/0001-stateless-fail-open-contact-form-defenses.md.
- *
- * The secret is ephemeral (regenerated per process start), so a deploy
- * invalidates outstanding tokens. The form heals by refetching and retrying.
- * Assumes a single Node process.
- */
 const SECRET = randomBytes(32);
 
-/** Humans need at least a few seconds to type a message; bots submit instantly. */
 export const TOKEN_MIN_AGE_MS = 3_000;
 export const TOKEN_MAX_AGE_MS = 60 * 60 * 1_000;
 
-const SIGNATURE_HEX_LENGTH = 64; // HMAC-SHA256
+const SIGNATURE_HEX_LENGTH = 64;
 
 export type TokenVerification =
   | { valid: true }

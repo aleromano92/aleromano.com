@@ -8,7 +8,6 @@ import type { CacheManager } from '../database';
 const CURRENT_LANGUAGE = 'en';
 const DEFAULT_TWITTER_CACHE_TTL_MS = 72 * 60 * 60 * 1000;
 
-// Create a mock cache manager to avoid real SQLite calls
 const createMockCache = (): CacheManager => ({
   get: vi.fn(),
   set: vi.fn(),
@@ -26,19 +25,15 @@ describe('TwitterService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     
-    // Stub bearer token for all tests (will unstub in specific tests that need to test missing token)
     vi.stubEnv('TWITTER_BEARER_TOKEN', 'fake-token');
     
-    // Create fresh mock cache for each test
     mockCache = createMockCache();
     
-    // Create service with real TwitterViewAdapter and mocked cacheManager
     service = new TwitterService(TwitterViewAdapter, mockCache);
   });
 
   afterEach(() => {
     vi.clearAllTimers();
-    // Clean up environment stubs
     vi.unstubAllEnvs();
   });
 
@@ -67,7 +62,6 @@ describe('TwitterService', () => {
     });
 
     it('should return error when Bearer token is missing in production', async () => {
-      // Unstub the bearer token for this specific test
       vi.unstubAllEnvs();
       vi.stubEnv('TWITTER_BEARER_TOKEN', '');
       
@@ -127,7 +121,7 @@ describe('TwitterService', () => {
           public_metrics: { retweet_count: 0, like_count: 0, reply_count: 0, quote_count: 0 }
         }],
         includes: {
-          users: [] // No users in includes
+          users: []
         }
       };
       
@@ -189,7 +183,6 @@ describe('TwitterService', () => {
 
   describe('caching behavior', () => {
     it('should cache results and return cached data on subsequent calls', async () => {
-      // First call: cache miss
       vi.mocked(mockCache.get).mockReturnValueOnce(null);
       const response1 = await service.getTwitterPosts(CURRENT_LANGUAGE);
       expect(response1.freshness).toBe(DataFreshness.LIVE);
@@ -199,20 +192,16 @@ describe('TwitterService', () => {
         DEFAULT_TWITTER_CACHE_TTL_MS
       );
       
-      // Capture what was cached
       const cachedData = vi.mocked(mockCache.set).mock.calls[0][1];
       
-      // Second call: cache hit
       vi.mocked(mockCache.get).mockReturnValueOnce(cachedData);
       const response2 = await service.getTwitterPosts(CURRENT_LANGUAGE);
       expect(response2.freshness).toBe(DataFreshness.CACHE);
       
-      // Both responses should have the same data
       expect(response1.posts).toEqual(response2.posts);
     });
 
     it('should refresh cache after TTL expires', async () => {
-      // First call: cache miss
       vi.mocked(mockCache.get).mockReturnValueOnce(null);
       const response1 = await service.getTwitterPosts(CURRENT_LANGUAGE);
       expect(response1.freshness).toBe(DataFreshness.LIVE);
@@ -222,32 +211,25 @@ describe('TwitterService', () => {
         DEFAULT_TWITTER_CACHE_TTL_MS
       );
       
-      // Second call: simulate cache expired (returns null again)
       vi.mocked(mockCache.get).mockReturnValueOnce(null);
       const response2 = await service.getTwitterPosts(CURRENT_LANGUAGE);
       expect(response2.freshness).toBe(DataFreshness.LIVE);
       
-      // Verify cache was set twice (once for each fresh fetch)
       expect(mockCache.set).toHaveBeenCalledTimes(2);
     });
 
     it('should return stale cached data when new fetch fails after TTL expires', async () => {
-      // First call: cache miss, fetch succeeds
       vi.mocked(mockCache.get).mockReturnValueOnce(null);
       const initialResponse = await service.getTwitterPosts(CURRENT_LANGUAGE);
       expect(initialResponse.freshness).toBe(DataFreshness.LIVE);
       
-      // Capture what was cached
       const cachedData = vi.mocked(mockCache.set).mock.calls[0][1];
       
-      // Second call: cache expired (get returns null), API fails, but getStale returns cached data
       vi.mocked(mockCache.get).mockReturnValueOnce(null);
       vi.mocked(mockCache.getStale).mockReturnValueOnce(cachedData);
       
-      // Override MSW handler to return network error
       server.use(twitterErrorHandlers.networkError);
       
-      // Second call fails, but should return stale cached data
       const cachedResponse = await service.getTwitterPosts(CURRENT_LANGUAGE);
       expect(cachedResponse.posts).toEqual(initialResponse.posts);
       expect(cachedResponse.freshness).toBe(DataFreshness.CACHE);

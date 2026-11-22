@@ -1,8 +1,8 @@
 ---
 interface Props {
   lang: 'en' | 'it';
-  postLang: string; // the language of the post content (used as translation source)
-  postText: string; // the plain-text content of the post, passed from BlogPostLayout
+  postLang: string;
+  postText: string;
 }
 
 const { lang, postLang, postText } = Astro.props;
@@ -14,7 +14,7 @@ const t = {
     description: 'Summarize or translate this post using AI running entirely on your device. No data leaves your browser.',
     tldr: 'TL;DR',
     keyPoints: 'Key Points',
-    translate: 'Translate', // followed by "to {lang}" in JS
+    translate: 'Translate',
     learnMore: 'Learn more about Built-in AI APIs',
     unsupported: 'Requires Chrome with Built-in AI APIs enabled.',
     tldrSheetTitle: 'TL;DR',
@@ -57,7 +57,7 @@ const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/b
         {labels.keyPoints}
       </button>
       <button class="ai-btn ai-btn-translate" id="ai-btn-translate" data-action="translate" hidden>
-        {labels.translate}<!-- target lang injected by JS -->
+        {labels.translate}
       </button>
     </div>
 
@@ -277,7 +277,6 @@ const learnMoreUrl = lang === 'it' ? '/posts/it/built-in-browser-ai' : '/posts/b
         return;
       }
 
-      // Track which features are available
       const enabledFeatures = [
         features.summarize ? 'summarize' : null,
         features.translate ? `translate:${features.targetLang}` : null,

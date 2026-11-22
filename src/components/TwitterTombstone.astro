@@ -15,8 +15,6 @@ const TIMELINE_URL = 'https://x.com/_aleromano';
 
 const posts = getTombstoneTweets(language);
 
-// The stale-fallback path faithfully condensed from src/utils/twitter/twitter.ts.
-// The 402 it now catches is literally what X's pay-per-use API returns.
 const cacheSnippet = `// src/utils/twitter/twitter.ts — serve fresh, fall back to stale
 private async fetchRawData(): Promise<TwitterRawDataResponse> {
   const cached = this.cache.get(TWITTER_CACHE_KEY);
@@ -149,7 +147,6 @@ const t = copy[language];
         margin: var(--space-md) 0;
     }
 
-    /* Deprecation banner (the headstone) */
     .tombstone-banner {
         background: var(--color-bg-secondary);
         border: 1px solid var(--color-border);
@@ -199,7 +196,6 @@ const t = copy[language];
         flex-shrink: 0;
     }
 
-    /* Frozen tweets — grayed out, revived on hover */
     .tombstone-posts {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -232,7 +228,6 @@ const t = copy[language];
         text-align: center;
     }
 
-    /* Caching explainer */
     .caching-explainer {
         margin-top: var(--space-xl);
     }

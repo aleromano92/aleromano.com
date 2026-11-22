@@ -77,6 +77,7 @@ export const prerender = true;
 - **Imports**: Group imports by type (framework, components, utils)
 - **Components**: Create `.astro` files in `src/components/`; use PascalCase naming
 - **Tests**: Place test files next to code with `.test.ts` suffix; use Vitest
+- **No comments**: express intent with names, types and tests; record decisions in `docs/adr/`; file an issue for workarounds. `npm run lint:comments` enforces it (see `docs/adr/0003-no-code-comments.md`)
 
 ## Docker Deployment Context
 

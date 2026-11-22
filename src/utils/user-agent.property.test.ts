@@ -21,7 +21,6 @@ describe('parseUserAgent properties', () => {
     fc.assert(
       fc.property(fc.string({ minLength: 1 }), (ua) => {
         const { browser, os } = parseUserAgent(ua);
-        // A non-empty UA always yields concrete labels (defaulting to 'Other').
         return browser !== null && os !== null;
       })
     );

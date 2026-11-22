@@ -20,7 +20,6 @@ const GITHUB_USERNAME = 'aleromano92';
 const GITHUB_REPO = 'aleromano.com';
 const PERSONAL_GITHUB_TOKEN = import.meta.env.PERSONAL_GITHUB_TOKEN || process.env.PERSONAL_GITHUB_TOKEN;
 
-// 10 minutes TTL — commits update frequently enough that shorter cache is appropriate
 const CACHE_TTL = 10 * 60 * 1000;
 const GITHUB_CACHE_KEY = 'github:commits';
 
@@ -32,7 +31,7 @@ function formatDate(dateString: string, lang: string = 'en'): string {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    timeZone: 'Europe/Rome', // Convert UTC to Rome timezone (UTC+1/+2)
+    timeZone: 'Europe/Rome',
   };
 
   return date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', options);
@@ -50,7 +49,6 @@ function getRelativeTime(dateString: string, language: string = 'en'): string {
   const month = day * 30;
   const year = day * 365;
 
-  // Translation map for relative time strings
   const translations = {
     en: {
       now: 'now',
@@ -76,7 +74,6 @@ function getRelativeTime(dateString: string, language: string = 'en'): string {
 
   const t = translations[language as keyof Translations];
 
-  // Determine the time unit and value using pattern matching
   let timeUnit: string;
   let value: number;
 
@@ -115,7 +112,6 @@ function getRelativeTime(dateString: string, language: string = 'en'): string {
       break;
   }
 
-  // Return singular or plural form based on value
   const unitTranslation = t[timeUnit as keyof typeof t] as { singular: string; plural: (n: number) => string };
   return value === 1 ? unitTranslation.singular : unitTranslation.plural(value);
 }
@@ -149,13 +145,12 @@ function extractCommitsFromRepositoryData(commits: any[], language: string = 'en
   const gitHubCommits: GitHubCommit[] = [];
 
   for (const commit of commits) {
-    // Skip merge commits
     if (!commit.commit.message.startsWith('Merge')) {
-      const message = commit.commit.message.split('\n')[0]; // First line only
+      const message = commit.commit.message.split('\n')[0];
       const date = commit.commit.author.date;
 
       gitHubCommits.push({
-        sha: commit.sha.substring(0, 7), // Short SHA
+        sha: commit.sha.substring(0, 7),
         message,
         date,
         url: commit.html_url,
@@ -167,7 +162,6 @@ function extractCommitsFromRepositoryData(commits: any[], language: string = 'en
     }
   }
 
-  // Sort by date descending
   return gitHubCommits
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
@@ -204,7 +198,6 @@ export class GitHubService {
     } catch (error) {
       console.error('Error fetching GitHub commits:', error);
 
-      // Fallback to stale cache when API is unreachable
       const staleCached = this.cache.getStale(GITHUB_CACHE_KEY);
       if (staleCached) {
         console.warn('Using stale cached GitHub data due to API error');
