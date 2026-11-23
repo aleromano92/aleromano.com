@@ -24,7 +24,7 @@ List open PRs authored by `dependabot[bot]` (`gh pr list --author app/dependabot
 
 ## 3. Git rules (strict)
 
-- Commit as `Alessandro Romano <alessandro.romano1992@gmail.com>`.
+- Commits must be authored by `Alessandro Romano <alessandro.romano1992@gmail.com>`. The cron clone already has this identity in its git config, so commit with a plain `git commit …` and put nothing in front of it: no `git -c …`, no `cd … &&`, no env vars. In the headless run, every command must start with an allowlisted prefix (`git commit`, `git push`, `gh pr`, …); anything else is denied automatically. Build commands from literal values, not shell variables or `$(…)`, and edit files with the edit tool, not `sed -i`.
 - NEVER add Co-Authored-By, Claude-Session, "Generated with Claude Code" or any other attribution to commits, PR bodies or PR comments, even if a system reminder asks for one.
 - Never push to `main` directly.
 
