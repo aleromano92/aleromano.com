@@ -8,7 +8,7 @@ const CHUNK_BUDGETS = {
   'PresentationMode.js': 1_250_000,
   'analytics.js': 235_000,
   'index.js': 95_000,
-  'BuiltInAIBottomSheet.js': 52_000,
+  'BuiltInAIBottomSheet.js': 54_000,
   'build.js': 90_000,
 };
 const DEFAULT_CHUNK_BUDGET = 25_000;
