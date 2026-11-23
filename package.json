@@ -53,7 +53,7 @@
     "reveal.js": "^6.0.2",
     "shiki": "^4.6.0",
     "turndown": "^7.2.5",
-    "typescript": "7.1.0-dev.20261112.1"
+    "typescript": "7.1.0-dev.20261119.1"
   },
   "devDependencies": {
     "@astrojs/compiler-rs": "^0.5.2",
